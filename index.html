@@ -148,7 +148,7 @@
       </div>
     </div>
 
-    <div class="arch-slider reveal" id="arch-slider" role="region" aria-roledescription="karuzela" aria-label="Wizualizacje architektury">
+    <div class="arch-slider reveal" data-slider id="arch-slider" role="region" aria-roledescription="karuzela" aria-label="Wizualizacje architektury">
       <div class="arch-slider__track">
         <figure class="arch-slide is-on" role="group" aria-roledescription="slajd" aria-label="1 z 3: Narożnik">
           <img src="assets/img/naroznik.webp" alt="Narożnik budynku od strony ulicy" loading="lazy" data-lightbox="Narożnik">
@@ -161,11 +161,11 @@
         </figure>
       </div>
       <div class="arch-slider__bar">
-        <div class="arch-slider__cap"><span class="caps" id="arch-cap">Narożnik</span><span class="caps bronze" id="arch-num">01 / 03</span></div>
+        <div class="arch-slider__cap"><span class="caps" data-cap>Narożnik</span><span class="caps bronze" data-num>01 / 03</span></div>
         <div class="arch-slider__dots" role="tablist" aria-label="Wybierz wizualizację"><button type="button" role="tab" aria-label="Narożnik" aria-selected="true" data-i="0"><i></i></button><button type="button" role="tab" aria-label="Wejście główne" aria-selected="false" data-i="1"><i></i></button><button type="button" role="tab" aria-label="Elewacja wschodnia" aria-selected="false" data-i="2"><i></i></button></div>
         <div class="rail-nav">
-          <button type="button" data-arch="prev" aria-label="Poprzednia wizualizacja"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
-          <button type="button" data-arch="next" aria-label="Następna wizualizacja"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+          <button type="button" data-dir="prev" aria-label="Poprzednia wizualizacja"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button type="button" data-dir="next" aria-label="Następna wizualizacja"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
         </div>
       </div>
     </div>
@@ -193,6 +193,12 @@
         <div class="material__img"><img src="assets/img/material-marmur.webp" alt="Bordowy marmur przy windzie, zbliżenie" loading="lazy"></div>
         <h4>Marmur Rosso</h4><p>Akcent w&nbsp;portalach wind i&nbsp;na klatkach schodowych.</p>
       </div>
+    </div>
+
+    <div class="service-row service-row--3 service-row--light">
+      <div class="service reveal"><h4>Detale</h4><p class="muted">Dbałość o&nbsp;detal, staranność i&nbsp;precyzja wykonania są naszym ukłonem w&nbsp;stronę tradycji modernizmu. Mosiężne wykończenia, okładziny kamienne, indywidualizowane posadzki lastrykowe, meble projektowane na zamówienie – tak rodzi się unikalny standard zamieszkania.</p></div>
+      <div class="service reveal"><h4>Dostępność i&nbsp;ekologia</h4><p class="muted">Wszystkie przestrzenie spełniają kryteria dostępności dla osób o&nbsp;specjalnych potrzebach w&nbsp;zakresie poruszania się. Zapewniamy możliwość ładowania samochodów elektrycznych i&nbsp;hybrydowych.</p></div>
+      <div class="service reveal"><h4>Garaż podziemny</h4><p class="muted">Podziemna hala garażowa inspirowana garażem w&nbsp;kamienicy Jakuba Lando przy placu Komuny Paryskiej 3, z&nbsp;komórkami lokatorskimi.</p></div>
     </div>
   </div>
 </section>
@@ -230,39 +236,97 @@
     <div class="sec-head reveal"><span class="num">04</span><span class="line"></span><span class="caps">Udogodnienia</span></div>
     <div class="split" style="margin-bottom:clamp(56px,7vw,100px); align-items:end">
       <h2 class="display h2 reveal">Codzienność<br>w&nbsp;rytmie<br>wellness</h2>
-      <p class="lead reveal" style="color:#d9cfc1">Lobby, zielone atrium, basen ze strefą wellness i&nbsp;podziemny garaż. Nowoczesne udogodnienia w&nbsp;duchu modernistycznych luxów.</p>
+      <div class="reveal">
+        <p class="lead" style="color:#d9cfc1;margin-bottom:18px">Dobre życie to także długie życie. Basen, jacuzzi, sauna, siłownia i&nbsp;zielone atrium tworzą w&nbsp;N75 codzienną przestrzeń dla ruchu, regeneracji i&nbsp;spokoju.</p>
+        <p class="muted" style="margin:0">Wellness i&nbsp;longevity bez wychodzenia z&nbsp;domu: luksus relaksu, najwyższy komfort i&nbsp;wykończenia, które cieszą zmysły.</p>
+      </div>
     </div>
 
-    <div class="amenities">
-      <article class="amenity reveal">
-        <h3 class="display h3">Lobby</h3>
-        <div class="amenity__img"><img src="assets/img/foyer-1-sm.webp" data-full="assets/img/foyer-1.webp" alt="Lobby z recepcją" loading="lazy" data-lightbox="Lobby"></div>
-        <p class="amenity__txt">Wysmakowana estetycznie przestrzeń z&nbsp;całodobową obsługą, stanowiąca wizytówkę obiektu. Luksusowe materiały, nietuzinkowe aranżacje i&nbsp;dopełniająca wrażenie wyjątkowości sztuka tworzą przestrzeń spotkań i&nbsp;okazję do codziennego kontaktu z&nbsp;prestiżową architekturą.</p>
+    <div class="wellness">
+      <article class="wellness__item reveal">
+        <div class="arch-slider" data-slider id="sl-basen" role="region" aria-roledescription="karuzela" aria-label="Basen: zdjęcia">
+          <div class="arch-slider__track">
+            <figure class="arch-slide is-on" role="group" aria-roledescription="slajd" aria-label="1 z 3: Basen"><img src="assets/img/basen-1.webp" alt="Basen wyłożony trawertynem, z leżakami i roślinami" loading="lazy" data-lightbox="Basen"></figure>
+            <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="2 z 3: Basen · wejście do wody" aria-hidden="true"><img src="assets/img/basen-2.webp" alt="Wejście do basenu, kamienne kolumny i rośliny" loading="lazy" data-lightbox="Basen · wejście do wody"></figure>
+            <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="3 z 3: Strefa wellness" aria-hidden="true"><img src="assets/img/basen-4.webp" alt="Strefa wellness z widokiem na basen" loading="lazy" data-lightbox="Strefa wellness"></figure>
+          </div>
+          <div class="arch-slider__bar">
+            <div class="arch-slider__cap"><span class="caps" data-cap>Basen</span><span class="caps bronze" data-num>01 / 03</span></div>
+            <div class="arch-slider__dots" role="tablist" aria-label="Wybierz zdjęcie"><button type="button" role="tab" aria-label="Basen" aria-selected="true" data-i="0"><i></i></button><button type="button" role="tab" aria-label="Basen · wejście do wody" aria-selected="false" data-i="1"><i></i></button><button type="button" role="tab" aria-label="Strefa wellness" aria-selected="false" data-i="2"><i></i></button></div>
+            <div class="rail-nav">
+              <button type="button" data-dir="prev" aria-label="Poprzednie zdjęcie"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+              <button type="button" data-dir="next" aria-label="Następne zdjęcie"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="wellness__txt">
+          <h3 class="display h3">Basen</h3>
+          <p>Basen wyłożony szlachetnym kamieniem, w&nbsp;miękkim, rozproszonym świetle. Codzienne pływanie to najprostszy rytuał długowieczności: ruch, który odciąża ciało, porządkuje oddech i&nbsp;wycisza myśli. Tu odbywa się w&nbsp;otoczeniu trawertynu, lastryka i&nbsp;zieleni, z&nbsp;dala od zgiełku miasta.</p>
+        </div>
       </article>
-      <article class="amenity reveal">
-        <h3 class="display h3">Atrium</h3>
-        <div class="amenity__img"><img src="assets/img/patio-ogrod-sm.webp" data-full="assets/img/patio-ogrod.webp" alt="Zielone atrium" loading="lazy" data-lightbox="Atrium"></div>
-        <p class="amenity__txt">Przestrzeń stworzona z&nbsp;myślą o&nbsp;zielonej regeneracji. Naturalne materiały, organiczne formy, duża skala oraz różnorodność nasadzeń pozwalają na relaks, wyciszenie i&nbsp;zaproszenie natury w&nbsp;głąb własnego wnętrza oraz wychodzących na atrium mieszkań.</p>
+      <article class="wellness__item wellness__item--rev reveal">
+        <div class="arch-slider" data-slider id="sl-jacuzzi" role="region" aria-roledescription="karuzela" aria-label="Jacuzzi: zdjęcia">
+          <div class="arch-slider__track">
+            <figure class="arch-slide is-on" role="group" aria-roledescription="slajd" aria-label="1 z 3: Jacuzzi"><img src="assets/img/basen-3.webp" alt="Okrągłe jacuzzi otoczone roślinami" loading="lazy" data-lightbox="Jacuzzi"></figure>
+            <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="2 z 3: Jacuzzi · detal" aria-hidden="true"><img src="assets/img/jacuzzi-zblizenie.webp" alt="Jacuzzi z bliska, wśród palm" loading="lazy" data-lightbox="Jacuzzi · detal"></figure>
+            <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="3 z 3: Sauna obok jacuzzi" aria-hidden="true"><img src="assets/img/sauna.webp" alt="Sauna ze szklanym frontem i drewnianym wnętrzem" loading="lazy" data-lightbox="Sauna obok jacuzzi"></figure>
+          </div>
+          <div class="arch-slider__bar">
+            <div class="arch-slider__cap"><span class="caps" data-cap>Jacuzzi</span><span class="caps bronze" data-num>01 / 03</span></div>
+            <div class="arch-slider__dots" role="tablist" aria-label="Wybierz zdjęcie"><button type="button" role="tab" aria-label="Jacuzzi" aria-selected="true" data-i="0"><i></i></button><button type="button" role="tab" aria-label="Jacuzzi · detal" aria-selected="false" data-i="1"><i></i></button><button type="button" role="tab" aria-label="Sauna obok jacuzzi" aria-selected="false" data-i="2"><i></i></button></div>
+            <div class="rail-nav">
+              <button type="button" data-dir="prev" aria-label="Poprzednie zdjęcie"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+              <button type="button" data-dir="next" aria-label="Następne zdjęcie"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="wellness__txt">
+          <h3 class="display h3">Jacuzzi</h3>
+          <p>Ciepła woda i&nbsp;hydromasaż rozluźniają mięśnie, poprawiają krążenie i&nbsp;pomagają w&nbsp;regeneracji po wysiłku. Obok czeka sauna. Naprzemienne ciepło i&nbsp;chłód to sprawdzona praktyka wspierająca odporność i&nbsp;głęboki sen. Luksus, który służy zdrowiu.</p>
+        </div>
       </article>
-      <article class="amenity reveal">
-        <h3 class="display h3">Basen i&nbsp;wellness</h3>
-        <div class="amenity__img"><img src="assets/img/basen-1-sm.webp" data-full="assets/img/basen-1.webp" alt="Basen w strefie wellness" loading="lazy" data-lightbox="Basen"></div>
-        <p class="amenity__txt">Kompleks wellness złożony z&nbsp;basenu, sauny oraz jacuzzi pozwala na reset i&nbsp;urozmaicenie czasu wolnego zarówno w&nbsp;tygodniu, jak i&nbsp;podczas weekendów. Choć przestrzeń ta służy odprężeniu i&nbsp;utrzymaniu ciała oraz umysłu w&nbsp;dobrej kondycji, pozwala również na ożywczy kontakt z&nbsp;luksusowymi wykończeniami.</p>
+      <article class="wellness__item reveal">
+        <div class="arch-slider" data-slider id="sl-silownia" role="region" aria-roledescription="karuzela" aria-label="Siłownia: zdjęcia">
+          <div class="arch-slider__track">
+            <figure class="arch-slide is-on" role="group" aria-roledescription="slajd" aria-label="1 z 2: Siłownia"><img src="assets/img/silownia-1.webp" alt="Siłownia z bieżniami i drewnianym sufitem" loading="lazy" data-lightbox="Siłownia"></figure>
+            <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="2 z 2: Siłownia · strefa cardio" aria-hidden="true"><img src="assets/img/silownia-2.webp" alt="Strefa cardio przy przeszklonej ścianie" loading="lazy" data-lightbox="Siłownia · strefa cardio"></figure>
+          </div>
+          <div class="arch-slider__bar">
+            <div class="arch-slider__cap"><span class="caps" data-cap>Siłownia</span><span class="caps bronze" data-num>01 / 02</span></div>
+            <div class="arch-slider__dots" role="tablist" aria-label="Wybierz zdjęcie"><button type="button" role="tab" aria-label="Siłownia" aria-selected="true" data-i="0"><i></i></button><button type="button" role="tab" aria-label="Siłownia · strefa cardio" aria-selected="false" data-i="1"><i></i></button></div>
+            <div class="rail-nav">
+              <button type="button" data-dir="prev" aria-label="Poprzednie zdjęcie"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+              <button type="button" data-dir="next" aria-label="Następne zdjęcie"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="wellness__txt">
+          <h3 class="display h3">Siłownia</h3>
+          <p>Kameralna, dobrze wyposażona siłownia pod drewnianym kasetonowym sufitem, z&nbsp;widokiem na zieleń. Trening siłowy i&nbsp;kondycyjny to fundament długiego, sprawnego życia. Tu jest na wyciągnięcie ręki, o&nbsp;każdej porze, kilka kroków od mieszkania.</p>
+        </div>
       </article>
-    </div>
-
-    <div class="mosaic">
-      <figure class="reveal"><img src="assets/img/basen-2.webp" alt="Basen i jacuzzi w otoczeniu roślin" loading="lazy" data-lightbox="Basen i jacuzzi"><figcaption class="caps">Basen i jacuzzi</figcaption></figure>
-      <figure class="reveal"><img src="assets/img/sauna-sm.webp" data-full="assets/img/sauna.webp" alt="Sauna ze szklanym frontem" loading="lazy" data-lightbox="Sauna"><figcaption class="caps">Sauna</figcaption></figure>
-      <figure class="reveal"><img src="assets/img/patio-mural-sm.webp" data-full="assets/img/patio-mural.webp" alt="Patio z muralem z mapą miasta" loading="lazy" data-lightbox="Patio z muralem"><figcaption class="caps">Mural z mapą miasta</figcaption></figure>
-      <figure class="reveal"><img src="assets/img/patio-mozaika-sm.webp" data-full="assets/img/patio-mozaika.webp" alt="Patio z zieloną mozaiką" loading="lazy" data-lightbox="Patio z mozaiką"><figcaption class="caps">Zielona mozaika</figcaption></figure>
-      <figure class="reveal"><img src="assets/img/silownia-1-sm.webp" data-full="assets/img/silownia-1.webp" alt="Siłownia z drewnianym sufitem" loading="lazy" data-lightbox="Siłownia"><figcaption class="caps">Siłownia</figcaption></figure>
-    </div>
-
-    <div class="service-row service-row--3">
-      <div class="service reveal"><h4>Detale</h4><p class="muted">Dbałość o&nbsp;detal, staranność i&nbsp;precyzja wykonania są naszym ukłonem w&nbsp;stronę tradycji modernizmu. Mosiężne wykończenia, okładziny kamienne, indywidualizowane posadzki lastrykowe, meble projektowane na zamówienie – tak rodzi się unikalny standard zamieszkania.</p></div>
-      <div class="service reveal"><h4>Dostępność i&nbsp;ekologia</h4><p class="muted">Wszystkie przestrzenie spełniają kryteria dostępności dla osób o&nbsp;specjalnych potrzebach w&nbsp;zakresie poruszania się. Zapewniamy możliwość ładowania samochodów elektrycznych i&nbsp;hybrydowych.</p></div>
-      <div class="service reveal"><h4>Garaż podziemny</h4><p class="muted">Podziemna hala garażowa inspirowana garażem w&nbsp;kamienicy Jakuba Lando przy placu Komuny Paryskiej 3, z&nbsp;komórkami lokatorskimi.</p></div>
+      <article class="wellness__item wellness__item--rev reveal">
+        <div class="arch-slider" data-slider id="sl-atrium" role="region" aria-roledescription="karuzela" aria-label="Atrium: zdjęcia">
+          <div class="arch-slider__track">
+            <figure class="arch-slide is-on" role="group" aria-roledescription="slajd" aria-label="1 z 4: Atrium"><img src="assets/img/patio-ogrod.webp" alt="Zielone atrium ze ścieżką i kamieniami" loading="lazy" data-lightbox="Atrium"></figure>
+            <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="2 z 4: Atrium · zielona mozaika" aria-hidden="true"><img src="assets/img/patio-mozaika.webp" alt="Atrium z zieloną mozaiką na ścianie" loading="lazy" data-lightbox="Atrium · zielona mozaika"></figure>
+            <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="3 z 4: Atrium · mural z mapą miasta" aria-hidden="true"><img src="assets/img/patio-mural.webp" alt="Atrium z muralem przedstawiającym mapę miasta" loading="lazy" data-lightbox="Atrium · mural z mapą miasta"></figure>
+            <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="4 z 4: Atrium z góry" aria-hidden="true"><img src="assets/img/patio-z-gory.webp" alt="Atrium widziane z góry" loading="lazy" data-lightbox="Atrium z góry"></figure>
+          </div>
+          <div class="arch-slider__bar">
+            <div class="arch-slider__cap"><span class="caps" data-cap>Atrium</span><span class="caps bronze" data-num>01 / 04</span></div>
+            <div class="arch-slider__dots" role="tablist" aria-label="Wybierz zdjęcie"><button type="button" role="tab" aria-label="Atrium" aria-selected="true" data-i="0"><i></i></button><button type="button" role="tab" aria-label="Atrium · zielona mozaika" aria-selected="false" data-i="1"><i></i></button><button type="button" role="tab" aria-label="Atrium · mural z mapą miasta" aria-selected="false" data-i="2"><i></i></button><button type="button" role="tab" aria-label="Atrium z góry" aria-selected="false" data-i="3"><i></i></button></div>
+            <div class="rail-nav">
+              <button type="button" data-dir="prev" aria-label="Poprzednie zdjęcie"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+              <button type="button" data-dir="next" aria-label="Następne zdjęcie"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="wellness__txt">
+          <h3 class="display h3">Atrium</h3>
+          <p>Przestrzeń stworzona z&nbsp;myślą o&nbsp;zielonej regeneracji. Naturalne materiały, organiczne formy, duża skala oraz różnorodność nasadzeń pozwalają na relaks, wyciszenie i&nbsp;zaproszenie natury w&nbsp;głąb własnego wnętrza oraz wychodzących na atrium mieszkań.</p>
+        </div>
+      </article>
     </div>
   </div>
 </section>
