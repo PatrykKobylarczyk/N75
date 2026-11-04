@@ -926,7 +926,6 @@ a.tile { display: block; color: inherit; }
 /* ---------- Panorama sąsiedztwa ---------- */
 .panorama { position: relative; margin: clamp(64px, 8vw, 120px) 0 0; overflow: hidden; }
 .panorama img { width: 100%; height: clamp(380px, 62vw, 860px); max-height: 92vh; object-fit: cover; object-position: 50% 32%; display: block; }
-.panorama::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(20, 16, 12, .6) 0%, rgba(20, 16, 12, 0) 38%); }
 .panorama__cap {
   position: absolute; z-index: 1; left: var(--gutter, 72px); right: var(--gutter, 72px); bottom: clamp(22px, 3vw, 40px);
   display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; color: var(--paper);
