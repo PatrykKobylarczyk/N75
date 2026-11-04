@@ -19,12 +19,11 @@ index.html              Cała strona (sekcje 01–07)
 manifest.html           Podstrona „Manifest” (pozycja 00 w menu)
 assets/js/page.js       Skrypt podstron: menu, animacje, galeria
 assets/css/style.css    Style: tokeny kolorów, typografia, układ, responsywność
-assets/js/main.js       Menu, sekwencja ujęć w hero, animacje, galeria, wyszukiwarka i makieta, formularz
+assets/js/main.js       Menu, animacje, galeria, wyszukiwarka i makieta, formularz
 assets/js/plan.js       Interaktywny rzut piętra: obrysy lokali, podświetlenie, przybliżenie lokalu
 assets/js/units.js      Dane lokali (PRZYKŁADOWE, do podmiany)
-assets/img/hero/        Zbliżenia (makro) do sekwencji w hero
 assets/img/plany/       Oczyszczone rzuty pięter (bez osi, wymiarów i opisów)
-assets/video/           Dawny film w hero (nieużywany; sekwencja przyjmuje też klipy MP4)
+assets/video/           Dawny film w hero (nieużywany)
 assets/img/logo-n75.svg Logo N75 (wektor; na stronie jako <symbol>, kolor przez currentColor)
 assets/img/             Wizualizacje w WebP (pełne i *-sm do miniatur) + zbliżenia materiałów
 PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
@@ -41,7 +40,7 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 
 | Nr | Sekcja | Zawartość |
 |---|---|---|
-| | Hero | Sekwencja: wizualizacje z powolnym najazdem kamery przeplatane krótkimi zbliżeniami (basen, sauna, materiały); claim i „Sprawdź mieszkania” |
+| | Hero | Statyczna wieczorna panorama z parkiem i budynkiem; claim i „Sprawdź mieszkania” |
 | | Modernizm to… | Zmieniające się słowo (luksus, wyrafinowanie, etos, filozofia) i zajawka narracji |
 | | Menu | Wysuwany panel z prawej (hamburger) na wszystkich ekranach |
 | 01 | Inwestycja | Misja, zdjęcie budynku i sąsiedztwa, liczby |

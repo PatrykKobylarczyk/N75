@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Docelowo: Futura PT i Avenir Next z licencji (np. Adobe Fonts). Jost i Nunito Sans to darmowe zamienniki na urządzeniach bez tych krojów. -->
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="assets/img/naroznik.webp">
+  <link rel="preload" as="image" href="assets/img/okolica-lotnicze.webp">
   <link rel="stylesheet" href="assets/css/style.css">
   <script>document.documentElement.classList.add('js')</script>
 </head>
@@ -70,23 +70,9 @@
 
 <!-- ============ HERO ============ -->
 <section class="hero" aria-label="N75">
-  <!-- Sekwencja hero: ujęcia ogólne (ok. 5 s) przeplatane krótkimi zbliżeniami (ok. 1,5 s) w zwolnionym tempie.
-       Każdy slajd to obraz albo krótki klip: data-type="video" i data-src="assets/video/plik.mp4" (bez dźwięku). -->
-  <div class="hero__seq" id="hero-seq" aria-hidden="true">
-    <div class="hs hs--wide" data-dur="5200" data-move="in-left"><img src="assets/img/naroznik.webp" alt=""></div>
-    <div class="hs hs--macro" data-dur="1500" data-move="drift-r"><img data-src="assets/img/hero/m-woda.webp" alt=""></div>
-    <div class="hs hs--macro" data-dur="1500" data-move="in"><img data-src="assets/img/hero/m-sauna.webp" alt=""></div>
-    <div class="hs hs--wide" data-dur="5200" data-move="in-right"><img data-src="assets/img/park.webp" alt=""></div>
-    <div class="hs hs--macro" data-dur="1500" data-move="rise"><img data-src="assets/img/hero/m-drabinka.webp" alt=""></div>
-    <div class="hs hs--macro" data-dur="1500" data-move="drift-l"><img data-src="assets/img/hero/m-lastryko.webp" alt=""></div>
-    <div class="hs hs--wide" data-dur="5200" data-move="out"><img data-src="assets/img/elewacja-wschod.webp" alt=""></div>
-    <div class="hs hs--macro" data-dur="1500" data-move="in"><img data-src="assets/img/hero/m-ogrod.webp" alt=""></div>
-    <div class="hs hs--wide" data-dur="5200" data-move="out"><img data-src="assets/img/okolica-lotnicze.webp" alt=""></div>
-    <div class="hs hs--macro" data-dur="1500" data-move="drift-r"><img data-src="assets/img/hero/m-reczniki.webp" alt=""></div>
-    <div class="hs hs--wide" data-dur="5200" data-move="in-left"><img data-src="assets/img/foyer-1.webp" alt=""></div>
-    <div class="hs hs--macro" data-dur="1500" data-move="rise"><img data-src="assets/img/hero/m-palma.webp" alt=""></div>
+  <div class="hero__media" aria-hidden="true">
+    <img src="assets/img/okolica-lotnicze.webp" alt="" fetchpriority="high">
   </div>
-  <div class="hero__grain" aria-hidden="true"></div>
   <div class="wrap hero__content">
     <div class="hero__main">
       <div class="caps caps--wide">Łódź · Narutowicza 75</div>
@@ -237,19 +223,16 @@
 
     <div class="amenities">
       <article class="amenity reveal">
-        <span class="num">01</span>
         <h3 class="display h3">Lobby</h3>
         <div class="amenity__img"><img src="assets/img/foyer-1-sm.webp" data-full="assets/img/foyer-1.webp" alt="Lobby z recepcją" loading="lazy" data-lightbox="Lobby"></div>
         <p class="amenity__txt">Wysmakowana estetycznie przestrzeń z&nbsp;całodobową obsługą, stanowiąca wizytówkę obiektu. Luksusowe materiały, nietuzinkowe aranżacje i&nbsp;dopełniająca wrażenie wyjątkowości sztuka tworzą przestrzeń spotkań i&nbsp;okazję do codziennego kontaktu z&nbsp;prestiżową architekturą.</p>
       </article>
       <article class="amenity reveal">
-        <span class="num">02</span>
         <h3 class="display h3">Atrium</h3>
         <div class="amenity__img"><img src="assets/img/patio-ogrod-sm.webp" data-full="assets/img/patio-ogrod.webp" alt="Zielone atrium" loading="lazy" data-lightbox="Atrium"></div>
         <p class="amenity__txt">Przestrzeń stworzona z&nbsp;myślą o&nbsp;zielonej regeneracji. Naturalne materiały, organiczne formy, duża skala oraz różnorodność nasadzeń pozwalają na relaks, wyciszenie i&nbsp;zaproszenie natury w&nbsp;głąb własnego wnętrza oraz wychodzących na atrium mieszkań.</p>
       </article>
       <article class="amenity reveal">
-        <span class="num">03</span>
         <h3 class="display h3">Basen i&nbsp;wellness</h3>
         <div class="amenity__img"><img src="assets/img/basen-1-sm.webp" data-full="assets/img/basen-1.webp" alt="Basen w strefie wellness" loading="lazy" data-lightbox="Basen"></div>
         <p class="amenity__txt">Kompleks wellness złożony z&nbsp;basenu, sauny oraz jacuzzi pozwala na reset i&nbsp;urozmaicenie czasu wolnego zarówno w&nbsp;tygodniu, jak i&nbsp;podczas weekendów. Choć przestrzeń ta służy odprężeniu i&nbsp;utrzymaniu ciała oraz umysłu w&nbsp;dobrej kondycji, pozwala również na ożywczy kontakt z&nbsp;luksusowymi wykończeniami.</p>
@@ -265,9 +248,9 @@
     </div>
 
     <div class="service-row service-row--3">
-      <div class="service reveal"><div class="circle">01</div><h4>Detale</h4><p class="muted">Dbałość o&nbsp;detal, staranność i&nbsp;precyzja wykonania są naszym ukłonem w&nbsp;stronę tradycji modernizmu. Mosiężne wykończenia, okładziny kamienne, indywidualizowane posadzki lastrykowe, meble projektowane na zamówienie – tak rodzi się unikalny standard zamieszkania.</p></div>
-      <div class="service reveal"><div class="circle">02</div><h4>Dostępność i&nbsp;ekologia</h4><p class="muted">Wszystkie przestrzenie spełniają kryteria dostępności dla osób o&nbsp;specjalnych potrzebach w&nbsp;zakresie poruszania się. Zapewniamy możliwość ładowania samochodów elektrycznych i&nbsp;hybrydowych.</p></div>
-      <div class="service reveal"><div class="circle">03</div><h4>Garaż podziemny</h4><p class="muted">Podziemna hala garażowa inspirowana garażem w&nbsp;kamienicy Jakuba Lando przy placu Komuny Paryskiej 3, z&nbsp;komórkami lokatorskimi.</p></div>
+      <div class="service reveal"><h4>Detale</h4><p class="muted">Dbałość o&nbsp;detal, staranność i&nbsp;precyzja wykonania są naszym ukłonem w&nbsp;stronę tradycji modernizmu. Mosiężne wykończenia, okładziny kamienne, indywidualizowane posadzki lastrykowe, meble projektowane na zamówienie – tak rodzi się unikalny standard zamieszkania.</p></div>
+      <div class="service reveal"><h4>Dostępność i&nbsp;ekologia</h4><p class="muted">Wszystkie przestrzenie spełniają kryteria dostępności dla osób o&nbsp;specjalnych potrzebach w&nbsp;zakresie poruszania się. Zapewniamy możliwość ładowania samochodów elektrycznych i&nbsp;hybrydowych.</p></div>
+      <div class="service reveal"><h4>Garaż podziemny</h4><p class="muted">Podziemna hala garażowa inspirowana garażem w&nbsp;kamienicy Jakuba Lando przy placu Komuny Paryskiej 3, z&nbsp;komórkami lokatorskimi.</p></div>
     </div>
   </div>
 </section>

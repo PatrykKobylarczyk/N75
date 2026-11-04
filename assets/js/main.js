@@ -55,39 +55,6 @@
     $$('main section[id]').forEach(function (s) { secObs.observe(s); });
   }
 
-  /* ---------- Hero: sekwencja ujęć (wizualizacje + krótkie zbliżenia) ---------- */
-  var seq = $('#hero-seq');
-  if (seq) {
-    var shots = $$('.hs', seq), cur = -1, timer = null, running = false;
-    function load(i) {
-      var s = shots[i % shots.length], m = s.firstElementChild;
-      if (m && m.dataset.src && !m.getAttribute('src')) m.setAttribute('src', m.dataset.src);
-    }
-    function show(i) {
-      var prev = shots[cur], s = shots[i];
-      cur = i;
-      s.classList.remove('is-on'); void s.offsetWidth;          // restart ruchu kamery
-      s.style.setProperty('--dur', (+s.dataset.dur + 1600) + 'ms');
-      s.classList.add('is-on', 'is-top');
-      var v = s.querySelector('video'); if (v) { v.currentTime = 0; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
-      if (prev && prev !== s) {
-        prev.classList.remove('is-top');
-        setTimeout(function () { if (shots[cur] !== prev) prev.classList.remove('is-on'); }, 1500);
-      }
-      load(i + 1); load(i + 2);
-      timer = setTimeout(next, +s.dataset.dur);
-    }
-    function next() { if (running) show((cur + 1) % shots.length); }
-    function start() { if (running) return; running = true; clearTimeout(timer); show(cur < 0 ? 0 : (cur + 1) % shots.length); }
-    function stop() { running = false; clearTimeout(timer); }
-    load(0); load(1);
-    // wstrzymaj, gdy hero jest poza ekranem albo karta w tle
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (en) { en[0].isIntersecting && !document.hidden ? start() : stop(); }, { threshold: .05 }).observe(seq);
-    } else start();
-    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
-  }
-
   /* ---------- Modernizm to… (zmieniające się słowo) ---------- */
   var rot = $('#modern-rot');
   if (rot) {
