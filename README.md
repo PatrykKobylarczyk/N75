@@ -38,7 +38,7 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 
 | Nr | Sekcja | Zawartość |
 |---|---|---|
-| | Hero | Pełnoekranowy film z przyciskiem pauzy, przezroczysty nagłówek, CTA |
+| | Hero | Pełnoekranowy film, przezroczysty nagłówek, CTA |
 | | Menu | Wysuwany panel z prawej (hamburger) na wszystkich ekranach |
 | | Wstęp | Manifest i spis treści |
 | 01 | Inwestycja | Opis, liczby, harmonogram budowy |
