@@ -443,7 +443,7 @@
         '<span class="caps muted">' + list.length + ' ' + lokali(list.length) + ' · ' + nFree + ' ' + wolnych(nFree) + '</span></div>' +
         (f === 7 ? '<p class="muted mk__note">Górne kondygnacje dwupoziomowych apartamentów z&nbsp;6. piętra.</p>' : '') +
         '<div class="mk__body"><div class="mk__plan" id="mk-plan"></div>' +
-        '<div class="mk__side" id="mk-side"><ul class="mk__units">' + unitRows(list) + '</ul></div></div>' +
+        '<div class="mk__side" id="mk-side" hidden></div></div>' +
         '<p class="mk__legend caps">Najedź na lokal, aby go podświetlić. Kliknij, aby zobaczyć jego rzut.</p>';
       plan = window.N75Plan.create($('#mk-plan'), {
         floor: f, units: list, href: function (u) { return cardUrl(u.id); },
@@ -453,6 +453,7 @@
     }
     function showUnit(u) {
       var side = $('#mk-side');
+      side.hidden = false; side.parentNode.classList.add('has-detail');
       var two = u.levels.length > 1;
       side.innerHTML =
         '<div class="mk-detail">' +
@@ -473,8 +474,7 @@
       var back = $('[data-back]', side); back.focus({ preventScroll: true });
       back.addEventListener('click', function () {
         plan.zoomOut();
-        var list = onFloor(curFloor).sort(function (a, b) { return a.id < b.id ? -1 : 1; });
-        side.innerHTML = '<ul class="mk__units">' + unitRows(list) + '</ul>';
+        side.innerHTML = ''; side.hidden = true; side.parentNode.classList.remove('has-detail');
       });
       $('[data-ask]', side).addEventListener('click', function (e) {
         e.preventDefault(); cUnit.value = u.id; $('#kontakt').scrollIntoView({ behavior: 'smooth' });
