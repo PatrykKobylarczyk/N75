@@ -1,3 +1,51 @@
 # N75 · Narutowicza 75, Łódź
 
 Strona inwestycji mieszkaniowej N75. „Przestrzeń w dobrym kierunku”.
+
+Statyczna strona (HTML, CSS, czysty JavaScript), bez kroku budowania. Działa po otwarciu `index.html`
+w przeglądarce i na każdym hostingu statycznym (GitHub Pages, Netlify, Vercel, zwykły serwer).
+
+## Uruchomienie lokalnie
+
+```bash
+python3 -m http.server 8000
+# potem http://localhost:8000
+```
+
+## Struktura
+
+```
+index.html              Cała strona (sekcje 01–07)
+assets/css/style.css    Style: tokeny kolorów, typografia, układ, responsywność
+assets/js/main.js       Menu, slajdy w hero, animacje, galeria, wyszukiwarka i karta lokalu, formularz
+assets/js/units.js      Dane lokali (PRZYKŁADOWE, do podmiany)
+assets/img/             Wizualizacje w WebP (pełne i *-sm do miniatur) + zbliżenia materiałów
+PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
+```
+
+## Kierunek wizualny
+
+- Paleta: kremowy papier `#f7f3ec`, brąz/złoto `#9c7149`, ciemny orzech `#221d18`.
+- Typografia: Cormorant Garamond 300 (nagłówki wersalikami, logo N75) + Jost 300/400 (tekst, rozstrzelone etykiety).
+- Numerowane sekcje 01–07 z cienkimi liniami, jak w prezentacji strategii.
+- Motyw okręgu z drzwi wejściowych i lastryka: kropki osi czasu, usługi, numeracja.
+
+## Sekcje
+
+| Nr | Sekcja | Zawartość |
+|---|---|---|
+| | Hero | Przenikające wizualizacje, przezroczyste menu, CTA |
+| | Wstęp | Manifest i spis treści |
+| 01 | Inwestycja | Opis, liczby, harmonogram budowy |
+| 02 | Architektura | Elewacje, cytat architekta, materiały |
+| 03 | Wnętrza | Foyer, korytarze, klatka, mieszkania (karuzela) |
+| 04 | Udogodnienia | Wellness, siłownia, patio, usługi |
+| 05 | Mieszkania | Wyszukiwarka: filtry, sortowanie, lista/kafle, karta lokalu z historią ceny |
+| 06 | Lokalizacja | Mapa OpenStreetMap, czasy dojścia |
+| 07 | Kontakt | Formularz zapytania (bez backendu), biuro sprzedaży |
+
+## Dane lokali
+
+`assets/js/units.js` ustawia `window.N75_UNITS`: tablicę obiektów
+`{ id, floor, rooms, area, loggia, terrace, exp, price, status, history }`.
+Statusy: `wolne`, `rezerwacja`, `sprzedane`. Docelowo plik można generować z CRM lub arkusza sprzedaży.
