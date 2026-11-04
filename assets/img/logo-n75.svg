@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="36 38 1000 518" fill="currentColor" role="img" aria-label="N75">
+  <title>N75</title>
+  <rect x="40" y="42" width="12" height="508"/>
+  <polygon points="40,42 102,42 385,468 385,550 372,550"/>
+  <rect x="373" y="42" width="12" height="508"/>
+  <rect x="425" y="42" width="327" height="13"/>
+  <polygon points="692,42 752,42 484,550 432,550"/>
+  <rect x="785" y="42" width="211" height="13"/>
+  <polygon points="785,42 797,42 770,250 758,248"/>
+  <path d="M758 245 C800 200 850 190 880 190 C966 190 1031 262 1031 365 C1031 470 958 552 850 552 C780 552 720 520 688 470 L702 462 C735 515 790 541 850 541 C935 541 992 465 992 365 C992 272 945 201 878 201 C840 201 795 216 768 252 Z"/>
+</svg>
