@@ -44,7 +44,7 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 | Nr | Sekcja | Zawartość |
 |---|---|---|
 | | Hero | Statyczna wieczorna panorama z parkiem i budynkiem; claim i „Sprawdź mieszkania” |
-| | Modernizm to… | Zmieniające się słowo (luksus, wyrafinowanie, etos, filozofia) i zajawka narracji |
+| | Modernizm to… | „Od szkicu do budynku”: przypięta sekcja, przy przewijaniu rysunek kreśli się (assets/img/naroznik-linie.svg) i przechodzi w wizualizację |
 | | Menu | Wysuwany panel z prawej (hamburger) na wszystkich ekranach |
 | 01 | Inwestycja | Misja, zdjęcie budynku i sąsiedztwa, liczby |
 | 02 | Architektura | Slider wizualizacji (co 3 s albo ręcznie), cytat, materiały, detale / dostępność / garaż |
@@ -52,7 +52,6 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 | 04 | Udogodnienia | Wellness i longevity: basen, jacuzzi i wellness (z sauną), siłownia, atrium; każde ze sliderem zdjęć i opisem |
 | 05 | Mieszkania | Panoramiczny slider wnętrz mieszkań, makieta budynku (piętro → rzut z podświetlanymi lokalami → przybliżony rzut wybranego lokalu) i wyszukiwarka |
 | 06 | Lokalizacja | Adres, rozwijane kategorie sąsiedztwa („Odkryj”), mapa OpenStreetMap |
-| | Cytat | Cytat z manifestu z linkiem do podstrony |
 | 07 | Zespół | Inwestor, architekci, kuratorka |
 | | Harmonogram | Oś czasu budowy |
 | 08 | Kontakt | Formularz zapytania (bez backendu), biuro sprzedaży, dane inwestora |
