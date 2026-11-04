@@ -968,3 +968,25 @@ a.tile { display: block; color: inherit; }
   .arch-slider__dots { grid-column: 1 / -1; order: 3; }
   .arch-slider__dots button { flex: 1; width: auto; }
 }
+
+/* ---------- 04 Wellness: zdjęcia w sliderach + opis ---------- */
+.wellness { display: grid; gap: clamp(64px, 9vw, 130px); }
+.wellness__item { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(32px, 6vw, 100px); align-items: center; }
+.wellness__item > * { min-width: 0; }
+.wellness__item--rev { grid-template-columns: 5fr 7fr; }
+.wellness__item--rev .arch-slider { order: 2; }
+.wellness__txt .h3 { margin: 0 0 22px; }
+.wellness__txt p { color: #d9cfc1; margin: 0; max-width: 460px; }
+.section--dark .arch-slider__bar { border-bottom-color: rgba(247, 243, 236, .16); }
+.section--dark .arch-slider__dots i { background: rgba(247, 243, 236, .2); }
+.section--dark .arch-slider__dots i::after { background: var(--bronze-soft); }
+.section--dark .rail-nav button { border-color: rgba(247, 243, 236, .25); color: var(--paper); }
+.section--dark .rail-nav button svg { stroke: currentColor; }
+.wellness .arch-slider__track { aspect-ratio: 4 / 3; }
+@media (max-width: 900px) {
+  .wellness__item, .wellness__item--rev { grid-template-columns: 1fr; gap: 26px; }
+  .wellness__item--rev .arch-slider { order: 0; }
+}
+/* Detale, dostępność, garaż: na jasnym tle sekcji 02 */
+.service-row--light { border-top-color: var(--line); }
+.service-row--light .service + .service { border-left-color: var(--line); }
