@@ -38,8 +38,15 @@
     svg.style.aspectRatio = (full[2] / full[3]).toFixed(4);
     el('image', { href: 'assets/img/plany/pietro-' + f + '.webp', x: 0, y: 0, width: W, height: H, class: 'pl-img' }, svg);
     // wersja szczegółowa (z meblami) do widoku pojedynczego lokalu; ładowana przy pierwszym przybliżeniu
-    var detail = el('image', { x: 0, y: 0, width: W, height: H, class: 'pl-img pl-img--detal' }, svg);
-    function loadDetail() { if (!detail.getAttribute('href')) detail.setAttribute('href', 'assets/img/plany/pietro-' + f + '-detal.webp'); }
+    var detail = el('image', { x: 0, y: 0, width: 0, height: 0, class: 'pl-img pl-img--detal', preserveAspectRatio: 'none' }, svg);
+    // wycinek z meblami w wysokiej rozdzielczości, osobny dla każdego lokalu
+    function loadDetail(u) {
+      var c = u.crop && u.crop[f]; if (!c) return;
+      detail.classList.remove('is-ready');
+      detail.onload = function () { detail.classList.add('is-ready'); };
+      detail.setAttribute('x', c[0]); detail.setAttribute('y', c[1]); detail.setAttribute('width', c[2]); detail.setAttribute('height', c[3]);
+      detail.setAttribute('href', 'assets/img/plany/lokale/' + u.id + '-' + f + '.webp');
+    }
     var g = el('g', { class: 'pl-units' }, svg);
     var dim = el('path', { class: 'pl-dim', 'fill-rule': 'evenodd', d: '' }, svg);
     var ring = el('path', { class: 'pl-ring', d: '' }, svg);
@@ -77,7 +84,7 @@
         var u = list.filter(function (x) { return x.id === id; })[0];
         if (!u) return;
         zoomed = id;
-        loadDetail();
+        loadDetail(u);
         var pts = u.shape[f];
         // tło poza lokalem wygaszone: prostokąt z „dziurą” w kształcie lokalu
         dim.setAttribute('d', 'M-2000 -2000H' + (W + 2000) + 'V' + (H + 2000) + 'H-2000Z' + pathD(pts));

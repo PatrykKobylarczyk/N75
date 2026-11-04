@@ -16,6 +16,7 @@
   <!-- Docelowo: Futura PT i Avenir Next z licencji (np. Adobe Fonts). Jost i Nunito Sans to darmowe zamienniki na urządzeniach bez tych krojów. -->
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/img/okolica-lotnicze.webp">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="assets/css/style.css">
   <script>document.documentElement.classList.add('js')</script>
 </head>
@@ -326,10 +327,9 @@
   <div class="wrap">
     <div class="sec-head reveal"><span class="num">06</span><span class="line"></span><span class="caps">Lokalizacja</span></div>
     <div class="location">
-      <div class="map reveal">
-        <iframe title="Mapa: Narutowicza 75A, Łódź" loading="lazy" referrerpolicy="no-referrer"
-          src="https://www.openstreetmap.org/export/embed.html?bbox=19.4600%2C51.7640%2C19.5000%2C51.7800&amp;layer=mapnik"></iframe>
-        <div class="map__pin"><span>N75</span><i></i></div>
+      <!-- Mapa: Leaflet + OpenStreetMap. Znacznik przypięty do współrzędnych budynku (data-lat / data-lng). -->
+      <div class="map reveal" id="map" data-lat="51.7714" data-lng="19.4855" data-zoom="16" role="region" aria-label="Mapa: Narutowicza 75A, Łódź">
+        <noscript><a href="https://www.openstreetmap.org/?mlat=51.7714&amp;mlon=19.4855#map=16/51.7714/19.4855">Zobacz lokalizację na mapie OpenStreetMap</a></noscript>
       </div>
       <div class="reveal">
         <h2 class="display h2">Adres</h2>
@@ -477,6 +477,7 @@
   <button class="lb-close" aria-label="Zamknij"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="assets/js/units.js"></script>
 <script src="assets/js/plan.js"></script>
 <script src="assets/js/main.js"></script>

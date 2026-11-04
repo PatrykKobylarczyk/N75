@@ -425,8 +425,9 @@ tr.is-sold td.unit-id { color: #b9ab98; }
 .tile:hover { border-color: var(--bronze); transform: translateY(-3px); }
 .tile__top { display: flex; justify-content: space-between; align-items: baseline; }
 .tile__id { font-family: var(--serif); font-size: 34px; color: var(--bronze); line-height: 1; }
-.tile__plan { margin: 18px 0; aspect-ratio: 4 / 3; border: 1px solid var(--line); display: grid; place-items: center; color: var(--line); }
-.tile__plan svg { width: 70%; height: 70%; stroke: var(--bronze-soft); fill: none; stroke-width: 1; }
+.tile__plan { margin: 18px 0; aspect-ratio: 4 / 3; border: 1px solid var(--line); background: #f7f3ec; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; place-items: center; padding: 8px; overflow: hidden; }
+.tile__plan img { width: 100%; height: 100%; object-fit: contain; transition: transform .5s var(--ease); }
+.tile:hover .tile__plan img { transform: scale(1.04); }
 .tile dl { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin: 0; font-size: 14px; }
 .tile dt { font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
 .tile dd { margin: 2px 0 0; }
@@ -480,11 +481,14 @@ tr.is-sold td.unit-id { color: #b9ab98; }
 /* ---------- 06 Lokalizacja ---------- */
 .location { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(40px, 6vw, 100px); align-items: stretch; }
 .map { position: relative; min-height: 520px; border: 1px solid var(--line); overflow: hidden; background: var(--paper-2); }
-.map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(1) sepia(.25) contrast(.95) brightness(1.03); }
-.map__pin {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -100%); pointer-events: none;
-  display: flex; flex-direction: column; align-items: center;
-}
+.map > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(1) sepia(.25) contrast(.95) brightness(1.03); }
+.map .leaflet-tile-pane { filter: grayscale(1) sepia(.25) contrast(.95) brightness(1.03); }
+.map.leaflet-container { font: inherit; background: var(--paper-2); }
+.map .leaflet-control-attribution { font-size: 10px; background: rgba(247, 243, 236, .8); }
+.map .leaflet-bar a { color: var(--ink); }
+.map__pin { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; pointer-events: none; }
+.map__home { background: var(--paper); border: 1px solid var(--line); padding: 7px 12px; font-size: 11px; color: var(--bronze); cursor: pointer; box-shadow: 0 1px 6px rgba(36, 35, 33, .12); }
+.map__home:hover { border-color: var(--bronze); }
 .map__pin span { background: var(--bronze); color: var(--paper); font-family: var(--serif); font-size: 22px; padding: 6px 12px; line-height: 1; }
 .map__pin i { width: 1px; height: 26px; background: var(--bronze); }
 .places { list-style: none; margin: 34px 0 0; padding: 0; }
@@ -889,7 +893,7 @@ a.tile { display: block; color: inherit; }
 .pl-label { font-family: var(--head); font-weight: 500; font-size: 38px; letter-spacing: .06em; fill: var(--graphite); text-anchor: middle; dominant-baseline: middle; paint-order: stroke; stroke: rgba(247, 243, 236, .85); stroke-width: 6px; pointer-events: none; transition: opacity .3s; }
 .pl-unit:hover .pl-label, .pl-unit.is-hl .pl-label { fill: #fff; stroke: rgba(80, 55, 32, .6); }
 .pl-img--detal { opacity: 0; transition: opacity .6s; pointer-events: none; }
-.pl.is-zoomed .pl-img--detal { opacity: 1; }
+.pl.is-zoomed .pl-img--detal.is-ready { opacity: 1; }
 .pl-dim { fill: var(--paper); opacity: 0; pointer-events: none; transition: opacity .5s; }
 .pl-ring { fill: none; stroke: var(--bronze); stroke-width: 4; opacity: 0; pointer-events: none; transition: opacity .5s; }
 .pl.is-zoomed .pl-dim { opacity: .94; }
