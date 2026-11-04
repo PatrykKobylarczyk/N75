@@ -30,7 +30,8 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 
 ## Kontakt i formalności
 - [x] Telefon +48 799 278 344 i dane inwestora (UNIQUM 5 sp. z o.o.)
-- [ ] E-mail `sprzedaz@n75.pl` i adres biura sprzedaży
+- [x] Adres biura sprzedaży: Dworzec Łódź Fabryczna (dokładne miejsce na dworcu do uzupełnienia)
+- [ ] E-mail `sprzedaz@n75.pl`
 - [ ] Link do katalogu PDF
 - [ ] Formularz nie wysyła danych: podpiąć do CRM / API (miejsce oznaczone `TODO` w `assets/js/main.js`)
 - [ ] Polityka prywatności, prospekt informacyjny
