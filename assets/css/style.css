@@ -236,6 +236,9 @@ p { margin: 0 0 1em; }
 }
 .hero__tag { margin-bottom: 44px; }
 .hero__cta { display: flex; flex-wrap: wrap; gap: 14px; }
+.hero__foot {
+  min-height: 40px; padding: 28px 0 32px; border-top: 1px solid rgba(247, 243, 236, .2);
+}
 .hero__counter { display: flex; align-items: center; gap: 18px; }
 .hero__bar { width: 120px; height: 1px; background: rgba(247, 243, 236, .25); position: relative; overflow: hidden; }
 .hero__bar i { position: absolute; inset: 0; background: var(--paper); transform-origin: left; transform: scaleX(0); }
