@@ -103,4 +103,50 @@
     }, { threshold: .6 });
     nums.forEach(function (n) { io.observe(n); });
   }
+
+  /* ---------- Płynne przewijanie kółkiem myszy (komputer) ----------
+     Ruch kółka trafia do „celu”, a strona dopływa do niego z wygaszaniem. Natywny scroll pozostaje
+     źródłem prawdy (działają sticky, kotwice, klawiatura, pasek przewijania). Ekrany dotykowe bez zmian. */
+  (function () {
+    var fine = window.matchMedia('(pointer: fine)'), reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!fine.matches || reduce.matches || !window.requestAnimationFrame) return;
+    var root = document.documentElement, target = window.scrollY, current = window.scrollY, raf = null, ours = false;
+    var EASE = .095;                                   // 0–1: mniejsze = dłuższe dopływanie
+    var maxY = function () { return root.scrollHeight - window.innerHeight; };
+    // czy element pod kursorem sam przewija się w pionie (menu, listy, mapy, tabele)
+    function scrollableParent(el, dy) {
+      for (; el && el !== document.body && el !== root; el = el.parentElement) {
+        if (el.classList && (el.classList.contains('leaflet-container'))) return true;
+        var st = getComputedStyle(el), oy = st.overflowY;
+        if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight + 1) {
+          if ((dy < 0 && el.scrollTop > 0) || (dy > 0 && el.scrollTop + el.clientHeight < el.scrollHeight - 1)) return true;
+        }
+      }
+      return false;
+    }
+    function loop() {
+      current += (target - current) * EASE;
+      if (Math.abs(target - current) < .4) current = target;
+      ours = true; window.scrollTo({ top: current, behavior: 'instant' });
+      raf = current === target ? null : requestAnimationFrame(loop);
+    }
+    window.addEventListener('wheel', function (e) {
+      if (e.ctrlKey || e.defaultPrevented) return;                                  // powiększanie strony
+      if (document.body.classList.contains('menu-open') || document.querySelector('.lightbox.is-open')) return;
+      var dy = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? window.innerHeight : 1);
+      if (Math.abs(e.deltaX) > Math.abs(dy)) return;                                // przewijanie w bok (gładzik)
+      if (scrollableParent(e.target, dy)) return;
+      e.preventDefault();
+      if (!raf) { current = window.scrollY; target = current; }
+      target = Math.max(0, Math.min(maxY(), target + dy));
+      if (!raf) raf = requestAnimationFrame(loop);
+    }, { passive: false });
+    // inne źródła przewijania (kotwice, klawiatura, pasek, skrypty) przejmują stery
+    window.addEventListener('scroll', function () {
+      if (ours) { ours = false; return; }
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+      current = target = window.scrollY;
+    }, { passive: true });
+    window.addEventListener('resize', function () { target = Math.min(target, maxY()); });
+  })();
 })();
