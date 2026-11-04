@@ -39,7 +39,8 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 
 ## Media
 - [ ] **Zdjęcia okolicy (`assets/img/okolica/`) mają znak wodny fotografa (Rafał Tomczyk, 4wymiar.com)**: poprosić autora o licencję i pliki bez znaku, potem podmienić pod tymi samymi nazwami
-- [x] Rysunek węglem przy cytacie z manifestu (`rysunek-n75.webp`) wygenerowany z wizualizacji; docelowo można zastąpić odręcznym rysunkiem Design Lab
+- [x] Szkic budynku (`szkic-n75.webp`, przezroczysty) przy cytacie „Architektura nie jest miejscem na kompromisy” z linkiem do manifestu
+- [x] Wizualizacje ujednolicone tonalnie (jasność, kontrast, nasycenie); oryginały w historii repozytorium
 - [ ] Hero: statyczna wieczorna panorama (`okolica-lotnicze.webp`, 1448 px); na duże ekrany przyda się wersja ok. 2400–2800 px
 - [x] Zdjęcie sąsiedztwa przy „Misja”: ujęcie z lotu ptaka o zmierzchu (`okolica-lotnicze.webp`) jako hero i panorama na całą szerokość w sekcji 01. Plik ma 1448 px szerokości; na bardzo dużych ekranach przyda się wersja ok. 2400 px
 - [ ] Dawny film `assets/video/n75-hero.mp4` nie jest już używany
