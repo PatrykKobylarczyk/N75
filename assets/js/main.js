@@ -3,7 +3,8 @@
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Strona zachowuje się tak samo niezależnie od systemowego „ogranicz ruch” (decyzja projektowa).
+  var reduced = false;
   var body = document.body;
 
   /* ---------- Header: przezroczysty nad hero, pełny po przewinięciu ---------- */
@@ -63,7 +64,9 @@
     $('.lbl', playBtn).textContent = p ? 'Odtwórz' : 'Pauza';
   }
   if (video) {
-    if (reduced) { video.removeAttribute('autoplay'); setPaused(true); }
+    // Film startuje zawsze (wyciszony, z przyciskiem pauzy), także przy systemowym „ogranicz ruch”.
+    video.muted = true;
+    setPaused(false);
     playBtn.addEventListener('click', function () { setPaused(!video.paused ? true : false); });
   }
 
