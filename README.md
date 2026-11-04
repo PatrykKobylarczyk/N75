@@ -45,9 +45,9 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 | | Menu | Wysuwany panel z prawej (hamburger) na wszystkich ekranach |
 | 01 | Inwestycja | Misja, zdjęcie budynku i sąsiedztwa, liczby |
 | 02 | Architektura | Slider wizualizacji (co 3 s albo ręcznie), cytat, materiały, detale / dostępność / garaż |
-| 03 | Wnętrza | Foyer, korytarze, klatka, mieszkania (karuzela) |
+| 03 | Wnętrza | Foyer, korytarze, klatka (karuzela) |
 | 04 | Udogodnienia | Wellness i longevity: basen, jacuzzi i wellness (z sauną), siłownia, atrium; każde ze sliderem zdjęć i opisem |
-| 05 | Mieszkania | Makieta budynku (piętro → rzut z podświetlanymi lokalami → przybliżony rzut wybranego lokalu) i wyszukiwarka |
+| 05 | Mieszkania | Panoramiczny slider wnętrz mieszkań, makieta budynku (piętro → rzut z podświetlanymi lokalami → przybliżony rzut wybranego lokalu) i wyszukiwarka |
 | 06 | Lokalizacja | Adres, rozwijane kategorie sąsiedztwa („Odkryj”), mapa OpenStreetMap |
 | | Cytat | Cytat z manifestu z linkiem do podstrony |
 | 07 | Zespół | Inwestor, architekci, kuratorka |
