@@ -914,13 +914,13 @@ a.tile { display: block; color: inherit; }
 /* ---------- Misja: zdjęcie budynku + sąsiedztwo ---------- */
 .mission-media { position: relative; padding-bottom: clamp(60px, 9vw, 120px); }
 .mission-media__inset {
-  position: absolute; left: clamp(-60px, -4vw, -24px); bottom: 0; width: 38%; margin: 0;
+  position: absolute; left: clamp(-80px, -5vw, -24px); bottom: 0; width: 58%; margin: 0;
   background: var(--paper-2); padding: 10px 10px 0; box-shadow: 0 18px 50px rgba(36, 35, 33, .18);
 }
-.mission-media__inset img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
+.mission-media__inset img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
 .mission-media__inset figcaption { font-size: 10px; padding: 10px 2px 12px; color: #8c8478; }
 @media (max-width: 900px) {
-  .mission-media__inset { left: auto; right: 16px; width: 44%; }
+  .mission-media__inset { left: auto; right: 16px; width: 66%; }
 }
 #harmonogram .timeline { margin-top: 10px; }
 .mission-media .split__media figcaption { text-align: right; }
