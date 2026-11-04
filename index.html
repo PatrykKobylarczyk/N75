@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Docelowo: Futura PT i Avenir Next z licencji (np. Adobe Fonts). Jost i Nunito Sans to darmowe zamienniki na urządzeniach bez tych krojów. -->
-  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;1,6..12,400&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/img/okolica-lotnicze.webp">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="assets/css/style.css">
@@ -51,6 +51,7 @@
   <nav aria-label="Główna nawigacja">
     <ol class="drawer__nav">
       <li class="drawer__manifest"><a href="manifest.html"><span class="num">00</span><span class="display">Manifest</span><span class="line"></span></a></li>
+      <li class="drawer__manifest"><a href="budynek.html"><span class="num">00</span><span class="display">Budynek</span><span class="line"></span></a></li>
       <li><a href="#inwestycja"><span class="num">01</span><span class="display">Inwestycja</span><span class="line"></span></a></li>
       <li><a href="#architektura"><span class="num">02</span><span class="display">Architektura</span><span class="line"></span></a></li>
       <li><a href="#wnetrza"><span class="num">03</span><span class="display">Wnętrza</span><span class="line"></span></a></li>
@@ -545,6 +546,10 @@
       <li><div class="dot">03</div><div class="caps when">IV kw. 2026</div><h4>Stan surowy zamknięty</h4></li>
       <li><div class="dot">04</div><div class="caps when">IV kw. 2027</div><h4>Oddanie do użytkowania</h4></li>
     </ol>
+    <div class="diary" id="dziennik" hidden>
+      <div class="diary__head"><h3 class="display h3">Dziennik budowy</h3><div class="rail-nav"><button type="button" data-diary="prev" aria-label="Wcześniejsze wpisy"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" data-diary="next" aria-label="Kolejne wpisy"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
+      <div class="diary__rail" id="diary-rail"></div>
+    </div>
   </div>
 </section>
 
@@ -603,7 +608,9 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="assets/js/extras.js"></script>
 <script src="assets/js/units.js"></script>
+<script src="assets/js/dziennik.js"></script>
 <script src="assets/js/plan.js"></script>
 <script src="assets/js/main.js"></script>
 </body>

@@ -48,7 +48,7 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 - [ ] Logo (`assets/img/logo-n75.svg`) jest odrysowane wektorowo z prezentacji strategii; jeśli istnieje oryginalny plik od projektanta, warto go podmienić
 
 ## Fonty
-- [ ] Futura PT i Avenir Next są krojami płatnymi. Do licencji webowej (np. projekt Adobe Fonts) wystarczy dodać `<link>` z kitem; CSS używa już nazw `futura-pt` i `avenir-next`. Do tego czasu Mac pokazuje systemowe Futura/Avenir Next, a inne systemy Jost i Nunito Sans
+- [ ] **Fonty**: Futura PT jest w Adobe Fonts (wystarczy kit z projektu webowego: jeden `<link>` w `<head>` każdej strony; CSS używa już nazwy `futura-pt`). Avenir Next nie jest w Adobe Fonts: licencja webowa przez Monotype Fonts / MyFonts (nazwa `avenir-next` jest już w CSS). Do tego czasu Windows i Android pokazują Jost i Nunito Sans (z prawdziwą kursywą)
 
 ## Z dokumentu Uniqum_www_claimy (06.11.2026), jeszcze nie wdrożone
 - [ ] Wybór claimu: na stronie roboczo „Styl, w którym najlepiej się mieszka”
@@ -57,6 +57,13 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 - [ ] Podstrona manifestu w lżejszej, dynamicznej oprawie (wzór ceci.amsterdam), wybór wersji tekstu
 - [ ] Lokalizacja: kategoria „Gastronomia” (lista lokali do ustalenia) i statyczna mapka
 - [ ] Odręczny rysunek DesignLabu przy cytacie z manifestu, folder/storybook inwestycji do pobrania
+
+## Sprzedaż: do uzupełnienia danymi
+- [ ] **Strony świata i widok z okien** w karcie lokalu: dopisać w `assets/js/units.js` pola `"orient": "południe, zachód"` i `"view": "park i ulica Narutowicza"` dla każdego lokalu (pola puste nie są wyświetlane). Potrzebna informacja od architekta
+- [ ] **Dziennik budowy**: dopisywać wpisy w `assets/js/dziennik.js`, zdjęcia do `assets/img/budowa/`. Sekcja pojawia się automatycznie przy pierwszym wpisie
+- [ ] Ulubione są zapamiętywane w przeglądarce użytkownika (bez logowania); „Zapytaj o te lokale” wypełnia formularz listą lokali
+- [ ] Podstrony zespołu (inwestor, architekci, kuratorka): czekają na minutowe filmy, wywiady i biogramy
+- [ ] Wersja angielska: do decyzji (tłumaczenie całości czy tylko najważniejszych sekcji)
 
 ## Do rozważenia później
 - [ ] Wersja angielska (klienci zagraniczni z prezentacji strategii)

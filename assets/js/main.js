@@ -131,6 +131,20 @@
     document.addEventListener('visibilitychange', function () { play(); });
   });
 
+  /* ---------- Dziennik budowy (dane: assets/js/dziennik.js) ---------- */
+  var diary = $('#dziennik'), entries = (window.N75_DZIENNIK || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+  if (diary && entries.length) {
+    var M = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'];
+    var dtxt = function (d) { var p = d.split('-'); return (+p[2]) + ' ' + M[+p[1] - 1] + ' ' + p[0]; };
+    var drail = $('#diary-rail');
+    drail.innerHTML = entries.map(function (e) {
+      return '<article class="diary__item">' + (e.img ? '<figure><img src="' + e.img + '" alt="' + (e.title || 'Budowa N75') + ', ' + dtxt(e.date) + '" loading="lazy" data-lightbox="' + dtxt(e.date) + (e.title ? ' · ' + e.title : '') + '"></figure>' : '') +
+        '<time class="caps bronze" datetime="' + e.date + '">' + dtxt(e.date) + '</time>' + (e.title ? '<h4>' + e.title + '</h4>' : '') + (e.text ? '<p class="muted">' + e.text + '</p>' : '') + '</article>';
+    }).join('');
+    diary.hidden = false;
+    $$('[data-diary]', diary).forEach(function (b) { b.addEventListener('click', function () { drail.scrollBy({ left: (b.dataset.diary === 'next' ? 1 : -1) * drail.clientWidth * .8, behavior: 'smooth' }); }); });
+  }
+
   /* ---------- Modernizm to… (zmieniające się słowo) ---------- */
   var rot = $('#modern-rot');
   if (rot) {
@@ -254,6 +268,9 @@
   /* index.html?lokal=M1.01#kontakt: formularz z wybranym lokalem (przycisk z karty mieszkania) */
   var askFor = new URLSearchParams(location.search).get('lokal');
   if (askFor && cUnit.querySelector('option[value="' + askFor.replace(/[^\w.]/g, '') + '"]')) cUnit.value = askFor;
+  // z porównywarki: index.html?porownanie=M1.01,M2.03#kontakt
+  var cmp = (new URLSearchParams(location.search).get('porownanie') || '').replace(/[^\w.,]/g, '');
+  if (cmp) { var msg = $('#c-msg'); if (msg && !msg.value) msg.value = 'Dzień dobry, proszę o informacje o lokalach: ' + cmp.split(',').join(', ') + '.'; }
   function cardUrl(id) { return 'mieszkanie.html?id=' + encodeURIComponent(id); }
 
   function ppm(u) { return Math.round(u.price / u.area); }
@@ -304,19 +321,20 @@
           var cls = state.sort === c[0] ? (state.dir > 0 ? 'asc' : 'desc') : '';
           var aria = state.sort === c[0] ? (state.dir > 0 ? 'ascending' : 'descending') : 'none';
           return '<th data-sort="' + c[0] + '" class="' + cls + ' c-' + c[0] + '" aria-sort="' + aria + '" tabindex="0"><span class="l">' + c[1] + '</span><span class="s" aria-hidden="true">' + c[2] + '</span></th>';
-        }).join('') + '<th class="c-go"></th></tr></thead><tbody>' +
+        }).join('') + '<th class="c-go"></th><th class="c-fav"><span class="sr-only">Ulubione</span></th></tr></thead><tbody>' +
         list.map(function (u) {
           return '<tr data-id="' + u.id + '" tabindex="0" class="' + (u.status === 'sprzedane' ? 'is-sold' : '') + '">' +
             '<td class="unit-id">' + u.id + '</td><td>' + u.floor + '</td><td>' + u.rooms + '</td>' +
             '<td class="c-area">' + fmtA.format(u.area) + '<span class="l"> m²</span></td>' +
             '<td class="price c-price"><span class="l">' + priceTxt(u) + '</span><span class="s">' + priceShort(u) + '</span></td><td class="c-ppm">' + (u.status === 'sprzedane' ? '—' : fmt.format(ppm(u)) + ' zł') + '</td>' +
             '<td class="c-status"><span class="status status--' + u.status + '" title="' + STATUS[u.status] + '"><span class="l">' + STATUS[u.status] + '</span></span></td>' +
-            '<td class="go caps c-go"><a href="' + cardUrl(u.id) + '" tabindex="-1">Karta</a></td></tr>';
+            '<td class="go caps c-go"><a href="' + cardUrl(u.id) + '" tabindex="-1">Karta</a></td>' +
+            '<td class="c-fav">' + (window.N75Fav ? window.N75Fav.heart(u.id) : '') + '</td></tr>';
         }).join('') + '</tbody></table></div>';
     } else {
       html = '<div class="tiles">' + list.map(function (u) {
         return '<a class="tile" href="' + cardUrl(u.id) + '">' +
-          '<div class="tile__top"><span class="tile__id">' + u.id + '</span><span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></div>' +
+          '<div class="tile__top"><span class="tile__id">' + u.id + '</span><span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>' + (window.N75Fav ? window.N75Fav.heart(u.id) : '') + '</div>' +
           '<div class="tile__plan' + (u.levels.length > 1 ? ' tile__plan--two' : '') + '">' + planThumb(u) + '</div>' +
           '<dl><div><dt>Metraż</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div><div><dt>Pokoje</dt><dd>' + u.rooms + '</dd></div>' +
           '<div><dt>Piętro</dt><dd>' + u.levels.join('–') + '</dd></div><div><dt>Cena</dt><dd>' + priceTxt(u) + '</dd></div></dl></a>';
@@ -458,7 +476,7 @@
       side.innerHTML =
         '<div class="mk-detail">' +
           '<button type="button" class="mk-back caps" data-back>← Wszystkie lokale</button>' +
-          '<div class="mk-detail__id display">' + u.id + '</div>' +
+          '<div class="mk-detail__head"><div class="mk-detail__id display">' + u.id + '</div>' + (window.N75Fav ? window.N75Fav.heart(u.id) : '') + '</div>' +
           '<span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>' +
           '<dl class="mk-detail__spec">' +
             '<div><dt>Powierzchnia</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div>' +
