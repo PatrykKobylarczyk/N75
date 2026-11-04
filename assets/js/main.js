@@ -57,17 +57,10 @@
 
   /* ---------- Hero: film ---------- */
   var video = $('#hero-video');
-  var playBtn = $('#hero-play');
-  function setPaused(p) {
-    if (p) video.pause(); else { var pr = video.play(); if (pr && pr.catch) pr.catch(function () {}); }
-    playBtn.setAttribute('aria-pressed', String(p));
-    $('.lbl', playBtn).textContent = p ? 'Odtwórz' : 'Pauza';
-  }
   if (video) {
-    // Film startuje zawsze (wyciszony, z przyciskiem pauzy), także przy systemowym „ogranicz ruch”.
+    // Film startuje zawsze (wyciszony), także przy systemowym „ogranicz ruch”.
     video.muted = true;
-    setPaused(false);
-    playBtn.addEventListener('click', function () { setPaused(!video.paused ? true : false); });
+    var pr = video.play(); if (pr && pr.catch) pr.catch(function () {});
   }
 
   /* ---------- Animacje wejścia ---------- */
