@@ -44,7 +44,7 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 | Nr | Sekcja | Zawartość |
 |---|---|---|
 | | Hero | Statyczna wieczorna panorama z parkiem i budynkiem; claim i „Sprawdź mieszkania” |
-| | Modernizm to… | „Od szkicu do budynku”: po wejściu na ekran rysunek sam się kreśli (assets/img/naroznik-linie.svg) i przechodzi w wizualizację |
+| | Modernizm to… | szkic ołówkiem: po wejściu na ekran kreski bryły rysują się jedna po drugiej (assets/img/szkic-modernizm.svg) |
 | | Menu | Wysuwany panel z prawej (hamburger) na wszystkich ekranach |
 | 01 | Inwestycja | Misja, zdjęcie budynku i sąsiedztwa, liczby |
 | 02 | Architektura | Slider wizualizacji (co 3 s albo ręcznie), cytat, materiały, detale / dostępność / garaż |

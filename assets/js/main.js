@@ -197,35 +197,45 @@
     $$('[data-diary]', diary).forEach(function (b) { b.addEventListener('click', function () { drail.scrollBy({ left: (b.dataset.diary === 'next' ? 1 : -1) * drail.clientWidth * .8, behavior: 'smooth' }); }); });
   }
 
-  /* ---------- „Od szkicu do budynku”: po wejściu sekcji na ekran linie same się kreślą (od dołu),
-     potem rysunek przechodzi w wizualizację; animacja jednorazowa, niezależna od przewijania ---------- */
-  var dTrack = $('#draw-track'), dLines = $('#draw-lines'), dStage = $('#draw-stage');
-  if (dTrack && dLines && window.fetch) {
-    var bands = [], dImg = $('.draw__img', dStage), steps = $$('.draw__steps span'), dStarted = false, dReady = false, dSeen = false;
-    var clamp = function (v) { return Math.max(0, Math.min(1, v)); };
-    var ease = function (t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };
-    var DRAW = 3400, FILL = 1600, HOLD = 250;             // ms
-    function frame(p) {                                    // p: 0 … 1 całej animacji
-      var tot = DRAW + HOLD + FILL, draw = clamp(p * tot / DRAW), fill = ease(clamp((p * tot - DRAW - HOLD) / FILL)), n = bands.length || 1;
-      bands.forEach(function (g, k) { var t = clamp((draw - k / Math.max(1, n - 1) * .7) / .3); g.style.strokeDashoffset = (1 - ease(t)).toFixed(3); });
-      dImg.style.opacity = fill.toFixed(3);
-      dImg.style.transform = 'scale(' + (1.04 - .04 * fill).toFixed(4) + ')';
-      dLines.style.opacity = (1 - .82 * fill).toFixed(3);
-      steps.forEach(function (st, i) { st.classList.toggle('is-on', i === (fill > .5 ? 1 : 0)); });
-    }
+  /* ---------- Szkic ołówkiem: po wejściu na ekran kreski rysują się jedna po drugiej, z „grafitem” prowadzącym linię ---------- */
+  var dLines = $('#draw-lines'), dStage = $('#draw-stage');
+  if (dLines && window.fetch) {
+    var dPaths = [], tip = null, dStarted = false, dReady = false, dSeen = false, dScale = 1;
+    var SPEED = { line: 1.25, light: 2.2, hatch: 3.2 };    // px/ms
     function play() {
       if (dStarted || !dReady || !dSeen) return;
       dStarted = true;
-      var t0 = null, tot = DRAW + HOLD + FILL;
-      (function step(ts) { if (t0 === null) t0 = ts; var p = clamp((ts - t0) / tot); frame(p); if (p < 1) requestAnimationFrame(step); })(performance.now());
+      var i = 0;
+      (function next() {
+        if (i >= dPaths.length) { tip.style.opacity = 0; return; }
+        var p = dPaths[i++], L = p.L, kind = p.k, dur = Math.max(kind === 'line' ? 90 : 30, L / SPEED[kind] * dScale), t0 = null;
+        (function step(ts) {
+          if (t0 === null) t0 = ts;
+          var t = Math.min(1, (ts - t0) / dur), e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+          p.el.style.strokeDashoffset = (L * (1 - e)).toFixed(1);
+          var pt = p.el.getPointAtLength(L * e); tip.setAttribute('cx', pt.x); tip.setAttribute('cy', pt.y);
+          if (t < 1) requestAnimationFrame(step); else setTimeout(next, kind === 'line' ? 30 : 6);
+        })(performance.now());
+      })();
     }
     fetch(dLines.dataset.src).then(function (r) { return r.ok ? r.text() : Promise.reject(); }).then(function (svg) {
-      dLines.innerHTML = svg; bands = $$('g[data-band]', dLines); dStage.classList.add('is-ready'); dReady = true; frame(0); play();
-    }).catch(function () { dStage.classList.add('is-plain'); });
+      dLines.innerHTML = svg;
+      var root = $('svg', dLines);
+      dPaths = $$('path', root).map(function (el) {
+        var L = el.getTotalLength(); el.style.strokeDasharray = L + ' ' + L; el.style.strokeDashoffset = L;
+        return { el: el, L: L, k: (el.getAttribute('class') || 's-line').replace('s-', '') };
+      });
+      tip = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      tip.setAttribute('r', 3.2); tip.setAttribute('class', 'draw__tip'); root.appendChild(tip);
+      // całość ok. 8 s niezależnie od liczby kresek
+      var raw = dPaths.reduce(function (a, p) { return a + p.L / SPEED[p.k]; }, 0);
+      dScale = 7200 / Math.max(1, raw);
+      dReady = true; play();
+    }).catch(function () {});
     if ('IntersectionObserver' in window) {
-      var dio = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { dSeen = true; dio.disconnect(); setTimeout(play, 250); } }, { threshold: .45 });
+      var dio = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { dSeen = true; dio.disconnect(); setTimeout(play, 300); } }, { threshold: .45 });
       dio.observe(dStage);
-    } else { dSeen = true; }
+    } else dSeen = true;
   }
 
   /* ---------- Modernizm to… (zmieniające się słowo) ---------- */
