@@ -237,7 +237,7 @@ p { margin: 0 0 1em; }
 .hero__tag { margin-bottom: 44px; }
 .hero__cta { display: flex; flex-wrap: wrap; gap: 14px; }
 .hero__foot {
-  min-height: 40px; padding: 28px 0 32px; border-top: 1px solid rgba(247, 243, 236, .2);
+  min-height: 40px; padding: 28px 0 32px;
 }
 .hero__counter { display: flex; align-items: center; gap: 18px; }
 .hero__bar { width: 120px; height: 1px; background: rgba(247, 243, 236, .25); position: relative; overflow: hidden; }
@@ -1020,3 +1020,35 @@ a.tile { display: block; color: inherit; }
   .hero__claim { font-size: clamp(20px, 5.6vw, 26px); margin-bottom: 26px; }
   .hero__foot { padding: 18px 0 22px; }
 }
+
+/* ---------- Zestawienie lokali: zwarta tabela na telefonie (więcej kolumn bez przewijania) ---------- */
+.units .s { display: none; }
+@media (max-width: 700px) {
+  .units .l { display: none; }
+  .units .s { display: inline; }
+  .units th, .units td { padding: 14px 6px; font-size: 14px; letter-spacing: 0; }
+  .units th { font-size: 10px; letter-spacing: .1em; }
+  .units th[data-sort]::after { margin-left: 4px; }
+  .units td.unit-id { font-size: 16px; padding-left: 0; }
+  .units .c-ppm, .units .c-go { display: none; }
+  .units .c-status { text-align: right; padding-right: 0; }
+  .units .c-status .status { font-size: 0; }
+  .table-scroll { overflow-x: visible; }
+}
+
+/* ---------- Cytat z manifestu z rysunkiem węglem ---------- */
+.mquote { display: grid; grid-template-columns: 6fr 5fr; gap: clamp(36px, 6vw, 100px); align-items: center; }
+.mquote > * { min-width: 0; }
+.mquote__art { margin: 0; }
+.mquote__art img { width: 100%; height: auto; display: block; mix-blend-mode: multiply; }
+.mquote__txt .mark { font-family: var(--serif); font-size: 80px; line-height: .6; color: var(--bronze); display: block; margin-bottom: 14px; }
+.mquote__txt blockquote { margin: 0; font-family: var(--serif); font-weight: 300; font-style: italic; font-size: clamp(21px, 2.1vw, 30px); line-height: 1.4; color: var(--graphite); }
+.mquote__link { display: inline-flex; align-items: center; gap: 12px; margin-top: 28px; color: var(--bronze); font-size: 11px; border-bottom: 1px solid currentColor; padding-bottom: 4px; }
+.mquote__link .arrow { width: 22px; height: 1px; background: currentColor; position: relative; }
+.mquote__link .arrow::after { content: ""; position: absolute; right: 0; top: -3px; width: 6px; height: 6px; border-top: 1px solid currentColor; border-right: 1px solid currentColor; transform: rotate(45deg); }
+.mquote__link:hover { color: var(--graphite); }
+@media (max-width: 900px) { .mquote { grid-template-columns: 1fr; } }
+/* ---------- Lokalizacja: zdjęcia okolicy ---------- */
+.okolica { margin: clamp(56px, 7vw, 100px) 0 0; }
+.okolica .arch-slider__track { aspect-ratio: 3 / 2; }
+.okolica__credit { font-size: 11px; color: var(--muted); }

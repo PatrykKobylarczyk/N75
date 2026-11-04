@@ -286,7 +286,9 @@
     }).join('');
   }
 
-  var COLS = [['id', 'Lokal'], ['floor', 'Piętro'], ['rooms', 'Pokoje'], ['area', 'Metraż'], ['price', 'Cena'], ['ppm', 'Cena za m²'], ['status', 'Status']];
+  var COLS = [['id', 'Lokal', 'Lokal'], ['floor', 'Piętro', 'P.'], ['rooms', 'Pokoje', 'Pok.'], ['area', 'Metraż', 'm²'], ['price', 'Cena', 'Cena'], ['ppm', 'Cena za m²', ''], ['status', 'Status', '']];
+  // krótka cena do wąskich ekranów: 1,24 mln / 475 tys.
+  function priceShort(u) { if (u.status === 'sprzedane') return '—'; return u.price >= 1e6 ? (u.price / 1e6).toFixed(2).replace('.', ',') + ' mln' : Math.round(u.price / 1000) + ' tys.'; }
 
   function render() {
     var full = filtered();
@@ -301,15 +303,15 @@
         COLS.map(function (c) {
           var cls = state.sort === c[0] ? (state.dir > 0 ? 'asc' : 'desc') : '';
           var aria = state.sort === c[0] ? (state.dir > 0 ? 'ascending' : 'descending') : 'none';
-          return '<th data-sort="' + c[0] + '" class="' + cls + '" aria-sort="' + aria + '" tabindex="0">' + c[1] + '</th>';
-        }).join('') + '<th></th></tr></thead><tbody>' +
+          return '<th data-sort="' + c[0] + '" class="' + cls + ' c-' + c[0] + '" aria-sort="' + aria + '" tabindex="0"><span class="l">' + c[1] + '</span><span class="s" aria-hidden="true">' + c[2] + '</span></th>';
+        }).join('') + '<th class="c-go"></th></tr></thead><tbody>' +
         list.map(function (u) {
           return '<tr data-id="' + u.id + '" tabindex="0" class="' + (u.status === 'sprzedane' ? 'is-sold' : '') + '">' +
             '<td class="unit-id">' + u.id + '</td><td>' + u.floor + '</td><td>' + u.rooms + '</td>' +
-            '<td>' + fmtA.format(u.area) + ' m²</td>' +
-            '<td class="price">' + priceTxt(u) + '</td><td>' + (u.status === 'sprzedane' ? '—' : fmt.format(ppm(u)) + ' zł') + '</td>' +
-            '<td><span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></td>' +
-            '<td class="go caps"><a href="' + cardUrl(u.id) + '" tabindex="-1">Karta</a></td></tr>';
+            '<td class="c-area">' + fmtA.format(u.area) + '<span class="l"> m²</span></td>' +
+            '<td class="price c-price"><span class="l">' + priceTxt(u) + '</span><span class="s">' + priceShort(u) + '</span></td><td class="c-ppm">' + (u.status === 'sprzedane' ? '—' : fmt.format(ppm(u)) + ' zł') + '</td>' +
+            '<td class="c-status"><span class="status status--' + u.status + '" title="' + STATUS[u.status] + '"><span class="l">' + STATUS[u.status] + '</span></span></td>' +
+            '<td class="go caps c-go"><a href="' + cardUrl(u.id) + '" tabindex="-1">Karta</a></td></tr>';
         }).join('') + '</tbody></table></div>';
     } else {
       html = '<div class="tiles">' + list.map(function (u) {
