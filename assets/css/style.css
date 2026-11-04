@@ -1118,3 +1118,5 @@ a.tile { display: block; color: inherit; }
 .arch-slide--tall img { object-position: 50% 35%; }
 .arch-slider__dots--many button { width: 22px; }
 @media (max-width: 600px) { .arch-slider__dots--many { gap: 3px; } .arch-slider__dots--many button { width: auto; } }
+
+.arch-text--first { margin-top: clamp(24px, 3vw, 48px); }
