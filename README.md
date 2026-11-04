@@ -28,7 +28,7 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 ## Kierunek wizualny
 
 - Paleta: kremowy papier `#f7f3ec`, brąz/złoto `#9c7149`, ciemny orzech `#221d18`.
-- Typografia: Cormorant Garamond 300 (nagłówki wersalikami, logo N75) + Jost 300/400 (tekst, rozstrzelone etykiety).
+- Typografia wg wytycznych: Futura PT (nagłówki wersalikami 400, etykiety i śródtytuły 500, numeracja) oraz Avenir Next 400 (tekst #44423F, podpisy, cytaty). Gdy kroje nie są zainstalowane, strona używa darmowych zamienników Jost i Nunito Sans. Logo N75 jest w SVG.
 - Numerowane sekcje 01–07 z cienkimi liniami, jak w prezentacji strategii.
 - Motyw okręgu z drzwi wejściowych i lastryka: kropki osi czasu, usługi, numeracja.
 
