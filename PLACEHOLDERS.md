@@ -8,6 +8,8 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 - [ ] Harmonogram: pozwolenie II kw. 2025, start IV kw. 2025, stan surowy IV kw. 2026, oddanie IV kw. 2027
 - [x] Teksty: misja, architektura, udogodnienia, adres i sąsiedztwo, manifest pochodzą z dokumentu Uniqum_www
 - [ ] Teksty sekcji Wnętrza i opisy zespołu (Inwestor, Design Lab, kuratorka): skrócone, do akceptacji; filmy zespołu do dodania
+- [x] Zdjęcia zespołu: czarno-białe, ujednolicona jasność, kadr 4:5 (`assets/img/zespol-*.webp`)
+- [ ] Zdjęcie grupowe Design Lab: zamiana osoby (siedzący po lewej → osoba w niebieskiej koszulce) wymaga retuszu przez grafika albo nowego zdjęcia grupowego
 - [ ] Godziny pracy lobby i zakres obsługi
 
 ## Lokale (`assets/js/units.js`)

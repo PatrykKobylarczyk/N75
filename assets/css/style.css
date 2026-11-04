@@ -789,13 +789,18 @@ a.tile { display: block; color: inherit; }
 .units .go a { color: inherit; }
 
 /* zespół */
-.team { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 40px); }
-.team__item { border-top: 1px solid var(--line); padding-top: 26px; display: flex; flex-direction: column; gap: 12px; }
-.team__item .circle { margin-bottom: 10px; }
+.team { display: grid; gap: 0; }
+.team__item { display: grid; grid-template-columns: 1fr minmax(240px, 30%); gap: clamp(28px, 6vw, 110px); align-items: center; padding: clamp(28px, 4vw, 48px) 0; border-top: 1px solid var(--line); }
+.team__item:last-child { border-bottom: 1px solid var(--line); }
+.team__txt { display: flex; flex-direction: column; gap: 12px; max-width: 560px; }
 .team__item .h3 { margin: 0; }
 .team__item p { margin: 0; }
+.team__photo { margin: 0; aspect-ratio: 4 / 5; overflow: hidden; background: var(--paper-2); }
+.team__photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 1.2s var(--ease); }
+.team__item:hover .team__photo img { transform: scale(1.03); }
+@media (max-width: 700px) { .team__item { grid-template-columns: 1fr; } .team__photo { max-width: 420px; } }
 .service-row--3 { grid-template-columns: repeat(3, 1fr); }
-@media (max-width: 900px) { .team, .service-row--3 { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .service-row--3 { grid-template-columns: 1fr; } }
 
 /* karta mieszkania */
 .u-hero { padding: clamp(120px, 13vw, 170px) 0 clamp(40px, 5vw, 70px); }
