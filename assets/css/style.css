@@ -1115,3 +1115,7 @@ a.tile { display: block; color: inherit; }
   .arka { display: block; min-height: 0; padding-bottom: 46px; overflow: hidden; }
   .arka__bg { width: 78%; right: -6%; top: 58%; opacity: .24; }
 }
+
+.arch-slide--tall img { object-position: 50% 35%; }
+.arch-slider__dots--many button { width: 22px; }
+@media (max-width: 600px) { .arch-slider__dots--many { gap: 3px; } .arch-slider__dots--many button { width: auto; } }
