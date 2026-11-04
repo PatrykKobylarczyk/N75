@@ -123,7 +123,7 @@
 
   <div class="wrap">
     <div class="facts reveal">
-      <div class="fact"><div class="fact__val" data-count="8">8</div><span class="caps">Kondygnacji</span></div>
+      <div class="fact"><div class="fact__val" data-count="7">7</div><span class="caps">Kondygnacji</span></div>
       <div class="fact"><div class="fact__val" data-count="50">50</div><span class="caps">Apartamentów</span></div>
       <div class="fact"><div class="fact__val">32–167<small>m²</small></div><span class="caps">Metraże</span></div>
       <div class="fact"><div class="fact__val">IV kw.<small>2027</small></div><span class="caps">Planowane oddanie</span></div>
@@ -148,15 +148,26 @@
       </div>
     </div>
 
-    <div class="cols-2 compare">
-      <figure class="reveal">
-        <img src="assets/img/naroznik.webp" alt="Narożnik budynku od strony ulicy" loading="lazy" data-lightbox="Narożnik">
-        <figcaption><span class="caps">Narożnik</span><span class="caps bronze">01</span></figcaption>
-      </figure>
-      <figure class="reveal">
-        <img src="assets/img/wejscie.webp" alt="Wejście główne z drewnianymi drzwiami" loading="lazy" data-lightbox="Wejście główne">
-        <figcaption><span class="caps">Wejście główne</span><span class="caps bronze">02</span></figcaption>
-      </figure>
+    <div class="arch-slider reveal" id="arch-slider" role="region" aria-roledescription="karuzela" aria-label="Wizualizacje architektury">
+      <div class="arch-slider__track">
+        <figure class="arch-slide is-on" role="group" aria-roledescription="slajd" aria-label="1 z 3: Narożnik">
+          <img src="assets/img/naroznik.webp" alt="Narożnik budynku od strony ulicy" loading="lazy" data-lightbox="Narożnik">
+        </figure>
+        <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="2 z 3: Wejście główne" aria-hidden="true">
+          <img src="assets/img/wejscie.webp" alt="Wejście główne z drewnianymi drzwiami" loading="lazy" data-lightbox="Wejście główne">
+        </figure>
+        <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="3 z 3: Elewacja wschodnia" aria-hidden="true">
+          <img src="assets/img/elewacja-wschod.webp" alt="Elewacja od strony wschodniej" loading="lazy" data-lightbox="Elewacja wschodnia">
+        </figure>
+      </div>
+      <div class="arch-slider__bar">
+        <div class="arch-slider__cap"><span class="caps" id="arch-cap">Narożnik</span><span class="caps bronze" id="arch-num">01 / 03</span></div>
+        <div class="arch-slider__dots" role="tablist" aria-label="Wybierz wizualizację"><button type="button" role="tab" aria-label="Narożnik" aria-selected="true" data-i="0"><i></i></button><button type="button" role="tab" aria-label="Wejście główne" aria-selected="false" data-i="1"><i></i></button><button type="button" role="tab" aria-label="Elewacja wschodnia" aria-selected="false" data-i="2"><i></i></button></div>
+        <div class="rail-nav">
+          <button type="button" data-arch="prev" aria-label="Poprzednia wizualizacja"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button type="button" data-arch="next" aria-label="Następna wizualizacja"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
     </div>
 
     <div class="quote reveal">

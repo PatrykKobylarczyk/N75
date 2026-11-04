@@ -44,7 +44,7 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 | | Modernizm to… | Zmieniające się słowo (luksus, wyrafinowanie, etos, filozofia) i zajawka narracji |
 | | Menu | Wysuwany panel z prawej (hamburger) na wszystkich ekranach |
 | 01 | Inwestycja | Misja, zdjęcie budynku i sąsiedztwa, liczby |
-| 02 | Architektura | Elewacje, cytat architekta, materiały |
+| 02 | Architektura | Slider wizualizacji (co 3 s albo ręcznie), cytat, materiały |
 | 03 | Wnętrza | Foyer, korytarze, klatka, mieszkania (karuzela) |
 | 04 | Udogodnienia | Lobby, atrium, basen i wellness, detale, dostępność |
 | 05 | Mieszkania | Makieta budynku (piętro → rzut z podświetlanymi lokalami → przybliżony rzut wybranego lokalu) i wyszukiwarka |

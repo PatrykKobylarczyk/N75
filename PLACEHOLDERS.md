@@ -3,7 +3,7 @@
 Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona była kompletna. Przed publikacją trzeba to potwierdzić lub podmienić.
 
 ## Dane inwestycji
-- [ ] Liczba kondygnacji: **8** (`index.html`, sekcja 01, przyjęte z wizualizacji)
+- [x] Liczba kondygnacji: **7** (`index.html`, sekcja 01)
 - [x] Liczba apartamentów: **50**, metraże **31,89–166,67 m²** (z rzutów projektu budowlanego, grudzień 2025)
 - [ ] Harmonogram: pozwolenie II kw. 2025, start IV kw. 2025, stan surowy IV kw. 2026, oddanie IV kw. 2027
 - [x] Teksty: misja, architektura, udogodnienia, adres i sąsiedztwo, manifest pochodzą z dokumentu Uniqum_www
