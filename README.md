@@ -19,9 +19,12 @@ index.html              Cała strona (sekcje 01–07)
 manifest.html           Podstrona „Manifest” (pozycja 00 w menu)
 assets/js/page.js       Skrypt podstron: menu, animacje, galeria
 assets/css/style.css    Style: tokeny kolorów, typografia, układ, responsywność
-assets/js/main.js       Menu, slajdy w hero, animacje, galeria, wyszukiwarka i karta lokalu, formularz
+assets/js/main.js       Menu, sekwencja ujęć w hero, animacje, galeria, wyszukiwarka i makieta, formularz
+assets/js/plan.js       Interaktywny rzut piętra: obrysy lokali, podświetlenie, przybliżenie lokalu
 assets/js/units.js      Dane lokali (PRZYKŁADOWE, do podmiany)
-assets/video/           Film w hero (MP4, H.264, bez dźwięku)
+assets/img/hero/        Zbliżenia (makro) do sekwencji w hero
+assets/img/plany/       Oczyszczone rzuty pięter (bez osi, wymiarów i opisów)
+assets/video/           Dawny film w hero (nieużywany; sekwencja przyjmuje też klipy MP4)
 assets/img/logo-n75.svg Logo N75 (wektor; na stronie jako <symbol>, kolor przez currentColor)
 assets/img/             Wizualizacje w WebP (pełne i *-sm do miniatur) + zbliżenia materiałów
 PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
@@ -38,23 +41,25 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 
 | Nr | Sekcja | Zawartość |
 |---|---|---|
-| | Hero | Pełnoekranowy film, przezroczysty nagłówek, CTA |
+| | Hero | Sekwencja: wizualizacje z powolnym najazdem kamery przeplatane krótkimi zbliżeniami (basen, sauna, materiały); claim i „Sprawdź mieszkania” |
+| | Modernizm to… | Zmieniające się słowo (luksus, wyrafinowanie, etos, filozofia) i zajawka narracji |
 | | Menu | Wysuwany panel z prawej (hamburger) na wszystkich ekranach |
-| | Wstęp | Manifest i spis treści |
-| 01 | Inwestycja | Opis, liczby, harmonogram budowy |
+| 01 | Inwestycja | Misja, zdjęcie budynku i sąsiedztwa, liczby |
 | 02 | Architektura | Elewacje, cytat architekta, materiały |
 | 03 | Wnętrza | Foyer, korytarze, klatka, mieszkania (karuzela) |
 | 04 | Udogodnienia | Lobby, atrium, basen i wellness, detale, dostępność |
-| 05 | Mieszkania | Makieta budynku (piętro → rzut z lokalami) i wyszukiwarka: filtry, sortowanie, lista/kafle |
-| 06 | Lokalizacja | Adres, sąsiedztwo, mapa OpenStreetMap |
+| 05 | Mieszkania | Makieta budynku (piętro → rzut z podświetlanymi lokalami → przybliżony rzut wybranego lokalu) i wyszukiwarka |
+| 06 | Lokalizacja | Adres, rozwijane kategorie sąsiedztwa („Odkryj”), mapa OpenStreetMap |
+| | Cytat | Cytat z manifestu z linkiem do podstrony |
 | 07 | Zespół | Inwestor, architekci, kuratorka |
+| | Harmonogram | Oś czasu budowy |
 | 08 | Kontakt | Formularz zapytania (bez backendu), biuro sprzedaży, dane inwestora |
 
-Podstrony: `manifest.html` (sam tekst) i `mieszkanie.html?id=M1.01` (karta mieszkania, `assets/js/unit.js`: rzut z zaznaczonym lokalem, pomieszczenia, cena, historia ceny, druk). Przycisk „Zapytaj o ten lokal” prowadzi do `index.html?lokal=ID#kontakt` i wybiera lokal w formularzu.
+Podstrony: `manifest.html` (sam tekst) i `mieszkanie.html?id=M1.01` (karta mieszkania, `assets/js/unit.js`: przybliżony rzut lokalu z przełącznikiem na całe piętro, pomieszczenia, cena, historia ceny, druk). Przycisk „Zapytaj o ten lokal” prowadzi do `index.html?lokal=ID#kontakt` i wybiera lokal w formularzu.
 
 ## Dane lokali
 
 `assets/js/units.js` ustawia `window.N75_UNITS`: tablicę obiektów
-`{ id, floor, levels, rooms, area, plan, pins, roomsList, price, status, history }`.
-Numery, pomieszczenia i powierzchnie pochodzą z rzutów projektu budowlanego; ceny, statusy i historia są przykładowe. `plan`/`pins` to pozycja znacznika w % na `assets/img/plany/pietro-N.webp`.
+`{ id, floor, levels, rooms, area, shape, label, roomsList, price, status, history }`.
+Powierzchnie i ceny brutto z cennika z 25.08.2026, pomieszczenia z rzutów projektu budowlanego. `shape` to obrys lokalu na każdej kondygnacji w pikselach rzutu `assets/img/plany/pietro-N.webp` (1504×1925), `label` to punkt podpisu.
 Statusy: `wolne`, `rezerwacja`, `sprzedane`. Docelowo plik można generować z CRM lub arkusza sprzedaży.

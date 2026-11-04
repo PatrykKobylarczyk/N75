@@ -55,12 +55,52 @@
     $$('main section[id]').forEach(function (s) { secObs.observe(s); });
   }
 
-  /* ---------- Hero: film ---------- */
-  var video = $('#hero-video');
-  if (video) {
-    // Film startuje zawsze (wyciszony), także przy systemowym „ogranicz ruch”.
-    video.muted = true;
-    var pr = video.play(); if (pr && pr.catch) pr.catch(function () {});
+  /* ---------- Hero: sekwencja ujęć (wizualizacje + krótkie zbliżenia) ---------- */
+  var seq = $('#hero-seq');
+  if (seq) {
+    var shots = $$('.hs', seq), cur = -1, timer = null, running = false;
+    function load(i) {
+      var s = shots[i % shots.length], m = s.firstElementChild;
+      if (m && m.dataset.src && !m.getAttribute('src')) m.setAttribute('src', m.dataset.src);
+    }
+    function show(i) {
+      var prev = shots[cur], s = shots[i];
+      cur = i;
+      s.classList.remove('is-on'); void s.offsetWidth;          // restart ruchu kamery
+      s.style.setProperty('--dur', (+s.dataset.dur + 1600) + 'ms');
+      s.classList.add('is-on', 'is-top');
+      var v = s.querySelector('video'); if (v) { v.currentTime = 0; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+      if (prev && prev !== s) {
+        prev.classList.remove('is-top');
+        setTimeout(function () { if (shots[cur] !== prev) prev.classList.remove('is-on'); }, 1500);
+      }
+      load(i + 1); load(i + 2);
+      timer = setTimeout(next, +s.dataset.dur);
+    }
+    function next() { if (running) show((cur + 1) % shots.length); }
+    function start() { if (running) return; running = true; clearTimeout(timer); show(cur < 0 ? 0 : (cur + 1) % shots.length); }
+    function stop() { running = false; clearTimeout(timer); }
+    load(0); load(1);
+    // wstrzymaj, gdy hero jest poza ekranem albo karta w tle
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (en) { en[0].isIntersecting && !document.hidden ? start() : stop(); }, { threshold: .05 }).observe(seq);
+    } else start();
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+  }
+
+  /* ---------- Modernizm to… (zmieniające się słowo) ---------- */
+  var rot = $('#modern-rot');
+  if (rot) {
+    var words = ['luksus', 'wyrafinowanie', 'etos', 'filozofia'];
+    var wEl = $('.modern__word', rot), wi = 0;
+    setInterval(function () {
+      wEl.classList.add('is-out');
+      setTimeout(function () {
+        wi = (wi + 1) % words.length;
+        wEl.textContent = words[wi];
+        wEl.classList.remove('is-out');
+      }, 500);
+    }, 2400);
   }
 
   /* ---------- Animacje wejścia ---------- */
@@ -315,43 +355,91 @@
       floorEls[f] = g;
     });
 
+    var plan = null, curFloor = null;
+    function unitRows(list) {
+      return list.map(function (u) {
+        return '<li><a class="mk-unit" href="' + cardUrl(u.id) + '" data-id="' + u.id + '">' +
+          '<span class="mk-unit__id">' + u.id + '</span>' +
+          '<span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>' +
+          '<span class="mk-unit__meta">' + u.rooms + ' pok. · ' + fmtA.format(u.area) + ' m²' + (u.levels.length > 1 ? ' · 2 poziomy' : '') + '</span>' +
+          '<span class="mk-unit__price">' + priceTxt(u) + '</span></a></li>';
+      }).join('');
+    }
     function selectFloor(f, user) {
+      curFloor = f;
       Object.keys(floorEls).forEach(function (k) {
         floorEls[k].classList.toggle('is-active', +k === f);
         floorEls[k].setAttribute('aria-pressed', String(+k === f));
       });
       var list = onFloor(f).sort(function (a, b) { return a.id < b.id ? -1 : 1; });
       var nFree = free(list);
-      var pins = list.map(function (u) {
-        var pos = (u.pins && u.pins[f]) || u.plan;
-        if (!pos) return '';
-        return '<a class="pin pin--' + u.status + '" href="' + cardUrl(u.id) + '" data-id="' + u.id + '" style="left:' + pos[0] + '%;top:' + pos[1] + '%" aria-label="' + u.id + '">' + u.id + '</a>';
-      }).join('');
-      var items = list.map(function (u) {
-        return '<li><a class="mk-unit" href="' + cardUrl(u.id) + '" data-id="' + u.id + '">' +
-          '<span class="mk-unit__id">' + u.id + '</span>' +
-          '<span class="mk-unit__meta">' + u.rooms + ' pok. · ' + fmtA.format(u.area) + ' m²' + (u.levels.length > 1 ? ' · 2 poziomy' : '') + '</span>' +
-          '<span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></a></li>';
-      }).join('');
       mkPanel.innerHTML =
         '<div class="mk__head"><span class="num">Piętro</span><h3 class="display h3">' + f + '</h3>' +
         '<span class="caps muted">' + list.length + ' ' + lokali(list.length) + ' · ' + nFree + ' ' + wolnych(nFree) + '</span></div>' +
         (f === 7 ? '<p class="muted mk__note">Górne kondygnacje dwupoziomowych apartamentów z&nbsp;6. piętra.</p>' : '') +
-        '<div class="mk__body"><div class="mk__plan"><img src="assets/img/plany/pietro-' + f + '.webp" alt="Rzut piętra ' + f + '" width="1504" height="1925">' + pins + '</div>' +
-        '<ul class="mk__units">' + items + '</ul></div>' +
-        '<p class="mk__legend caps"><span class="dot dot--wolne"></span>Wolne <span class="dot dot--rezerwacja"></span>Rezerwacja <span class="dot dot--sprzedane"></span>Sprzedane</p>';
+        '<div class="mk__body"><div class="mk__plan" id="mk-plan"></div>' +
+        '<div class="mk__side" id="mk-side"><ul class="mk__units">' + unitRows(list) + '</ul></div></div>' +
+        '<p class="mk__legend caps">Najedź na lokal, aby go podświetlić. Kliknij, aby zobaczyć jego rzut.</p>';
+      plan = window.N75Plan.create($('#mk-plan'), {
+        floor: f, units: list, href: function (u) { return cardUrl(u.id); },
+        onPick: function (u, ev) { if (ev.metaKey || ev.ctrlKey || ev.shiftKey) return; ev.preventDefault(); showUnit(u); }
+      });
       if (user && window.matchMedia('(max-width: 900px)').matches) mkPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    // podświetlanie: lokal na liście ↔ znacznik na rzucie
-    function hl(e, on) {
-      var a = e.target.closest && e.target.closest('[data-id]');
-      if (!a) return;
-      $$('[data-id="' + a.dataset.id + '"]', mkPanel).forEach(function (x) { x.classList.toggle('is-hl', on); });
+    function showUnit(u) {
+      var side = $('#mk-side');
+      var two = u.levels.length > 1;
+      side.innerHTML =
+        '<div class="mk-detail">' +
+          '<button type="button" class="mk-back caps" data-back>← Wszystkie lokale</button>' +
+          '<div class="mk-detail__id display">' + u.id + '</div>' +
+          '<span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>' +
+          '<dl class="mk-detail__spec">' +
+            '<div><dt>Powierzchnia</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div>' +
+            '<div><dt>Pokoje</dt><dd>' + u.rooms + '</dd></div>' +
+            '<div><dt>Piętro</dt><dd>' + u.levels.join('–') + (two ? ' <small>(2 poziomy)</small>' : '') + '</dd></div>' +
+            '<div><dt>Cena</dt><dd>' + priceTxt(u) + '</dd></div>' +
+            '<div><dt>Cena za m²</dt><dd>' + fmt.format(ppm(u)) + ' zł</dd></div>' +
+          '</dl>' +
+          '<a class="btn btn--solid caps" href="' + cardUrl(u.id) + '">Karta mieszkania <span class="arrow"></span></a>' +
+          '<a class="btn btn--line caps" href="?lokal=' + encodeURIComponent(u.id) + '#kontakt" data-ask="' + u.id + '">Zapytaj o lokal</a>' +
+        '</div>';
+      plan.zoomTo(u.id);
+      var back = $('[data-back]', side); back.focus({ preventScroll: true });
+      back.addEventListener('click', function () {
+        plan.zoomOut();
+        var list = onFloor(curFloor).sort(function (a, b) { return a.id < b.id ? -1 : 1; });
+        side.innerHTML = '<ul class="mk__units">' + unitRows(list) + '</ul>';
+      });
+      $('[data-ask]', side).addEventListener('click', function (e) {
+        e.preventDefault(); cUnit.value = u.id; $('#kontakt').scrollIntoView({ behavior: 'smooth' });
+      });
     }
-    mkPanel.addEventListener('mouseover', function (e) { hl(e, true); });
-    mkPanel.addEventListener('mouseout', function (e) { hl(e, false); });
+    // lista ↔ rzut: podświetlenie i wybór lokalu
+    function hl(e, on) {
+      var a = e.target.closest && e.target.closest('.mk-unit[data-id]');
+      if (a && plan) plan.highlight(a.dataset.id, on);
+      if (!a) return;
+      a.classList.toggle('is-hl', on);
+    }
+    mkPanel.addEventListener('mouseover', function (e) {
+      var p = e.target.closest && e.target.closest('.pl-unit[data-id]');
+      if (p) { var li = $('.mk-unit[data-id="' + p.dataset.id + '"]', mkPanel); if (li) li.classList.add('is-hl'); }
+      hl(e, true);
+    });
+    mkPanel.addEventListener('mouseout', function (e) {
+      var p = e.target.closest && e.target.closest('.pl-unit[data-id]');
+      if (p) { var li = $('.mk-unit[data-id="' + p.dataset.id + '"]', mkPanel); if (li) li.classList.remove('is-hl'); }
+      hl(e, false);
+    });
     mkPanel.addEventListener('focusin', function (e) { hl(e, true); });
     mkPanel.addEventListener('focusout', function (e) { hl(e, false); });
+    mkPanel.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('.mk-unit[data-id]');
+      if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      e.preventDefault();
+      showUnit(units.filter(function (u) { return u.id === a.dataset.id; })[0]);
+    });
     selectFloor(2, false);
   }
 
