@@ -1070,3 +1070,28 @@ a.tile { display: block; color: inherit; }
 .arch-slider__arrow svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.4; }
 .arch-slider__arrow--prev { left: 18px; } .arch-slider__arrow--next { right: 18px; }
 @media (max-width: 600px) { .arch-slider__arrow { width: 42px; height: 42px; } .arch-slider__arrow--prev { left: 10px; } .arch-slider__arrow--next { right: 10px; } }
+
+/* ---------- Hero: okrąg (motyw inkrustacji z lastryka i drzwi) + obrotowa pieczęć ---------- */
+.hero__ring {
+  position: absolute; z-index: 1; pointer-events: none;
+  left: calc(var(--gutter) - 6vw); top: 50%; width: min(52vw, 660px); aspect-ratio: 1;
+  border: 1px solid rgba(196, 162, 127, .45); border-radius: 50%; transform: translateY(-50%);
+}
+.hero__ring::after { content: ""; position: absolute; inset: 7%; border: 1px solid rgba(196, 162, 127, .16); border-radius: 50%; }
+.hero__seal {
+  position: absolute; z-index: 3; right: var(--gutter); bottom: clamp(44px, 6vw, 76px);
+  width: 132px; height: 132px; color: rgba(247, 243, 236, .86); display: block; transition: color .3s;
+}
+.hero__seal svg { width: 100%; height: 100%; display: block; animation: seal-spin 30s linear infinite; }
+.hero__seal text { font-family: var(--head); font-size: 9.6px; letter-spacing: .32em; fill: currentColor; text-transform: uppercase; }
+.hero__seal-arrow { position: absolute; left: 50%; top: 50%; width: 1px; height: 30px; background: var(--bronze-soft); transform: translate(-50%, -50%); transition: height .3s; }
+.hero__seal-arrow::after { content: ""; position: absolute; left: -4px; bottom: 0; width: 8px; height: 8px; border-right: 1px solid var(--bronze-soft); border-bottom: 1px solid var(--bronze-soft); transform: rotate(45deg); }
+.hero__seal:hover { color: var(--paper); }
+.hero__seal:hover .hero__seal-arrow { height: 38px; }
+.hero__seal:hover svg { animation-duration: 12s; }
+@keyframes seal-spin { to { transform: rotate(360deg); } }
+@media (max-width: 700px) {
+  .hero__ring { left: -34vw; top: auto; bottom: 4%; width: 112vw; transform: none; }
+  .hero__seal { width: 92px; height: 92px; bottom: auto; top: calc(50% - 46px); right: 14px; }
+  .hero__seal-arrow { height: 22px; }
+}
