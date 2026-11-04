@@ -37,6 +37,9 @@
     var svg = el('svg', { class: 'pl', viewBox: vb.join(' '), preserveAspectRatio: 'xMidYMid meet', role: 'group', 'aria-label': 'Rzut piętra ' + f });
     svg.style.aspectRatio = (full[2] / full[3]).toFixed(4);
     el('image', { href: 'assets/img/plany/pietro-' + f + '.webp', x: 0, y: 0, width: W, height: H, class: 'pl-img' }, svg);
+    // wersja szczegółowa (z meblami) do widoku pojedynczego lokalu; ładowana przy pierwszym przybliżeniu
+    var detail = el('image', { x: 0, y: 0, width: W, height: H, class: 'pl-img pl-img--detal' }, svg);
+    function loadDetail() { if (!detail.getAttribute('href')) detail.setAttribute('href', 'assets/img/plany/pietro-' + f + '-detal.webp'); }
     var g = el('g', { class: 'pl-units' }, svg);
     var dim = el('path', { class: 'pl-dim', 'fill-rule': 'evenodd', d: '' }, svg);
     var ring = el('path', { class: 'pl-ring', d: '' }, svg);
@@ -74,6 +77,7 @@
         var u = list.filter(function (x) { return x.id === id; })[0];
         if (!u) return;
         zoomed = id;
+        loadDetail();
         var pts = u.shape[f];
         // tło poza lokalem wygaszone: prostokąt z „dziurą” w kształcie lokalu
         dim.setAttribute('d', 'M-2000 -2000H' + (W + 2000) + 'V' + (H + 2000) + 'H-2000Z' + pathD(pts));
