@@ -55,6 +55,40 @@
     $$('main section[id]').forEach(function (s) { secObs.observe(s); });
   }
 
+  /* ---------- Mapa lokalizacji (Leaflet): znacznik przypięty do współrzędnych budynku ---------- */
+  var mapEl = $('#map');
+  if (mapEl && !window.L) {
+    // zapas, gdy Leaflet się nie wczyta: mapa OSM z wbudowanym znacznikiem (porusza się razem z mapą)
+    var la = +mapEl.dataset.lat, ln = +mapEl.dataset.lng, d = .006;
+    var fr = document.createElement('iframe');
+    fr.title = 'Mapa: Narutowicza 75A, Łódź'; fr.loading = 'lazy'; fr.referrerPolicy = 'no-referrer';
+    fr.src = 'https://www.openstreetmap.org/export/embed.html?bbox=' + (ln - d * 1.6) + '%2C' + (la - d) + '%2C' + (ln + d * 1.6) + '%2C' + (la + d) + '&layer=mapnik&marker=' + la + '%2C' + ln;
+    mapEl.appendChild(fr);
+  }
+  if (mapEl && window.L) {
+    var pos = [+mapEl.dataset.lat, +mapEl.dataset.lng];
+    var map = L.map(mapEl, { center: pos, zoom: +mapEl.dataset.zoom || 16, scrollWheelZoom: false, zoomControl: true, attributionControl: true });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19, subdomains: 'abc',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    L.marker(pos, {
+      icon: L.divIcon({ className: 'map__pin', html: '<span>N75</span><i></i>', iconSize: [72, 60], iconAnchor: [36, 60] }),
+      keyboard: false, title: 'N75 · Narutowicza 75A'
+    }).addTo(map);
+    // przycisk powrotu do budynku po przesunięciu mapy
+    var Home = L.Control.extend({ options: { position: 'topright' }, onAdd: function () {
+      var b = L.DomUtil.create('button', 'map__home caps'); b.type = 'button'; b.textContent = 'N75';
+      b.setAttribute('aria-label', 'Wróć do budynku N75');
+      L.DomEvent.on(b, 'click', function (e) { L.DomEvent.stop(e); map.flyTo(pos, +mapEl.dataset.zoom || 16, { duration: .6 }); });
+      return b;
+    } });
+    map.addControl(new Home());
+    // mapa w animowanej sekcji: przelicz rozmiar po odsłonięciu
+    setTimeout(function () { map.invalidateSize(); }, 1200);
+    window.addEventListener('resize', function () { map.invalidateSize(); });
+  }
+
   /* ---------- Modernizm to… (zmieniające się słowo) ---------- */
   var rot = $('#modern-rot');
   if (rot) {
@@ -187,13 +221,11 @@
     return list;
   }
 
-  function planSvg(rooms) {
-    var p = ['M10 10h80v60H10z'];
-    if (rooms >= 2) p.push('M52 10v34h38');
-    if (rooms >= 3) p.push('M10 44h28v26');
-    if (rooms >= 4) p.push('M70 44v26');
-    p.push('M38 70v6h20v-6');
-    return '<svg viewBox="0 0 100 80" aria-hidden="true"><path d="' + p.join(' ') + '"/></svg>';
+  // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
+  function planThumb(u) {
+    return u.levels.map(function (l) {
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+    }).join('');
   }
 
   var COLS = [['id', 'Lokal'], ['floor', 'Piętro'], ['rooms', 'Pokoje'], ['area', 'Metraż'], ['price', 'Cena'], ['ppm', 'Cena za m²'], ['status', 'Status']];
@@ -225,7 +257,7 @@
       html = '<div class="tiles">' + list.map(function (u) {
         return '<a class="tile" href="' + cardUrl(u.id) + '">' +
           '<div class="tile__top"><span class="tile__id">' + u.id + '</span><span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></div>' +
-          '<div class="tile__plan">' + planSvg(u.rooms) + '</div>' +
+          '<div class="tile__plan' + (u.levels.length > 1 ? ' tile__plan--two' : '') + '">' + planThumb(u) + '</div>' +
           '<dl><div><dt>Metraż</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div><div><dt>Pokoje</dt><dd>' + u.rooms + '</dd></div>' +
           '<div><dt>Piętro</dt><dd>' + u.levels.join('–') + '</dd></div><div><dt>Cena</dt><dd>' + priceTxt(u) + '</dd></div></dl></a>';
       }).join('') + '</div>';
