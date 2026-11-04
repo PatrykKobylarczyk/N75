@@ -55,7 +55,7 @@
       '<div class="u-grid">' +
         '<div>' +
           '<div class="caps bronze">Piętro ' + floorTxt + ' · <span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></div>' +
-          '<h1 class="display u-title">' + u.id + '</h1>' +
+          '<div class="u-title-row"><h1 class="display u-title">' + u.id + '</h1>' + (window.N75Fav ? window.N75Fav.heart(u.id, 'fav--lg') : '') + '</div>' +
           '<p class="lead">' + u.rooms + ' ' + pokoje + ' · ' + fmtA.format(u.area) + ' m²' + (two ? ' · dwa poziomy' : '') + '</p>' +
           '<dl class="u-spec">' +
             '<div><dt>Powierzchnia</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div>' +
@@ -64,11 +64,13 @@
             '<div><dt>Status</dt><dd><span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></dd></div>' +
             '<div><dt>Cena</dt><dd>' + (sold ? '—' : fmt.format(u.price) + ' zł') + '</dd></div>' +
             '<div><dt>Cena za m²</dt><dd>' + (sold ? '—' : fmt.format(ppm) + ' zł') + '</dd></div>' +
+            (u.orient ? '<div><dt>Strony świata</dt><dd>' + esc(u.orient) + '</dd></div>' : '') +
+            (u.view ? '<div><dt>Widok z okien</dt><dd class="u-spec__txt">' + esc(u.view) + '</dd></div>' : '') +
           '</dl>' +
           '<div class="u-cta">' +
             (sold ? '<a class="btn btn--solid caps" href="index.html#makieta">Zobacz inne lokale <span class="arrow"></span></a>'
                   : '<a class="btn btn--solid caps" href="index.html?lokal=' + encodeURIComponent(u.id) + '#kontakt">Zapytaj o ten lokal <span class="arrow"></span></a>') +
-            '<button type="button" class="btn btn--line caps" id="u-print">Drukuj kartę</button>' +
+            '<button type="button" class="btn btn--line caps" id="u-pdf">Pobierz kartę PDF</button>' +
           '</div>' +
         '</div>' +
         '<div>' + tabs +
@@ -119,5 +121,10 @@
     tog.textContent = wholeFloor ? 'Pokaż tylko lokal' : 'Pokaż całe piętro';
     if (wholeFloor) planApi.zoomOut(); else planApi.zoomTo(u.id);
   });
-  document.getElementById('u-print').addEventListener('click', function () { window.print(); });
+  // „Pobierz kartę PDF”: okno druku przeglądarki z gotowym układem karty; tytuł = nazwa pliku PDF
+  document.getElementById('u-pdf').addEventListener('click', function () {
+    var t = document.title; document.title = 'N75-karta-' + u.id;
+    if (wholeFloor) { wholeFloor = false; planApi.zoomTo(u.id, 0); }
+    setTimeout(function () { window.print(); document.title = t; }, 60);
+  });
 })();

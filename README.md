@@ -21,6 +21,9 @@ assets/js/page.js       Skrypt podstron: menu, animacje, galeria
 assets/css/style.css    Style: tokeny kolorów, typografia, układ, responsywność
 assets/js/main.js       Menu, animacje, galeria, wyszukiwarka i makieta, formularz
 assets/js/plan.js       Interaktywny rzut piętra: obrysy lokali, podświetlenie, przybliżenie lokalu
+assets/js/extras.js     Ulubione, pasek kontaktu na telefonie, paralaksa, animacje numerów (wszystkie strony)
+assets/js/porownaj.js   Strona porównania lokali
+assets/js/dziennik.js   Wpisy dziennika budowy (sekcja ukryta, gdy pusto)
 assets/js/units.js      Dane lokali (PRZYKŁADOWE, do podmiany)
 assets/img/plany/       Oczyszczone rzuty pięter (bez osi, wymiarów i opisów)
 assets/video/           Dawny film w hero (nieużywany)
@@ -54,7 +57,7 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 | | Harmonogram | Oś czasu budowy |
 | 08 | Kontakt | Formularz zapytania (bez backendu), biuro sprzedaży, dane inwestora |
 
-Podstrony: `manifest.html` (sam tekst) i `mieszkanie.html?id=M1.01` (karta mieszkania, `assets/js/unit.js`: przybliżony rzut lokalu z przełącznikiem na całe piętro, pomieszczenia, cena, historia ceny, druk). Przycisk „Zapytaj o ten lokal” prowadzi do `index.html?lokal=ID#kontakt` i wybiera lokal w formularzu.
+Podstrony: `budynek.html` (adres, architektura, udogodnienia, sąsiedztwo z „Odkryj +”), `porownaj.html` (ulubione i porównanie 2–3 lokali), `manifest.html` (sam tekst) i `mieszkanie.html?id=M1.01` (karta mieszkania, `assets/js/unit.js`: przybliżony rzut lokalu z przełącznikiem na całe piętro, pomieszczenia, cena, historia ceny, druk). Przycisk „Zapytaj o ten lokal” prowadzi do `index.html?lokal=ID#kontakt` i wybiera lokal w formularzu.
 
 ## Dane lokali
 
