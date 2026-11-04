@@ -1278,23 +1278,17 @@ a.tile { display: block; color: inherit; }
 .draw .modern__rot { color: var(--bronze); }
 .draw__txt .lead { margin: 0 0 16px; }
 .draw__txt .muted { margin: 0; max-width: 420px; }
-.draw__steps { display: flex; gap: 22px; margin-top: 34px; font-size: 11px; color: var(--muted); }
-.draw__steps span { display: inline-flex; align-items: center; gap: 10px; transition: color .4s; }
-.draw__steps span::before { content: ""; width: 26px; height: 1px; background: currentColor; transition: width .4s var(--ease); }
-.draw__steps span.is-on { color: var(--bronze); }
-.draw__steps span.is-on::before { width: 44px; }
-.draw__stage { position: relative; margin: 0; aspect-ratio: 1400 / 787; overflow: hidden; background: var(--paper); }
-.draw__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; will-change: opacity, transform; }
-.draw__lines { position: absolute; inset: 0; color: #3a3631; }
+.draw__stage { position: relative; margin: 0 auto; aspect-ratio: 1100 / 880; width: 100%; max-width: 720px; max-height: 78vh; }
+.draw__lines { position: absolute; inset: 0; color: #34302b; }
 .draw__lines svg { width: 100%; height: 100%; display: block; }
-.draw__lines path { stroke-width: 1.15; stroke-dasharray: 1 1; vector-effect: non-scaling-stroke; }
-.draw__lines g { stroke-dashoffset: 1; }
-.draw__stage.is-plain .draw__img { opacity: 1 !important; }
+.draw__lines path { stroke-width: 2.2; }
+.draw__lines .s-light { stroke-width: 1.4; opacity: .6; }
+.draw__lines .s-hatch { stroke-width: 1.1; opacity: .36; }
+.draw__tip { fill: #2c2925; stroke: none; filter: drop-shadow(0 0 2px rgba(0,0,0,.25)); transition: opacity .6s; }
 @media (max-width: 900px) {
   .draw__in { grid-template-columns: 1fr; gap: 26px; }
   .draw .modern__title { margin-bottom: 14px; }
   .draw__txt .muted { display: none; }
-  .draw__steps { margin-top: 18px; }
 }
 
 /* ---------- „Budynek rośnie”: makieta składa się piętro po piętrze ---------- */
