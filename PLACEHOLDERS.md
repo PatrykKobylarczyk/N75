@@ -16,7 +16,7 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 - [ ] Statusy i historia cen: przy każdej zmianie cennika dopisać nowy wpis do `history`
 - [ ] Lokale usługowe U.0.1–U.0.3 z cennika nie są pokazane na stronie (strona prezentuje mieszkania)
 - [ ] Obrysy lokali (`shape`) odrysowane ręcznie z rzutów budowlanych, z dokładnością do kilkunastu cm; warto je sprawdzić z architektem
-- [ ] Rzuty pięter (`assets/img/plany/`) są automatycznie oczyszczone z osi, wymiarów i opisów; część cienkich ścianek działowych przy tym zniknęła. Docelowo najlepsze będą rzuty sprzedażowe od architekta
+- [ ] Rzuty pięter (`assets/img/plany/pietro-N.webp`) są oczyszczone z osi, wymiarów, opisów i mebli (widok piętra); wersje `pietro-N-detal.webp` zachowują meble i wyposażenie (widok pojedynczego lokalu). Przy automatycznym czyszczeniu część cienkich ścianek i krawędzi mebli mogła zniknąć. Docelowo najlepsze będą rzuty sprzedażowe od architekta
 - [ ] Kafle w wyszukiwarce pokazują schematyczny rysunek
 - [ ] Zdjęcie w karcie lokalu: dla M2.03 i M2.04 prawdziwe wizualizacje, dla pozostałych poglądowe
 

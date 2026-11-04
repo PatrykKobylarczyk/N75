@@ -888,12 +888,14 @@ a.tile { display: block; color: inherit; }
 .pl-unit.is-current path { fill: rgba(156, 113, 73, .32); }
 .pl-label { font-family: var(--head); font-weight: 500; font-size: 38px; letter-spacing: .06em; fill: var(--graphite); text-anchor: middle; dominant-baseline: middle; paint-order: stroke; stroke: rgba(247, 243, 236, .85); stroke-width: 6px; pointer-events: none; transition: opacity .3s; }
 .pl-unit:hover .pl-label, .pl-unit.is-hl .pl-label { fill: #fff; stroke: rgba(80, 55, 32, .6); }
+.pl-img--detal { opacity: 0; transition: opacity .6s; pointer-events: none; }
+.pl.is-zoomed .pl-img--detal { opacity: 1; }
 .pl-dim { fill: var(--paper); opacity: 0; pointer-events: none; transition: opacity .5s; }
 .pl-ring { fill: none; stroke: var(--bronze); stroke-width: 4; opacity: 0; pointer-events: none; transition: opacity .5s; }
 .pl.is-zoomed .pl-dim { opacity: .94; }
 .pl.is-zoomed .pl-ring { opacity: 1; }
 .pl.is-zoomed .pl-unit:not(.is-sel) { pointer-events: none; }
-.pl.is-zoomed .pl-unit.is-sel path { fill: rgba(156, 113, 73, .07); stroke-width: 0; }
+.pl.is-zoomed .pl-unit.is-sel path { fill: rgba(156, 113, 73, .04); stroke-width: 0; }
 .pl.is-zoomed .pl-label { opacity: 0; }
 .mk-unit { grid-template-columns: auto 1fr; }
 .mk-unit__price { grid-column: 1 / -1; font-family: var(--head); font-size: 13px; letter-spacing: .04em; color: var(--bronze); }
