@@ -347,7 +347,7 @@ p { margin: 0 0 1em; }
 .amenity { padding: 40px 32px 10px; border-left: 1px solid rgba(247, 243, 236, .16); }
 .amenity:first-child { border-left: 0; padding-left: 0; }
 .amenity:last-child { padding-right: 0; }
-.amenity h3 { margin: 18px 0 26px; }
+.amenity h3 { margin: 0 0 26px; }
 .amenity__img { overflow: hidden; aspect-ratio: 4 / 5; }
 .amenity__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--ease); cursor: zoom-in; }
 .amenity:hover .amenity__img img { transform: scale(1.04); }
@@ -926,41 +926,9 @@ a.tile { display: block; color: inherit; }
 .panorama + .wrap .facts { margin-top: clamp(64px, 8vw, 110px); }
 #harmonogram .timeline { margin-top: 10px; }
 
-/* ---------- Hero: sekwencja ujęć ---------- */
-.hero__seq { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: #14100c; }
-.hs { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s cubic-bezier(.4, 0, .2, 1); will-change: opacity; }
-.hs--macro { transition-duration: .55s; }
-.hs.is-on { opacity: 1; }
-.hs.is-top { z-index: 1; }
-.hs img, .hs video { width: 100%; height: 100%; object-fit: cover; display: block; transform-origin: 50% 50%; will-change: transform; }
-.hs.is-on img, .hs.is-on video { animation: var(--move, hs-in) var(--dur, 6s) linear both; }
-/* ujęcia ogólne: powolny najazd kamery */
-.hs[data-move="in"] { --move: hs-in; }
-.hs[data-move="out"] { --move: hs-out; }
-.hs[data-move="in-left"] { --move: hs-in-left; }
-.hs[data-move="in-right"] { --move: hs-in-right; }
-.hs[data-move="drift-r"] { --move: hs-drift-r; }
-.hs[data-move="drift-l"] { --move: hs-drift-l; }
-.hs[data-move="rise"] { --move: hs-rise; }
-@keyframes hs-in { from { transform: scale(1.02); } to { transform: scale(1.1); } }
-@keyframes hs-out { from { transform: scale(1.12); } to { transform: scale(1.02); } }
-@keyframes hs-in-left { from { transform: scale(1.04) translateX(1.2%); } to { transform: scale(1.12) translateX(-1.2%); } }
-@keyframes hs-in-right { from { transform: scale(1.04) translateX(-1.2%); } to { transform: scale(1.12) translateX(1.2%); } }
-/* zbliżenia: bardzo wolny ruch, jak w zwolnionym tempie, z delikatnym „oddechem” światła */
-.hs--macro img { filter: saturate(1.05) contrast(1.04); }
-.hs--macro.is-on img { animation-name: var(--move), hs-breathe; animation-duration: var(--dur), var(--dur); animation-timing-function: cubic-bezier(.25, .1, .25, 1), ease-in-out; animation-fill-mode: both; }
-@keyframes hs-drift-r { from { transform: scale(1.14) translateX(-1.4%); } to { transform: scale(1.18) translateX(.6%); } }
-@keyframes hs-drift-l { from { transform: scale(1.14) translateX(1.4%); } to { transform: scale(1.18) translateX(-.6%); } }
-@keyframes hs-rise { from { transform: scale(1.16) translateY(1.4%); } to { transform: scale(1.2) translateY(-.4%); } }
-@keyframes hs-breathe { 0% { filter: saturate(1.05) contrast(1.04) brightness(.96); } 50% { filter: saturate(1.08) contrast(1.05) brightness(1.03); } 100% { filter: saturate(1.05) contrast(1.04) brightness(.98); } }
-/* ziarno filmowe i winieta dla kinowego charakteru */
-.hero__grain {
-  position: absolute; inset: -50%; pointer-events: none; opacity: .09; mix-blend-mode: overlay; z-index: 1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain .9s steps(4) infinite;
-}
-.hero__seq::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; box-shadow: inset 0 0 180px rgba(10, 8, 6, .55); }
-@keyframes grain { 0% { transform: translate(0, 0); } 25% { transform: translate(-3%, 2%); } 50% { transform: translate(2%, -3%); } 75% { transform: translate(-2%, -1%); } 100% { transform: translate(0, 0); } }
+/* ---------- Hero: statyczna wieczorna panorama ---------- */
+.hero__media { position: absolute; inset: 0; z-index: 0; background: #14100c; }
+.hero__media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 38%; display: block; }
 
 /* ---------- Logo w nagłówku: ukryte nad hero, widoczne po przewinięciu ---------- */
 .header__logo { opacity: 0; transform: translateY(-6px); pointer-events: none; transition: opacity .45s var(--ease), transform .45s var(--ease), color .3s; }
