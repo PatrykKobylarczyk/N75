@@ -108,10 +108,16 @@
   if ('IntersectionObserver' in window && !reduced) {
     var rObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add('is-in'); rObs.unobserve(e.target); }
+        if (e.isIntersecting) { (e.target._reveal || e.target).classList.add('is-in'); rObs.unobserve(e.target); }
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
-    revealEls.forEach(function (el) { rObs.observe(el); });
+    // .reveal-img jest na starcie całkowicie przycięty (clip-path), więc obserwator nigdy by go nie „zobaczył”:
+    // obserwujemy jego ramkę i odsłaniamy obrazek
+    revealEls.forEach(function (el) {
+      var t = el.classList.contains('reveal-img') && el.parentElement ? el.parentElement : el;
+      if (t !== el) t._reveal = el;
+      rObs.observe(t);
+    });
   } else {
     revealEls.forEach(function (el) { el.classList.add('is-in'); });
   }
