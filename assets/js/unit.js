@@ -73,7 +73,8 @@
         '</div>' +
         '<div>' + tabs +
           '<div class="mk__plan" id="u-plan"></div>' +
-          '<p class="u-plan-cap">Rzut kondygnacji z&nbsp;zaznaczonym lokalem ' + u.id + '. Kliknij inny numer, aby otworzyć jego kartę.</p>' +
+          '<div class="u-plan-foot"><p class="u-plan-cap">Rzut lokalu ' + u.id + '. Na widoku całego piętra kliknij inny lokal, aby otworzyć jego kartę.</p>' +
+          '<button type="button" class="u-whole caps" id="u-whole" aria-pressed="false">Pokaż całe piętro</button></div>' +
         '</div>' +
       '</div>' +
     '</div></section>' +
@@ -85,7 +86,7 @@
       '<div><div class="sec-head"><span class="num">02</span><span class="line"></span><span class="caps">Historia ceny</span></div>' +
         (sold ? '<p class="muted">Lokal sprzedany.</p>' :
         '<table class="u-table"><thead><tr><th>Data zmiany</th><th>Cena za m²</th><th>Cena</th></tr></thead><tbody>' + hist + '</tbody></table>') +
-        '<p class="u-note">Ceny brutto. Ceny i&nbsp;statusy lokali mają charakter informacyjny i&nbsp;nie stanowią oferty w&nbsp;rozumieniu Kodeksu cywilnego. Powierzchnie według projektu budowlanego (grudzień 2025).</p></div>' +
+        '<p class="u-note">Ceny brutto. Ceny i&nbsp;statusy lokali mają charakter informacyjny i&nbsp;nie stanowią oferty w&nbsp;rozumieniu Kodeksu cywilnego. Powierzchnie i&nbsp;ceny według cennika z&nbsp;25.08.2026; powierzchnie pomieszczeń według projektu budowlanego.</p></div>' +
     '</div></section>' +
 
     '<section class="u-section"><div class="wrap">' +
@@ -98,20 +99,25 @@
     '</div></section>';
 
   var plan = document.getElementById('u-plan');
+  var planApi = null, wholeFloor = false;
   function showLevel(l) {
+    plan.innerHTML = '';
     var others = units.filter(function (x) { return x.levels.indexOf(l) >= 0; });
-    plan.innerHTML = '<img src="assets/img/plany/pietro-' + l + '.webp" alt="Rzut piętra ' + l + ' z lokalem ' + u.id + '" width="1504" height="1925">' +
-      others.map(function (x) {
-        var pos = (x.pins && x.pins[l]) || x.plan;
-        if (!pos) return '';
-        var me = x.id === u.id;
-        return '<a class="pin pin--' + x.status + (me ? ' is-current' : '') + '" href="' + card(x) + '" style="left:' + pos[0] + '%;top:' + pos[1] + '%"' + (me ? ' aria-current="page"' : '') + '>' + x.id + '</a>';
-      }).join('');
-    Array.prototype.forEach.call(document.querySelectorAll('.u-tabs button'), function (b) { b.setAttribute('aria-pressed', String(+b.dataset.level === l)); });
+    planApi = window.N75Plan.create(plan, { floor: l, units: others, href: card, current: u.id });
+    if (!wholeFloor) planApi.zoomTo(u.id, 0);
+    plan.dataset.level = l;
+    Array.prototype.forEach.call(document.querySelectorAll('.u-tabs button[data-level]'), function (b) { b.setAttribute('aria-pressed', String(+b.dataset.level === l)); });
   }
   showLevel(u.levels[0]);
-  Array.prototype.forEach.call(document.querySelectorAll('.u-tabs button'), function (b) {
+  Array.prototype.forEach.call(document.querySelectorAll('.u-tabs button[data-level]'), function (b) {
     b.addEventListener('click', function () { showLevel(+b.dataset.level); });
+  });
+  var tog = document.getElementById('u-whole');
+  tog.addEventListener('click', function () {
+    wholeFloor = !wholeFloor;
+    tog.setAttribute('aria-pressed', String(wholeFloor));
+    tog.textContent = wholeFloor ? 'Pokaż tylko lokal' : 'Pokaż całe piętro';
+    if (wholeFloor) planApi.zoomOut(); else planApi.zoomTo(u.id);
   });
   document.getElementById('u-print').addEventListener('click', function () { window.print(); });
 })();

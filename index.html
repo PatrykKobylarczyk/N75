@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Docelowo: Futura PT i Avenir Next z licencji (np. Adobe Fonts). Jost i Nunito Sans to darmowe zamienniki na urządzeniach bez tych krojów. -->
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="assets/img/hero-poster.jpg">
+  <link rel="preload" as="image" href="assets/img/naroznik.webp">
   <link rel="stylesheet" href="assets/css/style.css">
   <script>document.documentElement.classList.add('js')</script>
 </head>
@@ -33,7 +33,7 @@
 <header class="header" id="header">
   <div class="wrap header__in">
     <div class="header__right">
-      <a href="#mieszkania" class="btn btn--ghost caps header__cta">Zobacz apartamenty</a>
+      <a href="#kontakt" class="btn btn--ghost caps header__cta">Kontakt</a>
       <button class="burger caps" id="burger" aria-label="Otwórz menu" aria-expanded="false" aria-controls="drawer"><span class="burger__label">Menu</span><span class="burger__icon"><span></span><span></span></span></button>
     </div>
   </div>
@@ -69,30 +69,42 @@
 
 <!-- ============ HERO ============ -->
 <section class="hero" aria-label="N75">
-  <video class="hero__video" id="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/img/hero-poster.jpg" aria-hidden="true">
-    <source src="assets/video/n75-hero.mp4" type="video/mp4">
-  </video>
+  <!-- Sekwencja hero: ujęcia ogólne (ok. 5 s) przeplatane krótkimi zbliżeniami (ok. 1,5 s) w zwolnionym tempie.
+       Każdy slajd to obraz albo krótki klip: data-type="video" i data-src="assets/video/plik.mp4" (bez dźwięku). -->
+  <div class="hero__seq" id="hero-seq" aria-hidden="true">
+    <div class="hs hs--wide" data-dur="5200" data-move="in-left"><img src="assets/img/naroznik.webp" alt=""></div>
+    <div class="hs hs--macro" data-dur="1500" data-move="drift-r"><img data-src="assets/img/hero/m-woda.webp" alt=""></div>
+    <div class="hs hs--macro" data-dur="1500" data-move="in"><img data-src="assets/img/hero/m-sauna.webp" alt=""></div>
+    <div class="hs hs--wide" data-dur="5200" data-move="in-right"><img data-src="assets/img/park.webp" alt=""></div>
+    <div class="hs hs--macro" data-dur="1500" data-move="rise"><img data-src="assets/img/hero/m-drabinka.webp" alt=""></div>
+    <div class="hs hs--macro" data-dur="1500" data-move="drift-l"><img data-src="assets/img/hero/m-lastryko.webp" alt=""></div>
+    <div class="hs hs--wide" data-dur="5200" data-move="out"><img data-src="assets/img/elewacja-wschod.webp" alt=""></div>
+    <div class="hs hs--macro" data-dur="1500" data-move="in"><img data-src="assets/img/hero/m-ogrod.webp" alt=""></div>
+    <div class="hs hs--macro" data-dur="1500" data-move="drift-r"><img data-src="assets/img/hero/m-reczniki.webp" alt=""></div>
+    <div class="hs hs--wide" data-dur="5200" data-move="in-left"><img data-src="assets/img/foyer-1.webp" alt=""></div>
+    <div class="hs hs--macro" data-dur="1500" data-move="rise"><img data-src="assets/img/hero/m-palma.webp" alt=""></div>
+  </div>
+  <div class="hero__grain" aria-hidden="true"></div>
   <div class="wrap hero__content">
     <div class="hero__main">
       <div class="caps caps--wide">Łódź · Narutowicza 75</div>
       <h1 class="hero__logo"><span class="sr-only">N75</span><svg class="logo-svg" viewBox="36 38 1000 518" aria-hidden="true" focusable="false"><use href="#n75-logo"/></svg></h1>
-      <p class="caps caps--wide hero__tag">Przestrzeń w dobrym kierunku</p>
+      <p class="hero__claim">Styl, w&nbsp;którym najlepiej się mieszka</p>
+      <div class="hero__cta"><a href="#mieszkania" class="btn btn--ghost caps">Sprawdź mieszkania <span class="arrow"></span></a></div>
     </div>
     <div class="hero__foot" aria-hidden="true"></div>
   </div>
 </section>
 
-<!-- ============ MANIFEST (zajawka) ============ -->
-<section class="section" id="wstep">
-  <div class="wrap intro">
-    <div class="intro__left reveal">
-      <div class="caps bronze">Manifest</div>
-      <h2 class="display h2" style="margin-top:22px">Sednem budynku<br>jest człowiek</h2>
-    </div>
-    <div class="reveal">
-      <p class="lead" style="margin-bottom:24px">Szukając miejsca do zamieszkania, nie decydujemy się po prostu na opakowanie codzienności. Wybieramy otoczenie, które będzie wspierać nasz rozwój, dobrostan, regenerację, a&nbsp;nawet sposób, w&nbsp;jaki realizujemy się w&nbsp;życiu.</p>
-      <p>Dlatego głęboko wierzymy w&nbsp;humanizm architektury i&nbsp;proponujemy rozwiązania fundowane na takich właśnie, humanistycznych wartościach. Naturalnym wyborem było dla nas nawiązanie do idiomu modernizmu, z&nbsp;jego skupieniem na jakości, racjonalizmie i&nbsp;świadomym adresowaniu bogatego wachlarza ludzkich potrzeb.</p>
-      <a href="manifest.html" class="btn btn--line caps" style="margin-top:18px">Przeczytaj manifest <span class="arrow"></span></a>
+<!-- ============ MODERNIZM TO… (zajawka narracji) ============ -->
+<section class="section modern" id="wstep">
+  <div class="modern__bg" aria-hidden="true"><img src="assets/img/park.webp" alt="" loading="lazy"></div>
+  <div class="wrap modern__in">
+    <h2 class="display modern__title reveal">Modernizm to <span class="modern__rot" id="modern-rot" aria-hidden="true"><span class="modern__word">luksus</span></span><span class="sr-only">luksus, wyrafinowanie, etos i&nbsp;filozofia</span></h2>
+    <div class="modern__txt reveal">
+      <p class="lead">Modernizm – styl, w&nbsp;którym po prostu najlepiej się mieszka.</p>
+      <p>Inwestycja wyrasta nie tylko z&nbsp;podziwu dla estetyki modernizmu. To również hołd dla jego idei – śmiałego wytyczania kierunków, patrzenia w&nbsp;dobrze zaprojektowaną przyszłość oraz głębokiej troski o&nbsp;zdrowie i&nbsp;równowagę w&nbsp;życiu człowieka. Chcieliśmy stworzyć budynek, w&nbsp;którym koneserzy dobrej architektury oraz wielbiciele intelektualnego sznytu międzywojnia sami będą chcieli zamieszkać – tylko tyle i&nbsp;aż tyle.</p>
+      <a href="#inwestycja" class="btn btn--ghost caps" style="margin-top:14px">Poznaj inwestycję <span class="arrow"></span></a>
     </div>
   </div>
 </section>
@@ -108,10 +120,16 @@
         <p class="muted">Jako UNIQUM w&nbsp;centrum oferowanego doświadczenia stawiamy unikalny standard zamieszkania.</p>
         <a href="#mieszkania" class="btn btn--line caps" style="margin-top:22px">Zobacz apartamenty <span class="arrow"></span></a>
       </div>
-      <figure class="split__media" style="margin:0">
-        <img class="reveal-img" src="assets/img/elewacja-zachod.webp" alt="Widok na N75 wzdłuż ulicy z przystankiem tramwajowym" loading="lazy" data-lightbox="Elewacja od strony zachodniej">
-        <figcaption class="caps">Widok od strony zachodniej</figcaption>
-      </figure>
+      <div class="mission-media">
+        <figure class="split__media" style="margin:0">
+          <img class="reveal-img" src="assets/img/elewacja-zachod.webp" alt="Widok na N75 wzdłuż ulicy z przystankiem tramwajowym" loading="lazy" data-lightbox="Elewacja od strony zachodniej">
+          <figcaption class="caps">Widok od strony zachodniej</figcaption>
+        </figure>
+        <figure class="mission-media__inset reveal">
+          <img src="assets/img/okolica-kamienica.webp" alt="Modernistyczna kamienica z wykuszami w sąsiedztwie N75 przy ul. Narutowicza" loading="lazy" data-lightbox="Sąsiedztwo: modernistyczna kamienica przy ul. Narutowicza">
+          <figcaption class="caps">Sąsiedztwo · modernizm Narutowicza</figcaption>
+        </figure>
+      </div>
     </div>
 
     <div class="facts reveal">
@@ -120,13 +138,6 @@
       <div class="fact"><div class="fact__val">32–167<small>m²</small></div><span class="caps">Metraże</span></div>
       <div class="fact"><div class="fact__val">IV kw.<small>2027</small></div><span class="caps">Planowane oddanie</span></div>
     </div>
-
-    <ol class="timeline reveal" aria-label="Harmonogram">
-      <li class="done"><div class="dot">01</div><div class="caps when">II kw. 2025</div><h4>Pozwolenie na budowę</h4></li>
-      <li class="done"><div class="dot">02</div><div class="caps when">IV kw. 2025</div><h4>Start budowy</h4></li>
-      <li><div class="dot">03</div><div class="caps when">IV kw. 2026</div><h4>Stan surowy zamknięty</h4></li>
-      <li><div class="dot">04</div><div class="caps when">IV kw. 2027</div><h4>Oddanie do użytkowania</h4></li>
-    </ol>
   </div>
 </section>
 
@@ -319,7 +330,7 @@
       </div>
       <div id="units-out"></div>
       <div style="text-align:center;margin-top:34px"><button class="btn btn--line caps" id="f-more" hidden>Pokaż wszystkie lokale</button></div>
-      <p class="legal-note">Powierzchnie lokali według projektu budowlanego (grudzień 2025). Ceny brutto. Ceny i&nbsp;statusy lokali mają charakter informacyjny i&nbsp;nie stanowią oferty w&nbsp;rozumieniu Kodeksu cywilnego. Historia zmian cen każdego lokalu jest dostępna w&nbsp;jego karcie.</p>
+      <p class="legal-note">Powierzchnie i&nbsp;ceny brutto lokali według cennika z&nbsp;25.08.2026. Ceny i&nbsp;statusy lokali mają charakter informacyjny i&nbsp;nie stanowią oferty w&nbsp;rozumieniu Kodeksu cywilnego. Historia zmian cen każdego lokalu jest dostępna w&nbsp;jego karcie.</p>
     </div>
   </div>
 </section>
@@ -338,15 +349,44 @@
         <h2 class="display h2">Adres</h2>
         <p class="lead" style="margin:30px 0 18px">Nasz projekt wyrósł z&nbsp;inspiracji modernistycznymi „luksami” – prestiżowymi kamienicami premium oferującymi unikalny standard zamieszkania w&nbsp;międzywojennej Warszawie, Gdyni czy Łodzi.</p>
         <p class="muted">Wybór lokalizacji – ul. Narutowicza – nie był przypadkowy. Zapewnia ona doskonałą komunikację, dostęp do zieleni, a&nbsp;także architektoniczne sąsiedztwo złożone z&nbsp;ikon architektury międzywojennej. Niesie ze sobą również wyjątkowe dziedzictwo, będąc domem kolejnych pokoleń prawników, lekarzy, artystów i&nbsp;decydentów naszego miasta.</p>
-        <ul class="places">
-          <li><span>Parki Staszica, Moniuszki, Matejki i&nbsp;3 Maja</span><span class="t">w pobliżu</span></li>
-          <li><span>Dworzec Łódź Fabryczna</span><span class="t">kwadrans</span></li>
-          <li><span>Teatr Wielki, EC1, Filharmonia</span><span class="t">krótki spacer</span></li>
-          <li><span>Uniwersytet Łódzki: rektorat, biblioteka, wydziały</span><span class="t">sąsiedztwo</span></li>
-          <li><span>Szpital, żłobek, przedszkole, szkoła, biblioteka</span><span class="t">do dwóch przecznic</span></li>
-          <li><span>Sklepy, piekarnie, drogeria, warzywniak</span><span class="t">do dwóch przecznic</span></li>
-        </ul>
+        <div class="places-acc">
+          <details class="place-cat">
+            <summary><span class="caps">Edukacja</span><span class="odkryj caps">Odkryj</span></summary>
+            <ul><li>Uniwersytet Łódzki: rektorat, biblioteka, Wydział Filozoficzno-Historyczny, Wydział Prawa i&nbsp;Administracji</li><li>Szkoła podstawowa, w&nbsp;obrębie dwóch przecznic</li></ul>
+          </details>
+          <details class="place-cat">
+            <summary><span class="caps">Zdrowie i&nbsp;opieka</span><span class="odkryj caps">Odkryj</span></summary>
+            <ul><li>Szpital, w&nbsp;obrębie dwóch przecznic</li><li>Żłobek i&nbsp;przedszkole</li></ul>
+          </details>
+          <details class="place-cat">
+            <summary><span class="caps">Zieleń</span><span class="odkryj caps">Odkryj</span></summary>
+            <ul><li>Cztery parki w&nbsp;pobliżu: Staszica, Moniuszki, Matejki i&nbsp;3 Maja</li></ul>
+          </details>
+          <details class="place-cat">
+            <summary><span class="caps">Kultura</span><span class="odkryj caps">Odkryj</span></summary>
+            <ul><li>Teatr Wielki i&nbsp;Filharmonia, krótki spacer</li><li>EC1: muzeum, edukacja i&nbsp;kino</li><li>Biblioteka</li></ul>
+          </details>
+          <details class="place-cat">
+            <summary><span class="caps">Handel i&nbsp;usługi</span><span class="odkryj caps">Odkryj</span></summary>
+            <ul><li>Sklepy spożywcze, piekarnie, drogeria, lokalny warzywniak</li><li>Stacje benzynowe</li></ul>
+          </details>
+          <details class="place-cat">
+            <summary><span class="caps">Komunikacja</span><span class="odkryj caps">Odkryj</span></summary>
+            <ul><li>Dworzec Łódź Fabryczna, kwadrans drogi (w&nbsp;przyszłości obsługa Kolei Dużych Prędkości)</li></ul>
+          </details>
+        </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CYTAT Z MANIFESTU ============ -->
+<section class="section section--alt" id="manifest-cytat">
+  <div class="wrap">
+    <div class="quote quote--manifest reveal">
+      <span class="mark">“</span>
+      <blockquote>To właśnie modernizm zdefiniował architekturę nowoczesności, stawiając na doskonałość techniczną, luksus wykończeń i&nbsp;głęboko humanistyczne dostosowanie budynków do życia. Właśnie dlatego modernizm to styl, w&nbsp;którym po prostu najlepiej się mieszka.</blockquote>
+      <a href="manifest.html" class="btn btn--line caps" style="margin-top:36px">Poznaj manifest <span class="arrow"></span></a>
     </div>
   </div>
 </section>
@@ -376,6 +416,19 @@
         <p>Badaczka i&nbsp;kuratorka architektury, związana z&nbsp;Instytutem Detalu.</p>
       </article>
     </div>
+  </div>
+</section>
+
+<!-- ============ HARMONOGRAM ============ -->
+<section class="section section--alt" id="harmonogram">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="caps">Harmonogram budowy</span><span class="line"></span></div>
+    <ol class="timeline reveal" aria-label="Harmonogram">
+      <li class="done"><div class="dot">01</div><div class="caps when">II kw. 2025</div><h4>Pozwolenie na budowę</h4></li>
+      <li class="done"><div class="dot">02</div><div class="caps when">IV kw. 2025</div><h4>Start budowy</h4></li>
+      <li><div class="dot">03</div><div class="caps when">IV kw. 2026</div><h4>Stan surowy zamknięty</h4></li>
+      <li><div class="dot">04</div><div class="caps when">IV kw. 2027</div><h4>Oddanie do użytkowania</h4></li>
+    </ol>
   </div>
 </section>
 
@@ -439,6 +492,7 @@
 </div>
 
 <script src="assets/js/units.js"></script>
+<script src="assets/js/plan.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>
