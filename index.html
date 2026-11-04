@@ -15,11 +15,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Docelowo: Futura PT i Avenir Next z licencji (np. Adobe Fonts). Jost i Nunito Sans to darmowe zamienniki na urządzeniach bez tych krojów. -->
-  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;1,6..12,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..600;1,300..500&family=Nunito+Sans:ital,opsz,wght@0,6..12,300..700;1,6..12,300..500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/img/okolica-lotnicze.webp">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="assets/css/style.css">
-  <script>document.documentElement.classList.add('js')</script>
+  <script>document.documentElement.classList.add('js');
+  // Futura / Avenir Next tylko na Apple: gdy ich brak, dostrajamy darmowe zamienniki (Jost, Nunito Sans)
+  (function(){try{var c=document.createElement('canvas').getContext('2d'),t='MWNmwqr075 Łódź';function w(f){c.font='72px '+f;return c.measureText(t).width}
+  var m=w('monospace'),s=w('serif'),h=function(n){return w('"'+n+'",monospace')!==m||w('"'+n+'",serif')!==s},d=document.documentElement;
+  if(!h('Futura')&&!h('Futura PT'))d.classList.add('no-futura');if(!h('Avenir Next')&&!h('Avenir'))d.classList.add('no-avenir')}catch(e){}})();</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="n75-logo" viewBox="36 38 1000 518"><rect x="40" y="42" width="12" height="508"/>
@@ -588,8 +592,8 @@
     <div class="footer__top">
       <div><div class="logo" role="img" aria-label="N75"><svg class="logo-svg" viewBox="36 38 1000 518" aria-hidden="true" focusable="false"><use href="#n75-logo"/></svg></div><p class="caps caps--wide" style="margin-top:20px">Przestrzeń<br>w dobrym<br>kierunku</p></div>
       <div><span class="caps">Adres inwestycji</span>ul. Narutowicza 75A<br>90-132 Łódź</div>
-      <div><span class="caps">Biuro sprzedaży</span>Dworzec Łódź Fabryczna<br><a href="tel:+48799278344">+48 799 278 344</a><br><a href="mailto:sprzedaz@n75.pl">sprzedaz@n75.pl</a><br><a href="#" class="footer__accent">Pobierz katalog (PDF)</a></div>
-      <div><span class="caps">Inwestor</span>UNIQUM 5 sp. z&nbsp;o.o.<br>ul. Gdańska 130, 90-520 Łódź<br>NIP 5272452204 · KRS 0000222116<br>REGON 015866630<br><a href="#">Polityka prywatności</a> · <a href="#">Prospekt informacyjny</a></div>
+      <div><span class="caps">Biuro sprzedaży</span>Dworzec Łódź Fabryczna<br><a href="tel:+48799278344">+48 799 278 344</a><br><a href="mailto:sprzedaz@n75.pl">sprzedaz@n75.pl</a><br><a href="#" class="footer__accent">Pobierz katalog (PDF)</a><br><a href="#">Polityka prywatności</a><br><a href="#">Prospekt informacyjny</a></div>
+      <div><span class="caps">Inwestor</span>UNIQUM 5 sp. z&nbsp;o.o.<br>ul. Gdańska 130, 90-520 Łódź<br><span class="nowrap">NIP 5272452204 · KRS 0000222116</span><br>REGON 015866630</div>
     </div>
     <div class="footer__bottom">
       <p>Wizualizacje mają charakter poglądowy i&nbsp;mogą różnić się od stanu faktycznego. Materiały na stronie nie stanowią oferty w&nbsp;rozumieniu art. 66 Kodeksu cywilnego.</p>
