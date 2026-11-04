@@ -531,13 +531,6 @@ tr.is-sold td.unit-id { color: #b9ab98; }
 .js .reveal-img { clip-path: inset(0 0 100% 0); transition: clip-path 1.4s var(--ease); }
 .js .reveal-img.is-in { clip-path: inset(0 0 0 0); }
 
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-  .js .reveal, .js .reveal-img { opacity: 1; transform: none; clip-path: none; }
-  .hero__slide img { transform: none; }
-}
-
 /* ---------- Responsywność ---------- */
 @media (max-width: 1180px) {
   .filters { grid-template-columns: 1fr 1fr; }
