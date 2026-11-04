@@ -16,6 +16,8 @@ python3 -m http.server 8000
 
 ```
 index.html              Cała strona (sekcje 01–07)
+manifest.html           Podstrona „Manifest” (pozycja 00 w menu)
+assets/js/page.js       Skrypt podstron: menu, animacje, galeria
 assets/css/style.css    Style: tokeny kolorów, typografia, układ, responsywność
 assets/js/main.js       Menu, slajdy w hero, animacje, galeria, wyszukiwarka i karta lokalu, formularz
 assets/js/units.js      Dane lokali (PRZYKŁADOWE, do podmiany)
