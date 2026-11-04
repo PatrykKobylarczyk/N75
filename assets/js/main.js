@@ -89,10 +89,70 @@
     window.addEventListener('resize', function () { map.invalidateSize(); });
   }
 
+  /* ---------- Architektura: slider (co 3 s albo ręcznie: strzałki, kropki, przesunięcie palcem) ---------- */
+  var arch = $('#arch-slider');
+  if (arch) {
+    var aSlides = $$('.arch-slide', arch), aDots = $$('.arch-slider__dots button', arch);
+    var aCap = $('#arch-cap'), aNum = $('#arch-num'), aI = 0, aTimer = null, DUR = 3000, inView = false, hover = false;
+    arch.style.setProperty('--arch-dur', DUR + 'ms');
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    function aGo(i) {
+      aI = (i + aSlides.length) % aSlides.length;
+      aSlides.forEach(function (sl, k) { sl.classList.toggle('is-on', k === aI); sl.setAttribute('aria-hidden', String(k !== aI)); });
+      aDots.forEach(function (d, k) { d.setAttribute('aria-selected', String(k === aI)); });
+      // restart paska postępu
+      var bar = aDots[aI].querySelector('i'); bar.style.display = 'none'; void bar.offsetWidth; bar.style.display = '';
+      aCap.textContent = aSlides[aI].querySelector('img').dataset.lightbox;
+      aNum.textContent = pad(aI + 1) + ' / ' + pad(aSlides.length);
+      aPlay();
+    }
+    function aPlay() {
+      clearTimeout(aTimer);
+      var run = inView && !hover && !document.hidden;
+      arch.classList.toggle('is-paused', !run);
+      if (run) aTimer = setTimeout(function () { aGo(aI + 1); }, DUR);
+    }
+    $$('[data-arch]', arch).forEach(function (b) { b.addEventListener('click', function () { aGo(aI + (b.dataset.arch === 'next' ? 1 : -1)); }); });
+    aDots.forEach(function (d) { d.addEventListener('click', function () { aGo(+d.dataset.i); }); });
+    arch.addEventListener('mouseenter', function () { hover = true; aPlay(); });
+    arch.addEventListener('mouseleave', function () { hover = false; aPlay(); });
+    arch.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') aGo(aI - 1); if (e.key === 'ArrowRight') aGo(aI + 1); });
+    // przesunięcie palcem
+    var track = $('.arch-slider__track', arch), x0 = null, y0 = 0;
+    track.addEventListener('pointerdown', function (e) { x0 = e.clientX; y0 = e.clientY; });
+    track.addEventListener('pointerup', function (e) {
+      if (x0 === null) return;
+      var dx = e.clientX - x0, dy = e.clientY - y0; x0 = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { e.preventDefault(); aGo(aI + (dx < 0 ? 1 : -1)); arch.dataset.swiped = '1'; setTimeout(function () { delete arch.dataset.swiped; }, 50); }
+    });
+    track.addEventListener('pointercancel', function () { x0 = null; });
+    // po przesunięciu nie otwieraj powiększenia
+    track.addEventListener('click', function (e) { if (arch.dataset.swiped) { e.stopPropagation(); e.preventDefault(); } }, true);
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { inView = en[0].isIntersecting; aPlay(); }, { threshold: .3 }).observe(arch);
+    else { inView = true; aPlay(); }
+    document.addEventListener('visibilitychange', aPlay);
+  }
+
   /* ---------- Modernizm to… (zmieniające się słowo) ---------- */
   var rot = $('#modern-rot');
   if (rot) {
     var words = ['luksus', 'wyrafinowanie', 'etos', 'filozofia'];
+    // dopasowanie wielkości: najdłuższe słowo musi zmieścić się w szerokości kolumny (każdy font, każdy ekran)
+    var title = rot.closest('.modern__title');
+    var fitTitle = function () {
+      title.style.fontSize = '';
+      var probe = document.createElement('span');
+      probe.className = 'modern__word'; probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap';
+      rot.appendChild(probe);
+      var widest = 0;
+      words.concat(['Modernizm to']).forEach(function (w) { probe.textContent = w; widest = Math.max(widest, probe.getBoundingClientRect().width); });
+      rot.removeChild(probe);
+      var avail = title.getBoundingClientRect().width;
+      if (widest > avail) title.style.fontSize = (parseFloat(getComputedStyle(title).fontSize) * avail / widest * .98) + 'px';
+    };
+    fitTitle();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTitle);
+    window.addEventListener('resize', fitTitle);
     var wEl = $('.modern__word', rot), wi = 0;
     setInterval(function () {
       wEl.classList.add('is-out');

@@ -860,13 +860,14 @@ a.tile { display: block; color: inherit; }
 .modern__bg img { width: 100%; height: 100%; object-fit: cover; opacity: .55; }
 .modern__bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,16,12,.78) 0%, rgba(20,16,12,.55) 50%, rgba(20,16,12,.72) 100%); }
 .modern__in { position: relative; display: grid; grid-template-columns: 6fr 5fr; gap: clamp(40px, 6vw, 110px); align-items: end; }
-.modern__title { font-size: clamp(42px, 5.6vw, 88px); line-height: 1.02; margin: 0; color: var(--paper); }
+.modern__in > * { min-width: 0; }
+.modern__title { font-size: clamp(42px, 4.6vw, 70px); line-height: 1.02; margin: 0; color: var(--paper); }
 .modern__rot { display: block; color: var(--bronze-soft); font-style: italic; min-height: 1.1em; }
 .modern__word { display: inline-block; transition: opacity .5s var(--ease), transform .5s var(--ease); }
 .modern__word.is-out { opacity: 0; transform: translateY(.25em); }
 .modern__txt p { color: #d9cfc1; }
 .modern__txt .lead { color: var(--paper); margin-bottom: 22px; }
-@media (max-width: 900px) { .modern__in { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .modern__in { grid-template-columns: 1fr; } .modern__title { font-size: clamp(26px, 8.4vw, 64px); } }
 
 /* ---------- Cytat z manifestu ---------- */
 .quote--manifest { margin-top: 0; }
@@ -944,3 +945,26 @@ a.tile { display: block; color: inherit; }
 .header.is-solid .header__logo, .header__logo--always { opacity: 1; transform: none; pointer-events: auto; }
 .header.is-solid .header__logo:hover, .header__logo--always:hover { opacity: .7; }
 .header__logo:focus-visible { opacity: 1; transform: none; }
+
+/* ---------- Architektura: slider wizualizacji ---------- */
+.arch-slider { position: relative; }
+.arch-slider__track { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--paper-2); touch-action: pan-y; cursor: grab; }
+.arch-slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1s var(--ease); }
+.arch-slide.is-on { opacity: 1; z-index: 1; }
+.arch-slide img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); transition: transform 4s ease-out; }
+.arch-slide.is-on img { transform: scale(1); }
+.arch-slider__bar { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 24px; padding: 18px 0 16px; border-bottom: 1px solid var(--line); }
+.arch-slider__cap { display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; }
+.arch-slider__dots { display: flex; gap: 6px; }
+.arch-slider__dots button { width: 44px; height: 30px; display: grid; align-items: center; padding: 0; }
+.arch-slider__dots i { display: block; height: 2px; background: var(--line); position: relative; overflow: hidden; }
+.arch-slider__dots i::after { content: ""; position: absolute; inset: 0; background: var(--bronze); transform: scaleX(0); transform-origin: left; }
+.arch-slider__dots [aria-selected="true"] i::after { animation: arch-progress var(--arch-dur, 3s) linear forwards; }
+.arch-slider.is-paused .arch-slider__dots [aria-selected="true"] i::after { animation: none; transform: scaleX(1); }
+@keyframes arch-progress { to { transform: scaleX(1); } }
+@media (max-width: 600px) {
+  .arch-slider__track { aspect-ratio: 4 / 3; }
+  .arch-slider__bar { grid-template-columns: 1fr auto; gap: 12px; }
+  .arch-slider__dots { grid-column: 1 / -1; order: 3; }
+  .arch-slider__dots button { flex: 1; width: auto; }
+}
