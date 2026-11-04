@@ -25,7 +25,7 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 - [x] Cytat z manifestu
 
 ## Lokalizacja
-- [ ] **Współrzędne budynku na mapie są przybliżone** (51.7714, 19.4855, odcinek Narutowicza między Kamińskiego a Kopcińskiego): potwierdzić i wpisać dokładne w `index.html`, atrybuty `data-lat` / `data-lng` przy `#map`. Znacznik jest przypięty do współrzędnych (Leaflet), więc nie przesuwa się przy przeciąganiu mapy
+- [x] Współrzędne budynku na mapie: 51°46′20,0″N 19°28′37,3″E (51.77222, 19.47703), z Google Maps; znacznik przypięty do współrzędnych
 - [x] Lista miejsc z tekstu „Sąsiedztwo”, bez wymyślonych czasów dojścia
 
 ## Kontakt i formalności
