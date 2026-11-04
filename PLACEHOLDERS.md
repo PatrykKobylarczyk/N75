@@ -37,7 +37,7 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 
 ## Media
 - [ ] Hero: zbliżenia (`assets/img/hero/m-*.webp`) to wycinki z wizualizacji. Prawdziwe ujęcia w zwolnionym tempie (makro: woda w basenie, drewno sauny, światło na trawertynie, 1–2 s, MP4 bez dźwięku) można wstawić w `index.html` jako slajd z `<video>` w miejsce obrazka
-- [x] Zdjęcie sąsiedztwa przy „Misja”: ujęcie z lotu ptaka o zmierzchu (`okolica-lotnicze.webp`), także w sekwencji hero
+- [x] Zdjęcie sąsiedztwa przy „Misja”: ujęcie z lotu ptaka o zmierzchu (`okolica-lotnicze.webp`) jako panorama na całą szerokość w sekcji 01 i w sekwencji hero. Plik ma 1448 px szerokości; na bardzo dużych ekranach przyda się wersja ok. 2400 px
 - [ ] Dawny film `assets/video/n75-hero.mp4` nie jest już używany
 - [ ] Obraz OG do udostępniania (`og:image`) i favicon: tymczasowe
 - [ ] Logo (`assets/img/logo-n75.svg`) jest odrysowane wektorowo z prezentacji strategii; jeśli istnieje oryginalny plik od projektanta, warto go podmienić
