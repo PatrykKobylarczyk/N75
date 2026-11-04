@@ -34,6 +34,9 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 - [ ] Obraz OG do udostępniania (`og:image`) i favicon: tymczasowe
 - [ ] Logo (`assets/img/logo-n75.svg`) jest odrysowane wektorowo z prezentacji strategii; jeśli istnieje oryginalny plik od projektanta, warto go podmienić
 
+## Fonty
+- [ ] Futura PT i Avenir Next są krojami płatnymi. Do licencji webowej (np. projekt Adobe Fonts) wystarczy dodać `<link>` z kitem; CSS używa już nazw `futura-pt` i `avenir-next`. Do tego czasu Mac pokazuje systemowe Futura/Avenir Next, a inne systemy Jost i Nunito Sans
+
 ## Do rozważenia później
 - [ ] Wersja angielska (klienci zagraniczni z prezentacji strategii)
 - [ ] Dziennik budowy ze zdjęciami
