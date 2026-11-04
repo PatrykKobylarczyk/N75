@@ -998,3 +998,8 @@ a.tile { display: block; color: inherit; }
 .section--dark .muted { color: #bdb2a3; }
 .wellness__txt p, .modern__txt p { line-height: 1.7; }
 .team__item p, .service p { line-height: 1.65; }
+
+/* ---------- 05: panoramiczne wnętrza mieszkań ---------- */
+.arch-slider--pano { margin-bottom: clamp(56px, 7vw, 100px); }
+.arch-slider--pano .arch-slider__track { aspect-ratio: 21 / 9; }
+@media (max-width: 600px) { .arch-slider--pano .arch-slider__track { aspect-ratio: 4 / 3; } }

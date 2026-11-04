@@ -234,7 +234,7 @@
   /* ---------- Wyszukiwarka mieszkań ---------- */
   var units = window.N75_UNITS || [];
   var out = $('#units-out');
-  var state = { rooms: [], area: '', floor: '', avail: false, view: window.matchMedia('(max-width: 700px)').matches ? 'tiles' : 'table', sort: 'id', dir: 1, all: false };
+  var state = { rooms: [], area: '', floor: '', avail: false, view: 'table', sort: 'id', dir: 1, all: false };
   var PAGE = 14;
   var moreBtn = $('#f-more');
   moreBtn.addEventListener('click', function () { state.all = true; render(); });
