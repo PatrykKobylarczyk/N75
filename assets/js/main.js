@@ -68,6 +68,7 @@
   if (mapEl && window.L) {
     var pos = [+mapEl.dataset.lat, +mapEl.dataset.lng];
     var map = L.map(mapEl, { center: pos, zoom: +mapEl.dataset.zoom || 16, scrollWheelZoom: false, zoomControl: true, attributionControl: true });
+    mapEl._n75map = map;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19, subdomains: 'abc',
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -87,6 +88,55 @@
     // mapa w animowanej sekcji: przelicz rozmiar po odsłonięciu
     setTimeout(function () { map.invalidateSize(); }, 1200);
     window.addEventListener('resize', function () { map.invalidateSize(); });
+  }
+
+  /* ---------- Lokalizacja: kategorie „Odkryj” ↔ punkty na mapie z odległością ---------- */
+  var acc = $('#places-acc');
+  if (acc && mapEl) {
+    var home = [+mapEl.dataset.lat, +mapEl.dataset.lng];
+    var hav = function (a, b) {
+      var R = 6371e3, r = Math.PI / 180, dLa = (b[0] - a[0]) * r, dLo = (b[1] - a[1]) * r;
+      var x = Math.sin(dLa / 2) * Math.sin(dLa / 2) + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dLo / 2) * Math.sin(dLo / 2);
+      return 2 * R * Math.asin(Math.sqrt(x));
+    };
+    // odległość w linii prostej i szacunkowy czas pieszo (droga ok. 1,3× dłuższa, 80 m/min)
+    var distTxt = function (m) { var mins = Math.max(1, Math.round(m * 1.3 / 80)); return (m < 995 ? Math.round(m / 10) * 10 + ' m' : (m / 1000).toFixed(1).replace('.', ',') + ' km') + ' · ok. ' + mins + ' min pieszo'; };
+    var pois = {};
+    $$('[data-poi]', acc).forEach(function (li) {
+      var d = $('.poi__dist', li), ll = [+d.dataset.lat, +d.dataset.lng], m = hav(home, ll);
+      d.textContent = distTxt(m);
+      pois[li.dataset.poi] = { li: li, ll: ll, name: $('.poi__name', li).textContent, m: m };
+    });
+    var layer = null;
+    function show(cat) {
+      if (!window.L || !mapEl._n75map) return;
+      var m = mapEl._n75map;
+      if (layer) { m.removeLayer(layer); layer = null; }
+      if (!cat) { m.flyTo(home, +mapEl.dataset.zoom || 16, { duration: .6 }); return; }
+      var items = Object.keys(pois).filter(function (k) { return k.indexOf(cat + '-') === 0; }).map(function (k) { return pois[k]; });
+      layer = L.layerGroup();
+      if (!items.length) { L.circle(home, { radius: 260, color: '#9c7149', weight: 1, dashArray: '4 6', fillColor: '#9c7149', fillOpacity: .06 }).addTo(layer); layer.addTo(m); m.flyTo(home, 16, { duration: .6 }); return; }
+      items.forEach(function (p) {
+        L.polyline([home, p.ll], { color: '#9c7149', weight: 1.5, dashArray: '4 6', opacity: .9 }).addTo(layer);
+        var mk = L.marker(p.ll, { icon: L.divIcon({ className: 'poi-pin', html: '<i></i>', iconSize: [18, 18], iconAnchor: [9, 9] }), title: p.name }).addTo(layer);
+        mk.bindTooltip('<b>' + p.name + '</b><br>' + distTxt(p.m), { direction: 'top', offset: [0, -8], className: 'poi-tip', permanent: items.length <= 2 });
+        p.marker = mk;
+      });
+      layer.addTo(m);
+      m.flyToBounds(L.latLngBounds([home].concat(items.map(function (p) { return p.ll; }))).pad(.25), { duration: .7, maxZoom: 17 });
+    }
+    $$('.place-cat', acc).forEach(function (d) {
+      d.addEventListener('toggle', function () {
+        if (d.open) { $$('.place-cat', acc).forEach(function (o) { if (o !== d) o.open = false; }); show(d.dataset.cat); }
+        else if (!$('.place-cat[open]', acc)) show(null);
+      });
+    });
+    // najechanie / kliknięcie pozycji: podświetl punkt
+    acc.addEventListener('mouseover', function (e) { var li = e.target.closest && e.target.closest('[data-poi]'); if (li && pois[li.dataset.poi].marker) pois[li.dataset.poi].marker.openTooltip(); });
+    acc.addEventListener('click', function (e) {
+      var li = e.target.closest && e.target.closest('[data-poi]'); if (!li || !mapEl._n75map) return;
+      var p = pois[li.dataset.poi]; if (p.marker) { mapEl._n75map.flyTo(p.ll, 17, { duration: .6 }); p.marker.openTooltip(); }
+    });
   }
 
   /* ---------- Slidery zdjęć [data-slider]: co 3 s albo ręcznie (strzałki, kreski, przesunięcie palcem) ---------- */
@@ -212,14 +262,52 @@
     o.observe(el);
   });
 
-  /* ---------- Karuzela wnętrz ---------- */
-  var rail = $('#rail');
-  $$('[data-rail]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var step = rail.firstElementChild.getBoundingClientRect().width + 20;
-      rail.scrollBy({ left: b.dataset.rail === 'next' ? step : -step, behavior: reduced ? 'auto' : 'smooth' });
+  /* ---------- Karuzela wnętrz: na komputerze przewijanie strony przesuwa zdjęcia w poziomie,
+     a zdjęcia można też „złapać” i przeciągnąć myszką; na telefonie przesuwanie palcem ---------- */
+  var rail = $('#rail'), hs = $('#hscroll'), hsBar = $('#hscroll-bar');
+  var hMode = false, hMax = 0;
+  var wantH = window.matchMedia('(min-width: 901px) and (pointer: fine)');
+  function hLayout() {
+    hMode = wantH.matches && !!hs;
+    document.body.classList.toggle('h-rail', hMode);
+    hs.style.height = '';
+    if (!hMode) return;
+    hMax = Math.max(0, rail.scrollWidth - rail.clientWidth);
+    hs.style.height = (hs.firstElementChild.offsetHeight + hMax) + 'px';
+    hTick();
+  }
+  function hProgress() { var r = hs.getBoundingClientRect(); return hMax ? Math.min(1, Math.max(0, -r.top / hMax)) : 0; }
+  function hTick() {
+    if (hMode) rail.scrollLeft = hProgress() * hMax;
+    if (hsBar) hsBar.style.transform = 'scaleX(' + (hMode ? hProgress() : (rail.scrollLeft / Math.max(1, rail.scrollWidth - rail.clientWidth))) + ')';
+  }
+  if (rail && hs) {
+    window.addEventListener('scroll', function () { requestAnimationFrame(hTick); }, { passive: true });
+    rail.addEventListener('scroll', function () { if (!hMode) requestAnimationFrame(hTick); }, { passive: true });
+    window.addEventListener('resize', hLayout);
+    if (wantH.addEventListener) wantH.addEventListener('change', hLayout);
+    $$('img', rail).forEach(function (im) { if (!im.complete) im.addEventListener('load', hLayout, { once: true }); });
+    hLayout();
+    // strzałki
+    $$('[data-rail]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var step = (rail.firstElementChild.getBoundingClientRect().width + 20) * (b.dataset.rail === 'next' ? 1 : -1);
+        if (hMode) window.scrollBy({ top: step, behavior: 'smooth' });
+        else rail.scrollBy({ left: step, behavior: 'smooth' });
+      });
     });
-  });
+    // przeciąganie myszką
+    var dx0 = null, moved = 0, startX = 0;
+    rail.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse' || e.button !== 0) return; dx0 = e.clientX; startX = e.clientX; moved = 0; rail.classList.add('is-drag'); e.preventDefault(); });
+    window.addEventListener('pointermove', function (e) {
+      if (dx0 === null) return;
+      var d = e.clientX - dx0; dx0 = e.clientX; moved = Math.max(moved, Math.abs(e.clientX - startX));
+      if (hMode) window.scrollBy({ top: -d, behavior: 'instant' }); else rail.scrollLeft -= d;
+    });
+    window.addEventListener('pointerup', function () { if (dx0 === null) return; dx0 = null; rail.classList.remove('is-drag'); });
+    rail.addEventListener('click', function (e) { if (moved > 6) { e.stopPropagation(); e.preventDefault(); moved = 0; } }, true);
+    rail.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  }
 
   /* ---------- Lightbox ---------- */
   var lb = $('#lightbox'), lbImg = $('#lb-img'), lbCap = $('#lb-cap');
