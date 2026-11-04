@@ -1072,12 +1072,6 @@ a.tile { display: block; color: inherit; }
 @media (max-width: 600px) { .arch-slider__arrow { width: 42px; height: 42px; } .arch-slider__arrow--prev { left: 10px; } .arch-slider__arrow--next { right: 10px; } }
 
 /* ---------- Hero: okrąg (motyw inkrustacji z lastryka i drzwi) + obrotowa pieczęć ---------- */
-.hero__ring {
-  position: absolute; z-index: 1; pointer-events: none;
-  left: calc(var(--gutter) - 6vw); top: 50%; width: min(52vw, 660px); aspect-ratio: 1;
-  border: 1px solid rgba(196, 162, 127, .45); border-radius: 50%; transform: translateY(-50%);
-}
-.hero__ring::after { content: ""; position: absolute; inset: 7%; border: 1px solid rgba(196, 162, 127, .16); border-radius: 50%; }
 .hero__seal {
   position: absolute; z-index: 3; right: var(--gutter); bottom: clamp(44px, 6vw, 76px);
   width: 132px; height: 132px; color: rgba(247, 243, 236, .86); display: block; transition: color .3s;
@@ -1091,9 +1085,19 @@ a.tile { display: block; color: inherit; }
 .hero__seal:hover svg { animation-duration: 12s; }
 @keyframes seal-spin { to { transform: rotate(360deg); } }
 @media (max-width: 700px) {
-  .hero__ring { left: -34vw; top: auto; bottom: 4%; width: 112vw; transform: none; }
   .hero__seal { width: 92px; height: 92px; bottom: auto; top: calc(50% - 46px); right: 14px; }
   .hero__seal-arrow { height: 22px; }
 }
 
 .quote--misja { margin-top: clamp(64px, 8vw, 110px); }
+
+/* ---------- Hero: cienka kreska między logo a claimem, rysowana od lewej krawędzi ---------- */
+.hero__main { position: relative; }
+.hero__rule {
+  display: block; height: 1px; margin: 0 0 26px calc(-1 * var(--gutter));
+  width: calc(var(--gutter) + clamp(160px, 22vw, 320px));
+  background: linear-gradient(90deg, rgba(196, 162, 127, .25), var(--bronze-soft));
+  transform-origin: left; transform: scaleX(0); animation: rule-in 1.6s .4s cubic-bezier(.2, .7, .2, 1) forwards;
+}
+@keyframes rule-in { to { transform: scaleX(1); } }
+@media (max-width: 700px) { .hero__rule { margin-bottom: 18px; width: calc(var(--gutter) + 46vw); } }
