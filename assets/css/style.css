@@ -1232,3 +1232,13 @@ a.tile { display: block; color: inherit; }
 .sec-head .line { transform-origin: left; }
 .js .sec-head.reveal .line { transform: scaleX(0); transition: transform 1.4s .15s var(--ease); }
 .js .sec-head.reveal.is-in .line { transform: scaleX(1); }
+
+/* ---------- Darmowe zamienniki fontów (Windows/Android): dostrojone do Futury PT i Avenir Next ---------- */
+.nowrap { white-space: nowrap; }
+.no-avenir body { font-weight: 420; letter-spacing: -.004em; }
+.no-avenir .lead { font-weight: 400; letter-spacing: -.006em; }
+.no-avenir .muted, .no-avenir p { font-weight: 420; }
+.no-futura .display { font-weight: 380; letter-spacing: .035em; }
+.no-futura .caps { font-weight: 480; letter-spacing: .15em; }
+.no-futura .h2, .no-futura .h3 { word-spacing: .04em; }
+.no-futura .hero__claim, .no-futura blockquote { font-weight: 350; letter-spacing: -.005em; }

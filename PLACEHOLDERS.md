@@ -48,7 +48,7 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 - [ ] Logo (`assets/img/logo-n75.svg`) jest odrysowane wektorowo z prezentacji strategii; jeśli istnieje oryginalny plik od projektanta, warto go podmienić
 
 ## Fonty
-- [ ] **Fonty**: Futura PT jest w Adobe Fonts (wystarczy kit z projektu webowego: jeden `<link>` w `<head>` każdej strony; CSS używa już nazwy `futura-pt`). Avenir Next nie jest w Adobe Fonts: licencja webowa przez Monotype Fonts / MyFonts (nazwa `avenir-next` jest już w CSS). Do tego czasu Windows i Android pokazują Jost i Nunito Sans (z prawdziwą kursywą)
+- [ ] **Fonty**: Futura PT jest w Adobe Fonts (wystarczy kit z projektu webowego: jeden `<link>` w `<head>` każdej strony; CSS używa już nazwy `futura-pt`). Avenir Next nie jest w Adobe Fonts: licencja webowa przez Monotype Fonts / MyFonts (nazwa `avenir-next` jest już w CSS). Do tego czasu Windows i Android pokazują Jost i Nunito Sans (prawdziwa kursywa, grubość i odstępy dostrojone pod Futurę i Avenir; włączane automatycznie, gdy urządzenie nie ma oryginałów)
 
 ## Z dokumentu Uniqum_www_claimy (06.11.2026), jeszcze nie wdrożone
 - [ ] Wybór claimu: na stronie roboczo „Styl, w którym najlepiej się mieszka”
