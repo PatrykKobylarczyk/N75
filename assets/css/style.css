@@ -525,7 +525,7 @@ tr.is-sold td.unit-id { color: #b9ab98; }
 
 /* ---------- Stopka ---------- */
 .footer { background: var(--dark-2); color: #cfc5b7; padding: 80px 0 36px; }
-.footer__top { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px; padding-bottom: 60px; border-bottom: 1px solid rgba(247,243,236,.12); }
+.footer__top { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.3fr; gap: 40px; padding-bottom: 60px; border-bottom: 1px solid rgba(247,243,236,.12); }
 .footer .logo { font-size: 84px; color: var(--bronze-soft); }
 .footer .caps { color: #9c9183; display: block; margin-bottom: 16px; }
 .footer ul { list-style: none; margin: 0; padding: 0; }
@@ -1003,3 +1003,5 @@ a.tile { display: block; color: inherit; }
 .arch-slider--pano { margin-bottom: clamp(56px, 7vw, 100px); }
 .arch-slider--pano .arch-slider__track { aspect-ratio: 21 / 9; }
 @media (max-width: 600px) { .arch-slider--pano .arch-slider__track { aspect-ratio: 4 / 3; } }
+
+.footer__accent { color: var(--bronze-soft); }
