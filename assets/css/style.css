@@ -1306,3 +1306,11 @@ a.tile { display: block; color: inherit; }
 
 .arch-slider.is-manual .arch-slider__dots [aria-selected="true"] i::after { animation: none; transform: scaleX(1); }
 .sec-head:not(.sec-head--plain) { grid-template-columns: auto 1fr; }
+
+/* ---------- Menu: całość na jednym ekranie ---------- */
+.drawer__nav { margin: auto 0; padding: clamp(10px, 2.5vh, 30px) 0; }
+.drawer__nav a { padding: clamp(4px, 1.05vh, 12px) 0; }
+.drawer__nav .display { font-size: clamp(20px, min(2.6vw, 3.6vh), 34px); line-height: 1.15; }
+.drawer__nav .num { font-size: clamp(16px, 2.6vh, 24px); }
+.drawer__foot { padding-top: clamp(12px, 2.4vh, 26px); justify-content: flex-start; }
+@media (max-width: 600px) { .drawer__nav a { grid-template-columns: 40px 1fr; gap: 12px; } }
