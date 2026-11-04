@@ -213,6 +213,7 @@
 
 <!-- ============ 03 WNĘTRZA ============ -->
 <section class="section section--alt" id="wnetrza">
+  <div class="hscroll" id="hscroll"><div class="hscroll__pin">
   <div class="wrap">
     <div class="sec-head reveal"><span class="num">03</span><span class="line"></span><span class="caps">Wnętrza</span></div>
     <div class="split" style="margin-bottom:clamp(48px,6vw,80px); align-items:end">
@@ -234,6 +235,8 @@
     <figure><img src="assets/img/korytarz-2.webp" alt="Hol na piętrze" loading="lazy" data-lightbox="Hol na piętrze"><figcaption><span class="num">05</span><span class="caps">Hol na piętrze</span></figcaption></figure>
     <figure><img src="assets/img/klatka.webp" alt="Klatka schodowa z windą" loading="lazy" data-lightbox="Klatka schodowa"><figcaption><span class="num">06</span><span class="caps">Klatka schodowa</span></figcaption></figure>
   </div>
+  <div class="wrap hscroll__foot"><div class="hscroll__bar"><i id="hscroll-bar"></i></div><span class="caps muted hscroll__hint">Przewiń lub przeciągnij</span></div>
+  </div></div>
 </section>
 
 <!-- ============ 04 UDOGODNIENIA ============ -->
@@ -431,30 +434,30 @@
         <h2 class="display h2">Adres</h2>
         <p class="lead" style="margin:30px 0 18px">Nasz projekt wyrósł z&nbsp;inspiracji modernistycznymi „luksami” – prestiżowymi kamienicami premium oferującymi unikalny standard zamieszkania w&nbsp;międzywojennej Warszawie, Gdyni czy Łodzi.</p>
         <p class="muted">Wybór lokalizacji – ul. Narutowicza – nie był przypadkowy. Zapewnia ona doskonałą komunikację, dostęp do zieleni, a&nbsp;także architektoniczne sąsiedztwo złożone z&nbsp;ikon architektury międzywojennej. Niesie ze sobą również wyjątkowe dziedzictwo, będąc domem kolejnych pokoleń prawników, lekarzy, artystów i&nbsp;decydentów naszego miasta. To przy niej działają łódzka opera i&nbsp;filharmonia, dobre restauracje, siedziby spółek i&nbsp;kancelarii – a&nbsp;inteligencki sznyt Wschodniego Śródmieścia wyraża bliskie nam ambicje i&nbsp;aspiracje.</p>
-        <div class="places-acc">
-          <details class="place-cat">
+        <div class="places-acc" id="places-acc">
+          <details class="place-cat" data-cat="edu">
             <summary><span class="caps">Edukacja</span><span class="odkryj caps">Odkryj</span></summary>
-            <ul><li>Uniwersytet Łódzki: rektorat, biblioteka, Wydział Filozoficzno-Historyczny, Wydział Prawa i&nbsp;Administracji</li><li>Szkoła podstawowa, w&nbsp;obrębie dwóch przecznic</li></ul>
+            <ul><li data-poi="edu-0"><span class="poi__name">Rektorat Uniwersytetu Łódzkiego</span><span class="poi__dist" data-lat="51.7725147" data-lng="19.4746503"></span></li><li data-poi="edu-1"><span class="poi__name">Wydział Filozoficzno-Historyczny UŁ</span><span class="poi__dist" data-lat="51.7754396" data-lng="19.4742221"></span></li><li data-poi="edu-2"><span class="poi__name">Wydział Prawa i Administracji UŁ</span><span class="poi__dist" data-lat="51.7776999" data-lng="19.4825999"></span></li><li data-poi="edu-3"><span class="poi__name">Biblioteka Uniwersytetu Łódzkiego</span><span class="poi__dist" data-lat="51.7746658" data-lng="19.4868849"></span></li><li class="poi--txt">Szkoła podstawowa w&nbsp;obrębie dwóch przecznic</li></ul>
           </details>
-          <details class="place-cat">
+          <details class="place-cat" data-cat="zdr">
             <summary><span class="caps">Zdrowie i&nbsp;opieka</span><span class="odkryj caps">Odkryj</span></summary>
-            <ul><li>Szpital, w&nbsp;obrębie dwóch przecznic</li><li>Żłobek i&nbsp;przedszkole</li></ul>
+            <ul><li data-poi="zdr-0"><span class="poi__name">Szpital im. N. Barlickiego</span><span class="poi__dist" data-lat="51.7740188" data-lng="19.4829311"></span></li><li class="poi--txt">Żłobek i&nbsp;przedszkole w&nbsp;obrębie dwóch przecznic</li></ul>
           </details>
-          <details class="place-cat">
+          <details class="place-cat" data-cat="ziel">
             <summary><span class="caps">Zieleń</span><span class="odkryj caps">Odkryj</span></summary>
-            <ul><li>Cztery parki w&nbsp;pobliżu: Staszica, Moniuszki, Matejki i&nbsp;3 Maja</li></ul>
+            <ul><li data-poi="ziel-0"><span class="poi__name">Park im. Stanisława Staszica</span><span class="poi__dist" data-lat="51.7736325" data-lng="19.4771041"></span></li><li data-poi="ziel-1"><span class="poi__name">Park im. Jana Matejki</span><span class="poi__dist" data-lat="51.7739807" data-lng="19.4855849"></span></li><li data-poi="ziel-2"><span class="poi__name">Park im. Stanisława Moniuszki</span><span class="poi__dist" data-lat="51.7705876" data-lng="19.4654837"></span></li><li data-poi="ziel-3"><span class="poi__name">Park im. 3 Maja</span><span class="poi__dist" data-lat="51.7688018" data-lng="19.4904455"></span></li></ul>
           </details>
-          <details class="place-cat">
+          <details class="place-cat" data-cat="kult">
             <summary><span class="caps">Kultura</span><span class="odkryj caps">Odkryj</span></summary>
-            <ul><li>Teatr Wielki i&nbsp;Filharmonia, krótki spacer</li><li>EC1: muzeum, edukacja i&nbsp;kino</li><li>Biblioteka</li></ul>
+            <ul><li data-poi="kult-0"><span class="poi__name">Teatr Wielki</span><span class="poi__dist" data-lat="51.7730353" data-lng="19.4697781"></span></li><li data-poi="kult-1"><span class="poi__name">EC1 – Miasto Kultury</span><span class="poi__dist" data-lat="51.7681411" data-lng="19.4691383"></span></li><li data-poi="kult-2"><span class="poi__name">Filharmonia Łódzka</span><span class="poi__dist" data-lat="51.7711012" data-lng="19.4600985"></span></li></ul>
           </details>
-          <details class="place-cat">
-            <summary><span class="caps">Handel i&nbsp;usługi</span><span class="odkryj caps">Odkryj</span></summary>
-            <ul><li>Sklepy spożywcze, piekarnie, drogeria, lokalny warzywniak</li><li>Stacje benzynowe</li></ul>
-          </details>
-          <details class="place-cat">
+          <details class="place-cat" data-cat="kom">
             <summary><span class="caps">Komunikacja</span><span class="odkryj caps">Odkryj</span></summary>
-            <ul><li>Dworzec Łódź Fabryczna, kwadrans drogi (w&nbsp;przyszłości obsługa Kolei Dużych Prędkości)</li></ul>
+            <ul><li data-poi="kom-0"><span class="poi__name">Przystanek tramwajowy Narutowicza – pl. Dąbrowskiego</span><span class="poi__dist" data-lat="51.7719168" data-lng="19.469922"></span></li><li data-poi="kom-1"><span class="poi__name">Dworzec Łódź Fabryczna</span><span class="poi__dist" data-lat="51.76956" data-lng="19.46956"></span></li><li class="poi--txt">Dworzec w&nbsp;przyszłości z&nbsp;obsługą Kolei Dużych Prędkości</li></ul>
+          </details>
+          <details class="place-cat" data-cat="han">
+            <summary><span class="caps">Handel i&nbsp;usługi</span><span class="odkryj caps">Odkryj</span></summary>
+            <ul><li class="poi--txt">Sklepy spożywcze, piekarnie, drogeria, lokalny warzywniak w&nbsp;obrębie dwóch przecznic</li><li class="poi--txt">Stacje benzynowe</li></ul>
           </details>
         </div>
       </div>

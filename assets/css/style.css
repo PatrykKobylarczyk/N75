@@ -1242,3 +1242,28 @@ a.tile { display: block; color: inherit; }
 .no-futura .caps { font-weight: 480; letter-spacing: .15em; }
 .no-futura .h2, .no-futura .h3 { word-spacing: .04em; }
 .no-futura .hero__claim, .no-futura blockquote { font-weight: 350; letter-spacing: -.005em; }
+
+/* ---------- Lokalizacja: punkty kategorii ---------- */
+.place-cat li[data-poi] { display: flex; justify-content: space-between; gap: 14px; cursor: pointer; transition: color .2s; }
+.place-cat li[data-poi]:hover { color: var(--bronze); }
+.poi__dist { color: var(--bronze); font-size: 13px; white-space: nowrap; }
+.place-cat li.poi--txt { color: var(--muted); font-size: 14px; }
+.poi-pin i { display: block; width: 18px; height: 18px; border-radius: 50%; background: var(--bronze); border: 3px solid var(--paper); box-shadow: 0 2px 8px rgba(36, 35, 33, .35); animation: poi-in .5s var(--ease) both; }
+@keyframes poi-in { from { transform: scale(0); } }
+.leaflet-tooltip.poi-tip { font-family: var(--body); font-size: 12px; line-height: 1.35; color: var(--graphite); background: var(--paper); border: 1px solid var(--line); border-radius: 0; box-shadow: 0 4px 16px rgba(36, 35, 33, .15); padding: 6px 9px; }
+.leaflet-tooltip.poi-tip b { font-family: var(--head); font-weight: 500; letter-spacing: .04em; }
+@media (max-width: 600px) { .place-cat li[data-poi] { flex-direction: column; gap: 2px; } }
+
+/* ---------- 03 Wnętrza: przewijanie w poziomie ---------- */
+.rail { cursor: grab; user-select: none; }
+.rail.is-drag { cursor: grabbing; }
+.rail.is-drag img { pointer-events: none; }
+.hscroll__foot { display: flex; align-items: center; gap: 22px; margin-top: 18px; width: 100%; }
+.hscroll__bar { flex: 1 1 auto; min-width: 60px; height: 2px; background: rgba(156, 113, 73, .18); overflow: hidden; }
+.hscroll__bar i { display: block; height: 100%; background: var(--bronze); transform-origin: left; transform: scaleX(0); }
+.hscroll__hint { font-size: 10px; white-space: nowrap; }
+.h-rail #wnetrza { padding-bottom: 0; }
+.h-rail .hscroll__pin { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 96px; box-sizing: border-box; overflow: hidden; }
+.h-rail #wnetrza .sec-head { margin-bottom: 18px; }
+.h-rail #wnetrza .split { margin-bottom: clamp(20px, 3vh, 40px) !important; }
+.h-rail .rail { overflow-x: hidden; scroll-snap-type: none; grid-auto-columns: min(36vw, calc((100vh - 390px) * .8)); padding-bottom: 0; }
