@@ -30,9 +30,9 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 - [ ] Treść zgody RODO
 
 ## Media
-- [ ] Hero to przenikające wizualizacje; jeśli powstanie film, można go wstawić zamiast slajdów
+- [ ] Film w hero (`assets/video/n75-hero.mp4`, 33 s, bez dźwięku) jest zmontowany z renderów (najazdy kamery i przenikania). Prawdziwy film wystarczy wgrać pod tą samą nazwą; kadr startowy to `assets/img/hero-poster.jpg`
 - [ ] Obraz OG do udostępniania (`og:image`) i favicon: tymczasowe
-- [ ] Logo: obecnie składane z fontu Cormorant Garamond; podmienić na plik SVG od projektanta
+- [ ] Logo (`assets/img/logo-n75.svg`) jest odrysowane wektorowo z prezentacji strategii; jeśli istnieje oryginalny plik od projektanta, warto go podmienić
 
 ## Do rozważenia później
 - [ ] Wersja angielska (klienci zagraniczni z prezentacji strategii)

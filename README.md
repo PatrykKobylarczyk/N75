@@ -19,6 +19,8 @@ index.html              Cała strona (sekcje 01–07)
 assets/css/style.css    Style: tokeny kolorów, typografia, układ, responsywność
 assets/js/main.js       Menu, slajdy w hero, animacje, galeria, wyszukiwarka i karta lokalu, formularz
 assets/js/units.js      Dane lokali (PRZYKŁADOWE, do podmiany)
+assets/video/           Film w hero (MP4, H.264, bez dźwięku)
+assets/img/logo-n75.svg Logo N75 (wektor; na stronie jako <symbol>, kolor przez currentColor)
 assets/img/             Wizualizacje w WebP (pełne i *-sm do miniatur) + zbliżenia materiałów
 PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 ```
@@ -34,7 +36,8 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 
 | Nr | Sekcja | Zawartość |
 |---|---|---|
-| | Hero | Przenikające wizualizacje, przezroczyste menu, CTA |
+| | Hero | Pełnoekranowy film z przyciskiem pauzy, przezroczysty nagłówek, CTA |
+| | Menu | Wysuwany panel z prawej (hamburger) na wszystkich ekranach |
 | | Wstęp | Manifest i spis treści |
 | 01 | Inwestycja | Opis, liczby, harmonogram budowy |
 | 02 | Architektura | Elewacje, cytat architekta, materiały |

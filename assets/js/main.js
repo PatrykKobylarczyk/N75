@@ -16,18 +16,30 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  /* ---------- Menu mobilne ---------- */
+  /* ---------- Wysuwane menu ---------- */
   var burger = $('#burger');
-  var mm = $('#mobile-menu');
+  var drawer = $('#drawer');
+  var overlay = $('#drawer-overlay');
+  var drawerClose = $('#drawer-close');
   function setMenu(open) {
     body.classList.toggle('menu-open', open);
+    drawer.classList.toggle('is-open', open);
+    drawer.setAttribute('aria-hidden', String(!open));
     burger.setAttribute('aria-expanded', String(open));
-    burger.setAttribute('aria-label', open ? 'Zamknij menu' : 'Otwórz menu');
-    mm.setAttribute('aria-hidden', String(!open));
-    body.style.overflow = open ? 'hidden' : '';
+    if (open) {
+      overlay.hidden = false;
+      requestAnimationFrame(function () { overlay.classList.add('is-open'); });
+      setTimeout(function () { drawerClose.focus(); }, 50);
+    } else {
+      overlay.classList.remove('is-open');
+      setTimeout(function () { if (!drawer.classList.contains('is-open')) overlay.hidden = true; }, 500);
+      burger.focus({ preventScroll: true });
+    }
   }
-  burger.addEventListener('click', function () { setMenu(!body.classList.contains('menu-open')); });
-  $$('a', mm).forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+  burger.addEventListener('click', function () { setMenu(true); });
+  drawerClose.addEventListener('click', function () { setMenu(false); });
+  overlay.addEventListener('click', function () { setMenu(false); });
+  $$('a', drawer).forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
 
   /* ---------- Aktywna pozycja menu ---------- */
   var navLinks = $$('.nav a');
@@ -42,23 +54,18 @@
     $$('main section[id]').forEach(function (s) { secObs.observe(s); });
   }
 
-  /* ---------- Hero: przenikające wizualizacje ---------- */
-  var slides = $$('.hero__slide');
-  var idxEl = $('#hero-idx');
-  var bar = $('#hero-bar');
-  var cur = 0;
-  function nextSlide() {
-    slides[cur].classList.remove('is-active');
-    cur = (cur + 1) % slides.length;
-    slides[cur].classList.add('is-active');
-    idxEl.textContent = String(cur + 1).padStart(2, '0');
-    bar.classList.remove('run'); void bar.offsetWidth; bar.classList.add('run');
+  /* ---------- Hero: film ---------- */
+  var video = $('#hero-video');
+  var playBtn = $('#hero-play');
+  function setPaused(p) {
+    if (p) video.pause(); else { var pr = video.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    playBtn.setAttribute('aria-pressed', String(p));
+    $('.lbl', playBtn).textContent = p ? 'Odtwórz' : 'Pauza';
   }
-  if (slides.length > 1 && !reduced) {
-    // pozostałe slajdy ładujemy od razu, żeby przejście nie migało
-    slides.forEach(function (s) { var i = $('img', s); i.loading = 'eager'; });
-    setInterval(nextSlide, 7000);
-  } else if (bar) { bar.classList.remove('run'); }
+  if (video) {
+    if (reduced) { video.removeAttribute('autoplay'); setPaused(true); }
+    playBtn.addEventListener('click', function () { setPaused(!video.paused ? true : false); });
+  }
 
   /* ---------- Animacje wejścia ---------- */
   var revealEls = $$('.reveal, .reveal-img');

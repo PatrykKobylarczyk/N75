@@ -14,57 +14,66 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="assets/img/naroznik.webp">
+  <link rel="preload" as="image" href="assets/img/hero-poster.jpg">
   <link rel="stylesheet" href="assets/css/style.css">
   <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="n75-logo" viewBox="36 38 1000 518"><rect x="40" y="42" width="12" height="508"/>
+  <polygon points="40,42 102,42 385,468 385,550 372,550"/>
+  <rect x="373" y="42" width="12" height="508"/>
+  <rect x="425" y="42" width="327" height="13"/>
+  <polygon points="692,42 752,42 484,550 432,550"/>
+  <rect x="785" y="42" width="211" height="13"/>
+  <polygon points="785,42 797,42 770,250 758,248"/>
+  <path d="M758 245 C800 200 850 190 880 190 C966 190 1031 262 1031 365 C1031 470 958 552 850 552 C780 552 720 520 688 470 L702 462 C735 515 790 541 850 541 C935 541 992 465 992 365 C992 272 945 201 878 201 C840 201 795 216 768 252 Z"/></symbol></svg>
 
 <!-- ============ HEADER ============ -->
 <header class="header" id="header">
   <div class="wrap header__in">
-    <a href="#top" class="logo" aria-label="N75, strona główna">N75</a>
-    <nav class="nav caps" aria-label="Główna nawigacja">
-      <a href="#inwestycja">Inwestycja</a>
-      <a href="#architektura">Architektura</a>
-      <a href="#wnetrza">Wnętrza</a>
-      <a href="#udogodnienia">Udogodnienia</a>
-      <a href="#mieszkania">Mieszkania</a>
-      <a href="#lokalizacja">Lokalizacja</a>
-      <a href="#kontakt">Kontakt</a>
-    </nav>
-    <a href="#kontakt" class="btn btn--ghost caps">Umów spotkanie</a>
-    <button class="burger" id="burger" aria-label="Otwórz menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
+    <a href="#top" class="logo" aria-label="N75, strona główna"><svg class="logo-svg" viewBox="36 38 1000 518" aria-hidden="true" focusable="false"><use href="#n75-logo"/></svg></a>
+    <div class="header__right">
+      <a href="#kontakt" class="btn btn--ghost caps header__cta">Umów spotkanie</a>
+      <button class="burger caps" id="burger" aria-label="Otwórz menu" aria-expanded="false" aria-controls="drawer"><span class="burger__label">Menu</span><span class="burger__icon"><span></span><span></span></span></button>
+    </div>
   </div>
 </header>
 
-<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
-  <ol>
-    <li><a href="#inwestycja"><span class="num">01</span><span class="display">Inwestycja</span></a></li>
-    <li><a href="#architektura"><span class="num">02</span><span class="display">Architektura</span></a></li>
-    <li><a href="#wnetrza"><span class="num">03</span><span class="display">Wnętrza</span></a></li>
-    <li><a href="#udogodnienia"><span class="num">04</span><span class="display">Udogodnienia</span></a></li>
-    <li><a href="#mieszkania"><span class="num">05</span><span class="display">Mieszkania</span></a></li>
-    <li><a href="#lokalizacja"><span class="num">06</span><span class="display">Lokalizacja</span></a></li>
-    <li><a href="#kontakt"><span class="num">07</span><span class="display">Kontakt</span></a></li>
-  </ol>
-  <div class="mobile-menu__foot caps">Łódź · Narutowicza 75</div>
-</div>
+<div class="drawer-overlay" id="drawer-overlay" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
+  <div class="drawer__top">
+    <a href="#top" class="logo" aria-label="N75, strona główna"><svg class="logo-svg" viewBox="36 38 1000 518" aria-hidden="true" focusable="false"><use href="#n75-logo"/></svg></a>
+    <button class="drawer__close caps" id="drawer-close" aria-label="Zamknij menu">Zamknij<span class="x"></span></button>
+  </div>
+  <nav aria-label="Główna nawigacja">
+    <ol class="drawer__nav">
+      <li><a href="#inwestycja"><span class="num">01</span><span class="display">Inwestycja</span><span class="line"></span></a></li>
+      <li><a href="#architektura"><span class="num">02</span><span class="display">Architektura</span><span class="line"></span></a></li>
+      <li><a href="#wnetrza"><span class="num">03</span><span class="display">Wnętrza</span><span class="line"></span></a></li>
+      <li><a href="#udogodnienia"><span class="num">04</span><span class="display">Udogodnienia</span><span class="line"></span></a></li>
+      <li><a href="#mieszkania"><span class="num">05</span><span class="display">Mieszkania</span><span class="line"></span></a></li>
+      <li><a href="#lokalizacja"><span class="num">06</span><span class="display">Lokalizacja</span><span class="line"></span></a></li>
+      <li><a href="#kontakt"><span class="num">07</span><span class="display">Kontakt</span><span class="line"></span></a></li>
+    </ol>
+  </nav>
+  <div class="drawer__foot">
+    <div><span class="caps">Biuro sprzedaży</span>ul. Narutowicza 75, Łódź<br><a href="tel:+48000000000">+48 000 000 000</a> · <a href="mailto:sprzedaz@n75.pl">sprzedaz@n75.pl</a></div>
+    <a href="#kontakt" class="btn btn--solid caps">Umów spotkanie <span class="arrow"></span></a>
+  </div>
+  <p class="caps caps--wide drawer__tag">Przestrzeń w dobrym kierunku</p>
+</aside>
 
 <main id="top">
 
 <!-- ============ HERO ============ -->
 <section class="hero" aria-label="N75">
-  <div class="hero__slides" id="hero-slides">
-    <div class="hero__slide is-active"><img src="assets/img/naroznik.webp" alt="Narożnik budynku N75 z zielonymi tarasami na najwyższych piętrach"></div>
-    <div class="hero__slide"><img src="assets/img/park.webp" alt="Budynek N75 widziany z zieleni skweru" loading="lazy"></div>
-    <div class="hero__slide"><img src="assets/img/elewacja-wschod.webp" alt="Kamienna elewacja N75 od strony ulicy jesienią" loading="lazy"></div>
-    <div class="hero__slide"><img src="assets/img/wejscie.webp" alt="Wejście do budynku z drewnianymi drzwiami o okrągłych przeszkleniach" loading="lazy"></div>
-  </div>
+  <video class="hero__video" id="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/img/hero-poster.jpg" aria-hidden="true">
+    <source src="assets/video/n75-hero.mp4" type="video/mp4">
+  </video>
   <div class="wrap hero__content">
     <div class="hero__main">
       <div class="caps caps--wide">Łódź · Narutowicza 75</div>
-      <h1 class="hero__logo">N75</h1>
+      <h1 class="hero__logo"><span class="sr-only">N75</span><svg class="logo-svg" viewBox="36 38 1000 518" aria-hidden="true" focusable="false"><use href="#n75-logo"/></svg></h1>
       <p class="caps caps--wide hero__tag">Przestrzeń w dobrym kierunku</p>
       <div class="hero__cta">
         <a href="#mieszkania" class="btn btn--solid caps">Zobacz mieszkania <span class="arrow"></span></a>
@@ -72,7 +81,7 @@
       </div>
     </div>
     <div class="hero__foot">
-      <div class="hero__counter caps"><span id="hero-idx">01</span><div class="hero__bar"><i id="hero-bar" class="run"></i></div><span>04</span></div>
+      <button class="hero__play caps" id="hero-play" aria-pressed="false"><span class="ico" aria-hidden="true"></span><span class="lbl">Pauza</span></button>
       <a href="#wstep" class="hero__scroll caps"><span class="stem"></span>Odkryj</a>
     </div>
   </div>
@@ -385,7 +394,7 @@
 <footer class="footer">
   <div class="wrap">
     <div class="footer__top">
-      <div><div class="logo">N75</div><p class="caps caps--wide" style="margin-top:20px">Przestrzeń<br>w dobrym<br>kierunku</p></div>
+      <div><div class="logo" role="img" aria-label="N75"><svg class="logo-svg" viewBox="36 38 1000 518" aria-hidden="true" focusable="false"><use href="#n75-logo"/></svg></div><p class="caps caps--wide" style="margin-top:20px">Przestrzeń<br>w dobrym<br>kierunku</p></div>
       <div><span class="caps">Adres</span>Narutowicza 75<br>Łódź</div>
       <div><span class="caps">Nawigacja</span><ul><li><a href="#inwestycja">Inwestycja</a></li><li><a href="#udogodnienia">Udogodnienia</a></li><li><a href="#mieszkania">Mieszkania</a></li><li><a href="#kontakt">Kontakt</a></li></ul></div>
       <div><span class="caps">Inwestor</span>[Nazwa dewelopera]<br><a href="#">Polityka prywatności</a><br><a href="#">Prospekt informacyjny</a></div>
