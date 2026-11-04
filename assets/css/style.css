@@ -959,3 +959,9 @@ a.tile { display: block; color: inherit; }
 }
 .hero__seq::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; box-shadow: inset 0 0 180px rgba(10, 8, 6, .55); }
 @keyframes grain { 0% { transform: translate(0, 0); } 25% { transform: translate(-3%, 2%); } 50% { transform: translate(2%, -3%); } 75% { transform: translate(-2%, -1%); } 100% { transform: translate(0, 0); } }
+
+/* ---------- Logo w nagłówku: ukryte nad hero, widoczne po przewinięciu ---------- */
+.header__logo { opacity: 0; transform: translateY(-6px); pointer-events: none; transition: opacity .45s var(--ease), transform .45s var(--ease), color .3s; }
+.header.is-solid .header__logo, .header__logo--always { opacity: 1; transform: none; pointer-events: auto; }
+.header.is-solid .header__logo:hover, .header__logo--always:hover { opacity: .7; }
+.header__logo:focus-visible { opacity: 1; transform: none; }
