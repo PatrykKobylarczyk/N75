@@ -1095,3 +1095,5 @@ a.tile { display: block; color: inherit; }
   .hero__seal { width: 92px; height: 92px; bottom: auto; top: calc(50% - 46px); right: 14px; }
   .hero__seal-arrow { height: 22px; }
 }
+
+.quote--misja { margin-top: clamp(64px, 8vw, 110px); }
