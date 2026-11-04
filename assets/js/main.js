@@ -197,31 +197,35 @@
     $$('[data-diary]', diary).forEach(function (b) { b.addEventListener('click', function () { drail.scrollBy({ left: (b.dataset.diary === 'next' ? 1 : -1) * drail.clientWidth * .8, behavior: 'smooth' }); }); });
   }
 
-  /* ---------- „Od szkicu do budynku”: linie kreślą się od dołu, potem rysunek przechodzi w wizualizację ---------- */
+  /* ---------- „Od szkicu do budynku”: po wejściu sekcji na ekran linie same się kreślą (od dołu),
+     potem rysunek przechodzi w wizualizację; animacja jednorazowa, niezależna od przewijania ---------- */
   var dTrack = $('#draw-track'), dLines = $('#draw-lines'), dStage = $('#draw-stage');
   if (dTrack && dLines && window.fetch) {
-    var bands = [], dImg = $('.draw__img', dStage), steps = $$('.draw__steps span');
-    fetch(dLines.dataset.src).then(function (r) { return r.ok ? r.text() : Promise.reject(); }).then(function (svg) {
-      dLines.innerHTML = svg; bands = $$('g[data-band]', dLines); dStage.classList.add('is-ready'); dTick();
-    }).catch(function () { dStage.classList.add('is-plain'); });
+    var bands = [], dImg = $('.draw__img', dStage), steps = $$('.draw__steps span'), dStarted = false, dReady = false, dSeen = false;
     var clamp = function (v) { return Math.max(0, Math.min(1, v)); };
-    var dTick = function () {
-      var r = dTrack.getBoundingClientRect(), span = Math.max(1, dTrack.offsetHeight - window.innerHeight);
-      var p = clamp(-r.top / span);                     // 0 … 1 podczas przypięcia sekcji
-      if (dTrack.offsetHeight <= window.innerHeight * 1.05) p = clamp((window.innerHeight - r.top) / (window.innerHeight + r.height * .4));
-      var draw = clamp(p / .62), n = bands.length || 1;
-      bands.forEach(function (g, k) {                    // pasy od dołu do góry, lekko na zakładkę
-        var t = clamp((draw - k / n * .78) / .3);
-        g.style.strokeDashoffset = (1 - t).toFixed(3);
-      });
-      var fill = clamp((p - .55) / .32);
+    var ease = function (t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };
+    var DRAW = 3400, FILL = 1600, HOLD = 250;             // ms
+    function frame(p) {                                    // p: 0 … 1 całej animacji
+      var tot = DRAW + HOLD + FILL, draw = clamp(p * tot / DRAW), fill = ease(clamp((p * tot - DRAW - HOLD) / FILL)), n = bands.length || 1;
+      bands.forEach(function (g, k) { var t = clamp((draw - k / Math.max(1, n - 1) * .7) / .3); g.style.strokeDashoffset = (1 - ease(t)).toFixed(3); });
       dImg.style.opacity = fill.toFixed(3);
       dImg.style.transform = 'scale(' + (1.04 - .04 * fill).toFixed(4) + ')';
-      dLines.style.opacity = (1 - .78 * fill).toFixed(3);
+      dLines.style.opacity = (1 - .82 * fill).toFixed(3);
       steps.forEach(function (st, i) { st.classList.toggle('is-on', i === (fill > .5 ? 1 : 0)); });
-    };
-    window.addEventListener('scroll', function () { requestAnimationFrame(dTick); }, { passive: true });
-    window.addEventListener('resize', dTick);
+    }
+    function play() {
+      if (dStarted || !dReady || !dSeen) return;
+      dStarted = true;
+      var t0 = null, tot = DRAW + HOLD + FILL;
+      (function step(ts) { if (t0 === null) t0 = ts; var p = clamp((ts - t0) / tot); frame(p); if (p < 1) requestAnimationFrame(step); })(performance.now());
+    }
+    fetch(dLines.dataset.src).then(function (r) { return r.ok ? r.text() : Promise.reject(); }).then(function (svg) {
+      dLines.innerHTML = svg; bands = $$('g[data-band]', dLines); dStage.classList.add('is-ready'); dReady = true; frame(0); play();
+    }).catch(function () { dStage.classList.add('is-plain'); });
+    if ('IntersectionObserver' in window) {
+      var dio = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { dSeen = true; dio.disconnect(); setTimeout(play, 250); } }, { threshold: .45 });
+      dio.observe(dStage);
+    } else { dSeen = true; }
   }
 
   /* ---------- Modernizm to… (zmieniające się słowo) ---------- */

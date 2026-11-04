@@ -1270,9 +1270,9 @@ a.tile { display: block; color: inherit; }
 
 /* ---------- „Od szkicu do budynku” (sekcja Modernizm to…) ---------- */
 .draw { background: var(--paper); }
-.draw__track { position: relative; height: 240vh; }
-.draw__pin { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; overflow: hidden; }
-.draw__in { display: grid; grid-template-columns: 4fr 7fr; gap: clamp(32px, 5vw, 90px); align-items: center; width: 100%; padding-top: 60px; }
+.draw__track { position: relative; }
+.draw__pin { padding: clamp(88px, 11vw, 160px) 0; }
+.draw__in { display: grid; grid-template-columns: 4fr 7fr; gap: clamp(32px, 5vw, 90px); align-items: center; width: 100%; }
 .draw__in > * { min-width: 0; }
 .draw .modern__title { color: var(--graphite); font-size: clamp(36px, 4vw, 64px); margin: 0 0 26px; }
 .draw .modern__rot { color: var(--bronze); }
@@ -1291,8 +1291,7 @@ a.tile { display: block; color: inherit; }
 .draw__lines g { stroke-dashoffset: 1; }
 .draw__stage.is-plain .draw__img { opacity: 1 !important; }
 @media (max-width: 900px) {
-  .draw__track { height: 200vh; }
-  .draw__in { grid-template-columns: 1fr; gap: 26px; padding-top: 70px; }
+  .draw__in { grid-template-columns: 1fr; gap: 26px; }
   .draw .modern__title { margin-bottom: 14px; }
   .draw__txt .muted { display: none; }
   .draw__steps { margin-top: 18px; }
