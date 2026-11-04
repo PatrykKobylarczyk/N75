@@ -4,29 +4,33 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 
 ## Dane inwestycji
 - [ ] Liczba kondygnacji: **8** (`index.html`, sekcja 01, przyjęte z wizualizacji)
-- [ ] Liczba apartamentów: **42** i zakres metraży **32–138 m²**
+- [x] Liczba apartamentów: **50**, metraże **31,89–166,67 m²** (z rzutów projektu budowlanego, grudzień 2025)
 - [ ] Harmonogram: pozwolenie II kw. 2025, start IV kw. 2025, stan surowy IV kw. 2026, oddanie IV kw. 2027
-- [ ] Teksty opisowe (manifest, architektura, wnętrza, udogodnienia): napisane na podstawie wizualizacji, do akceptacji
-- [ ] Lista usług: concierge, garaż z przygotowaniem pod EV, komórki lokatorskie, kontrola dostępu
+- [x] Teksty: misja, architektura, udogodnienia, adres i sąsiedztwo, manifest pochodzą z dokumentu Uniqum_www
+- [ ] Teksty sekcji Wnętrza i opisy zespołu (Inwestor, Design Lab, kuratorka): skrócone, do akceptacji; filmy zespołu do dodania
+- [ ] Godziny pracy lobby i zakres obsługi
 
 ## Lokale (`assets/js/units.js`)
-- [ ] Cały plik to **przykładowe dane**: numery lokali, metraże, ekspozycje, ceny, statusy i historia cen
-- [ ] Rzuty: kafle pokazują schematyczny rysunek, w karcie lokalu przycisk „Rzut PDF” prowadzi do `#`
+- [x] Numery lokali, pomieszczenia i powierzchnie: prawdziwe, z rzutów pięter (N75A-PB-AR-102…108)
+- [ ] **Ceny, statusy i historia cen są przykładowe**: do podmiany na dane sprzedażowe
+- [ ] Znaczniki lokali na rzutach (`plan`, `pins`) są ustawione automatycznie przy numerach z PDF, część stoi przy obrysie budynku: do poprawienia na środek lokalu
+- [ ] Rzuty pięter (`assets/img/plany/`) to wycinki rysunków budowlanych; docelowo lepiej dać rzuty sprzedażowe (uproszczone, z meblami)
+- [ ] Kafle w wyszukiwarce pokazują schematyczny rysunek
 - [ ] Zdjęcie w karcie lokalu: dla M2.03 i M2.04 prawdziwe wizualizacje, dla pozostałych poglądowe
 
 ## Architektura
-- [ ] Autor i pracownia przy cytacie: `[Imię Nazwisko] · [Pracownia architektoniczna]`
-- [ ] Treść cytatu architekta (obecnie przykładowa)
+- [x] Cytat z manifestu
 
 ## Lokalizacja
 - [ ] Pinezka na mapie jest umieszczona na środku wycinka mapy, nie na dokładnym punkcie: ustawić `bbox` w iframe tak, by budynek wypadał w środku
-- [ ] Czasy dojścia (tramwaj, UŁ, Park Staszica, Piotrkowska, Łódź Fabryczna, Manufaktura): orientacyjne, do weryfikacji
+- [x] Lista miejsc z tekstu „Sąsiedztwo”, bez wymyślonych czasów dojścia
 
 ## Kontakt i formalności
-- [ ] Telefon `+48 000 000 000`, e-mail `sprzedaz@n75.pl`, kod pocztowy `90-001`, godziny biura
+- [x] Telefon +48 799 278 344 i dane inwestora (UNIQUM 5 sp. z o.o.)
+- [ ] E-mail `sprzedaz@n75.pl` i adres biura sprzedaży
 - [ ] Link do katalogu PDF
 - [ ] Formularz nie wysyła danych: podpiąć do CRM / API (miejsce oznaczone `TODO` w `assets/js/main.js`)
-- [ ] Nazwa dewelopera w stopce, polityka prywatności, prospekt informacyjny
+- [ ] Polityka prywatności, prospekt informacyjny
 - [ ] Treść zgody RODO
 
 ## Media

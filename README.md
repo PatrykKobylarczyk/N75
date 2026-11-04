@@ -44,13 +44,17 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 | 01 | Inwestycja | Opis, liczby, harmonogram budowy |
 | 02 | Architektura | Elewacje, cytat architekta, materiały |
 | 03 | Wnętrza | Foyer, korytarze, klatka, mieszkania (karuzela) |
-| 04 | Udogodnienia | Wellness, siłownia, patio, usługi |
-| 05 | Mieszkania | Wyszukiwarka: filtry, sortowanie, lista/kafle, karta lokalu z historią ceny |
-| 06 | Lokalizacja | Mapa OpenStreetMap, czasy dojścia |
-| 07 | Kontakt | Formularz zapytania (bez backendu), biuro sprzedaży |
+| 04 | Udogodnienia | Lobby, atrium, basen i wellness, detale, dostępność |
+| 05 | Mieszkania | Makieta budynku (piętro → rzut z lokalami) i wyszukiwarka: filtry, sortowanie, lista/kafle |
+| 06 | Lokalizacja | Adres, sąsiedztwo, mapa OpenStreetMap |
+| 07 | Zespół | Inwestor, architekci, kuratorka |
+| 08 | Kontakt | Formularz zapytania (bez backendu), biuro sprzedaży, dane inwestora |
+
+Podstrony: `manifest.html` (sam tekst) i `mieszkanie.html?id=M1.01` (karta mieszkania, `assets/js/unit.js`: rzut z zaznaczonym lokalem, pomieszczenia, cena, historia ceny, druk). Przycisk „Zapytaj o ten lokal” prowadzi do `index.html?lokal=ID#kontakt` i wybiera lokal w formularzu.
 
 ## Dane lokali
 
 `assets/js/units.js` ustawia `window.N75_UNITS`: tablicę obiektów
-`{ id, floor, rooms, area, loggia, terrace, exp, price, status, history }`.
+`{ id, floor, levels, rooms, area, plan, pins, roomsList, price, status, history }`.
+Numery, pomieszczenia i powierzchnie pochodzą z rzutów projektu budowlanego; ceny, statusy i historia są przykładowe. `plan`/`pins` to pozycja znacznika w % na `assets/img/plany/pietro-N.webp`.
 Statusy: `wolne`, `rezerwacja`, `sprzedane`. Docelowo plik można generować z CRM lub arkusza sprzedaży.

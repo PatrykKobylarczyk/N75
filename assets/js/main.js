@@ -144,7 +144,6 @@
   var fmt = new Intl.NumberFormat('pl-PL');
   var fmtA = new Intl.NumberFormat('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   var STATUS = { wolne: 'Wolne', rezerwacja: 'Rezerwacja', sprzedane: 'Sprzedane' };
-  var EXP = { N: 'północ', S: 'południe', E: 'wschód', W: 'zachód', NE: 'północny wschód', NW: 'północny zachód', SE: 'południowy wschód', SW: 'południowy zachód' };
 
   var floors = Array.from(new Set(units.map(function (u) { return u.floor; }))).sort(function (a, b) { return a - b; });
   var fFloor = $('#f-floor');
@@ -154,6 +153,10 @@
   units.filter(function (u) { return u.status !== 'sprzedane'; }).forEach(function (u) {
     var o = document.createElement('option'); o.value = u.id; o.textContent = u.id + ' · ' + fmtA.format(u.area) + ' m²'; cUnit.appendChild(o);
   });
+  /* index.html?lokal=M1.01#kontakt: formularz z wybranym lokalem (przycisk z karty mieszkania) */
+  var askFor = new URLSearchParams(location.search).get('lokal');
+  if (askFor && cUnit.querySelector('option[value="' + askFor.replace(/[^\w.]/g, '') + '"]')) cUnit.value = askFor;
+  function cardUrl(id) { return 'mieszkanie.html?id=' + encodeURIComponent(id); }
 
   function ppm(u) { return Math.round(u.price / u.area); }
   function priceTxt(u) { return u.status === 'sprzedane' ? '—' : fmt.format(u.price) + ' zł'; }
@@ -187,7 +190,7 @@
     return '<svg viewBox="0 0 100 80" aria-hidden="true"><path d="' + p.join(' ') + '"/></svg>';
   }
 
-  var COLS = [['id', 'Lokal'], ['floor', 'Piętro'], ['rooms', 'Pokoje'], ['area', 'Metraż'], ['exp', 'Ekspozycja'], ['price', 'Cena'], ['ppm', 'Cena za m²'], ['status', 'Status']];
+  var COLS = [['id', 'Lokal'], ['floor', 'Piętro'], ['rooms', 'Pokoje'], ['area', 'Metraż'], ['price', 'Cena'], ['ppm', 'Cena za m²'], ['status', 'Status']];
 
   function render() {
     var full = filtered();
@@ -207,18 +210,18 @@
         list.map(function (u) {
           return '<tr data-id="' + u.id + '" tabindex="0" class="' + (u.status === 'sprzedane' ? 'is-sold' : '') + '">' +
             '<td class="unit-id">' + u.id + '</td><td>' + u.floor + '</td><td>' + u.rooms + '</td>' +
-            '<td>' + fmtA.format(u.area) + ' m²</td><td>' + (EXP[u.exp] || u.exp) + '</td>' +
+            '<td>' + fmtA.format(u.area) + ' m²</td>' +
             '<td class="price">' + priceTxt(u) + '</td><td>' + (u.status === 'sprzedane' ? '—' : fmt.format(ppm(u)) + ' zł') + '</td>' +
             '<td><span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></td>' +
-            '<td class="go caps">Karta</td></tr>';
+            '<td class="go caps"><a href="' + cardUrl(u.id) + '" tabindex="-1">Karta</a></td></tr>';
         }).join('') + '</tbody></table></div>';
     } else {
       html = '<div class="tiles">' + list.map(function (u) {
-        return '<button class="tile" data-id="' + u.id + '">' +
+        return '<a class="tile" href="' + cardUrl(u.id) + '">' +
           '<div class="tile__top"><span class="tile__id">' + u.id + '</span><span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></div>' +
           '<div class="tile__plan">' + planSvg(u.rooms) + '</div>' +
           '<dl><div><dt>Metraż</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div><div><dt>Pokoje</dt><dd>' + u.rooms + '</dd></div>' +
-          '<div><dt>Piętro</dt><dd>' + u.floor + '</dd></div><div><dt>Cena</dt><dd>' + priceTxt(u) + '</dd></div></dl></button>';
+          '<div><dt>Piętro</dt><dd>' + u.levels.join('–') + '</dd></div><div><dt>Cena</dt><dd>' + priceTxt(u) + '</dd></div></dl></a>';
       }).join('') + '</div>';
     }
     out.innerHTML = html;
@@ -254,59 +257,114 @@
     if (e.target.closest('[data-reset]')) { resetFilters(); return; }
     var th = e.target.closest('th[data-sort]');
     if (th) { sortBy(th.dataset.sort); return; }
-    var row = e.target.closest('[data-id]');
-    if (row) openUnit(row.dataset.id);
+    var row = e.target.closest('tr[data-id]');
+    if (row && !e.target.closest('a')) location.href = cardUrl(row.dataset.id);
   });
   out.addEventListener('keydown', function (e) {
     if (e.key !== 'Enter') return;
     var th = e.target.closest('th[data-sort]');
     if (th) { sortBy(th.dataset.sort); return; }
     var row = e.target.closest('tr[data-id]');
-    if (row) openUnit(row.dataset.id);
+    if (row) location.href = cardUrl(row.dataset.id);
   });
   render();
 
-  /* ---------- Karta lokalu ---------- */
-  var modal = $('#unit-modal');
-  var modalFocus = null;
-  function openUnit(id) {
-    var u = units.filter(function (x) { return x.id === id; })[0];
-    if (!u) return;
-    modalFocus = document.activeElement;
-    var useLoggia = u.id === 'M2.04' || (u.id !== 'M2.03' && u.floor % 2 === 0);
-    $('#m-img').src = useLoggia ? 'assets/img/loggia-m2-04.webp' : 'assets/img/salon-m2-03.webp';
-    $('#m-img').alt = useLoggia ? 'Wizualizacja loggii' : 'Wizualizacja salonu';
-    $('#m-cap').textContent = (u.id === 'M2.03' || u.id === 'M2.04') ? 'Wizualizacja lokalu ' + u.id : 'Wizualizacja poglądowa';
-    $('#m-kicker').innerHTML = 'Piętro ' + u.floor + ' · <span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>';
-    $('#m-title').textContent = u.id;
-    var rows = [
-      ['Metraż', fmtA.format(u.area) + ' m²'], ['Pokoje', u.rooms],
-      ['Loggia', fmtA.format(u.loggia) + ' m²'], ['Taras', u.terrace ? fmtA.format(u.terrace) + ' m²' : '—'],
-      ['Ekspozycja', EXP[u.exp] || u.exp], ['Piętro', u.floor],
-      ['Cena', priceTxt(u)], ['Cena za m²', u.status === 'sprzedane' ? '—' : fmt.format(ppm(u)) + ' zł']
-    ];
-    $('#m-spec').innerHTML = rows.map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
-    $('#m-history').innerHTML = u.history.slice().reverse().map(function (h) {
-      var d = h[0].split('-');
-      return '<tr><td>' + d[2] + '.' + d[1] + '.' + d[0] + '</td><td>' + fmt.format(h[1]) + ' zł</td><td>' + fmt.format(Math.round(h[1] / u.area)) + ' zł</td></tr>';
-    }).join('');
-    var ask = $('#m-ask');
-    ask.style.display = u.status === 'sprzedane' ? 'none' : '';
-    ask.onclick = function () { cUnit.value = u.id; closeUnit(true); };
-    modal.classList.add('is-open'); modal.setAttribute('aria-hidden', 'false');
-    body.style.overflow = 'hidden';
-    $('.modal__close', modal).focus();
+  /* ---------- Makieta budynku: piętro → rzut z lokalami → karta mieszkania ---------- */
+  var mkSvg = $('#mk-svg'), mkPanel = $('#mk-panel');
+  if (mkSvg && mkPanel) {
+    var NS = 'http://www.w3.org/2000/svg';
+    // [x0, x1, y0, y1] kondygnacji na elewacji; 6 i 7 cofnięte tarasowo
+    var GEO = { 7: [120, 380, 100, 160], 6: [80, 420, 160, 220], 5: [40, 460, 220, 280], 4: [40, 460, 280, 340], 3: [40, 460, 340, 400], 2: [40, 460, 400, 460], 1: [40, 460, 460, 520] };
+    var onFloor = function (f) { return units.filter(function (u) { return u.levels.indexOf(f) >= 0; }); };
+    var free = function (l) { return l.filter(function (u) { return u.status === 'wolne'; }).length; };
+    var lokali = function (n) { return n === 1 ? 'lokal' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'lokale' : 'lokali'); };
+    var wolnych = function (n) { return n === 1 ? 'wolny' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'wolne' : 'wolnych'); };
+    function el(tag, attrs, parent) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      if (parent) parent.appendChild(e);
+      return e;
+    }
+    function bays(g, x0, x1, y0, h, n, cls) {
+      var w = (x1 - x0) / n;
+      for (var i = 0; i < n; i++) el('rect', { x: x0 + i * w + w * .22, y: y0, width: w * .56, height: h, class: cls }, g);
+    }
+    // garaż i parter (bez wyboru)
+    var base = el('g', { class: 'mk-base' }, mkSvg);
+    el('rect', { x: 40, y: 598, width: 420, height: 50, class: 'mk-garage' }, base);
+    el('text', { x: 250, y: 628, 'text-anchor': 'middle', class: 'mk-small' }, base).textContent = 'GARAŻ PODZIEMNY';
+    el('rect', { x: 40, y: 520, width: 420, height: 72, class: 'mk-ground' }, base);
+    for (var i = 0; i < 7; i++) {
+      var cx = 40 + i * 60 + 30;
+      el('path', { d: 'M' + (cx - 14) + ' 584V548a14 14 0 0 1 28 0V584Z', class: 'mk-door' }, base);
+    }
+    el('line', { x1: 0, y1: 594, x2: 600, y2: 594, class: 'mk-groundline' }, base);
+    el('text', { x: 478, y: 552, class: 'mk-num' }, base).textContent = '00';
+    el('text', { x: 478, y: 570, class: 'mk-small' }, base).textContent = 'LOBBY · USŁUGI';
+    // zielone tarasy
+    [[40, 80, 220], [420, 460, 220], [80, 120, 160], [380, 420, 160]].forEach(function (t) {
+      for (var x = t[0] + 6; x < t[1]; x += 11) el('circle', { cx: x, cy: t[2] - 6, r: 6, class: 'mk-green' }, base);
+    });
+    var floorEls = {};
+    [7, 6, 5, 4, 3, 2, 1].forEach(function (f) {
+      var gm = GEO[f], list = onFloor(f), nFree = free(list);
+      var g = el('g', { class: 'mk-floor', tabindex: 0, role: 'button', 'data-floor': f,
+        'aria-label': 'Piętro ' + f + ': ' + list.length + ' ' + lokali(list.length) + ', ' + nFree + ' ' + wolnych(nFree) }, mkSvg);
+      el('rect', { x: gm[0], y: gm[2], width: gm[1] - gm[0], height: gm[3] - gm[2], class: 'mk-body' }, g);
+      bays(g, gm[0], gm[1], gm[2] + 12, gm[3] - gm[2] - 22, Math.round((gm[1] - gm[0]) / 60), 'mk-win');
+      el('line', { x1: gm[0], y1: gm[3] - 6, x2: gm[1], y2: gm[3] - 6, class: 'mk-rail' }, g);
+      var ty = (gm[2] + gm[3]) / 2;
+      el('line', { x1: gm[1] + 4, y1: ty, x2: 470, y2: ty, class: 'mk-lead' }, g);
+      el('text', { x: 478, y: ty - 2, class: 'mk-num' }, g).textContent = (f < 10 ? '0' : '') + f;
+      el('text', { x: 478, y: ty + 16, class: 'mk-small' }, g).textContent = nFree + ' ' + wolnych(nFree).toUpperCase() + ' / ' + list.length;
+      g.addEventListener('click', function () { selectFloor(f, true); });
+      g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectFloor(f, true); } });
+      floorEls[f] = g;
+    });
+
+    function selectFloor(f, user) {
+      Object.keys(floorEls).forEach(function (k) {
+        floorEls[k].classList.toggle('is-active', +k === f);
+        floorEls[k].setAttribute('aria-pressed', String(+k === f));
+      });
+      var list = onFloor(f).sort(function (a, b) { return a.id < b.id ? -1 : 1; });
+      var nFree = free(list);
+      var pins = list.map(function (u) {
+        var pos = (u.pins && u.pins[f]) || u.plan;
+        if (!pos) return '';
+        return '<a class="pin pin--' + u.status + '" href="' + cardUrl(u.id) + '" data-id="' + u.id + '" style="left:' + pos[0] + '%;top:' + pos[1] + '%" aria-label="' + u.id + '">' + u.id + '</a>';
+      }).join('');
+      var items = list.map(function (u) {
+        return '<li><a class="mk-unit" href="' + cardUrl(u.id) + '" data-id="' + u.id + '">' +
+          '<span class="mk-unit__id">' + u.id + '</span>' +
+          '<span class="mk-unit__meta">' + u.rooms + ' pok. · ' + fmtA.format(u.area) + ' m²' + (u.levels.length > 1 ? ' · 2 poziomy' : '') + '</span>' +
+          '<span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></a></li>';
+      }).join('');
+      mkPanel.innerHTML =
+        '<div class="mk__head"><span class="num">Piętro</span><h3 class="display h3">' + f + '</h3>' +
+        '<span class="caps muted">' + list.length + ' ' + lokali(list.length) + ' · ' + nFree + ' ' + wolnych(nFree) + '</span></div>' +
+        (f === 7 ? '<p class="muted mk__note">Górne kondygnacje dwupoziomowych apartamentów z&nbsp;6. piętra.</p>' : '') +
+        '<div class="mk__body"><div class="mk__plan"><img src="assets/img/plany/pietro-' + f + '.webp" alt="Rzut piętra ' + f + '" width="1504" height="1925">' + pins + '</div>' +
+        '<ul class="mk__units">' + items + '</ul></div>' +
+        '<p class="mk__legend caps"><span class="dot dot--wolne"></span>Wolne <span class="dot dot--rezerwacja"></span>Rezerwacja <span class="dot dot--sprzedane"></span>Sprzedane</p>';
+      if (user && window.matchMedia('(max-width: 900px)').matches) mkPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    // podświetlanie: lokal na liście ↔ znacznik na rzucie
+    function hl(e, on) {
+      var a = e.target.closest && e.target.closest('[data-id]');
+      if (!a) return;
+      $$('[data-id="' + a.dataset.id + '"]', mkPanel).forEach(function (x) { x.classList.toggle('is-hl', on); });
+    }
+    mkPanel.addEventListener('mouseover', function (e) { hl(e, true); });
+    mkPanel.addEventListener('mouseout', function (e) { hl(e, false); });
+    mkPanel.addEventListener('focusin', function (e) { hl(e, true); });
+    mkPanel.addEventListener('focusout', function (e) { hl(e, false); });
+    selectFloor(2, false);
   }
-  function closeUnit(keepFocus) {
-    modal.classList.remove('is-open'); modal.setAttribute('aria-hidden', 'true'); body.style.overflow = '';
-    if (!keepFocus && modalFocus) modalFocus.focus();
-  }
-  modal.addEventListener('click', function (e) { if (e.target === modal || e.target.closest('[data-close]')) closeUnit(); });
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       if (lb.classList.contains('is-open')) closeLb();
-      else if (modal.classList.contains('is-open')) closeUnit();
       else if (body.classList.contains('menu-open')) setMenu(false);
     }
     if (lb.classList.contains('is-open')) {
