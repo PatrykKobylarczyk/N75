@@ -117,6 +117,7 @@
     var at = function (u, v) { return horiz ? [cx + u, cz + v] : [cx + v, cz + u]; };
     var ok = function (u, v) { return inside(at(u, v), P); };
     var plant = function (u, v, r) {
+      return;
       if (!ok(u, v)) return; var p = at(u, v);
       M.cyl(p[0], p[1], r, dy, dy + 0.55, C.pot, 18);
       M.cyl(p[0], p[1], r * 1.35, dy + 0.75, dy + 1.05, C.olive, 14); M.cyl(p[0], p[1], r * 1.05, dy + 1.05, dy + 1.3, C.olive2, 12); M.cyl(p[0], p[1], 0.02, dy + 0.55, dy + 0.78, C.walnut, 6);
@@ -261,9 +262,6 @@
         while (changed) { changed = false; regs.forEach(function (r) { if (part.indexOf(r) < 0 && part.some(function (p) { return near(p, r); }) && r.A < 1.6) { part.push(r); changed = true; } }); }
         var sb = bbox([].concat.apply([], part.map(function (r) { return [[r.b[0], r.b[1]], [r.b[2], r.b[3]]]; })));
         M.prism(R(shrinkL(sb, 3)), Y(0.02), Y(0.18), C.taupe);
-        var pl = L(sb[2] + 28, (sb[1] + sb[3]) / 2 - (sb[3] - sb[1]) * 0.3);   // oliwka w donicy przy sofie
-        M.cyl(pl[0], pl[1], 0.18, Y(0), Y(0.45), C.pot, 18); M.cyl(pl[0], pl[1], 0.02, Y(0.45), Y(0.9), C.walnut, 6);
-        M.cyl(pl[0], pl[1], 0.3, Y(0.9), Y(1.25), C.olive, 14); M.cyl(pl[0], pl[1], 0.22, Y(1.25), Y(1.5), C.olive2, 12);
         var lp = L(sb[0] - 24, (sb[1] + sb[3]) / 2 - (sb[3] - sb[1]) * 0.3);   // lampa podłogowa
         M.cyl(lp[0], lp[1], 0.14, Y(0), Y(0.03), C.bronze, 16); M.cyl(lp[0], lp[1], 0.012, Y(0.03), Y(1.45), C.bronze, 6); M.cyl(lp[0], lp[1], 0.2, Y(1.45), Y(1.72), C.curtain, 20);
         part.forEach(function (r) {
@@ -280,7 +278,7 @@
             M.prism(P(r), Y(0.0), Y(0.32), C.travertine);
             M.prism(P(r), Y(0.32), Y(0.38), C.travertine);
             var c = cen(r.P), cc = L(c[0], c[1]);
-            M.cyl(cc[0], cc[1], 0.09, Y(0.38), Y(0.5), C.pot, 16); M.cyl(cc[0], cc[1], 0.03, Y(0.5), Y(0.62), C.green, 8);
+            M.cyl(cc[0], cc[1], 0.08, Y(0.38), Y(0.47), C.travertine, 16);
             var rb = r.b; M.prism(R([Math.min(rb[0], sb[0]) - 30, Math.min(rb[1], sb[1]) - 10, Math.max(rb[2], sb[2]) + 30, Math.max(rb[3], sb[3]) + 10]), Y(0), Y(0.012), C.rug);
           }
         });
@@ -560,7 +558,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793897207').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793899486').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
