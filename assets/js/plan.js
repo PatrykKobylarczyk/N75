@@ -27,14 +27,15 @@
   }
   var ease = function (t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
 
-  /* opts: floor, units, href(u), current (id lokalu zaznaczonego na stałe), onPick(u, ev) */
+  /* opts: floor, units, frame, href(u), current (id lokalu zaznaczonego na stałe), onPick(u, ev) */
   function create(container, opts) {
     var f = String(opts.floor);
     var list = opts.units.filter(function (u) { return u.shape && u.shape[f]; });
-    var full = pad(box(list.map(function (u) { return u.shape[f]; })), .06);
+    // frame: [x,y,w,h] stały kadr (np. parter, gdzie lokale nie wypełniają całego rzutu)
+    var full = opts.frame ? opts.frame.slice() : pad(box(list.map(function (u) { return u.shape[f]; })), .06);
     var vb = full.slice(), anim = null, zoomed = null;
 
-    var svg = el('svg', { class: 'pl', viewBox: vb.join(' '), preserveAspectRatio: 'xMidYMid meet', role: 'group', 'aria-label': 'Rzut piętra ' + f });
+    var svg = el('svg', { class: 'pl', viewBox: vb.join(' '), preserveAspectRatio: 'xMidYMid meet', role: 'group', 'aria-label': f === '0' ? 'Rzut parteru' : 'Rzut piętra ' + f });
     svg.style.aspectRatio = (full[2] / full[3]).toFixed(4);
     el('image', { href: 'assets/img/plany/pietro-' + f + '.webp', x: 0, y: 0, width: W, height: H, class: 'pl-img' }, svg);
     // wersja szczegółowa (z meblami) do widoku pojedynczego lokalu; ładowana przy pierwszym przybliżeniu

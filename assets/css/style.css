@@ -759,7 +759,9 @@ p { max-width: 72ch; }
 .mk-lead { stroke: var(--line); stroke-width: 1; transition: stroke .25s; }
 .mk-num { font-family: var(--head); font-size: 20px; fill: var(--graphite); letter-spacing: .06em; }
 .mk-small { font-family: var(--head); font-weight: 500; font-size: 10px; letter-spacing: .16em; fill: #8c8478; }
+.mk-floor--0 .mk-body { fill: #e9e1d4; }
 .mk-floor:hover .mk-body, .mk-floor:focus-visible .mk-body { fill: #e6d6c2; }
+.mk-floor--0.is-active .mk-door { fill: #b88c62; }
 .mk-floor.is-active .mk-body { fill: var(--bronze); }
 .mk-floor.is-active .mk-win { fill: #b88c62; }
 .mk-floor.is-active .mk-num, .mk-floor:hover .mk-num { fill: var(--bronze); }

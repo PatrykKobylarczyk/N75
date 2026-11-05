@@ -54,3 +54,12 @@ window.N75_UNITS = [
   {"id":"M6.03","floor":6,"levels":[6],"rooms":3,"area":97.68,"roomsList":[[1,"Pokój",19.64],[2,"Pokój",12.81],[3,"Łazienka",4.29],[4,"Salon z aneksem kuchennym",37.19],[5,"Łazienka",5.57],[6,"Komunikacja",15.65],[7,"Garderoba",3.08]],"price":1828570,"status":"wolne","history":[["2026-08-25",1828570]],"shape":{"6":[[300,975],[410,975],[410,1060],[640,1060],[640,1310],[720,1310],[720,1450],[640,1450],[640,1610],[300,1610]]},"label":{"6":[477,1380]},"crop":{"6":[245,897,528,790]}},
   {"id":"M6.04","floor":6,"levels":[6,7],"rooms":5,"area":164.65,"roomsList":[[1,"Salon z aneksem kuchennym",47.53],[2,"Pokój",13.91],[3,"Pokój",15.47],[4,"Łazienka",7.64],[5,"Komunikacja",15.56],[6,"WC",3.65],[7,"Pralnia",1.85],[8,"Garderoba",5.44],[9,"Pokój",10.11],[10,"Pokój",11.08],[11,"Łazienka",5.58],[12,"Sauna",4.28],[13,"Komunikacja",23.3]],"price":2996630,"status":"wolne","history":[["2026-08-25",2996630]],"shape":{"6":[[640,920],[1005,920],[1005,1610],[640,1610],[640,1450],[720,1450],[720,1160],[640,1160]],"7":[[490,765],[640,765],[640,960],[780,960],[780,1075],[940,1075],[940,1215],[932,1273],[910,1328],[874,1374],[828,1410],[773,1432],[715,1440],[657,1432],[602,1410],[556,1374],[520,1328],[498,1273],[490,1215]]},"label":{"6":[850,1075],"7":[715,1250]},"crop":{"6":[591,836,461,857],"7":[432,682,565,839]}}
 ];
+
+/* Lokale usługowe na parterze wg rzutu N75A-PB-AR-101 (rew. 11, 19.10.2026) i zestawienia powierzchni z tego rysunku.
+   shape/label w pikselach rzutu assets/img/plany/pietro-0.webp (1504×1925, ta sama skala i układ co piętra).
+   Cena nie jest jeszcze ustalona (price: null → „na zapytanie”). Przeznaczenie lokalu wg odrębnego opracowania. */
+window.N75_USLUGI = [
+  {"id":"U.0.1","floor":0,"name":"Lokal usługowy 1","area":38.55,"price":null,"status":"wolne","shape":{"0":[[383,148],[637,148],[637,440],[383,440]]},"label":{"0":[510,300]}},
+  {"id":"U.0.2","floor":0,"name":"Lokal usługowy 2","area":113.30,"price":null,"status":"wolne","shape":{"0":[[122,955],[300,955],[300,1052],[458,1052],[458,1298],[670,1298],[670,1505],[122,1505]]},"label":{"0":[290,1240]}},
+  {"id":"U.0.3","floor":0,"name":"Lokal usługowy 3","area":101.53,"price":null,"status":"wolne","shape":{"0":[[368,1510],[1170,1510],[1170,1765],[368,1765]]},"label":{"0":[770,1645]}}
+];
