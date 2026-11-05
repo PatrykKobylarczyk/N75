@@ -461,7 +461,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793896174" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793896490" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -621,6 +621,7 @@
           '<span class="mk-unit__price">' + priceTxt(u) + '</span></a></li>';
       }).join('');
     }
+    var FRAME_UP = null;
     function selectFloor(f, user) {
       curFloor = f;
       Object.keys(floorEls).forEach(function (k) {
@@ -639,9 +640,16 @@
         '<div class="mk__side" id="mk-side" hidden></div></div>' +
         '<div class="mk__foot">' +
         '<a class="mk__cat caps" href="assets/N75_katalog.pdf" download="N75_katalog.pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg><span>Pobierz katalog inwestycji</span></a></div>';
+      // jeden kadr dla wszystkich pięter mieszkalnych: rzuty w tej samej skali i położeniu
+      if (!FRAME_UP) {
+        var bx = [Infinity, Infinity, -Infinity, -Infinity];
+        units.forEach(function (u) { Object.keys(u.shape || {}).forEach(function (k) { if (k !== '0') u.shape[k].forEach(function (p) { bx[0] = Math.min(bx[0], p[0]); bx[1] = Math.min(bx[1], p[1]); bx[2] = Math.max(bx[2], p[0]); bx[3] = Math.max(bx[3], p[1]); }); }); });
+        var pw = (bx[2] - bx[0]) * .04, ph = (bx[3] - bx[1]) * .04;
+        FRAME_UP = [bx[0] - pw, bx[1] - ph, bx[2] - bx[0] + 2 * pw, bx[3] - bx[1] + 2 * ph];
+      }
       var zones = (window.N75_STREFY || []).filter(function (z) { return z.floor === f; });
       plan = window.N75Plan.create($('#mk-plan'), {
-        floor: f, units: list.concat(zones), frame: g0 ? [70, 100, 1424, 1720] : null, href: function (u) { return u.kind ? '#' + u.id.toLowerCase() : g0 ? '?lokal=' + encodeURIComponent(u.id) + '#kontakt' : cardUrl(u.id); },
+        floor: f, units: list.concat(zones), frame: g0 ? [70, 100, 1424, 1720] : FRAME_UP, href: function (u) { return u.kind ? '#' + u.id.toLowerCase() : g0 ? '?lokal=' + encodeURIComponent(u.id) + '#kontakt' : cardUrl(u.id); },
         onPick: function (u, ev) { if (ev.metaKey || ev.ctrlKey || ev.shiftKey) return; ev.preventDefault(); showUnit(u); }
       });
       if (user && window.matchMedia('(max-width: 900px)').matches) mkPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
