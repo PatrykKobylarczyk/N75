@@ -9,9 +9,9 @@
   /* ---------- paleta quiet luxury (sRGB 0–255) ---------- */
   var C = {
     wall: [238, 233, 225], wallTop: [58, 54, 50], slab: [70, 65, 60],
-    oak: [128, 92, 66], tile: [222, 214, 201], stone: [205, 198, 187],
+    oak: [104, 74, 53], tile: [222, 214, 201], stone: [205, 198, 187],
     linen: [236, 230, 220], linen2: [244, 241, 235], boucle: [232, 226, 215], sand: [214, 200, 179], taupe: [176, 160, 141],
-    mocha: [134, 108, 88], walnut: [96, 70, 52], door: [84, 60, 44], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
+    mocha: [134, 108, 88], walnut: [96, 70, 52], door: [78, 52, 36], onyx: [120, 78, 56], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
     black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [110, 172, 220], rug: [226, 217, 202],
     green: [110, 124, 92], pot: [196, 184, 166], teak: [168, 134, 98], teak2: [150, 114, 80], olive: [118, 128, 96], olive2: [134, 144, 110],
     bronze: [120, 96, 70], frame: [74, 68, 62], curtain: [240, 235, 226], rugOut: [214, 205, 190]
@@ -147,25 +147,41 @@
       M.prism(X(f.p), dy - 0.22, dy, C.slab, top, 0, mat);
       if (out) loggia(M, X(f.p), dy); else inner.push(X(f.p));
     });
-    // drzwi wejściowe: płyta z orzecha w ościeżnicy, mosiężny uchwyt
-    (lv.doors || []).forEach(function (d) {
-      var a = [d[0][0] + dx, d[0][1] + dz], b = [d[1][0] + dx, d[1][1] + dz];
-      var ux = b[0] - a[0], uz = b[1] - a[1], L = Math.hypot(ux, uz) || 1; ux /= L; uz /= L;
-      var nx = -uz, nz = ux, t = 0.03;
-      var Q = function (u0, u1, v0, v1) { return [[a[0] + ux * u0 + nx * v0, a[1] + uz * u0 + nz * v0], [a[0] + ux * u1 + nx * v0, a[1] + uz * u1 + nz * v0], [a[0] + ux * u1 + nx * v1, a[1] + uz * u1 + nz * v1], [a[0] + ux * u0 + nx * v1, a[1] + uz * u0 + nz * v1]]; };
-      M.prism(Q(0, L, -0.09, 0.09), dy - 0.22, dy + 0.01, C.wall, C.wallTop);
-      M.prism(Q(0.02, L - 0.02, -t, t), dy + 0.01, dy + WALL_H, C.door, C.door);
-      M.prism(Q(-0.04, 0.02, -0.08, 0.08), dy, dy + WALL_H, C.frame); M.prism(Q(L - 0.02, L + 0.04, -0.08, 0.08), dy, dy + WALL_H, C.frame);
-      [-1, 1].forEach(function (sd) { M.prism(Q(L - 0.16, L - 0.12, sd * t, sd * (t + 0.05)), dy + 0.95, dy + 1.25, C.brass); });
-    });
+    // drzwi: uchylone skrzydło na zawiasie z rzutu (h – zawias, c – koniec w zamknięciu, sw – kierunek otwierania)
+    function door(d, entry) {
+      var h = [d[0][0] + dx, d[0][1] + dz], c = [d[1][0] + dx, d[1][1] + dz], sw = [d[2][0] + dx, d[2][1] + dz];
+      var R = Math.hypot(c[0] - h[0], c[1] - h[1]) || 0.9;
+      var ux = (c[0] - h[0]) / R, uz = (c[1] - h[1]) / R, vx = (sw[0] - h[0]) / R, vz = (sw[1] - h[1]) / R;
+      var ang = entry ? 0.62 : 0.78, ca = Math.cos(ang), sa = Math.sin(ang);
+      var dxl = ux * ca + vx * sa, dzl = uz * ca + vz * sa, nx = -dzl, nz = dxl, t = entry ? 0.035 : 0.022, H2 = WALL_H - 0.02;
+      var Q = function (u0, u1, v0, v1) { return [[h[0] + dxl * u0 + nx * v0, h[1] + dzl * u0 + nz * v0], [h[0] + dxl * u1 + nx * v0, h[1] + dzl * u1 + nz * v0], [h[0] + dxl * u1 + nx * v1, h[1] + dzl * u1 + nz * v1], [h[0] + dxl * u0 + nx * v1, h[1] + dzl * u0 + nz * v1]]; };
+      var F = function (u0, u1, v0, v1) { return [[h[0] + ux * u0 + vx * v0, h[1] + uz * u0 + vz * v0], [h[0] + ux * u1 + vx * v0, h[1] + uz * u1 + vz * v0], [h[0] + ux * u1 + vx * v1, h[1] + uz * u1 + vz * v1], [h[0] + ux * u0 + vx * v1, h[1] + uz * u0 + vz * v1]]; };
+      var L = R - 0.02;
+      if (entry) {
+        M.prism(Q(0.02, L, -t, t), dy + 0.17, dy + H2, C.door, C.door);            // orzech
+        M.prism(Q(0.02, L, -t - 0.004, t + 0.004), dy + 0.01, dy + 0.17, C.brass);  // mosiężny cokół
+        [-1, 1].forEach(function (s_) { M.prism(Q(L - 0.13, L - 0.1, s_ * t, s_ * (t + 0.05)), dy + 1.0, dy + 1.05, C.brass); M.prism(Q(L - 0.22, L - 0.1, s_ * (t + 0.03), s_ * (t + 0.05)), dy + 1.0, dy + 1.03, C.brass); });
+        // ościeżnica z orzecha i pas onyksu przy drzwiach
+        M.prism(F(-0.06, 0, -0.1, 0.1), dy, dy + WALL_H, C.door); M.prism(F(R, R + 0.06, -0.1, 0.1), dy, dy + WALL_H, C.door);
+        M.prism(F(-0.26, -0.06, -0.11, -0.07), dy, dy + WALL_H, C.onyx);
+      } else {
+        M.prism(Q(0.01, L, -t, t), dy + 0.01, dy + H2, C.white, C.white);
+        [-1, 1].forEach(function (s_) { M.prism(Q(L - 0.12, L - 0.09, s_ * t, s_ * (t + 0.04)), dy + 1.0, dy + 1.03, C.brass); });
+      }
+    }
+    (lv.doors || []).forEach(function (d) { door(d, true); });
+    (lv.idoors || []).forEach(function (d) { door(d, false); });
     // ściany: przekrój ciemny na górze
     lv.walls.forEach(function (w) { M.box(w[0] + dx, w[1] + dz, w[2] + dx, w[3] + dz, dy - 0.22, dy + WALL_H, C.wall, C.wallTop, 4); });
-    // balustrady loggii: szkło + smukły pochwyt
+    // loggie od zewnątrz otwarte: niski murek/obrzeże i smukły brązowy pochwyt na słupkach
     (lv.rails || []).forEach(function (r) {
-      var x0 = r[0] + dx, z0 = r[1] + dz, x1 = r[2] + dx, z1 = r[3] + dz, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, hx = Math.max(x1 - x0, 0.06) / 2, hz = Math.max(z1 - z0, 0.06) / 2;
-      var t = 0.025;
-      if (hx >= hz) { glassM.box(x0, cz - t, x1, cz + t, dy, dy + 1.05, C.glass, C.glass, 9); M.box(x0, cz - 0.03, x1, cz + 0.03, dy + 1.05, dy + 1.1, C.bronze); M.box(x0, cz - 0.05, x1, cz + 0.05, dy - 0.22, dy + 0.06, C.wall, C.wallTop); }
-      else { glassM.box(cx - t, z0, cx + t, z1, dy, dy + 1.05, C.glass, C.glass, 9); M.box(cx - 0.03, z0, cx + 0.03, z1, dy + 1.05, dy + 1.1, C.bronze); M.box(cx - 0.05, z0, cx + 0.05, z1, dy - 0.22, dy + 0.06, C.wall, C.wallTop); }
+      var x0 = r[0] + dx, z0 = r[1] + dz, x1 = r[2] + dx, z1 = r[3] + dz, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, horiz = (x1 - x0) >= (z1 - z0);
+      var a0 = horiz ? x0 : z0, a1 = horiz ? x1 : z1, c = horiz ? cz : cx;
+      var B_ = function (u0, u1, w, y0, y1, col) { M.box(horiz ? u0 : c - w, horiz ? c - w : u0, horiz ? u1 : c + w, horiz ? c + w : u1, y0, y1, col); };
+      B_(a0, a1, 0.05, dy - 0.22, dy + 0.06, C.wall);
+      B_(a0, a1, 0.02, dy + 1.05, dy + 1.09, C.bronze);
+      var n = Math.max(1, Math.round((a1 - a0) / 1.2));
+      for (var i = 0; i <= n; i++) { var m = a0 + (a1 - a0) * i / n; B_(m - 0.015, m + 0.015, 0.015, dy + 0.06, dy + 1.05, C.bronze); }
     });
     // okna: półprzezroczyste szkło w smukłych ramach + lniane zasłony od środka
     lv.glass.forEach(function (g) {
@@ -355,8 +371,10 @@
     'float sh(){vec3 q=vL.xyz/vL.w*.5+.5;if(q.x<0.||q.x>1.||q.y<0.||q.y>1.)return 1.;float s=0.;vec2 t=1./vec2(textureSize(uS,0));' +
     'for(int x=-2;x<=2;x++)for(int y=-2;y<=2;y++){float d=texture(uS,q.xy+vec2(x,y)*t*2.2).r;s+=q.z-.0012>d?0.:1.;}return s/25.;}' +
     'void main(){vec3 N=normalize(vN);vec3 col=lin(vC);int M=int(vM+.5);' +
-    'if(M==1&&N.y>.5){vec2 g=vP.xz*vec2(1.,5.2);float row=floor(g.y);float off=h(vec2(row,3.))*3.;float pl=floor(g.x/1.6+off);' +
-    'float v=h(vec2(pl,row));col*=.86+.24*v;col*=1.-.07*sin(vP.x*31.+v*9.+sin(vP.z*7.)*2.);float e=min(fract(g.y),1.-fract(g.y));col*=mix(.84,1.,smoothstep(0.,.05,e));}' +
+    'if(M==1&&N.y>.5){float cw=.42,bw=.12;float cx=vP.x/cw;float ci=floor(cx);float lx=fract(cx)*cw;float sg=mod(ci,2.)<1.?1.:-1.;' +
+    'float u=(vP.z+sg*lx)*.7071;float ri=floor(u/bw);float fu=fract(u/bw);float v=h(vec2(ri,ci));' +
+    'col*=.84+.26*v;col*=1.-.06*sin((vP.z-sg*lx)*46.+v*11.);' +
+    'float e=min(fu,1.-fu);float ec=min(fract(cx),1.-fract(cx))*cw;col*=mix(.8,1.,smoothstep(0.,.035,e))*mix(.78,1.,smoothstep(0.,.006,ec));}' +
     'if(M==2&&N.y>.5){vec2 g=fract(vP.xz/.6);float e=min(min(g.x,1.-g.x),min(g.y,1.-g.y));col*=mix(.9,1.,smoothstep(0.,.02,e));col*=.97+.05*h(floor(vP.xz/.6));}' +
     'if(M==3&&N.y>.5){float g=fract(vP.x*7.);float v=h(vec2(floor(vP.x*7.),floor(vP.z*1.2)));col*=.92+.12*v;col*=mix(.8,1.,smoothstep(0.,.08,min(g,1.-g)));}' +
     'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),3.);o=vec4(mix(vC,vec3(.85,.93,1.),fr*.5),uA+fr*.2);return;}' +
@@ -542,7 +560,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793896490').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793896862').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
