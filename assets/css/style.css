@@ -1408,10 +1408,10 @@ a.tile { display: block; color: inherit; }
 .pierzeja__lines path { stroke-width: 2; }
 .pierzeja__lines .s-hatch { stroke-width: 1.4; opacity: .75; }
 .pierzeja__lines .draw__tip { fill: #342a21; }
-.pierzeja__fig img { transition: opacity 1.2s ease; }
-.pierzeja__lines { transition: opacity 1.2s ease; }
+.pierzeja__fig img { transition: opacity .8s ease; }
+.pierzeja__lines { transition: opacity .8s ease; }
 .pierzeja__fig.is-drawing img { opacity: 0; }
 .pierzeja__fig.is-drawn img { opacity: 1; }
 .pierzeja__fig.is-drawn .pierzeja__lines { opacity: 0; }
 .pierzeja__fig.is-drawing .pierzeja__tag { opacity: 0; transition: none; }
-.pierzeja__fig.is-drawn .pierzeja__tag { opacity: 1; transition: opacity .8s .5s; }
+.pierzeja__fig.is-drawn .pierzeja__tag { opacity: 1; transition: opacity .6s .3s; }
