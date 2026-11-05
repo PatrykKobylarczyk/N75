@@ -1,5 +1,5 @@
 /* Wspólne dodatki dla wszystkich stron: ulubione lokale, pasek kontaktu na telefonie,
-   delikatna paralaksa panoramy i wejście numerów sekcji. Bez zależności. */
+   płynne przewijanie i wejście numerów sekcji. Bez zależności. */
 (function () {
   'use strict';
   var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -79,22 +79,7 @@
     window.addEventListener('scroll', upd, { passive: true }); window.addEventListener('resize', upd); upd();
   }
 
-  /* ---------- Paralaksa panoramy i wejście numerów sekcji ---------- */
-  var pano = $$('.panorama img');
-  if (pano.length) {
-    var ticking = false;
-    var par = function () {
-      ticking = false;
-      pano.forEach(function (img) {
-        var r = img.parentNode.getBoundingClientRect(), vh = window.innerHeight;
-        if (r.bottom < 0 || r.top > vh) return;
-        var p = (r.top + r.height / 2 - vh / 2) / (vh + r.height);   // -0.5 … 0.5
-        img.style.transform = 'translate3d(0,' + (p * 12).toFixed(2) + '%,0) scale(1.14)';
-      });
-    };
-    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(par); } }, { passive: true });
-    window.addEventListener('resize', par); par();
-  }
+  /* ---------- Wejście numerów sekcji ---------- */
   var nums = $$('.sec-head .num');
   if (nums.length && 'IntersectionObserver' in window) {
     nums.forEach(function (n) { n.classList.add('num-in'); });
