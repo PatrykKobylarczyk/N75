@@ -1346,3 +1346,8 @@ a.tile { display: block; color: inherit; }
 
 .drawer__nav .num--sub { font-size: .8em; opacity: .7; }
 .drawer__manifest + li:not(.drawer__manifest) { margin-top: clamp(4px, 1.2vh, 12px); }
+
+/* link do katalogu pod makietą */
+.mk__cat { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; padding: 12px 0; color: var(--ink); border-bottom: 1px solid var(--line); transition: color .3s, border-color .3s; }
+.mk__cat svg { width: 16px; height: 16px; fill: none; stroke: var(--bronze); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.mk__cat:hover, .mk__cat:focus-visible { color: var(--bronze); border-color: var(--bronze); }
