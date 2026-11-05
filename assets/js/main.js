@@ -205,20 +205,22 @@
     var paths = [], tip = null, ready = false, seen = false, run = 0;
     var SPEED = { line: 1.25, light: 2.2, hatch: 3.2 };    // px/ms
     var host = opts.host || stage;
-    function reset() { run++; paths.forEach(function (p) { p.el.style.strokeDashoffset = p.L; }); if (tip) tip.style.opacity = 0; host.classList.remove('is-drawn'); host.classList.add('is-drawing'); }
-    function finish() { paths.forEach(function (p) { p.el.style.strokeDashoffset = 0; }); if (tip) tip.style.opacity = 0; host.classList.add('is-drawn'); }
+    var words = opts.words || [];
+    function reset() { run++; paths.forEach(function (p) { p.el.style.strokeDashoffset = p.L; }); words.forEach(function (w) { w.el.classList.remove('is-on'); }); if (tip) tip.style.opacity = 0; host.classList.remove('is-drawn'); host.classList.add('is-drawing'); }
+    function finish() { paths.forEach(function (p) { p.el.style.strokeDashoffset = 0; }); words.forEach(function (w) { w.el.classList.add('is-on'); }); if (tip) tip.style.opacity = 0; host.classList.add('is-drawn'); }
     // odtwarzane za każdym razem, gdy szkic wchodzi na ekran (także po powrocie przewijaniem)
     // jedna oś czasu dla wszystkich kresek: kilka krótkich kresek może narysować się w jednej klatce
     function play() {
       if (!ready || !seen) return;
       if (reduced) { finish(); return; }
-      reset(); var my = run, t0 = null, idx = 0; tip.style.opacity = 1;
+      reset(); words.forEach(function (w) { w.on = 0; }); var my = run, t0 = null, idx = 0; tip.style.opacity = 1;
       var total = paths.length ? paths[paths.length - 1].s + paths[paths.length - 1].d : 0;
       (function step(ts) {
         if (my !== run) return;
         if (t0 === null) t0 = ts;
         var el = ts - t0;
         while (idx < paths.length && paths[idx].s + paths[idx].d <= el) { paths[idx].el.style.strokeDashoffset = 0; idx++; }
+        words.forEach(function (w) { if (w.t <= el && !w.on) { w.on = 1; w.el.classList.add('is-on'); } });
         if (idx < paths.length && paths[idx].s <= el) {
           var p = paths[idx], t = (el - p.s) / p.d, e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
           p.el.style.strokeDashoffset = (p.L * (1 - e)).toFixed(1);
@@ -243,6 +245,12 @@
       var raw = paths.reduce(function (a, p) { return a + p.d; }, 0), k = Math.max(.05, (opts.total - gaps) / Math.max(1, raw));
       var acc = 0;
       paths.forEach(function (p) { p.d = Math.max(opts.min || 8, p.d * k); p.s = acc; acc += p.d + (p.k === 'line' ? gap : 0); });
+      // słowa nad budynkami: każde pojawia się, gdy narysuje się większość kresek „jego” kamienicy
+      words.forEach(function (w) {
+        var ends = paths.filter(function (p) { if (p.cx === undefined) { var b = p.el.getBBox(); p.cx = b.x + b.width / 2; } return p.cx >= w.x0 && p.cx < w.x1; })
+          .map(function (p) { return p.s + p.d; }).sort(function (a, b) { return a - b; });
+        w.t = ends.length ? ends[Math.floor(ends.length * .55)] : 0;
+      });
       ready = true; host.classList.add('is-drawing'); play();
     }).catch(function () { host.classList.add('is-drawn'); });
     if ('IntersectionObserver' in window) {
@@ -256,7 +264,8 @@
     } else seen = true;
   }
   sketch($('#draw-lines'), $('#draw-stage'), { total: 4500, gap: 14 });
-  sketch($('#pierzeja-lines'), $('#pierzeja-scroll'), { total: 5500, gap: 0, tip: 4, min: 1, host: $('#pierzeja-fig') });
+  sketch($('#pierzeja-lines'), $('#pierzeja-scroll'), { total: 5500, gap: 0, tip: 4, min: 1, host: $('#pierzeja-fig'),
+    words: $$('#pierzeja-fig [data-x0]').map(function (el) { return { el: el, x0: +el.dataset.x0, x1: +el.dataset.x1 }; }) });
 
   /* ---------- Modernizm to… (zmieniające się słowo) ---------- */
   var rot = $('#modern-rot');
@@ -461,7 +470,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793902722" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793908609" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 

@@ -1493,3 +1493,29 @@ body.dh-open { overflow: hidden; }
 .mk-floor.is-active .mk-bar { stroke: #f4ede2; opacity: .9; }
 .mk-floor--0.is-active .mk-body { fill: var(--bronze); }
 .mk-floor--0.is-active .mk-door--glass { fill: #b88c62; }
+
+/* Mapa jak rysunek ręczny na papierze czerpanym */
+.map__fx { position: absolute; width: 0; height: 0; overflow: hidden; }
+.map { background: #f3ece0; border-color: #e2d8c8; box-shadow: inset 0 0 0 1px rgba(255,255,255,.4); }
+.map.leaflet-container { background: #f3ece0; }
+.map .leaflet-tile-pane { filter: none; }
+.map img.leaflet-tile { filter: url(#map-hand); width: 259px !important; height: 259px !important; margin: -1.5px 0 0 -1.5px; }
+.map::after { content: ""; position: absolute; inset: 0; z-index: 450; pointer-events: none;
+  background: url(../img/papier-czerpany.webp) 0 0 / 512px 512px;
+  mix-blend-mode: multiply;
+  box-shadow: inset 0 0 38px 6px rgba(150, 122, 88, .22), inset 0 0 4px 1px rgba(150, 122, 88, .25); }
+.map > iframe { filter: grayscale(1) sepia(.35) contrast(1.05) brightness(1.02); }
+.map .leaflet-control-zoom, .map .map__home { box-shadow: none; }
+.map .leaflet-bar { border: 1px solid #cdbfa9; border-radius: 0; }
+.map .leaflet-bar a { background: rgba(247, 241, 230, .92); font-family: var(--head); font-weight: 300; }
+.map .leaflet-control-attribution { background: rgba(243, 236, 224, .85); color: #8c8478; }
+
+/* Pierzeja: zdanie składane słowo po słowie nad kolejnymi budynkami */
+.pierzeja__word { position: absolute; top: -10px; display: flex; flex-direction: column; align-items: center; gap: 8px; transform: translate(-50%, calc(-100% + 8px)); opacity: 0; transition: opacity .7s ease, transform .9s cubic-bezier(.2, .7, .2, 1); pointer-events: none; white-space: nowrap; }
+.pierzeja__word b { order: -1; font-family: var(--head); font-weight: 300; font-size: clamp(13px, 1.25vw, 19px); letter-spacing: .14em; text-transform: uppercase; color: var(--graphite); padding-left: .14em; }
+.pierzeja__word i { width: 1px; height: clamp(18px, 2.4vw, 36px); background: #cfc3b2; }
+.pierzeja__word.is-on, .no-js .pierzeja__word { opacity: 1; transform: translate(-50%, -100%); }
+.pierzeja__fig .pierzeja__tag.is-on { opacity: 1; }
+.pierzeja__tag { transition: opacity .8s; }
+@media (prefers-reduced-motion: reduce) { .pierzeja__word { opacity: 1; transform: translate(-50%, -100%); transition: none; } }
+.pierzeja__tag b { font-family: var(--head); font-weight: 400; font-size: clamp(14px, 1.35vw, 21px); letter-spacing: .2em; padding-left: .2em; }
