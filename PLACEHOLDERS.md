@@ -13,14 +13,15 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 
 ## Lokale (`assets/js/units.js`)
 - [x] Numery lokali, pomieszczenia i powierzchnie: prawdziwe, z rzutów pięter (N75A-PB-AR-102…108)
-- [x] Ceny brutto i powierzchnie z cennika z 25.08.2026; wszystkie lokale oznaczone jako wolne
+- [x] Ceny brutto i powierzchnie z cennika z 15.09.2026; wszystkie lokale oznaczone jako wolne
 - [ ] Statusy i historia cen: przy każdej zmianie cennika dopisać nowy wpis do `history`
 - [x] Lokale usługowe U.0.1–U.0.3 na makiecie (parter, rzut N75A-PB-AR-101 rew. 11)
-- [ ] Ceny i statusy lokali usługowych (`N75_USLUGI` w units.js, teraz „Cena na zapytanie”)
+- [x] Ceny lokali usługowych z cennika z 15.09.2026
+- [ ] Statusy lokali: cennik ich nie zawiera, wszystkie nadal „wolne”
 - [ ] Obrysy lokali (`shape`) odrysowane ręcznie z rzutów budowlanych, z dokładnością do kilkunastu cm; warto je sprawdzić z architektem
 - [ ] Rzuty pięter (`assets/img/plany/pietro-N.webp`) są oczyszczone z osi, wymiarów, opisów i mebli (widok piętra); widok pojedynczego lokalu i kafle korzystają z wycinków w wysokiej rozdzielczości z meblami (`assets/img/plany/lokale/ID-piętro.webp`, miniatury `-sm`). Przy automatycznym czyszczeniu część cienkich ścianek i krawędzi mebli mogła zniknąć. Docelowo najlepsze będą rzuty sprzedażowe od architekta
 - [x] Kafle w wyszukiwarce pokazują prawdziwy rzut lokalu z meblami
-- [ ] Zdjęcie w karcie lokalu: dla M2.03 i M2.04 prawdziwe wizualizacje, dla pozostałych poglądowe
+- [ ] Zdjęcie w karcie lokalu: jedna wizualizacja poglądowa (salon) dla wszystkich mieszkań
 
 ## Architektura
 - [x] Cytat z manifestu
