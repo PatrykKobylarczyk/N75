@@ -54,7 +54,7 @@
     var nodes = {};
 
     list.forEach(function (u) {
-      var a = el('a', { href: opts.href(u), class: 'pl-unit pl-unit--' + u.status + (u.id === opts.current ? ' is-current' : ''), 'data-id': u.id, 'aria-label': u.id + ', ' + String(u.area).replace('.', ',') + ' m²' }, g);
+      var a = el('a', { href: opts.href(u), class: 'pl-unit pl-unit--' + u.status + (u.kind ? ' pl-zone' : '') + (u.id === opts.current ? ' is-current' : ''), 'data-id': u.id, 'aria-label': u.kind ? u.name : u.id + ', ' + String(u.area).replace('.', ',') + ' m²' }, g);
       el('path', { d: pathD(u.shape[f]) }, a);
       var lp = (u.label && u.label[f]) || [0, 0];
       var t = el('text', { x: lp[0], y: lp[1], class: 'pl-label' }, a);
