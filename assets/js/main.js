@@ -639,13 +639,48 @@
         '<div class="mk__side" id="mk-side" hidden></div></div>' +
         '<div class="mk__foot">' +
         '<a class="mk__cat caps" href="assets/N75_katalog.pdf" download="N75_katalog.pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg><span>Pobierz katalog inwestycji</span></a></div>';
+      var zones = g0 ? (window.N75_STREFY || []) : [];
       plan = window.N75Plan.create($('#mk-plan'), {
-        floor: f, units: list, frame: g0 ? [70, 100, 1424, 1720] : null, href: function (u) { return g0 ? '?lokal=' + encodeURIComponent(u.id) + '#kontakt' : cardUrl(u.id); },
+        floor: f, units: list.concat(zones), frame: g0 ? [70, 100, 1424, 1720] : null, href: function (u) { return u.kind ? '#' + u.id.toLowerCase() : g0 ? '?lokal=' + encodeURIComponent(u.id) + '#kontakt' : cardUrl(u.id); },
         onPick: function (u, ev) { if (ev.metaKey || ev.ctrlKey || ev.shiftKey) return; ev.preventDefault(); showUnit(u); }
       });
       if (user && window.matchMedia('(max-width: 900px)').matches) mkPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    function showZone(u) {
+      var side = $('#mk-side');
+      side.hidden = false; side.parentNode.classList.add('has-detail');
+      var n = u.gallery.length, i = 0;
+      side.innerHTML = '<div class="mk-detail mk-zone">' +
+        '<button type="button" class="mk-back caps" data-back>← Wszystkie lokale</button>' +
+        '<div class="mk-detail__head"><div class="mk-detail__id display">Foyer</div></div>' +
+        '<p class="muted mk-zone__txt">Wejście do budynku z&nbsp;recepcją i&nbsp;concierge, strefą wypoczynkową i&nbsp;biblioteką – wizytówka N75.</p>' +
+        '<div class="mk-zone__sl"><div class="mk-zone__track">' + u.gallery.map(function (g, k) {
+          return '<figure class="mk-zone__fig' + (k ? '' : ' is-on') + '"><img src="assets/img/' + g[0] + '.webp" alt="' + g[1] + '"' + (k ? ' loading="lazy"' : '') + '></figure>';
+        }).join('') + '</div>' +
+        '<div class="mk-zone__nav"><span class="mk-zone__cap caps"></span><span class="mk-zone__count caps"></span>' +
+        '<button type="button" class="mk-zone__btn" data-z="-1" aria-label="Poprzednie zdjęcie">←</button><button type="button" class="mk-zone__btn" data-z="1" aria-label="Następne zdjęcie">→</button></div></div>' +
+        '<a class="btn btn--line caps" href="#wnetrza">Zobacz wnętrza</a>' +
+      '</div>';
+      var figs = $$('.mk-zone__fig', side), cap = $('.mk-zone__cap', side), cnt = $('.mk-zone__count', side);
+      function go(k) {
+        i = (k + n) % n;
+        figs.forEach(function (f, x) { f.classList.toggle('is-on', x === i); });
+        cap.textContent = u.gallery[i][1]; cnt.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(n).padStart(2, '0');
+      }
+      go(0);
+      $$('[data-z]', side).forEach(function (b) { b.addEventListener('click', function () { go(i + +b.dataset.z); }); });
+      var sl = $('.mk-zone__sl', side), x0 = null;
+      sl.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+      sl.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) go(i + (dx < 0 ? 1 : -1)); x0 = null; });
+      plan.zoomTo(u.id);
+      var back = $('[data-back]', side); back.focus({ preventScroll: true });
+      back.addEventListener('click', function () {
+        plan.zoomOut();
+        side.innerHTML = ''; side.hidden = true; side.parentNode.classList.remove('has-detail');
+      });
+    }
     function showUnit(u) {
+      if (u.kind) { showZone(u); return; }
       var side = $('#mk-side');
       side.hidden = false; side.parentNode.classList.add('has-detail');
       var shop = u.floor === 0;

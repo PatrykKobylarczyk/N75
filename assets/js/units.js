@@ -63,3 +63,10 @@ window.N75_USLUGI = [
   {"id":"U.0.2","floor":0,"levels":[0],"rooms":0,"name":"Lokal usługowy 2","area":116.2,"price":1752296,"status":"wolne","shape":{"0":[[122,955],[300,955],[300,1052],[458,1052],[458,1298],[670,1298],[670,1505],[122,1505]]},"label":{"0":[290,1240]},"history":[["2026-09-15",1752296]]},
   {"id":"U.0.3","floor":0,"levels":[0],"rooms":0,"name":"Lokal usługowy 3","area":101.72,"price":1533938,"status":"wolne","shape":{"0":[[368,1510],[1170,1510],[1170,1765],[368,1765]]},"label":{"0":[770,1645]},"history":[["2026-09-15",1533938]]}
 ];
+
+/* Strefy wspólne na rzucie parteru (bez ceny, po wybraniu: galeria wizualizacji). */
+window.N75_STREFY = [
+  {"id":"FOYER","kind":"foyer","floor":0,"levels":[0],"name":"Foyer z recepcją","area":0,"status":"strefa",
+   "shape":{"0":[[120,395],[372,395],[372,545],[420,545],[420,945],[120,945]]},"label":{"0":[250,690]},
+   "gallery":[["foyer-wejscie","Wejście do foyer"],["foyer-1","Foyer z recepcją i biblioteką"],["foyer-2","Strefa wypoczynkowa w foyer"]]}
+];
