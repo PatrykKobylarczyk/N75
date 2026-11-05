@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var NS = 'http://www.w3.org/2000/svg';
-  var W = 1504, H = 1925, V = '?v=1793900131';
+  var W = 1504, H = 1925, V = '?v=1793900261';
 
   function el(tag, attrs, parent) {
     var n = document.createElementNS(NS, tag);
@@ -65,6 +65,14 @@
           // podział stanowiska na platformy
           if (s.pl === 2) { var a = s.p; el('path', { d: 'M' + ((a[0][0] + a[1][0]) / 2) + ' ' + ((a[0][1] + a[1][1]) / 2) + 'L' + ((a[3][0] + a[2][0]) / 2) + ' ' + ((a[3][1] + a[2][1]) / 2), class: 'pl-park-div' }, gp); }
         }
+      });
+    }
+    var rr = (window.N75_ROOMS || {})[f];
+    if (rr) {
+      var gr = el('g', { class: 'pl-rooms', 'aria-hidden': 'true' }, svg);
+      rr.forEach(function (r) {
+        el('text', { x: r.c[0], y: r.c[1] - (r.a ? 4 : -4), class: 'pl-room pl-room--' + r.k }, gr).textContent = r.n;
+        if (r.a) el('text', { x: r.c[0], y: r.c[1] + 14, class: 'pl-room-a' }, gr).textContent = r.a;
       });
     }
     var g = el('g', { class: 'pl-units' }, svg);

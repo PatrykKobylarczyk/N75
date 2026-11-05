@@ -1472,3 +1472,6 @@ body.dh-open { overflow: hidden; }
 .hero__seal text { font-size: 7.6px; letter-spacing: .1em; }
 .pl-park-s { font: 500 11px/1 var(--sans, Inter, sans-serif); fill: var(--bronze); text-anchor: middle; letter-spacing: .14em; opacity: .85; pointer-events: none; }
 .pl-park-div { stroke: var(--bronze); stroke-width: 1.2; stroke-dasharray: 3 4; opacity: .7; }
+.pl-room { font: 500 15px/1 var(--sans, Inter, sans-serif); letter-spacing: .12em; text-transform: uppercase; text-anchor: middle; fill: #3c3732; paint-order: stroke; stroke: #f7f3ec; stroke-width: 5px; stroke-linejoin: round; pointer-events: none; }
+.pl-room--t { font-size: 11px; fill: #9a8f81; letter-spacing: .1em; }
+.pl-room-a { font: 400 12px/1 var(--sans, Inter, sans-serif); text-anchor: middle; fill: var(--bronze); paint-order: stroke; stroke: #f7f3ec; stroke-width: 4px; pointer-events: none; }
