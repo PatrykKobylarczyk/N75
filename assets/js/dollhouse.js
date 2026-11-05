@@ -12,7 +12,7 @@
     oak: [196, 168, 132], tile: [222, 214, 201], stone: [205, 198, 187],
     linen: [236, 230, 220], linen2: [244, 241, 235], boucle: [232, 226, 215], sand: [214, 200, 179], taupe: [176, 160, 141],
     mocha: [134, 108, 88], walnut: [112, 82, 62], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
-    black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [176, 196, 204], rug: [226, 217, 202],
+    black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [110, 172, 220], rug: [226, 217, 202],
     green: [110, 124, 92], pot: [196, 184, 166], teak: [168, 134, 98], teak2: [150, 114, 80], olive: [118, 128, 96], olive2: [134, 144, 110],
     bronze: [120, 96, 70], frame: [74, 68, 62], curtain: [240, 235, 226], rugOut: [214, 205, 190]
   };
@@ -153,14 +153,14 @@
     (lv.rails || []).forEach(function (r) {
       var x0 = r[0] + dx, z0 = r[1] + dz, x1 = r[2] + dx, z1 = r[3] + dz, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, hx = Math.max(x1 - x0, 0.06) / 2, hz = Math.max(z1 - z0, 0.06) / 2;
       var t = 0.025;
-      if (hx >= hz) { glassM.box(x0, cz - t, x1, cz + t, dy, dy + 1.05, C.glass); M.box(x0, cz - 0.03, x1, cz + 0.03, dy + 1.05, dy + 1.1, C.bronze); M.box(x0, cz - 0.05, x1, cz + 0.05, dy - 0.22, dy + 0.06, C.wall, C.wallTop); }
-      else { glassM.box(cx - t, z0, cx + t, z1, dy, dy + 1.05, C.glass); M.box(cx - 0.03, z0, cx + 0.03, z1, dy + 1.05, dy + 1.1, C.bronze); M.box(cx - 0.05, z0, cx + 0.05, z1, dy - 0.22, dy + 0.06, C.wall, C.wallTop); }
+      if (hx >= hz) { glassM.box(x0, cz - t, x1, cz + t, dy, dy + 1.05, C.glass, C.glass, 9); M.box(x0, cz - 0.03, x1, cz + 0.03, dy + 1.05, dy + 1.1, C.bronze); M.box(x0, cz - 0.05, x1, cz + 0.05, dy - 0.22, dy + 0.06, C.wall, C.wallTop); }
+      else { glassM.box(cx - t, z0, cx + t, z1, dy, dy + 1.05, C.glass, C.glass, 9); M.box(cx - 0.03, z0, cx + 0.03, z1, dy + 1.05, dy + 1.1, C.bronze); M.box(cx - 0.05, z0, cx + 0.05, z1, dy - 0.22, dy + 0.06, C.wall, C.wallTop); }
     });
     // okna: półprzezroczyste szkło w smukłych ramach + lniane zasłony od środka
     lv.glass.forEach(function (g) {
       var x0 = g[0] + dx, z0 = g[1] + dz, x1 = g[2] + dx, z1 = g[3] + dz, horiz = (x1 - x0) >= (z1 - z0);
       var len = horiz ? x1 - x0 : z1 - z0, c = horiz ? (z0 + z1) / 2 : (x0 + x1) / 2, t = 0.018;
-      var seg = function (a, b, y0, y1, th, col, mesh) { (mesh || M).box(horiz ? a : c - th, horiz ? c - th : a, horiz ? b : c + th, horiz ? c + th : b, y0, y1, col); };
+      var seg = function (a, b, y0, y1, th, col, mesh) { (mesh || M).box(horiz ? a : c - th, horiz ? c - th : a, horiz ? b : c + th, horiz ? c + th : b, y0, y1, col, col, mesh ? 9 : 0); };
       seg(horiz ? x0 : z0, horiz ? x1 : z1, dy + 0.06, dy + WALL_H - 0.05, t, C.glass, glassM);
       seg(horiz ? x0 : z0, horiz ? x1 : z1, dy - 0.22, dy + 0.06, 0.045, C.frame);
       seg(horiz ? x0 : z0, horiz ? x1 : z1, dy + WALL_H - 0.05, dy + WALL_H, 0.045, C.frame);
@@ -348,6 +348,7 @@
     'float v=h(vec2(pl,row));col*=.9+.16*v;col*=1.-.05*sin(vP.x*38.+v*9.);float e=min(fract(g.y),1.-fract(g.y));col*=mix(.84,1.,smoothstep(0.,.05,e));}' +
     'if(M==2&&N.y>.5){vec2 g=fract(vP.xz/.6);float e=min(min(g.x,1.-g.x),min(g.y,1.-g.y));col*=mix(.9,1.,smoothstep(0.,.02,e));col*=.97+.05*h(floor(vP.xz/.6));}' +
     'if(M==3&&N.y>.5){float g=fract(vP.x*7.);float v=h(vec2(floor(vP.x*7.),floor(vP.z*1.2)));col*=.92+.12*v;col*=mix(.8,1.,smoothstep(0.,.08,min(g,1.-g)));}' +
+    'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),3.);o=vec4(mix(vC,vec3(.85,.93,1.),fr*.5),uA+fr*.2);return;}' +
     'float ndl=max(dot(N,uSun),0.);float s=sh();vec3 sky=vec3(1.,.975,.94),gr=vec3(.62,.56,.5);' +
     'vec3 amb=mix(gr,sky,N.y*.5+.5)*.74;float ao=mix(.72,1.,smoothstep(0.,.5,vP.y-floor(vP.y/3.05)*3.05+.02));' +
     'vec3 L=col*(amb*ao+vec3(1.,.93,.84)*.86*ndl*mix(.25,1.,s));' +
@@ -433,7 +434,7 @@
     gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
     gl.bindVertexArray(this.op.vao); gl.drawArrays(gl.TRIANGLES, 0, this.op.n);
     gl.disable(gl.CULL_FACE);
-    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.42);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.5);
     gl.bindVertexArray(this.gl_.vao); gl.drawArrays(gl.TRIANGLES, 0, this.gl_.n);
     gl.depthMask(true); gl.disable(gl.BLEND);
   };
