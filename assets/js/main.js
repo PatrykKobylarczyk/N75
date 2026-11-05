@@ -461,7 +461,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793895946" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793896174" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -639,7 +639,7 @@
         '<div class="mk__side" id="mk-side" hidden></div></div>' +
         '<div class="mk__foot">' +
         '<a class="mk__cat caps" href="assets/N75_katalog.pdf" download="N75_katalog.pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg><span>Pobierz katalog inwestycji</span></a></div>';
-      var zones = g0 ? (window.N75_STREFY || []) : [];
+      var zones = (window.N75_STREFY || []).filter(function (z) { return z.floor === f; });
       plan = window.N75Plan.create($('#mk-plan'), {
         floor: f, units: list.concat(zones), frame: g0 ? [70, 100, 1424, 1720] : null, href: function (u) { return u.kind ? '#' + u.id.toLowerCase() : g0 ? '?lokal=' + encodeURIComponent(u.id) + '#kontakt' : cardUrl(u.id); },
         onPick: function (u, ev) { if (ev.metaKey || ev.ctrlKey || ev.shiftKey) return; ev.preventDefault(); showUnit(u); }
@@ -652,14 +652,14 @@
       var n = u.gallery.length, i = 0;
       side.innerHTML = '<div class="mk-detail mk-zone">' +
         '<button type="button" class="mk-back caps" data-back>← Wszystkie lokale</button>' +
-        '<div class="mk-detail__head"><div class="mk-detail__id display">Foyer</div></div>' +
-        '<p class="muted mk-zone__txt">Wejście do budynku z&nbsp;recepcją i&nbsp;concierge, strefą wypoczynkową i&nbsp;biblioteką – wizytówka N75.</p>' +
+        '<div class="mk-detail__head"><div class="mk-detail__id display">' + u.title + '</div></div>' +
+        '<p class="muted mk-zone__txt">' + u.text + '</p>' +
         '<div class="mk-zone__sl"><div class="mk-zone__track">' + u.gallery.map(function (g, k) {
           return '<figure class="mk-zone__fig' + (k ? '' : ' is-on') + '"><img src="assets/img/' + g[0] + '.webp" alt="' + g[1] + '"' + (k ? ' loading="lazy"' : '') + '></figure>';
         }).join('') + '</div>' +
         '<div class="mk-zone__nav"><span class="mk-zone__cap caps"></span><span class="mk-zone__count caps"></span>' +
         '<button type="button" class="mk-zone__btn" data-z="-1" aria-label="Poprzednie zdjęcie">←</button><button type="button" class="mk-zone__btn" data-z="1" aria-label="Następne zdjęcie">→</button></div></div>' +
-        '<a class="btn btn--line caps" href="#wnetrza">Zobacz wnętrza</a>' +
+        '<a class="btn btn--line caps" href="' + u.link[0] + '">' + u.link[1] + '</a>' +
       '</div>';
       var figs = $$('.mk-zone__fig', side), cap = $('.mk-zone__cap', side), cnt = $('.mk-zone__count', side);
       function go(k) {
