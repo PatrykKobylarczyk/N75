@@ -630,7 +630,8 @@
         (g0 ? '<p class="muted mk__note">Lobby z&nbsp;recepcją, komórki lokatorskie, hala garażowa i&nbsp;trzy lokale usługowe od strony ulic Narutowicza i&nbsp;Tramwajowej. Przeznaczenie lokali do ustalenia z&nbsp;najemcą lub nabywcą.</p>' : '') +
         '<div class="mk__body"><div class="mk__plan" id="mk-plan"></div>' +
         '<div class="mk__side" id="mk-side" hidden></div></div>' +
-        '<p class="mk__legend caps">Najedź na lokal, aby go podświetlić. Kliknij, aby zobaczyć jego rzut.</p>';
+        '<div class="mk__foot"><p class="mk__legend caps">Najedź na lokal, aby go podświetlić. Kliknij, aby zobaczyć jego rzut.</p>' +
+        '<a class="mk__cat caps" href="assets/N75_katalog.pdf" download="N75_katalog.pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg><span>Pobierz katalog inwestycji</span></a></div>';
       plan = window.N75Plan.create($('#mk-plan'), {
         floor: f, units: list, frame: g0 ? [70, 100, 1424, 1720] : null, href: function (u) { return g0 ? '?lokal=' + encodeURIComponent(u.id) + '#kontakt' : cardUrl(u.id); },
         onPick: function (u, ev) { if (ev.metaKey || ev.ctrlKey || ev.shiftKey) return; ev.preventDefault(); showUnit(u); }
