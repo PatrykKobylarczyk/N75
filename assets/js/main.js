@@ -461,7 +461,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793899486" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793899879" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -640,10 +640,11 @@
       var g0 = f === 0, gm1 = f === -1, PK = (window.N75_PARKING || {});
       var pkInfo = function (k) { var a = PK[k] || []; return a; };
       if (gm1) {
-        var lifts = pkInfo('-1').filter(function (s) { return s.k === 'lift'; }).length, moto = pkInfo('-1').filter(function (s) { return s.k === 'moto'; }).length;
+        var liftSp = pkInfo('-1').filter(function (s) { return s.k === 'lift'; }), lifts = liftSp.length, moto = pkInfo('-1').filter(function (s) { return s.k === 'moto'; }).length;
+        var plats = liftSp.reduce(function (a, s) { return a + (s.pl || 1); }, 0), dbl = liftSp.filter(function (s) { return s.pl === 2; }).length;
         mkPanel.innerHTML =
           '<div class="mk__head"><span class="num">Poziom</span><h3 class="display h3">−1</h3><span class="caps muted">Garaż podziemny · ' + lifts + ' platform parkingowych · ' + moto + ' miejsca dla motocykli</span></div>' +
-          '<p class="muted mk__note">Hala garażowa z&nbsp;platformami Parklift (G01–G' + (lifts < 10 ? '0' : '') + lifts + '), miejscami dla motocykli, komórkami lokatorskimi i&nbsp;bezpośrednim wejściem do klatki i&nbsp;windy. Wjazd rampą z&nbsp;parteru. Liczbę stanowisk na platformach i&nbsp;dostępność miejsc potwierdzi biuro sprzedaży.</p>' +
+          '<p class="muted mk__note">Hala garażowa z&nbsp;' + lifts + ' stanowiskami Parklift (G01–G' + (lifts < 10 ? '0' : '') + lifts + '): ' + dbl + ' podwójnych (2 platformy obok siebie) i&nbsp;' + (lifts - dbl) + ' pojedyncze – razem ' + plats + ' platform. Do tego miejsca dla motocykli, komórkami lokatorskimi i&nbsp;bezpośrednim wejściem do klatki i&nbsp;windy. Wjazd rampą z&nbsp;parteru. Liczbę stanowisk na platformach i&nbsp;dostępność miejsc potwierdzi biuro sprzedaży.</p>' +
           '<div class="mk__body"><div class="mk__plan" id="mk-plan"></div><div class="mk__side" id="mk-side" hidden></div></div>';
         plan = window.N75Plan.create($('#mk-plan'), { floor: -1, units: [], frame: [70, 100, 1424, 1720], href: function () { return '#'; } });
         if (user && window.matchMedia('(max-width: 900px)').matches) mkPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
