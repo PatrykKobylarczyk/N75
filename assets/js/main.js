@@ -752,4 +752,19 @@
   });
 
   var y = $('#year'); if (y) y.textContent = new Date().getFullYear();
+
+  /* ---------- Pierzeja Narutowicza: rysunek „dorysowuje się” od lewej, na telefonie startuje od N75 ---------- */
+  (function () {
+    var fig = document.getElementById('pierzeja-fig'), sc = document.getElementById('pierzeja-scroll');
+    if (!fig) return;
+    if (sc && window.matchMedia('(max-width: 900px)').matches) {
+      var toEnd = function () { sc.scrollLeft = sc.scrollWidth; };
+      var im = fig.querySelector('img'); if (im.complete) toEnd(); else im.addEventListener('load', toEnd);
+    }
+    if (!('IntersectionObserver' in window)) { fig.classList.add('is-in'); return; }
+    var io = new IntersectionObserver(function (en) {
+      en.forEach(function (e) { if (e.isIntersecting) { fig.classList.add('is-in'); io.disconnect(); } });
+    }, { threshold: .35 });
+    io.observe(fig);
+  })();
 })();
