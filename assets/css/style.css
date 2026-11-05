@@ -1470,3 +1470,5 @@ body.dh-open { overflow: hidden; }
 .mk-floor--garage { cursor: pointer; }
 .mk-floor--garage:hover .mk-garage, .mk-floor--garage.is-active .mk-garage { fill: rgba(156, 113, 73, .18); stroke: var(--bronze); }
 .hero__seal text { font-size: 7.6px; letter-spacing: .1em; }
+.pl-park-s { font: 500 11px/1 var(--sans, Inter, sans-serif); fill: var(--bronze); text-anchor: middle; letter-spacing: .14em; opacity: .85; pointer-events: none; }
+.pl-park-div { stroke: var(--bronze); stroke-width: 1.2; stroke-dasharray: 3 4; opacity: .7; }

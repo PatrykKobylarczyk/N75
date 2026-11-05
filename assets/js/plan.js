@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var NS = 'http://www.w3.org/2000/svg';
-  var W = 1504, H = 1925, V = '?v=1793899486';
+  var W = 1504, H = 1925, V = '?v=1793899879';
 
   function el(tag, attrs, parent) {
     var n = document.createElementNS(NS, tag);
@@ -59,7 +59,12 @@
       pk.forEach(function (s) {
         el('path', { d: pathD(s.p), class: 'pl-park pl-park--' + s.k }, gp);
         var cx = 0, cy = 0; s.p.forEach(function (q) { cx += q[0]; cy += q[1]; }); cx /= s.p.length; cy /= s.p.length;
-        var t = el('text', { x: cx, y: cy + 5, class: 'pl-park-t' }, gp); t.textContent = s.n;
+        var t = el('text', { x: cx, y: cy + (s.pl ? -4 : 5), class: 'pl-park-t' }, gp); t.textContent = s.n;
+        if (s.pl) {
+          el('text', { x: cx, y: cy + 18, class: 'pl-park-s' }, gp).textContent = s.pl === 2 ? '2 PLATFORMY' : '1 PLATFORMA';
+          // podział stanowiska na platformy
+          if (s.pl === 2) { var a = s.p; el('path', { d: 'M' + ((a[0][0] + a[1][0]) / 2) + ' ' + ((a[0][1] + a[1][1]) / 2) + 'L' + ((a[3][0] + a[2][0]) / 2) + ' ' + ((a[3][1] + a[2][1]) / 2), class: 'pl-park-div' }, gp); }
+        }
       });
     }
     var g = el('g', { class: 'pl-units' }, svg);
