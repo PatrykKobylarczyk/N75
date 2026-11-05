@@ -197,59 +197,66 @@
     $$('[data-diary]', diary).forEach(function (b) { b.addEventListener('click', function () { drail.scrollBy({ left: (b.dataset.diary === 'next' ? 1 : -1) * drail.clientWidth * .8, behavior: 'smooth' }); }); });
   }
 
-  /* ---------- Szkic ołówkiem: po wejściu na ekran kreski rysują się jedna po drugiej, z „grafitem” prowadzącym linię ---------- */
-  var dLines = $('#draw-lines'), dStage = $('#draw-stage');
-  if (dLines && window.fetch) {
-    var dPaths = [], tip = null, dReady = false, dSeen = false, dScale = 1;
+  /* ---------- Szkic ołówkiem: po wejściu na ekran kreski rysują się jedna po drugiej, z „grafitem” prowadzącym linię ----------
+     Ten sam mechanizm dla szkicu modernizmu i pierzei ul. Narutowicza.
+     opts: total (ms całej animacji), gap (ms przerwy po każdej długiej kresce), tip (promień grafitu), host (element dostający .is-drawn) */
+  function sketch(lines, stage, opts) {
+    if (!lines || !stage || !window.fetch) return;
+    var paths = [], tip = null, ready = false, seen = false, run = 0;
     var SPEED = { line: 1.25, light: 2.2, hatch: 3.2 };    // px/ms
-    var run = 0;
-    function reset() { run++; dPaths.forEach(function (p) { p.el.style.strokeDashoffset = p.L; }); if (tip) tip.style.opacity = 0; }
+    var host = opts.host || stage;
+    function reset() { run++; paths.forEach(function (p) { p.el.style.strokeDashoffset = p.L; }); if (tip) tip.style.opacity = 0; host.classList.remove('is-drawn'); host.classList.add('is-drawing'); }
+    function finish() { paths.forEach(function (p) { p.el.style.strokeDashoffset = 0; }); if (tip) tip.style.opacity = 0; host.classList.add('is-drawn'); }
     // odtwarzane za każdym razem, gdy szkic wchodzi na ekran (także po powrocie przewijaniem)
     // jedna oś czasu dla wszystkich kresek: kilka krótkich kresek może narysować się w jednej klatce
     function play() {
-      if (!dReady || !dSeen) return;
+      if (!ready || !seen) return;
+      if (reduced) { finish(); return; }
       reset(); var my = run, t0 = null, idx = 0; tip.style.opacity = 1;
-      var total = dPaths.length ? dPaths[dPaths.length - 1].s + dPaths[dPaths.length - 1].d : 0;
+      var total = paths.length ? paths[paths.length - 1].s + paths[paths.length - 1].d : 0;
       (function step(ts) {
         if (my !== run) return;
         if (t0 === null) t0 = ts;
         var el = ts - t0;
-        while (idx < dPaths.length && dPaths[idx].s + dPaths[idx].d <= el) { dPaths[idx].el.style.strokeDashoffset = 0; idx++; }
-        if (idx < dPaths.length && dPaths[idx].s <= el) {
-          var p = dPaths[idx], t = (el - p.s) / p.d, e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        while (idx < paths.length && paths[idx].s + paths[idx].d <= el) { paths[idx].el.style.strokeDashoffset = 0; idx++; }
+        if (idx < paths.length && paths[idx].s <= el) {
+          var p = paths[idx], t = (el - p.s) / p.d, e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
           p.el.style.strokeDashoffset = (p.L * (1 - e)).toFixed(1);
           var pt = p.el.getPointAtLength(p.L * e); tip.setAttribute('cx', pt.x); tip.setAttribute('cy', pt.y);
         }
-        if (el < total) requestAnimationFrame(step); else tip.style.opacity = 0;
+        if (el < total) requestAnimationFrame(step); else finish();
       })(performance.now());
     }
-    fetch(dLines.dataset.src).then(function (r) { return r.ok ? r.text() : Promise.reject(); }).then(function (svg) {
-      dLines.innerHTML = svg;
-      var root = $('svg', dLines);
-      dPaths = $$('path', root).map(function (el) {
+    fetch(lines.dataset.src).then(function (r) { return r.ok ? r.text() : Promise.reject(); }).then(function (svg) {
+      lines.innerHTML = svg;
+      var root = $('svg', lines);
+      paths = $$('path', root).map(function (el) {
         var L = el.getTotalLength(); el.style.strokeDasharray = L + ' ' + L; el.style.strokeDashoffset = L;
         return { el: el, L: L, k: (el.getAttribute('class') || 's-line').replace('s-', '') };
       });
       tip = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      tip.setAttribute('r', 3.2); tip.setAttribute('class', 'draw__tip'); root.appendChild(tip);
-      // czasy kresek: proporcjonalne do długości, z minimum; całość skalowana do ok. 7 s
-      dPaths.forEach(function (p) { p.d = Math.max(p.k === 'line' ? 70 : 16, p.L / SPEED[p.k]); });
-      var gaps = dPaths.filter(function (p) { return p.k === 'line'; }).length * 22;
-      var raw = dPaths.reduce(function (a, p) { return a + p.d; }, 0), k = (7000 - gaps) / Math.max(1, raw);
+      tip.setAttribute('r', opts.tip || 3.2); tip.setAttribute('class', 'draw__tip'); root.appendChild(tip);
+      // czasy kresek: proporcjonalne do długości, z minimum; całość skalowana do opts.total
+      var gap = opts.gap === undefined ? 22 : opts.gap;
+      paths.forEach(function (p) { p.d = Math.max(p.k === 'line' ? 70 : 16, p.L / (SPEED[p.k] || SPEED.line)); });
+      var gaps = paths.filter(function (p) { return p.k === 'line'; }).length * gap;
+      var raw = paths.reduce(function (a, p) { return a + p.d; }, 0), k = Math.max(.05, (opts.total - gaps) / Math.max(1, raw));
       var acc = 0;
-      dPaths.forEach(function (p) { p.d = Math.max(8, p.d * k); p.s = acc; acc += p.d + (p.k === 'line' ? 22 : 0); });
-      dReady = true; play();
-    }).catch(function () {});
+      paths.forEach(function (p) { p.d = Math.max(opts.min || 8, p.d * k); p.s = acc; acc += p.d + (p.k === 'line' ? gap : 0); });
+      ready = true; host.classList.add('is-drawing'); play();
+    }).catch(function () { host.classList.add('is-drawn'); });
     if ('IntersectionObserver' in window) {
-      var dTimer = null;
-      var dio = new IntersectionObserver(function (en) {
+      var timer = null;
+      var io = new IntersectionObserver(function (en) {
         var e = en[0];
-        if (e.intersectionRatio >= .4) { if (!dSeen) { dSeen = true; clearTimeout(dTimer); dTimer = setTimeout(play, 250); } }
-        else if (!e.isIntersecting) { dSeen = false; clearTimeout(dTimer); reset(); }   // całkiem poza ekranem: przygotuj do ponownego rysowania
+        if (e.intersectionRatio >= .4) { if (!seen) { seen = true; clearTimeout(timer); timer = setTimeout(play, 250); } }
+        else if (!e.isIntersecting) { seen = false; clearTimeout(timer); reset(); }   // całkiem poza ekranem: przygotuj do ponownego rysowania
       }, { threshold: [0, .4] });
-      dio.observe(dStage);
-    } else dSeen = true;
+      io.observe(stage);
+    } else seen = true;
   }
+  sketch($('#draw-lines'), $('#draw-stage'), { total: 7000, gap: 22 });
+  sketch($('#pierzeja-lines'), $('#pierzeja-scroll'), { total: 9000, gap: 0, tip: 4, min: 1, host: $('#pierzeja-fig') });
 
   /* ---------- Modernizm to… (zmieniające się słowo) ---------- */
   var rot = $('#modern-rot');
@@ -753,18 +760,12 @@
 
   var y = $('#year'); if (y) y.textContent = new Date().getFullYear();
 
-  /* ---------- Pierzeja Narutowicza: rysunek „dorysowuje się” od lewej, na telefonie startuje od N75 ---------- */
+  /* ---------- Pierzeja Narutowicza: na telefonie pasek startuje od N75 ---------- */
   (function () {
-    var fig = document.getElementById('pierzeja-fig'), sc = document.getElementById('pierzeja-scroll');
-    if (!fig) return;
-    if (sc && window.matchMedia('(max-width: 900px)').matches) {
-      var toEnd = function () { sc.scrollLeft = sc.scrollWidth; };
-      var im = fig.querySelector('img'); if (im.complete) toEnd(); else im.addEventListener('load', toEnd);
-    }
-    if (!('IntersectionObserver' in window)) { fig.classList.add('is-in'); return; }
-    var io = new IntersectionObserver(function (en) {
-      en.forEach(function (e) { if (e.isIntersecting) { fig.classList.add('is-in'); io.disconnect(); } });
-    }, { threshold: .35 });
-    io.observe(fig);
+    var sc = document.getElementById('pierzeja-scroll');
+    if (!sc || !window.matchMedia('(max-width: 900px)').matches) return;
+    var toEnd = function () { sc.scrollLeft = sc.scrollWidth; };
+    var im = sc.querySelector('img'); if (im.complete) toEnd(); else im.addEventListener('load', toEnd);
   })();
+
 })();

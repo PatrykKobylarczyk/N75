@@ -1379,10 +1379,8 @@ a.tile { display: block; color: inherit; }
 .pierzeja__scroll { width: 100%; }
 .pierzeja__fig { position: relative; margin: 0; width: 100%; }
 .pierzeja__fig img { display: block; width: 100%; height: auto; }
-.js .pierzeja__fig img { clip-path: inset(0 100% 0 0); transition: clip-path 2.6s cubic-bezier(.65, 0, .25, 1); }
-.js .pierzeja__fig.is-in img { clip-path: inset(0 0 0 0); }
-.pierzeja__tag { position: absolute; left: 83.6%; top: -10px; display: flex; flex-direction: column; align-items: center; gap: 8px; transform: translate(-50%, -100%); opacity: 0; transition: opacity .8s 2.3s; }
-.pierzeja__fig.is-in .pierzeja__tag, .no-js .pierzeja__tag { opacity: 1; }
+.pierzeja__tag { position: absolute; left: 83.6%; top: -10px; display: flex; flex-direction: column; align-items: center; gap: 8px; transform: translate(-50%, -100%); opacity: 0; transition: opacity .8s .5s; }
+.pierzeja__fig.is-drawn .pierzeja__tag, .no-js .pierzeja__tag { opacity: 1; }
 .pierzeja__tag b { order: -1; font-weight: 400; font-size: 11px; letter-spacing: .3em; color: var(--bronze); padding-left: .3em; }
 .pierzeja__tag i { width: 1px; height: clamp(18px, 2.4vw, 36px); background: var(--bronze); }
 .pierzeja__cap { margin-top: 18px; font-size: 10px; color: #a39a8d; text-align: right; }
@@ -1403,3 +1401,17 @@ a.tile { display: block; color: inherit; }
 .place-cat li, .place-cat li.poi--txt { color: var(--ink-soft); }
 .place-cat li::before { top: 14px; }
 .poi__dist { color: var(--bronze); }
+
+/* pierzeja: kreska ołówka, na końcu przejście w pełny rysunek z cieniowaniem */
+.pierzeja__lines { position: absolute; inset: 0; color: #342a21; pointer-events: none; }
+.pierzeja__lines svg { display: block; width: 100%; height: 100%; }
+.pierzeja__lines path { stroke-width: 2; }
+.pierzeja__lines .s-hatch { stroke-width: 1.4; opacity: .75; }
+.pierzeja__lines .draw__tip { fill: #342a21; }
+.pierzeja__fig img { transition: opacity 1.2s ease; }
+.pierzeja__lines { transition: opacity 1.2s ease; }
+.pierzeja__fig.is-drawing img { opacity: 0; }
+.pierzeja__fig.is-drawn img { opacity: 1; }
+.pierzeja__fig.is-drawn .pierzeja__lines { opacity: 0; }
+.pierzeja__fig.is-drawing .pierzeja__tag { opacity: 0; transition: none; }
+.pierzeja__fig.is-drawn .pierzeja__tag { opacity: 1; transition: opacity .8s .5s; }
