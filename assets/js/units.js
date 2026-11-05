@@ -71,7 +71,7 @@ window.N75_STREFY = [
    "title":"Foyer","text":"Wejście do budynku z&nbsp;recepcją i&nbsp;concierge, strefą wypoczynkową i&nbsp;biblioteką – wizytówka N75.","link":["#wnetrza","Zobacz wnętrza"],
    "gallery":[["foyer-wejscie","Wejście do foyer"],["foyer-1","Foyer z recepcją i biblioteką"],["foyer-2","Strefa wypoczynkowa w foyer"]]},
   {"id":"WELLNESS","kind":"wellness","floor":1,"levels":[1],"name":"Strefa wellness z basenem","area":0,"status":"strefa",
-   "shape":{"1":[[672,552],[672,649],[652,650],[652,927],[657,928],[652,1153],[736,1154],[736,1306],[840,1306],[841,1153],[1006,1153],[1007,981],[1477,981],[1477,724],[1007,724],[1006,552]]},"label":{"1":[930,860]},
+   "shape":{"1":[[672,552],[672,649],[652,650],[652,927],[657,928],[652,1153],[736,1154],[736,1306],[917,1306],[918,1338],[1477,1338],[1477,724],[1007,724],[1006,552]]},"label":{"1":[1000,1000]},
    "title":"Wellness","text":"Na 1. piętrze, w&nbsp;sercu budynku: basen, jacuzzi i&nbsp;strefa wellness z&nbsp;sauną oraz siłownia – wspólne dla mieszkańców.","link":["#udogodnienia","Zobacz udogodnienia"],
    "gallery":[["basen-1","Basen wyłożony trawertynem"],["basen-2","Basen"],["basen-3","Jacuzzi"],["sauna","Sauna"],["silownia-1","Siłownia"]]}
 ];

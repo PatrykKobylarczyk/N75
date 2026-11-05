@@ -9,9 +9,9 @@
   /* ---------- paleta quiet luxury (sRGB 0–255) ---------- */
   var C = {
     wall: [238, 233, 225], wallTop: [58, 54, 50], slab: [70, 65, 60],
-    oak: [196, 168, 132], tile: [222, 214, 201], stone: [205, 198, 187],
+    oak: [128, 92, 66], tile: [222, 214, 201], stone: [205, 198, 187],
     linen: [236, 230, 220], linen2: [244, 241, 235], boucle: [232, 226, 215], sand: [214, 200, 179], taupe: [176, 160, 141],
-    mocha: [134, 108, 88], walnut: [112, 82, 62], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
+    mocha: [134, 108, 88], walnut: [96, 70, 52], door: [84, 60, 44], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
     black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [110, 172, 220], rug: [226, 217, 202],
     green: [110, 124, 92], pot: [196, 184, 166], teak: [168, 134, 98], teak2: [150, 114, 80], olive: [118, 128, 96], olive2: [134, 144, 110],
     bronze: [120, 96, 70], frame: [74, 68, 62], curtain: [240, 235, 226], rugOut: [214, 205, 190]
@@ -146,6 +146,17 @@
       var top = wet ? C.tile : out ? C.teak : C.oak, mat = wet ? 2 : out ? 3 : 1;
       M.prism(X(f.p), dy - 0.22, dy, C.slab, top, 0, mat);
       if (out) loggia(M, X(f.p), dy); else inner.push(X(f.p));
+    });
+    // drzwi wejściowe: płyta z orzecha w ościeżnicy, mosiężny uchwyt
+    (lv.doors || []).forEach(function (d) {
+      var a = [d[0][0] + dx, d[0][1] + dz], b = [d[1][0] + dx, d[1][1] + dz];
+      var ux = b[0] - a[0], uz = b[1] - a[1], L = Math.hypot(ux, uz) || 1; ux /= L; uz /= L;
+      var nx = -uz, nz = ux, t = 0.03;
+      var Q = function (u0, u1, v0, v1) { return [[a[0] + ux * u0 + nx * v0, a[1] + uz * u0 + nz * v0], [a[0] + ux * u1 + nx * v0, a[1] + uz * u1 + nz * v0], [a[0] + ux * u1 + nx * v1, a[1] + uz * u1 + nz * v1], [a[0] + ux * u0 + nx * v1, a[1] + uz * u0 + nz * v1]]; };
+      M.prism(Q(0, L, -0.09, 0.09), dy - 0.22, dy + 0.01, C.wall, C.wallTop);
+      M.prism(Q(0.02, L - 0.02, -t, t), dy + 0.01, dy + WALL_H, C.door, C.door);
+      M.prism(Q(-0.04, 0.02, -0.08, 0.08), dy, dy + WALL_H, C.frame); M.prism(Q(L - 0.02, L + 0.04, -0.08, 0.08), dy, dy + WALL_H, C.frame);
+      [-1, 1].forEach(function (sd) { M.prism(Q(L - 0.16, L - 0.12, sd * t, sd * (t + 0.05)), dy + 0.95, dy + 1.25, C.brass); });
     });
     // ściany: przekrój ciemny na górze
     lv.walls.forEach(function (w) { M.box(w[0] + dx, w[1] + dz, w[2] + dx, w[3] + dz, dy - 0.22, dy + WALL_H, C.wall, C.wallTop, 4); });
@@ -345,7 +356,7 @@
     'for(int x=-2;x<=2;x++)for(int y=-2;y<=2;y++){float d=texture(uS,q.xy+vec2(x,y)*t*2.2).r;s+=q.z-.0012>d?0.:1.;}return s/25.;}' +
     'void main(){vec3 N=normalize(vN);vec3 col=lin(vC);int M=int(vM+.5);' +
     'if(M==1&&N.y>.5){vec2 g=vP.xz*vec2(1.,5.2);float row=floor(g.y);float off=h(vec2(row,3.))*3.;float pl=floor(g.x/1.6+off);' +
-    'float v=h(vec2(pl,row));col*=.9+.16*v;col*=1.-.05*sin(vP.x*38.+v*9.);float e=min(fract(g.y),1.-fract(g.y));col*=mix(.84,1.,smoothstep(0.,.05,e));}' +
+    'float v=h(vec2(pl,row));col*=.86+.24*v;col*=1.-.07*sin(vP.x*31.+v*9.+sin(vP.z*7.)*2.);float e=min(fract(g.y),1.-fract(g.y));col*=mix(.84,1.,smoothstep(0.,.05,e));}' +
     'if(M==2&&N.y>.5){vec2 g=fract(vP.xz/.6);float e=min(min(g.x,1.-g.x),min(g.y,1.-g.y));col*=mix(.9,1.,smoothstep(0.,.02,e));col*=.97+.05*h(floor(vP.xz/.6));}' +
     'if(M==3&&N.y>.5){float g=fract(vP.x*7.);float v=h(vec2(floor(vP.x*7.),floor(vP.z*1.2)));col*=.92+.12*v;col*=mix(.8,1.,smoothstep(0.,.08,min(g,1.-g)));}' +
     'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),3.);o=vec4(mix(vC,vec3(.85,.93,1.),fr*.5),uA+fr*.2);return;}' +
@@ -531,7 +542,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793896174').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793896490').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
