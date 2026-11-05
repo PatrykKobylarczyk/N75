@@ -205,22 +205,23 @@
     var run = 0;
     function reset() { run++; dPaths.forEach(function (p) { p.el.style.strokeDashoffset = p.L; }); if (tip) tip.style.opacity = 0; }
     // odtwarzane za każdym razem, gdy szkic wchodzi na ekran (także po powrocie przewijaniem)
+    // jedna oś czasu dla wszystkich kresek: kilka krótkich kresek może narysować się w jednej klatce
     function play() {
       if (!dReady || !dSeen) return;
-      reset(); var my = run, i = 0; tip.style.opacity = 1;
-      (function next() {
+      reset(); var my = run, t0 = null, idx = 0; tip.style.opacity = 1;
+      var total = dPaths.length ? dPaths[dPaths.length - 1].s + dPaths[dPaths.length - 1].d : 0;
+      (function step(ts) {
         if (my !== run) return;
-        if (i >= dPaths.length) { tip.style.opacity = 0; return; }
-        var p = dPaths[i++], L = p.L, kind = p.k, dur = Math.max(kind === 'line' ? 90 : 30, L / SPEED[kind] * dScale), t0 = null;
-        (function step(ts) {
-          if (my !== run) return;
-          if (t0 === null) t0 = ts;
-          var t = Math.min(1, (ts - t0) / dur), e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-          p.el.style.strokeDashoffset = (L * (1 - e)).toFixed(1);
-          var pt = p.el.getPointAtLength(L * e); tip.setAttribute('cx', pt.x); tip.setAttribute('cy', pt.y);
-          if (t < 1) requestAnimationFrame(step); else setTimeout(next, kind === 'line' ? 30 : 6);
-        })(performance.now());
-      })();
+        if (t0 === null) t0 = ts;
+        var el = ts - t0;
+        while (idx < dPaths.length && dPaths[idx].s + dPaths[idx].d <= el) { dPaths[idx].el.style.strokeDashoffset = 0; idx++; }
+        if (idx < dPaths.length && dPaths[idx].s <= el) {
+          var p = dPaths[idx], t = (el - p.s) / p.d, e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+          p.el.style.strokeDashoffset = (p.L * (1 - e)).toFixed(1);
+          var pt = p.el.getPointAtLength(p.L * e); tip.setAttribute('cx', pt.x); tip.setAttribute('cy', pt.y);
+        }
+        if (el < total) requestAnimationFrame(step); else tip.style.opacity = 0;
+      })(performance.now());
     }
     fetch(dLines.dataset.src).then(function (r) { return r.ok ? r.text() : Promise.reject(); }).then(function (svg) {
       dLines.innerHTML = svg;
@@ -231,9 +232,12 @@
       });
       tip = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
       tip.setAttribute('r', 3.2); tip.setAttribute('class', 'draw__tip'); root.appendChild(tip);
-      // całość ok. 8 s niezależnie od liczby kresek
-      var raw = dPaths.reduce(function (a, p) { return a + p.L / SPEED[p.k]; }, 0);
-      dScale = 5200 / Math.max(1, raw);
+      // czasy kresek: proporcjonalne do długości, z minimum; całość skalowana do ok. 7 s
+      dPaths.forEach(function (p) { p.d = Math.max(p.k === 'line' ? 70 : 16, p.L / SPEED[p.k]); });
+      var gaps = dPaths.filter(function (p) { return p.k === 'line'; }).length * 22;
+      var raw = dPaths.reduce(function (a, p) { return a + p.d; }, 0), k = (7000 - gaps) / Math.max(1, raw);
+      var acc = 0;
+      dPaths.forEach(function (p) { p.d = Math.max(8, p.d * k); p.s = acc; acc += p.d + (p.k === 'line' ? 22 : 0); });
       dReady = true; play();
     }).catch(function () {});
     if ('IntersectionObserver' in window) {
