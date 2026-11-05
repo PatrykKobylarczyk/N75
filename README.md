@@ -63,6 +63,7 @@ Podstrony: `budynek.html` (adres, architektura, udogodnienia, sąsiedztwo z „O
 
 `assets/js/units.js` ustawia `window.N75_UNITS`: tablicę obiektów
 `{ id, floor, levels, rooms, area, shape, label, roomsList, price, status, history }`.
-Powierzchnie i ceny brutto z cennika z 25.08.2026, pomieszczenia z rzutów projektu budowlanego. `shape` to obrys lokalu na każdej kondygnacji w pikselach rzutu `assets/img/plany/pietro-N.webp` (1504×1925), `label` to punkt podpisu.
-Lokale usługowe z parteru są w osobnej tablicy `window.N75_USLUGI` (ten sam plik), bez pokoi i z `price: null` („Cena na zapytanie”). Są na liście wyszukiwarki (piętro „Parter”, kafel z wycinkiem rzutu `lokale/U.0.N-0-sm.webp`) i prowadzą do formularza kontaktowego; nie mają karty ani ulubionych.
-Statusy: `wolne`, `rezerwacja`, `sprzedane`. Docelowo plik można generować z CRM lub arkusza sprzedaży.
+Powierzchnie i ceny brutto z cennika z 15.09.2026, pomieszczenia z rzutów projektu budowlanego. `shape` to obrys lokalu na każdej kondygnacji w pikselach rzutu `assets/img/plany/pietro-N.webp` (1504×1925), `label` to punkt podpisu.
+Lokale usługowe z parteru są w osobnej tablicy `window.N75_USLUGI` (ten sam plik), bez pokoi. Są na liście wyszukiwarki (piętro „Parter”, kafel z wycinkiem rzutu `lokale/U.0.N-0-sm.webp`) i prowadzą do formularza kontaktowego; nie mają karty ani ulubionych.
+Statusy: `wolne`, `rezerwacja`, `sprzedane`. Ceny i powierzchnie aktualizuje się z cennika (xls/xlsx z arkuszem „cennik”):
+`python3 zrodla/cennik/aktualizuj_ceny.py cennik_DD.MM.RRRR.xls` (opcja `--sprawdz` pokazuje tylko różnice). Skrypt dopisuje zmiany cen do `history`. Samego cennika nie dodajemy do repo: zawiera rabaty, marże i ceny netto.

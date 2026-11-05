@@ -1,4 +1,4 @@
-/* Lokale N75A. Powierzchnie (area) i ceny brutto (price) według cennika z 25.08.2026.
+/* Lokale N75A. Powierzchnie (area) i ceny brutto (price) według cennika z 15.09.2026.
    Numery lokali i pomieszczenia (roomsList) z rzutów projektu budowlanego (N75A-PB-AR-102…108, grudzień 2025).
    Wszystkie lokale oznaczone jako wolne. history: [data, cena brutto] – kolejne zmiany cen dopisywać na końcu.
    shape: {piętro: [[x,y],…]} obrys lokalu w pikselach rzutu assets/img/plany/pietro-N.webp (1504×1925); label: punkt podpisu; crop: {piętro: [x,y,w,h]} wycinek rzutu z meblami (assets/img/plany/lokale/ID-piętro.webp, skala 3×). levels: kondygnacje lokalu. */
@@ -55,11 +55,11 @@ window.N75_UNITS = [
   {"id":"M6.04","floor":6,"levels":[6,7],"rooms":5,"area":164.65,"roomsList":[[1,"Salon z aneksem kuchennym",47.53],[2,"Pokój",13.91],[3,"Pokój",15.47],[4,"Łazienka",7.64],[5,"Komunikacja",15.56],[6,"WC",3.65],[7,"Pralnia",1.85],[8,"Garderoba",5.44],[9,"Pokój",10.11],[10,"Pokój",11.08],[11,"Łazienka",5.58],[12,"Sauna",4.28],[13,"Komunikacja",23.3]],"price":2996630,"status":"wolne","history":[["2026-08-25",2996630]],"shape":{"6":[[640,920],[1005,920],[1005,1610],[640,1610],[640,1450],[720,1450],[720,1160],[640,1160]],"7":[[490,765],[640,765],[640,960],[780,960],[780,1075],[940,1075],[940,1215],[932,1273],[910,1328],[874,1374],[828,1410],[773,1432],[715,1440],[657,1432],[602,1410],[556,1374],[520,1328],[498,1273],[490,1215]]},"label":{"6":[850,1075],"7":[715,1250]},"crop":{"6":[591,836,461,857],"7":[432,682,565,839]}}
 ];
 
-/* Lokale usługowe na parterze wg rzutu N75A-PB-AR-101 (rew. 11, 19.10.2026) i zestawienia powierzchni z tego rysunku.
+/* Lokale usługowe na parterze. Powierzchnie i ceny brutto (z VAT 23%) z cennika, obrysy z rzutu N75A-PB-AR-101 (rew. 11).
    shape/label w pikselach rzutu assets/img/plany/pietro-0.webp (1504×1925, ta sama skala i układ co piętra).
-   Cena nie jest jeszcze ustalona (price: null → „na zapytanie”). Przeznaczenie lokalu wg odrębnego opracowania. */
+   Ceny i powierzchnie wszystkich lokali aktualizuje zrodla/cennik/aktualizuj_ceny.py. Przeznaczenie lokalu wg odrębnego opracowania. */
 window.N75_USLUGI = [
-  {"id":"U.0.1","floor":0,"levels":[0],"rooms":0,"name":"Lokal usługowy 1","area":38.55,"price":null,"status":"wolne","shape":{"0":[[383,148],[637,148],[637,440],[383,440]]},"label":{"0":[510,300]}},
-  {"id":"U.0.2","floor":0,"levels":[0],"rooms":0,"name":"Lokal usługowy 2","area":113.30,"price":null,"status":"wolne","shape":{"0":[[122,955],[300,955],[300,1052],[458,1052],[458,1298],[670,1298],[670,1505],[122,1505]]},"label":{"0":[290,1240]}},
-  {"id":"U.0.3","floor":0,"levels":[0],"rooms":0,"name":"Lokal usługowy 3","area":101.53,"price":null,"status":"wolne","shape":{"0":[[368,1510],[1170,1510],[1170,1765],[368,1765]]},"label":{"0":[770,1645]}}
+  {"id":"U.0.1","floor":0,"levels":[0],"rooms":0,"name":"Lokal usługowy 1","area":38.76,"price":584501,"status":"wolne","shape":{"0":[[383,148],[637,148],[637,440],[383,440]]},"label":{"0":[510,300]},"history":[["2026-09-15",584501]]},
+  {"id":"U.0.2","floor":0,"levels":[0],"rooms":0,"name":"Lokal usługowy 2","area":116.2,"price":1752296,"status":"wolne","shape":{"0":[[122,955],[300,955],[300,1052],[458,1052],[458,1298],[670,1298],[670,1505],[122,1505]]},"label":{"0":[290,1240]},"history":[["2026-09-15",1752296]]},
+  {"id":"U.0.3","floor":0,"levels":[0],"rooms":0,"name":"Lokal usługowy 3","area":101.72,"price":1533938,"status":"wolne","shape":{"0":[[368,1510],[1170,1510],[1170,1765],[368,1765]]},"label":{"0":[770,1645]},"history":[["2026-09-15",1533938]]}
 ];

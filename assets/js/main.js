@@ -704,7 +704,7 @@
       e.preventDefault();
       showUnit(units.concat(uslugi).filter(function (u) { return u.id === a.dataset.id; })[0]);
     });
-    selectFloor(2, false);
+    selectFloor(0, false);
 
     // „Budynek rośnie”: przy pierwszym pojawieniu się makiety piętra składają się od garażu po dach, z licznikiem
     var mkHint = $('.mk__hint'), mkWrap = $('#makieta');

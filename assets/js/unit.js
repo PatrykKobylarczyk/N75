@@ -38,9 +38,8 @@
   }).join('');
 
   var viz;
-  if (u.id === 'M2.03') viz = ['assets/img/salon-m2-03.webp', 'Salon apartamentu M2.03', 'Wizualizacja apartamentu M2.03'];
-  else if (u.id === 'M2.04') viz = ['assets/img/loggia-m2-04.webp', 'Loggia apartamentu M2.04', 'Wizualizacja apartamentu M2.04'];
-  else viz = ['assets/img/salon-m2-03.webp', 'Przykładowe wnętrze apartamentu w N75', 'Wizualizacja poglądowa, wnętrze apartamentu M2.03'];
+  // wizualizacja poglądowa, wspólna dla wszystkich mieszkań
+  viz = ['assets/img/salon-m2-03.webp', 'Przykładowe wnętrze apartamentu w N75', 'Wizualizacja poglądowa'];
 
   var same = units.filter(function (x) { return x.floor === u.floor; });
   var i = same.indexOf(u), prev = same[i - 1], next = same[i + 1];
@@ -88,7 +87,7 @@
       '<div><div class="sec-head"><span class="num">02</span><span class="line"></span><span class="caps">Historia ceny</span></div>' +
         (sold ? '<p class="muted">Lokal sprzedany.</p>' :
         '<table class="u-table"><thead><tr><th>Data zmiany</th><th>Cena za m²</th><th>Cena</th></tr></thead><tbody>' + hist + '</tbody></table>') +
-        '<p class="u-note">Ceny brutto. Ceny i&nbsp;statusy lokali mają charakter informacyjny i&nbsp;nie stanowią oferty w&nbsp;rozumieniu Kodeksu cywilnego. Powierzchnie i&nbsp;ceny według cennika z&nbsp;25.08.2026; powierzchnie pomieszczeń według projektu budowlanego.</p></div>' +
+        '<p class="u-note">Ceny brutto. Ceny i&nbsp;statusy lokali mają charakter informacyjny i&nbsp;nie stanowią oferty w&nbsp;rozumieniu Kodeksu cywilnego. Powierzchnie i&nbsp;ceny według cennika z&nbsp;15.09.2026; powierzchnie pomieszczeń według projektu budowlanego.</p></div>' +
     '</div></section>' +
 
     '<section class="u-section"><div class="wrap">' +

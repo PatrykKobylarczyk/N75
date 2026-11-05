@@ -1,0 +1,4 @@
+
+# Cenniki (dane wewnętrzne) nie trafiają do repo
+*.xls
+*.xlsx
