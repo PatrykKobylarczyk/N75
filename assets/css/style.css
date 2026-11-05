@@ -1084,7 +1084,7 @@ a.tile { display: block; color: inherit; }
 .hero__seal:hover svg { animation-duration: 12s; }
 @keyframes seal-spin { to { transform: rotate(360deg); } }
 @media (max-width: 700px) {
-  .hero__seal { width: 92px; height: 92px; bottom: auto; top: calc(50% - 46px); right: 14px; }
+  .hero__seal { width: 92px; height: 92px; top: auto; bottom: 24%; right: 14px; }
   .hero__seal-arrow { height: 22px; }
 }
 
@@ -1307,3 +1307,8 @@ a.tile { display: block; color: inherit; }
 .drawer__nav .num { font-size: clamp(16px, 2.6vh, 24px); }
 .drawer__foot { padding-top: clamp(12px, 2.4vh, 26px); justify-content: flex-start; }
 @media (max-width: 600px) { .drawer__nav a { grid-template-columns: 40px 1fr; gap: 12px; } }
+
+/* Stopka: dokumenty oddzielone wierszem od e-maila, w ciepłym pomarańczowym odcieniu */
+.footer__docs { display: flex; flex-direction: column; margin-top: 1.55em; }
+.footer__docs a { color: #d99a5b; }
+.footer__docs a:hover { color: var(--paper); }
