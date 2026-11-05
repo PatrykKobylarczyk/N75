@@ -1229,7 +1229,6 @@ a.tile { display: block; color: inherit; }
 @media (max-width: 800px) { .bd-odkryj summary { grid-template-columns: 1fr; } .bd-figs { grid-template-columns: 1fr 1fr; } .bd-figs figure:first-child { grid-column: 1 / -1; } .bd-figs figure:first-child img { aspect-ratio: 3 / 2; } }
 
 /* ---------- Animacje: paralaksa panoramy i wejście numerów sekcji ---------- */
-.panorama img { transform: scale(1.14); will-change: transform; transition: none; }
 .sec-head .num.num-in { display: inline-block; opacity: 0; transform: translateY(14px); clip-path: inset(0 0 100% 0); transition: opacity .9s var(--ease), transform .9s var(--ease), clip-path .9s var(--ease); }
 .sec-head .num.num-in.is-shown { opacity: 1; transform: none; clip-path: inset(0 0 0 0); }
 .sec-head .line { transform-origin: left; }
@@ -1344,3 +1343,6 @@ a.tile { display: block; color: inherit; }
 .intro.is-open .intro__skip, .intro.is-skip .intro__skip { opacity: 0 !important; animation: none; }
 @keyframes intro-skip { to { opacity: .8; } }
 .intro.is-skip { opacity: 0; transition: opacity .4s; }
+
+.drawer__nav .num--sub { font-size: .8em; opacity: .7; }
+.drawer__manifest + li:not(.drawer__manifest) { margin-top: clamp(4px, 1.2vh, 12px); }
