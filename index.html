@@ -24,9 +24,15 @@
   (function(){try{var c=document.createElement('canvas').getContext('2d'),t='MWNmwqr075 Łódź';function w(f){c.font='72px '+f;return c.measureText(t).width}
   var m=w('monospace'),s=w('serif'),h=function(n){return w('"'+n+'",monospace')!==m||w('"'+n+'",serif')!==s},d=document.documentElement;
   if(!h('Futura')&&!h('Futura PT'))d.classList.add('no-futura');if(!h('Avenir Next')&&!h('Avenir'))d.classList.add('no-avenir')}catch(e){}})();</script>
-  <script>/* intro: przy każdym wejściu i odświeżeniu; bez niego przy powrocie „wstecz” i przejściu z podstrony N75 */
-  try{var n=(performance.getEntriesByType('navigation')[0]||{}).type,r=document.referrer,own=r&&r.indexOf(location.origin)===0;
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches||n==='back_forward'||(n==='navigate'&&own&&!/\/(index\.html)?$/.test(new URL(r).pathname))||location.hash)document.documentElement.classList.add('intro-done')}catch(e){}</script>
+  <script>/* Start strony: po wpisaniu adresu, odświeżeniu i wejściu z zewnątrz zawsze od hero (z intro).
+     Wyjątki: „wstecz” (powrót do miejsca) i przejście z podstrony N75 z kotwicą, np. #kontakt z karty lokalu. */
+  try{var n=(performance.getEntriesByType('navigation')[0]||{}).type,r=document.referrer,own=!!r&&r.indexOf(location.origin)===0,
+  fromSub=own&&!/\/(index\.html)?$/.test(new URL(r).pathname),keep=n==='back_forward'||(n==='navigate'&&fromSub),d=document.documentElement;
+  if('scrollRestoration' in history)history.scrollRestoration=n==='back_forward'?'auto':'manual';
+  if(!keep){if(location.hash)history.replaceState(null,'',location.pathname+location.search);
+    var top0=function(){window.scrollTo(0,0)};top0();addEventListener('DOMContentLoaded',top0);addEventListener('load',function(){top0();setTimeout(top0,80);setTimeout(top0,350)});}
+  if(keep||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-done');
+  addEventListener('pageshow',function(e){if(e.persisted&&!keep)window.scrollTo(0,0)})}catch(e){}</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="n75-logo" viewBox="36 38 1000 518"><rect x="40" y="42" width="12" height="508"/>

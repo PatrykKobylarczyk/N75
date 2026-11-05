@@ -104,6 +104,20 @@
     nums.forEach(function (n) { io.observe(n); });
   }
 
+  /* ---------- Kotwice na tej samej stronie: przewijanie bez dopisywania #sekcji do adresu ---------- */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    var h = a.getAttribute('href'), i = h.indexOf('#');
+    if (i < 0) return;
+    var path = h.slice(0, i), id = h.slice(i + 1);
+    if (path && path !== location.pathname.split('/').pop() && !(path === 'index.html' && /\/(index\.html)?$/.test(location.pathname))) return;
+    var t = id === 'top' || id === '' ? document.body : document.getElementById(id);
+    if (!t) return;
+    e.preventDefault();
+    if (t === document.body) window.scrollTo({ top: 0, behavior: 'smooth' }); else t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
   /* ---------- Płynne przewijanie kółkiem myszy (komputer) ----------
      Ruch kółka trafia do „celu”, a strona dopływa do niego z wygaszaniem. Natywny scroll pozostaje
      źródłem prawdy (działają sticky, kotwice, klawiatura, pasek przewijania). Ekrany dotykowe bez zmian. */
