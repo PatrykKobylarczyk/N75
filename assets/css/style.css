@@ -1475,3 +1475,6 @@ body.dh-open { overflow: hidden; }
 .pl-room { font: 500 15px/1 var(--sans, Inter, sans-serif); letter-spacing: .12em; text-transform: uppercase; text-anchor: middle; fill: #3c3732; paint-order: stroke; stroke: #f7f3ec; stroke-width: 5px; stroke-linejoin: round; pointer-events: none; }
 .pl-room--t { font-size: 11px; fill: #9a8f81; letter-spacing: .1em; }
 .pl-room-a { font: 400 12px/1 var(--sans, Inter, sans-serif); text-anchor: middle; fill: var(--bronze); paint-order: stroke; stroke: #f7f3ec; stroke-width: 4px; pointer-events: none; }
+.pl-parking .pl-park-t { font-size: 18px; }
+.pl-park-lv { font: 500 8.5px/1 var(--sans, Inter, sans-serif); fill: var(--bronze); text-anchor: middle; letter-spacing: .16em; opacity: .7; pointer-events: none; }
+.pl-parking .pl-park-s { paint-order: stroke; stroke: #f4ede2; stroke-width: 4px; stroke-linejoin: round; font-size: 9.5px; }
