@@ -255,8 +255,8 @@
       io.observe(stage);
     } else seen = true;
   }
-  sketch($('#draw-lines'), $('#draw-stage'), { total: 7000, gap: 22 });
-  sketch($('#pierzeja-lines'), $('#pierzeja-scroll'), { total: 9000, gap: 0, tip: 4, min: 1, host: $('#pierzeja-fig') });
+  sketch($('#draw-lines'), $('#draw-stage'), { total: 4500, gap: 14 });
+  sketch($('#pierzeja-lines'), $('#pierzeja-scroll'), { total: 5500, gap: 0, tip: 4, min: 1, host: $('#pierzeja-fig') });
 
   /* ---------- Modernizm to… (zmieniające się słowo) ---------- */
   var rot = $('#modern-rot');
