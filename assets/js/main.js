@@ -597,14 +597,14 @@
     [7, 6, 5, 4, 3, 2, 1].forEach(function (f) {
       var gm = GEO[f], list = onFloor(f), nFree = free(list);
       var g = el('g', { class: 'mk-floor', tabindex: 0, role: 'button', 'data-floor': f,
-        'aria-label': 'Piętro ' + f + ': ' + list.length + ' ' + lokali(list.length) + ', ' + nFree + ' ' + wolnych(nFree) }, mkSvg);
+        'aria-label': f === 7 ? 'Piętro 7: górne poziomy apartamentów z 6. piętra' : 'Piętro ' + f + ': ' + list.length + ' ' + lokali(list.length) + ', ' + nFree + ' ' + wolnych(nFree) }, mkSvg);
       el('rect', { x: gm[0], y: gm[2], width: gm[1] - gm[0], height: gm[3] - gm[2], class: 'mk-body' }, g);
       bays(g, gm[0], gm[1], gm[2] + 12, gm[3] - gm[2] - 22, Math.round((gm[1] - gm[0]) / 60), 'mk-win');
       el('line', { x1: gm[0], y1: gm[3] - 6, x2: gm[1], y2: gm[3] - 6, class: 'mk-rail' }, g);
       var ty = (gm[2] + gm[3]) / 2;
       el('line', { x1: gm[1] + 4, y1: ty, x2: 470, y2: ty, class: 'mk-lead' }, g);
       el('text', { x: 478, y: ty - 2, class: 'mk-num' }, g).textContent = (f < 10 ? '0' : '') + f;
-      el('text', { x: 478, y: ty + 16, class: 'mk-small' }, g).textContent = nFree + ' ' + wolnych(nFree).toUpperCase() + ' / ' + list.length;
+      el('text', { x: 478, y: ty + 16, class: 'mk-small' }, g).textContent = f === 7 ? 'M6.01 · M6.04 – POZIOM GÓRNY' : nFree + ' ' + wolnych(nFree).toUpperCase() + ' / ' + list.length;
       g.addEventListener('click', function () { selectFloor(f, true); });
       g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectFloor(f, true); } });
       floorEls[f] = g;
@@ -632,8 +632,8 @@
       var g0 = f === 0;
       mkPanel.innerHTML =
         '<div class="mk__head"><span class="num">' + (g0 ? 'Poziom' : 'Piętro') + '</span><h3 class="display h3">' + (g0 ? 'Parter' : f) + '</h3>' +
-        '<span class="caps muted">' + list.length + ' ' + lokali(list.length) + (g0 ? ' usługowe' : '') + ' · ' + nFree + ' ' + wolnych(nFree) + '</span></div>' +
-        (f === 7 ? '<p class="muted mk__note">Górne kondygnacje dwupoziomowych apartamentów z&nbsp;6. piętra.</p>' : '') +
+        '<span class="caps muted">' + (f === 7 ? 'Górne poziomy ' + list.map(function (u) { return u.id; }).join(' i ') : list.length + ' ' + lokali(list.length) + (g0 ? ' usługowe' : '') + ' · ' + nFree + ' ' + wolnych(nFree)) + '</span></div>' +
+        (f === 7 ? '<p class="muted mk__note">Na 7. kondygnacji nie ma samodzielnych mieszkań – to górne poziomy dwupoziomowych apartamentów ' + list.map(function (u) { return u.id; }).join(' i ') + ' z&nbsp;6. piętra. Kliknij apartament, aby zobaczyć cały lokal.</p>' : '') +
         (g0 ? '<p class="muted mk__note">Lobby z&nbsp;recepcją, komórki lokatorskie, hala garażowa i&nbsp;trzy lokale usługowe od strony ulic Narutowicza i&nbsp;Tramwajowej. Przeznaczenie lokali do ustalenia z&nbsp;najemcą lub nabywcą.</p>' : '') +
         '<div class="mk__body"><div class="mk__plan" id="mk-plan"></div>' +
         '<div class="mk__side" id="mk-side" hidden></div></div>' +
