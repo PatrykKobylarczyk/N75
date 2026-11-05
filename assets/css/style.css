@@ -1478,3 +1478,18 @@ body.dh-open { overflow: hidden; }
 .pl-parking .pl-park-t { font-size: 18px; }
 .pl-park-lv { font: 500 8.5px/1 var(--sans, Inter, sans-serif); fill: var(--bronze); text-anchor: middle; letter-spacing: .16em; opacity: .7; pointer-events: none; }
 .pl-parking .pl-park-s { paint-order: stroke; stroke: #f4ede2; stroke-width: 4px; stroke-linejoin: round; font-size: 9.5px; }
+/* makieta wg elewacji PB-AR-301 */
+.mk-band { fill: #e4dbcd; stroke: var(--graphite); stroke-width: .7; transition: fill .25s; }
+.mk-ln { fill: none; stroke: var(--graphite); stroke-width: .6; opacity: .55; transition: stroke .25s; }
+.mk-ln--pil { opacity: .3; }
+.mk-ln--lam { opacity: .35; stroke-width: .5; }
+.mk-bar { fill: none; stroke: #6d5a48; stroke-width: .5; opacity: .75; transition: stroke .25s; }
+.mk-perf { fill: none; stroke: var(--graphite); stroke-width: .5; opacity: .6; }
+.mk-door--glass { fill: #cfc4b3; }
+.mk-hit { fill: transparent; }
+.mk-floor:hover .mk-band { fill: #dccab3; }
+.mk-floor.is-active .mk-band { fill: #8a6240; }
+.mk-floor.is-active .mk-ln, .mk-floor.is-active .mk-perf { stroke: #f4ede2; }
+.mk-floor.is-active .mk-bar { stroke: #f4ede2; opacity: .9; }
+.mk-floor--0.is-active .mk-body { fill: var(--bronze); }
+.mk-floor--0.is-active .mk-door--glass { fill: #b88c62; }
