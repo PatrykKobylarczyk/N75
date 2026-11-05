@@ -1398,3 +1398,8 @@ a.tile { display: block; color: inherit; }
 @media (min-width: 901px) { .pierzeja__scroll { padding-top: 72px; } }
 @media (prefers-reduced-motion: reduce) { .js .pierzeja__fig img { clip-path: none; transition: none; } .pierzeja__tag { opacity: 1; transition: none; } }
 .draw + .pierzeja { padding-top: clamp(0px, 1.5vw, 24px); }
+/* Lokalizacja: jedna typografia w rozwiniętych kategoriach */
+.place-cat li, .place-cat li.poi--txt, .poi__name, .poi__dist { font-family: inherit; font-size: 15px; line-height: 1.5; font-weight: 300; letter-spacing: 0; }
+.place-cat li, .place-cat li.poi--txt { color: var(--ink-soft); }
+.place-cat li::before { top: 14px; }
+.poi__dist { color: var(--bronze); }
