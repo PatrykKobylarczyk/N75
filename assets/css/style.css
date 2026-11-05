@@ -1106,16 +1106,18 @@ a.tile { display: block; color: inherit; }
 
 /* ---------- Cytat „arka”: szkic jako delikatne tło, tekst na niego nachodzi ---------- */
 .arka { position: relative; margin-top: clamp(64px, 8vw, 120px); min-height: clamp(300px, 30vw, 420px); display: flex; align-items: center; }
-.arka__bg { position: absolute; right: 9%; top: 50%; transform: translateY(-50%); width: min(46%, 560px); height: auto; opacity: .32; pointer-events: none; }
+.arka__bg { position: absolute; right: -1%; top: 50%; transform: translateY(-50%); width: min(46%, 560px); height: auto; opacity: .32; pointer-events: none; }
 .arka__txt { position: relative; z-index: 1; max-width: 760px; }
 .arka .mark { font-family: var(--serif); font-size: 90px; line-height: .6; color: var(--bronze); display: block; margin-bottom: 20px; }
 .arka blockquote { margin: 0; font-family: var(--serif); font-weight: 300; font-style: italic; font-size: clamp(28px, 3.6vw, 54px); line-height: 1.22; color: var(--graphite); }
 .arka cite { display: block; margin-top: 28px; font-style: normal; color: var(--muted); }
-.arka__link { position: absolute; right: 0; bottom: 0; z-index: 1; font-size: 10px; color: var(--bronze); border-bottom: 1px solid currentColor; padding-bottom: 3px; }
-.arka__link:hover { color: var(--graphite); }
+.arka__link { display: inline-flex; align-items: center; gap: 14px; margin-top: 34px; font-size: 12px; color: var(--ink); padding: 12px 0; border-bottom: 1px solid var(--bronze); transition: color .3s, gap .3s; }
+.arka__link .arrow { width: 26px; height: 1px; background: var(--bronze); position: relative; }
+.arka__link .arrow::after { content: ""; position: absolute; right: 0; top: -3px; width: 7px; height: 7px; border-top: 1px solid var(--bronze); border-right: 1px solid var(--bronze); transform: rotate(45deg); }
+.arka__link:hover { color: var(--bronze); gap: 20px; }
 @media (max-width: 700px) {
   .arka { display: block; min-height: 0; padding-bottom: 46px; overflow: hidden; }
-  .arka__bg { width: 78%; right: -6%; top: 58%; opacity: .24; }
+  .arka__bg { width: 78%; right: -16%; top: 58%; opacity: .24; }
 }
 
 .arch-slide--tall img { object-position: 50% 35%; }
