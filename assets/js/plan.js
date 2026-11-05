@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var NS = 'http://www.w3.org/2000/svg';
-  var W = 1504, H = 1925, V = '?v=1793896862';
+  var W = 1504, H = 1925, V = '?v=1793897207';
 
   function el(tag, attrs, parent) {
     var n = document.createElementNS(NS, tag);
@@ -35,7 +35,7 @@
     var full = opts.frame ? opts.frame.slice() : pad(box(list.map(function (u) { return u.shape[f]; })), .06);
     var vb = full.slice(), anim = null, zoomed = null;
 
-    var svg = el('svg', { class: 'pl', viewBox: vb.join(' '), preserveAspectRatio: 'xMidYMid meet', role: 'group', 'aria-label': f === '0' ? 'Rzut parteru' : 'Rzut piętra ' + f });
+    var svg = el('svg', { class: 'pl', viewBox: vb.join(' '), preserveAspectRatio: 'xMidYMid meet', role: 'group', 'aria-label': f === '0' ? 'Rzut parteru' : f === '-1' ? 'Rzut garażu podziemnego' : 'Rzut piętra ' + f });
     svg.style.aspectRatio = (full[2] / full[3]).toFixed(4);
     el('image', { href: 'assets/img/plany/pietro-' + f + '.webp' + V, x: 0, y: 0, width: W, height: H, class: 'pl-img' }, svg);
     // wersja szczegółowa (z meblami) do widoku pojedynczego lokalu; ładowana przy pierwszym przybliżeniu
@@ -51,6 +51,16 @@
       detail.setAttribute('x', c[0]); detail.setAttribute('y', c[1]); detail.setAttribute('width', c[2]); detail.setAttribute('height', c[3]);
       detail.setAttribute('href', src);
       var probe = new Image(); probe.onload = function () { detail.classList.add('is-ready'); }; probe.src = src;   // Safari nie zawsze wysyła onload dla <image> w SVG
+    }
+    // miejsca postojowe (nieklikalne) z numerami
+    var pk = (window.N75_PARKING || {})[f];
+    if (pk && pk.length) {
+      var gp = el('g', { class: 'pl-parking', 'aria-hidden': 'true' }, svg);
+      pk.forEach(function (s) {
+        el('path', { d: pathD(s.p), class: 'pl-park pl-park--' + s.k }, gp);
+        var cx = 0, cy = 0; s.p.forEach(function (q) { cx += q[0]; cy += q[1]; }); cx /= s.p.length; cy /= s.p.length;
+        var t = el('text', { x: cx, y: cy + 5, class: 'pl-park-t' }, gp); t.textContent = s.n;
+      });
     }
     var g = el('g', { class: 'pl-units' }, svg);
     var dim = el('path', { class: 'pl-dim', 'fill-rule': 'evenodd', d: '' }, svg);

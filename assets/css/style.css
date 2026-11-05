@@ -1462,3 +1462,11 @@ body.dh-open { overflow: hidden; }
 .mk-3d { display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
 .mk-3d svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linejoin: round; }
 .dh__load[hidden], .dh__lv[hidden] { display: none; }
+
+/* miejsca postojowe na rzutach */
+.pl-park { fill: rgba(156, 113, 73, .1); stroke: var(--bronze); stroke-width: 2; stroke-dasharray: 6 4; }
+.pl-park--moto { fill: rgba(156, 113, 73, .06); }
+.pl-park-t { font: 500 20px/1 var(--sans, Inter, sans-serif); fill: var(--bronze); text-anchor: middle; letter-spacing: .08em; pointer-events: none; }
+.mk-floor--garage { cursor: pointer; }
+.mk-floor--garage:hover .mk-garage, .mk-floor--garage.is-active .mk-garage { fill: rgba(156, 113, 73, .18); stroke: var(--bronze); }
+.hero__seal text { font-size: 7.6px; letter-spacing: .1em; }
