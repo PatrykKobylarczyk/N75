@@ -12,8 +12,9 @@
     oak: [196, 168, 132], tile: [222, 214, 201], stone: [205, 198, 187],
     linen: [236, 230, 220], linen2: [244, 241, 235], boucle: [232, 226, 215], sand: [214, 200, 179], taupe: [176, 160, 141],
     mocha: [134, 108, 88], walnut: [112, 82, 62], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
-    black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [190, 205, 210], rug: [226, 217, 202],
-    green: [110, 124, 92], pot: [196, 184, 166]
+    black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [176, 196, 204], rug: [226, 217, 202],
+    green: [110, 124, 92], pot: [196, 184, 166], teak: [168, 134, 98], teak2: [150, 114, 80], olive: [118, 128, 96], olive2: [134, 144, 110],
+    bronze: [120, 96, 70], frame: [74, 68, 62], curtain: [240, 235, 226], rugOut: [214, 205, 190]
   };
 
   /* ---------- geometria ---------- */
@@ -109,24 +110,71 @@
   function rectL(L, x0, y0, x1, y1) { return [L(x0, y0), L(x1, y0), L(x1, y1), L(x0, y1)]; }
   function shrinkL(b, d) { return [b[0] + d, b[1] + d, b[2] - d, b[3] - d]; }
 
+  // loggia: leżaki z teku, stolik i oliwki w donicach
+  function loggia(M, P, dy) {
+    var b = bbox(P), w = b[2] - b[0], d = b[3] - b[1], horiz = w >= d, L = horiz ? w : d, D = horiz ? d : w;
+    var cx = (b[0] + b[2]) / 2, cz = (b[1] + b[3]) / 2;
+    var at = function (u, v) { return horiz ? [cx + u, cz + v] : [cx + v, cz + u]; };
+    var ok = function (u, v) { return inside(at(u, v), P); };
+    var plant = function (u, v, r) {
+      if (!ok(u, v)) return; var p = at(u, v);
+      M.cyl(p[0], p[1], r, dy, dy + 0.55, C.pot, 18);
+      M.cyl(p[0], p[1], r * 1.35, dy + 0.75, dy + 1.05, C.olive, 14); M.cyl(p[0], p[1], r * 1.05, dy + 1.05, dy + 1.3, C.olive2, 12); M.cyl(p[0], p[1], 0.02, dy + 0.55, dy + 0.78, C.walnut, 6);
+    };
+    if (L > 1.6) { plant(-L / 2 + 0.4, 0, 0.2); plant(L / 2 - 0.4, 0, 0.2); }
+    if (D < 1.25 || L < 2.4) return;
+    [-0.55, 0.55].forEach(function (u) {
+      if (!ok(u, 0)) return;
+      var a = at(u - 0.33, -0.36), c = at(u + 0.33, 0.36);
+      var x0 = Math.min(a[0], c[0]), x1 = Math.max(a[0], c[0]), z0 = Math.min(a[1], c[1]), z1 = Math.max(a[1], c[1]);
+      M.box(x0, z0, x1, z1, dy + 0.05, dy + 0.3, C.teak2); M.box(x0 + 0.04, z0 + 0.04, x1 - 0.04, z1 - 0.04, dy + 0.3, dy + 0.42, C.linen);
+      var bk = at(u, -0.36); M.box(horiz ? x0 + 0.04 : bk[0] - 0.05, horiz ? bk[1] - 0.05 : z0 + 0.04, horiz ? x1 - 0.04 : bk[0] + 0.05, horiz ? bk[1] + 0.05 : z1 - 0.04, dy + 0.3, dy + 0.75, C.linen);
+    });
+    var t = at(0, 0.05); M.cyl(t[0], t[1], 0.24, dy + 0.42, dy + 0.46, C.travertine, 24); M.cyl(t[0], t[1], 0.05, dy, dy + 0.42, C.bronze, 10);
+    if (D > 1.6) { var r = at(0, 0); M.box(r[0] - (horiz ? 1.1 : 0.7), r[1] - (horiz ? 0.7 : 1.1), r[0] + (horiz ? 1.1 : 0.7), r[1] + (horiz ? 0.7 : 1.1), dy, dy + 0.01, C.rugOut); }
+  }
+
   /* ---------- budowa modelu ---------- */
   function buildLevel(M, lv, dx, dz, dy, opaque, glassM) {
     var X = function (P) { return P.map(function (p) { return [p[0] + dx, p[1] + dz]; }); };
     // posadzki z płytą stropu
+    var inner = [];
     lv.floors.forEach(function (f) {
       var n = (f.n || '').toLowerCase();
       var wet = /łazienka|wc|pralnia|sauna/.test(n);
-      var out = !n || /loggia|balkon|taras/.test(n);
-      var top = wet ? C.tile : out ? C.stone : C.oak, mat = wet ? 2 : out ? 3 : 1;
+      var out = f.k === 'out' || /loggia|balkon|taras/.test(n);
+      var top = wet ? C.tile : out ? C.teak : C.oak, mat = wet ? 2 : out ? 3 : 1;
       M.prism(X(f.p), dy - 0.22, dy, C.slab, top, 0, mat);
+      if (out) loggia(M, X(f.p), dy); else inner.push(X(f.p));
     });
     // ściany: przekrój ciemny na górze
     lv.walls.forEach(function (w) { M.box(w[0] + dx, w[1] + dz, w[2] + dx, w[3] + dz, dy - 0.22, dy + WALL_H, C.wall, C.wallTop, 4); });
-    // przeszklenia: szkło + nadproże
+    // balustrady loggii: szkło + smukły pochwyt
+    (lv.rails || []).forEach(function (r) {
+      var x0 = r[0] + dx, z0 = r[1] + dz, x1 = r[2] + dx, z1 = r[3] + dz, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, hx = Math.max(x1 - x0, 0.06) / 2, hz = Math.max(z1 - z0, 0.06) / 2;
+      var t = 0.025;
+      if (hx >= hz) { glassM.box(x0, cz - t, x1, cz + t, dy, dy + 1.05, C.glass); M.box(x0, cz - 0.03, x1, cz + 0.03, dy + 1.05, dy + 1.1, C.bronze); M.box(x0, cz - 0.05, x1, cz + 0.05, dy - 0.22, dy + 0.06, C.wall, C.wallTop); }
+      else { glassM.box(cx - t, z0, cx + t, z1, dy, dy + 1.05, C.glass); M.box(cx - 0.03, z0, cx + 0.03, z1, dy + 1.05, dy + 1.1, C.bronze); M.box(cx - 0.05, z0, cx + 0.05, z1, dy - 0.22, dy + 0.06, C.wall, C.wallTop); }
+    });
+    // okna: półprzezroczyste szkło w smukłych ramach + lniane zasłony od środka
     lv.glass.forEach(function (g) {
-      glassM.box(g[0] + dx, g[1] + dz, g[2] + dx, g[3] + dz, dy, dy + GLASS_H, C.glass, C.glass, 9);
-      M.box(g[0] + dx, g[1] + dz, g[2] + dx, g[3] + dz, dy + GLASS_H, dy + WALL_H, C.wall, C.wallTop, 4);
-      M.box(g[0] + dx, g[1] + dz, g[2] + dx, g[3] + dz, dy - 0.22, dy + 0.02, C.wall, C.brass, 4);
+      var x0 = g[0] + dx, z0 = g[1] + dz, x1 = g[2] + dx, z1 = g[3] + dz, horiz = (x1 - x0) >= (z1 - z0);
+      var len = horiz ? x1 - x0 : z1 - z0, c = horiz ? (z0 + z1) / 2 : (x0 + x1) / 2, t = 0.018;
+      var seg = function (a, b, y0, y1, th, col, mesh) { (mesh || M).box(horiz ? a : c - th, horiz ? c - th : a, horiz ? b : c + th, horiz ? c + th : b, y0, y1, col); };
+      seg(horiz ? x0 : z0, horiz ? x1 : z1, dy + 0.06, dy + WALL_H - 0.05, t, C.glass, glassM);
+      seg(horiz ? x0 : z0, horiz ? x1 : z1, dy - 0.22, dy + 0.06, 0.045, C.frame);
+      seg(horiz ? x0 : z0, horiz ? x1 : z1, dy + WALL_H - 0.05, dy + WALL_H, 0.045, C.frame);
+      var n = Math.max(1, Math.round(len / 1.35)), a0 = horiz ? x0 : z0;
+      for (var i = 0; i <= n; i++) { var m = a0 + len * i / n; seg(m - 0.025, m + 0.025, dy + 0.06, dy + WALL_H - 0.05, 0.04, C.frame); }
+      // zasłony: tylko przy oknach pomieszczeń (strona wewnętrzna)
+      if (len < 0.9) return;
+      var mid = horiz ? [(x0 + x1) / 2, c] : [c, (z0 + z1) / 2], side = 0;
+      [0.3, -0.3].forEach(function (o) { var p = horiz ? [mid[0], mid[1] + o] : [mid[0] + o, mid[1]]; if (!side && inner.some(function (P) { return inside(p, P); })) side = o > 0 ? 1 : -1; });
+      if (!side) return;
+      var cc = c + side * 0.13, pw = Math.min(0.42, len * 0.18);
+      [[a0 + 0.04, a0 + 0.04 + pw], [a0 + len - 0.04 - pw, a0 + len - 0.04]].forEach(function (q) {
+        M.box(horiz ? q[0] : cc - 0.05, horiz ? cc - 0.05 : q[0], horiz ? q[1] : cc + 0.05, horiz ? cc + 0.05 : q[1], dy + 0.02, dy + WALL_H - 0.08, C.curtain);
+      });
     });
     lv.items.forEach(function (it) { try { furnish(M, it, dx, dz, dy); } catch (e) { /* pojedynczy mebel nie blokuje modelu */ } });
   }
@@ -186,6 +234,11 @@
         while (changed) { changed = false; regs.forEach(function (r) { if (part.indexOf(r) < 0 && part.some(function (p) { return near(p, r); }) && r.A < 1.6) { part.push(r); changed = true; } }); }
         var sb = bbox([].concat.apply([], part.map(function (r) { return [[r.b[0], r.b[1]], [r.b[2], r.b[3]]]; })));
         M.prism(R(shrinkL(sb, 3)), Y(0.02), Y(0.18), C.taupe);
+        var pl = L(sb[2] + 28, (sb[1] + sb[3]) / 2 - (sb[3] - sb[1]) * 0.3);   // oliwka w donicy przy sofie
+        M.cyl(pl[0], pl[1], 0.18, Y(0), Y(0.45), C.pot, 18); M.cyl(pl[0], pl[1], 0.02, Y(0.45), Y(0.9), C.walnut, 6);
+        M.cyl(pl[0], pl[1], 0.3, Y(0.9), Y(1.25), C.olive, 14); M.cyl(pl[0], pl[1], 0.22, Y(1.25), Y(1.5), C.olive2, 12);
+        var lp = L(sb[0] - 24, (sb[1] + sb[3]) / 2 - (sb[3] - sb[1]) * 0.3);   // lampa podłogowa
+        M.cyl(lp[0], lp[1], 0.14, Y(0), Y(0.03), C.bronze, 16); M.cyl(lp[0], lp[1], 0.012, Y(0.03), Y(1.45), C.bronze, 6); M.cyl(lp[0], lp[1], 0.2, Y(1.45), Y(1.72), C.curtain, 20);
         part.forEach(function (r) {
           var thin = Math.min(r.w, r.d) < 28;
           if (thin) M.prism(P(r), Y(0.18), Y(0.74), C.boucle);
@@ -289,15 +342,15 @@
     'vec3 lin(vec3 c){return pow(c,vec3(2.2));}' +
     'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}' +
     'float sh(){vec3 q=vL.xyz/vL.w*.5+.5;if(q.x<0.||q.x>1.||q.y<0.||q.y>1.)return 1.;float s=0.;vec2 t=1./vec2(textureSize(uS,0));' +
-    'for(int x=-2;x<=2;x++)for(int y=-2;y<=2;y++){float d=texture(uS,q.xy+vec2(x,y)*t*1.3).r;s+=q.z-.0012>d?0.:1.;}return s/25.;}' +
+    'for(int x=-2;x<=2;x++)for(int y=-2;y<=2;y++){float d=texture(uS,q.xy+vec2(x,y)*t*2.2).r;s+=q.z-.0012>d?0.:1.;}return s/25.;}' +
     'void main(){vec3 N=normalize(vN);vec3 col=lin(vC);int M=int(vM+.5);' +
     'if(M==1&&N.y>.5){vec2 g=vP.xz*vec2(1.,5.2);float row=floor(g.y);float off=h(vec2(row,3.))*3.;float pl=floor(g.x/1.6+off);' +
     'float v=h(vec2(pl,row));col*=.9+.16*v;col*=1.-.05*sin(vP.x*38.+v*9.);float e=min(fract(g.y),1.-fract(g.y));col*=mix(.84,1.,smoothstep(0.,.05,e));}' +
     'if(M==2&&N.y>.5){vec2 g=fract(vP.xz/.6);float e=min(min(g.x,1.-g.x),min(g.y,1.-g.y));col*=mix(.9,1.,smoothstep(0.,.02,e));col*=.97+.05*h(floor(vP.xz/.6));}' +
-    'if(M==3&&N.y>.5){vec2 g=fract(vP.xz/.9);float e=min(min(g.x,1.-g.x),min(g.y,1.-g.y));col*=mix(.95,1.,smoothstep(0.,.02,e));}' +
+    'if(M==3&&N.y>.5){float g=fract(vP.x*7.);float v=h(vec2(floor(vP.x*7.),floor(vP.z*1.2)));col*=.92+.12*v;col*=mix(.8,1.,smoothstep(0.,.08,min(g,1.-g)));}' +
     'float ndl=max(dot(N,uSun),0.);float s=sh();vec3 sky=vec3(1.,.975,.94),gr=vec3(.62,.56,.5);' +
-    'vec3 amb=mix(gr,sky,N.y*.5+.5)*.62;float ao=mix(.72,1.,smoothstep(0.,.5,vP.y-floor(vP.y/3.05)*3.05+.02));' +
-    'vec3 L=col*(amb*ao+vec3(1.,.93,.84)*1.05*ndl*s);' +
+    'vec3 amb=mix(gr,sky,N.y*.5+.5)*.74;float ao=mix(.72,1.,smoothstep(0.,.5,vP.y-floor(vP.y/3.05)*3.05+.02));' +
+    'vec3 L=col*(amb*ao+vec3(1.,.93,.84)*.86*ndl*mix(.25,1.,s));' +
     'vec3 V=normalize(uEye-vP);float sp=pow(max(dot(N,normalize(uSun+V)),0.),40.)*.06*s;L+=sp;' +
     'L=L/(L+.75)*1.55;o=vec4(pow(L,vec3(1./2.2)),uA);}';
   var SVS = '#version 300 es\nlayout(location=0) in vec3 p;uniform mat4 uL;void main(){gl_Position=uL*vec4(p,1.);}';
@@ -380,7 +433,7 @@
     gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
     gl.bindVertexArray(this.op.vao); gl.drawArrays(gl.TRIANGLES, 0, this.op.n);
     gl.disable(gl.CULL_FACE);
-    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.28);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.42);
     gl.bindVertexArray(this.gl_.vao); gl.drawArrays(gl.TRIANGLES, 0, this.gl_.n);
     gl.depthMask(true); gl.disable(gl.BLEND);
   };
