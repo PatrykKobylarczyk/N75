@@ -461,7 +461,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793896862" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793897207" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -569,14 +569,21 @@
     }
     // garaż i parter (bez wyboru)
     var base = el('g', { class: 'mk-base' }, mkSvg);
-    el('rect', { x: 40, y: 598, width: 420, height: 50, class: 'mk-garage' }, base);
-    el('text', { x: 250, y: 628, 'text-anchor': 'middle', class: 'mk-small' }, base).textContent = 'GARAŻ PODZIEMNY';
+    var gG = el('g', { class: 'mk-floor mk-floor--garage', tabindex: 0, role: 'button', 'data-floor': -1, 'aria-label': 'Garaż podziemny: miejsca postojowe' }, mkSvg);
+    el('rect', { x: 40, y: 598, width: 420, height: 50, class: 'mk-garage' }, gG);
+    el('text', { x: 250, y: 628, 'text-anchor': 'middle', class: 'mk-small' }, gG).textContent = 'GARAŻ PODZIEMNY';
+    el('text', { x: 478, y: 618, class: 'mk-num' }, gG).textContent = '-1';
+    el('text', { x: 478, y: 634, class: 'mk-small' }, gG).textContent = 'MIEJSCA POSTOJOWE';
+    gG.addEventListener('click', function () { selectFloor(-1, true); });
+    gG.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectFloor(-1, true); } });
+    var gGarage = gG;
     el('line', { x1: 0, y1: 594, x2: 600, y2: 594, class: 'mk-groundline' }, base);
     // zielone tarasy
     [[40, 80, 220], [420, 460, 220], [80, 120, 160], [380, 420, 160]].forEach(function (t) {
       for (var x = t[0] + 6; x < t[1]; x += 11) el('circle', { cx: x, cy: t[2] - 6, r: 6, class: 'mk-green' }, base);
     });
     var floorEls = {};
+    floorEls[-1] = gGarage;
     // parter: lobby i lokale usługowe (wybieralny jak piętra)
     (function () {
       var list = onFloor(0), nFree = free(list);
@@ -630,16 +637,27 @@
       });
       var list = onFloor(f).sort(function (a, b) { return a.id < b.id ? -1 : 1; });
       var nFree = free(list);
-      var g0 = f === 0;
+      var g0 = f === 0, gm1 = f === -1, PK = (window.N75_PARKING || {});
+      var pkInfo = function (k) { var a = PK[k] || []; return a; };
+      if (gm1) {
+        var lifts = pkInfo('-1').filter(function (s) { return s.k === 'lift'; }).length, moto = pkInfo('-1').filter(function (s) { return s.k === 'moto'; }).length;
+        mkPanel.innerHTML =
+          '<div class="mk__head"><span class="num">Poziom</span><h3 class="display h3">−1</h3><span class="caps muted">Garaż podziemny · ' + lifts + ' platform parkingowych · ' + moto + ' miejsca dla motocykli</span></div>' +
+          '<p class="muted mk__note">Hala garażowa z&nbsp;platformami Parklift (G01–G' + (lifts < 10 ? '0' : '') + lifts + '), miejscami dla motocykli, komórkami lokatorskimi i&nbsp;bezpośrednim wejściem do klatki i&nbsp;windy. Wjazd rampą z&nbsp;parteru. Liczbę stanowisk na platformach i&nbsp;dostępność miejsc potwierdzi biuro sprzedaży.</p>' +
+          '<div class="mk__body"><div class="mk__plan" id="mk-plan"></div><div class="mk__side" id="mk-side" hidden></div></div>';
+        plan = window.N75Plan.create($('#mk-plan'), { floor: -1, units: [], frame: [70, 100, 1424, 1720], href: function () { return '#'; } });
+        if (user && window.matchMedia('(max-width: 900px)').matches) mkPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
       mkPanel.innerHTML =
         '<div class="mk__head"><span class="num">' + (g0 ? 'Poziom' : 'Piętro') + '</span><h3 class="display h3">' + (g0 ? 'Parter' : f) + '</h3>' +
         '<span class="caps muted">' + (f === 7 ? 'Górne poziomy ' + list.map(function (u) { return u.id; }).join(' i ') : list.length + ' ' + lokali(list.length) + (g0 ? ' usługowe' : '') + ' · ' + nFree + ' ' + wolnych(nFree)) + '</span></div>' +
         (f === 7 ? '<p class="muted mk__note">Na 7. kondygnacji nie ma samodzielnych mieszkań – to górne poziomy dwupoziomowych apartamentów ' + list.map(function (u) { return u.id; }).join(' i ') + ' z&nbsp;6. piętra. Kliknij apartament, aby zobaczyć cały lokal.</p>' : '') +
-        (g0 ? '<p class="muted mk__note">Lobby z&nbsp;recepcją, komórki lokatorskie, hala garażowa i&nbsp;trzy lokale usługowe od strony ulic Narutowicza i&nbsp;Tramwajowej. Przeznaczenie lokali do ustalenia z&nbsp;najemcą lub nabywcą.</p>' : '') +
+        (g0 ? '<p class="muted mk__note">Lobby z&nbsp;recepcją, hala garażowa z&nbsp;' + pkInfo('0').length + ' miejscami postojowymi (P01–P' + pkInfo('0').length + '), komórki lokatorskie i&nbsp;trzy lokale usługowe od strony ulic Narutowicza i&nbsp;Tramwajowej. Przeznaczenie lokali do ustalenia z&nbsp;najemcą lub nabywcą.</p>' : '') +
         '<div class="mk__body"><div class="mk__plan" id="mk-plan"></div>' +
         '<div class="mk__side" id="mk-side" hidden></div></div>' +
         '<div class="mk__foot">' +
-        '<a class="mk__cat caps" href="assets/N75_katalog.pdf" download="N75_katalog.pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg><span>Pobierz katalog inwestycji</span></a></div>';
+        '<a class="mk__cat caps" href="assets/N75_katalog.pdf?v=1793897207" download="N75_katalog.pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg><span>Pobierz katalog inwestycji</span></a></div>';
       // jeden kadr dla wszystkich pięter mieszkalnych: rzuty w tej samej skali i położeniu
       if (!FRAME_UP) {
         var bx = [Infinity, Infinity, -Infinity, -Infinity];
