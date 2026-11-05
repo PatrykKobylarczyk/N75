@@ -461,7 +461,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793902513" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793902722" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -551,8 +551,8 @@
   var mkSvg = $('#mk-svg'), mkPanel = $('#mk-panel');
   if (mkSvg && mkPanel) {
     var NS = 'http://www.w3.org/2000/svg';
-    // [x0, x1, y0, y1] kondygnacji na elewacji; 6 i 7 cofnięte tarasowo
-    var GEO = { 7: [120, 380, 100, 160], 6: [80, 420, 160, 220], 5: [40, 460, 220, 280], 4: [40, 460, 280, 340], 3: [40, 460, 340, 400], 2: [40, 460, 400, 460], 1: [40, 460, 460, 520] };
+    // [x0, x1, y0, y1] kondygnacji wg elewacji PB-AR-301: 5, 6 i 7 cofnięte tarasowo
+    var GEO = { 7: [199, 341, 100, 160], 6: [107, 401, 160, 220], 5: [76, 435, 220, 280], 4: [40, 460, 280, 340], 3: [40, 460, 340, 400], 2: [40, 460, 400, 460], 1: [40, 460, 460, 520] };
     var onFloor = function (f) { return f === 0 ? uslugi.slice() : units.filter(function (u) { return u.levels.indexOf(f) >= 0; }); };
     var free = function (l) { return l.filter(function (u) { return u.status === 'wolne'; }).length; };
     var lokali = function (n) { return n === 1 ? 'lokal' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'lokale' : 'lokali'); };
@@ -563,9 +563,28 @@
       if (parent) parent.appendChild(e);
       return e;
     }
-    function bays(g, x0, x1, y0, h, n, cls) {
-      var w = (x1 - x0) / n;
-      for (var i = 0; i < n; i++) el('rect', { x: x0 + i * w + w * .22, y: y0, width: w * .56, height: h, class: cls }, g);
+    var X = function (v) { return 40 + (v - 135) / 1845 * 420; }; // oś x elewacji DWG → makieta
+    function bars(g, x0, x1, y0, y1, step) {
+      var d = 'M' + x0 + ' ' + y0 + 'H' + x1 + 'M' + x0 + ' ' + y1 + 'H' + x1;
+      for (var x = x0; x <= x1 + .01; x += step) d += 'M' + x.toFixed(1) + ' ' + y0 + 'V' + y1;
+      el('path', { d: d, class: 'mk-bar' }, g);
+    }
+    // okno francuskie: dwa skrzydła, opcjonalnie balustrada francuska w dolnej części
+    function win(g, x, y, w, h, juliet, single) {
+      el('rect', { x: x, y: y, width: w, height: h, class: 'mk-win' }, g);
+      if (!single) el('path', { d: 'M' + (x + w / 2) + ' ' + y + 'V' + (y + h), class: 'mk-ln' }, g);
+      if (juliet) bars(g, x - .6, x + w + .6, y + h * .56, y + h, 2.2);
+    }
+    function facade(g, x0, x1, y0, y1, n, opt) {
+      var bw = (x1 - x0) / n;
+      // gzyms / pas stropowy
+      el('rect', { x: x0, y: y0, width: x1 - x0, height: opt.band, class: 'mk-band' }, g);
+      for (var i = 0; i < n; i++) {
+        var bx = x0 + i * bw;
+        if (i) el('path', { d: 'M' + (bx - .9) + ' ' + (y0 + opt.band) + 'V' + y1 + 'M' + (bx + .9) + ' ' + (y0 + opt.band) + 'V' + y1, class: 'mk-ln mk-ln--pil' }, g);
+        var single = opt.lastSingle && i === n - 1;
+        win(g, bx + bw * .16, y0 + opt.band + opt.top, bw * .68, y1 - y0 - opt.band - opt.top - opt.bot, opt.juliet && !single, single);
+      }
     }
     // garaż i parter (bez wyboru)
     var base = el('g', { class: 'mk-base' }, mkSvg);
@@ -578,10 +597,6 @@
     gG.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectFloor(-1, true); } });
     var gGarage = gG;
     el('line', { x1: 0, y1: 594, x2: 600, y2: 594, class: 'mk-groundline' }, base);
-    // zielone tarasy
-    [[40, 80, 220], [420, 460, 220], [80, 120, 160], [380, 420, 160]].forEach(function (t) {
-      for (var x = t[0] + 6; x < t[1]; x += 11) el('circle', { cx: x, cy: t[2] - 6, r: 6, class: 'mk-green' }, base);
-    });
     var floorEls = {};
     floorEls[-1] = gGarage;
     // parter: lobby i lokale usługowe (wybieralny jak piętra)
@@ -590,10 +605,18 @@
       var g = el('g', { class: 'mk-floor mk-floor--0', tabindex: 0, role: 'button', 'data-floor': 0,
         'aria-label': 'Parter: lobby i ' + list.length + ' ' + lokali(list.length) + ' usługowe, ' + nFree + ' ' + wolnych(nFree) }, mkSvg);
       el('rect', { x: 40, y: 520, width: 420, height: 72, class: 'mk-body mk-ground' }, g);
-      for (var i = 0; i < 7; i++) {
-        var cx = 40 + i * 60 + 30;
-        el('path', { d: 'M' + (cx - 14) + ' 584V548a14 14 0 0 1 28 0V584Z', class: 'mk-door' }, g);
-      }
+      el('rect', { x: 40, y: 520, width: 420, height: 9, class: 'mk-band' }, g);
+      [[210, 355, 'p'], [355, 498, 'p'], [575, 718, 's'], [718, 860, 's'], [938, 1082, 'p'], [1082, 1225, 'p'], [1305, 1445, 's'], [1445, 1588, 's'], [1665, 1785, 's'], [1787, 1933, 'd']].forEach(function (o) {
+        var x0 = X(o[0]) + .8, x1 = X(o[1]) - .8, y0 = 537, y1 = 592;
+        el('rect', { x: x0, y: y0, width: x1 - x0, height: y1 - y0, class: 'mk-door' + (o[2] === 's' ? ' mk-door--glass' : '') }, g);
+        if (o[2] === 's') { el('path', { d: 'M' + x0 + ' ' + (y0 + 9) + 'H' + x1, class: 'mk-ln' }, g); return; }
+        // panele perforowane (kółka) jak na elewacji
+        var cols = o[2] === 'd' ? 3 : 6, rows = 6, cw = (x1 - x0) / cols;
+        if (o[2] !== 'd') el('path', { d: 'M' + x0 + ' ' + (y0 + 9) + 'H' + x1, class: 'mk-ln' }, g);
+        for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++)
+          el('circle', { cx: x0 + cw * (c + .5), cy: y0 + (o[2] === 'd' ? 8 : 15) + r * 6.4, r: 1.6, class: 'mk-perf' }, g);
+      });
+      el('path', { d: 'M' + X(198) + ' 529V592M' + X(1980) + ' 529V592', class: 'mk-ln' }, g);
       el('line', { x1: 464, y1: 556, x2: 470, y2: 556, class: 'mk-lead' }, g);
       el('text', { x: 478, y: 552, class: 'mk-num' }, g).textContent = '00';
       el('text', { x: 478, y: 570, class: 'mk-small' }, g).textContent = 'LOBBY · USŁUGI';
@@ -605,9 +628,23 @@
       var gm = GEO[f], list = onFloor(f), nFree = free(list);
       var g = el('g', { class: 'mk-floor', tabindex: 0, role: 'button', 'data-floor': f,
         'aria-label': f === 7 ? 'Piętro 7: górne poziomy apartamentów z 6. piętra' : 'Piętro ' + f + ': ' + list.length + ' ' + lokali(list.length) + ', ' + nFree + ' ' + wolnych(nFree) }, mkSvg);
-      el('rect', { x: gm[0], y: gm[2], width: gm[1] - gm[0], height: gm[3] - gm[2], class: 'mk-body' }, g);
-      bays(g, gm[0], gm[1], gm[2] + 12, gm[3] - gm[2] - 22, Math.round((gm[1] - gm[0]) / 60), 'mk-win');
-      el('line', { x1: gm[0], y1: gm[3] - 6, x2: gm[1], y2: gm[3] - 6, class: 'mk-rail' }, g);
+      if (f === 7) {
+        // penthouse: bryła z lamelami pionowymi, przeszklenia i balustrada tarasu
+        el('rect', { x: gm[0], y: gm[2] + 6, width: gm[1] - gm[0], height: 54, class: 'mk-body' }, g);
+        el('rect', { x: gm[0] - 1, y: gm[2] + 4, width: gm[1] - gm[0] + 2, height: 4, class: 'mk-band' }, g);
+        [[X(975), X(1100)], [X(1195), X(1285)]].forEach(function (s) { for (var x = s[0]; x < s[1]; x += 1.8) el('path', { d: 'M' + x.toFixed(1) + ' ' + (gm[2] + 9) + 'V' + (gm[2] + 60), class: 'mk-ln mk-ln--lam' }, g); });
+        win(g, X(885), gm[2] + 20, X(975) - X(885) - 3, 22, false); win(g, X(1290), gm[2] + 20, X(1430) - X(1290), 22, false);
+        bars(g, X(440), X(1730), 142, 160, 2.4);
+        el('rect', { x: gm[0], y: gm[2], width: gm[1] - gm[0], height: gm[3] - gm[2], class: 'mk-hit' }, g);
+      } else if (f >= 5) {
+        // kondygnacje cofnięte: gzyms, okna francuskie, balustrada tarasu na stropie niżej
+        el('rect', { x: gm[0], y: gm[2], width: gm[1] - gm[0], height: gm[3] - gm[2], class: 'mk-body' }, g);
+        facade(g, gm[0], gm[1], gm[2], gm[3], f === 5 ? 9 : 7, { band: 9, top: 6, bot: 6, juliet: false });
+        if (f === 5) bars(g, 40, 460, 263, 280, 2.4); else bars(g, X(305), X(1870), 203, 220, 2.4);
+      } else {
+        el('rect', { x: gm[0], y: gm[2], width: gm[1] - gm[0], height: gm[3] - gm[2], class: 'mk-body' }, g);
+        facade(g, gm[0], gm[1], gm[2], gm[3], 10, { band: 6, top: 9, bot: 8, juliet: true, lastSingle: true });
+      }
       var ty = (gm[2] + gm[3]) / 2;
       el('line', { x1: gm[1] + 4, y1: ty, x2: 470, y2: ty, class: 'mk-lead' }, g);
       el('text', { x: 478, y: ty - 2, class: 'mk-num' }, g).textContent = (f < 10 ? '0' : '') + f;
