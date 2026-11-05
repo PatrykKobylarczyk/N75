@@ -391,6 +391,9 @@
 
   /* ---------- Wyszukiwarka mieszkań ---------- */
   var units = window.N75_UNITS || [];
+  var uslugi = window.N75_USLUGI || [];
+  var all = units.concat(uslugi);  // wyszukiwarka: mieszkania i lokale usługowe z parteru
+  function isShop(u) { return u.floor === 0; }
   var out = $('#units-out');
   var state = { rooms: [], area: '', floor: '', avail: false, view: 'table', sort: 'id', dir: 1, all: false };
   var PAGE = 14;
@@ -401,13 +404,12 @@
   var fmtA = new Intl.NumberFormat('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   var STATUS = { wolne: 'Wolne', rezerwacja: 'Rezerwacja', sprzedane: 'Sprzedane' };
 
-  var floors = Array.from(new Set(units.map(function (u) { return u.floor; }))).sort(function (a, b) { return a - b; });
+  var floors = Array.from(new Set(all.map(function (u) { return u.floor; }))).sort(function (a, b) { return a - b; });
   var fFloor = $('#f-floor');
-  floors.forEach(function (f) { var o = document.createElement('option'); o.value = f; o.textContent = 'Piętro ' + f; fFloor.appendChild(o); });
+  floors.forEach(function (f) { var o = document.createElement('option'); o.value = f; o.textContent = f === 0 ? 'Parter' : 'Piętro ' + f; fFloor.appendChild(o); });
 
   var cUnit = $('#c-unit');
-  var uslugi = window.N75_USLUGI || [];
-  units.concat(uslugi).filter(function (u) { return u.status !== 'sprzedane'; }).forEach(function (u) {
+  all.filter(function (u) { return u.status !== 'sprzedane'; }).forEach(function (u) {
     var o = document.createElement('option'); o.value = u.id; o.textContent = u.id + ' · ' + fmtA.format(u.area) + ' m²'; cUnit.appendChild(o);
   });
   /* index.html?lokal=M1.01#kontakt: formularz z wybranym lokalem (przycisk z karty mieszkania) */
@@ -417,13 +419,20 @@
   var cmp = (new URLSearchParams(location.search).get('porownanie') || '').replace(/[^\w.,]/g, '');
   if (cmp) { var msg = $('#c-msg'); if (msg && !msg.value) msg.value = 'Dzień dobry, proszę o informacje o lokalach: ' + cmp.split(',').join(', ') + '.'; }
   function cardUrl(id) { return 'mieszkanie.html?id=' + encodeURIComponent(id); }
+  // lokale usługowe nie mają karty: prowadzą do formularza z wybranym lokalem
+  function unitUrl(u) { return isShop(u) ? '?lokal=' + encodeURIComponent(u.id) + '#kontakt' : cardUrl(u.id); }
+  function urlById(id) { return unitUrl(all.filter(function (u) { return u.id === id; })[0]); }
 
-  function ppm(u) { return Math.round(u.price / u.area); }
-  function priceTxt(u) { return u.status === 'sprzedane' ? '—' : fmt.format(u.price) + ' zł'; }
+  function ppm(u) { return u.price ? Math.round(u.price / u.area) : null; }
+  function priceTxt(u) { return u.status === 'sprzedane' ? '—' : u.price ? fmt.format(u.price) + ' zł' : 'Na zapytanie'; }
+  function ppmTxt(u) { return u.status === 'sprzedane' || !u.price ? '—' : fmt.format(ppm(u)) + ' zł'; }
+  function roomsTxt(u) { return isShop(u) ? 'Usługi' : u.rooms; }
+  function floorTxt(u) { return isShop(u) ? 'Parter' : u.levels.join('–'); }
 
   function filtered() {
-    var list = units.filter(function (u) {
+    var list = all.filter(function (u) {
       if (state.rooms.length) {
+        if (isShop(u)) return false;
         var r = u.rooms >= 4 ? 4 : u.rooms;
         if (state.rooms.indexOf(r) < 0) return false;
       }
@@ -435,6 +444,7 @@
     var k = state.sort, d = state.dir;
     list.sort(function (a, b) {
       var va = k === 'ppm' ? ppm(a) : a[k], vb = k === 'ppm' ? ppm(b) : b[k];
+      if (k === 'price' || k === 'ppm') { if (va == null) va = Infinity; if (vb == null) vb = Infinity; }
       if (k === 'id') { va = a.floor * 100 + parseInt(a.id.split('.')[1], 10); vb = b.floor * 100 + parseInt(b.id.split('.')[1], 10); }
       return (va > vb ? 1 : va < vb ? -1 : 0) * d;
     });
@@ -450,11 +460,11 @@
 
   var COLS = [['id', 'Lokal', 'Lokal'], ['floor', 'Piętro', 'P.'], ['rooms', 'Pokoje', 'Pok.'], ['area', 'Metraż', 'm²'], ['price', 'Cena', 'Cena'], ['ppm', 'Cena za m²', ''], ['status', 'Status', '']];
   // krótka cena do wąskich ekranów: 1,24 mln / 475 tys.
-  function priceShort(u) { if (u.status === 'sprzedane') return '—'; return u.price >= 1e6 ? (u.price / 1e6).toFixed(2).replace('.', ',') + ' mln' : Math.round(u.price / 1000) + ' tys.'; }
+  function priceShort(u) { if (u.status === 'sprzedane') return '—'; if (!u.price) return 'zapyt.'; return u.price >= 1e6 ? (u.price / 1e6).toFixed(2).replace('.', ',') + ' mln' : Math.round(u.price / 1000) + ' tys.'; }
 
   function render() {
     var full = filtered();
-    $('#f-count').textContent = full.length + ' z ' + units.length + ' lokali';
+    $('#f-count').textContent = full.length + ' z ' + all.length + ' lokali';
     var list = state.all ? full : full.slice(0, PAGE);
     moreBtn.hidden = full.length <= list.length;
     moreBtn.textContent = 'Pokaż wszystkie lokale (' + full.length + ')';
@@ -469,20 +479,20 @@
         }).join('') + '<th class="c-go"></th><th class="c-fav"><span class="sr-only">Ulubione</span></th></tr></thead><tbody>' +
         list.map(function (u) {
           return '<tr data-id="' + u.id + '" tabindex="0" class="' + (u.status === 'sprzedane' ? 'is-sold' : '') + '">' +
-            '<td class="unit-id">' + u.id + '</td><td>' + u.floor + '</td><td>' + u.rooms + '</td>' +
+            '<td class="unit-id">' + u.id + '</td><td>' + (isShop(u) ? 'P' : u.floor) + '</td><td>' + roomsTxt(u) + '</td>' +
             '<td class="c-area">' + fmtA.format(u.area) + '<span class="l"> m²</span></td>' +
-            '<td class="price c-price"><span class="l">' + priceTxt(u) + '</span><span class="s">' + priceShort(u) + '</span></td><td class="c-ppm">' + (u.status === 'sprzedane' ? '—' : fmt.format(ppm(u)) + ' zł') + '</td>' +
+            '<td class="price c-price"><span class="l">' + priceTxt(u) + '</span><span class="s">' + priceShort(u) + '</span></td><td class="c-ppm">' + ppmTxt(u) + '</td>' +
             '<td class="c-status"><span class="status status--' + u.status + '" title="' + STATUS[u.status] + '"><span class="l">' + STATUS[u.status] + '</span></span></td>' +
-            '<td class="go caps c-go"><a href="' + cardUrl(u.id) + '" tabindex="-1">Karta</a></td>' +
-            '<td class="c-fav">' + (window.N75Fav ? window.N75Fav.heart(u.id) : '') + '</td></tr>';
+            '<td class="go caps c-go"><a href="' + unitUrl(u) + '" tabindex="-1">' + (isShop(u) ? 'Zapytaj' : 'Karta') + '</a></td>' +
+            '<td class="c-fav">' + (window.N75Fav && !isShop(u) ? window.N75Fav.heart(u.id) : '') + '</td></tr>';
         }).join('') + '</tbody></table></div>';
     } else {
       html = '<div class="tiles">' + list.map(function (u) {
-        return '<a class="tile" href="' + cardUrl(u.id) + '">' +
-          '<div class="tile__top"><span class="tile__id">' + u.id + '</span><span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>' + (window.N75Fav ? window.N75Fav.heart(u.id) : '') + '</div>' +
+        return '<a class="tile" href="' + unitUrl(u) + '">' +
+          '<div class="tile__top"><span class="tile__id">' + u.id + '</span><span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>' + (window.N75Fav && !isShop(u) ? window.N75Fav.heart(u.id) : '') + '</div>' +
           '<div class="tile__plan' + (u.levels.length > 1 ? ' tile__plan--two' : '') + '">' + planThumb(u) + '</div>' +
-          '<dl><div><dt>Metraż</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div><div><dt>Pokoje</dt><dd>' + u.rooms + '</dd></div>' +
-          '<div><dt>Piętro</dt><dd>' + u.levels.join('–') + '</dd></div><div><dt>Cena</dt><dd>' + priceTxt(u) + '</dd></div></dl></a>';
+          '<dl><div><dt>Metraż</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div><div><dt>' + (isShop(u) ? 'Rodzaj' : 'Pokoje') + '</dt><dd>' + roomsTxt(u) + '</dd></div>' +
+          '<div><dt>Piętro</dt><dd>' + floorTxt(u) + '</dd></div><div><dt>Cena</dt><dd>' + priceTxt(u) + '</dd></div></dl></a>';
       }).join('') + '</div>';
     }
     out.innerHTML = html;
@@ -519,14 +529,14 @@
     var th = e.target.closest('th[data-sort]');
     if (th) { sortBy(th.dataset.sort); return; }
     var row = e.target.closest('tr[data-id]');
-    if (row && !e.target.closest('a')) location.href = cardUrl(row.dataset.id);
+    if (row && !e.target.closest('a')) location.href = urlById(row.dataset.id);
   });
   out.addEventListener('keydown', function (e) {
     if (e.key !== 'Enter') return;
     var th = e.target.closest('th[data-sort]');
     if (th) { sortBy(th.dataset.sort); return; }
     var row = e.target.closest('tr[data-id]');
-    if (row) location.href = cardUrl(row.dataset.id);
+    if (row) location.href = urlById(row.dataset.id);
   });
   render();
 

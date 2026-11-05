@@ -1319,3 +1319,4 @@ a.tile { display: block; color: inherit; }
 @media (max-width: 370px) { .header .header__cta { padding: 8px 9px; font-size: 9px; letter-spacing: .07em; } .header__right { gap: 6px; } .fav-link { width: 30px; } }
 .split > * { min-width: 0; }
 @media (max-width: 370px) { .units th, .units td { padding: 12px 3px; font-size: 13px; } .units td.c-fav { width: 30px; } .units .fav { width: 28px; height: 28px; } }
+#f-more[hidden] { display: none; }

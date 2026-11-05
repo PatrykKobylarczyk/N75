@@ -59,7 +59,7 @@ window.N75_UNITS = [
    shape/label w pikselach rzutu assets/img/plany/pietro-0.webp (1504×1925, ta sama skala i układ co piętra).
    Cena nie jest jeszcze ustalona (price: null → „na zapytanie”). Przeznaczenie lokalu wg odrębnego opracowania. */
 window.N75_USLUGI = [
-  {"id":"U.0.1","floor":0,"name":"Lokal usługowy 1","area":38.55,"price":null,"status":"wolne","shape":{"0":[[383,148],[637,148],[637,440],[383,440]]},"label":{"0":[510,300]}},
-  {"id":"U.0.2","floor":0,"name":"Lokal usługowy 2","area":113.30,"price":null,"status":"wolne","shape":{"0":[[122,955],[300,955],[300,1052],[458,1052],[458,1298],[670,1298],[670,1505],[122,1505]]},"label":{"0":[290,1240]}},
-  {"id":"U.0.3","floor":0,"name":"Lokal usługowy 3","area":101.53,"price":null,"status":"wolne","shape":{"0":[[368,1510],[1170,1510],[1170,1765],[368,1765]]},"label":{"0":[770,1645]}}
+  {"id":"U.0.1","floor":0,"levels":[0],"rooms":0,"name":"Lokal usługowy 1","area":38.55,"price":null,"status":"wolne","shape":{"0":[[383,148],[637,148],[637,440],[383,440]]},"label":{"0":[510,300]}},
+  {"id":"U.0.2","floor":0,"levels":[0],"rooms":0,"name":"Lokal usługowy 2","area":113.30,"price":null,"status":"wolne","shape":{"0":[[122,955],[300,955],[300,1052],[458,1052],[458,1298],[670,1298],[670,1505],[122,1505]]},"label":{"0":[290,1240]}},
+  {"id":"U.0.3","floor":0,"levels":[0],"rooms":0,"name":"Lokal usługowy 3","area":101.53,"price":null,"status":"wolne","shape":{"0":[[368,1510],[1170,1510],[1170,1765],[368,1765]]},"label":{"0":[770,1645]}}
 ];
