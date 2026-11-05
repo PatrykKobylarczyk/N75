@@ -1084,8 +1084,9 @@ a.tile { display: block; color: inherit; }
 .hero__seal:hover svg { animation-duration: 12s; }
 @keyframes seal-spin { to { transform: rotate(360deg); } }
 @media (max-width: 700px) {
-  .hero__seal { width: 92px; height: 92px; top: auto; bottom: 24%; right: 14px; }
-  .hero__seal-arrow { height: 22px; }
+  .hero__seal { width: 56px; height: 56px; top: auto; bottom: 14px; right: 12px; }
+  .hero__seal-arrow { height: 14px; }
+  .hero__seal-arrow::after { width: 5px; height: 5px; left: -2.5px; }
 }
 
 .quote--misja { margin-top: clamp(64px, 8vw, 110px); }
