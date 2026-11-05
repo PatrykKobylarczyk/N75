@@ -7,6 +7,12 @@
   if (root.classList.contains('intro-done')) { intro.remove(); return; }
   var done = false, timers = [];
   root.classList.add('intro-on');
+  // intro zawsze kończy się na hero: wyłącz przywracanie ostatniej pozycji przewinięcia
+  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+  if (location.hash) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }
+  window.scrollTo(0, 0);
+  window.addEventListener('load', function () { if (!done) window.scrollTo(0, 0); });
+  window.addEventListener('pageshow', function () { if (!done) window.scrollTo(0, 0); });
   function finish(fast) {
     if (done) return; done = true;
     timers.forEach(clearTimeout);
