@@ -1320,3 +1320,27 @@ a.tile { display: block; color: inherit; }
 .split > * { min-width: 0; }
 @media (max-width: 370px) { .units th, .units td { padding: 12px 3px; font-size: 13px; } .units td.c-fav { width: 30px; } .units .fav { width: 28px; height: 28px; } }
 #f-more[hidden] { display: none; }
+
+/* ---------- Wejście: logo kreską i okrągłe „okienko” ---------- */
+.intro { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; pointer-events: auto; overflow: hidden; }
+.intro-done .intro { display: none; }
+.intro-on body { overflow: hidden; }
+/* okrąg z ogromnym „cieniem” w kolorze papieru: rosnący otwór odsłania stronę */
+.intro__iris { position: absolute; left: 50%; top: 50%; width: 0; height: 0; border-radius: 50%; transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 200vmax var(--paper); outline: 1px solid rgba(156, 113, 73, .55); outline-offset: 0;
+  transition: width 1.2s cubic-bezier(.7, 0, .2, 1), height 1.2s cubic-bezier(.7, 0, .2, 1), outline-color .6s .8s; }
+.intro.is-open .intro__iris { width: 260vmax; height: 260vmax; outline-color: rgba(156, 113, 73, 0); }
+.intro__logo { position: relative; width: min(46vw, 380px); height: auto; color: var(--bronze); overflow: visible; transition: opacity .5s, transform 1.2s cubic-bezier(.7, 0, .2, 1); }
+.intro__logo * { stroke: currentColor; stroke-width: 3.5; fill: currentColor; fill-opacity: 0; stroke-dasharray: 1 1; stroke-dashoffset: 1; transition: fill-opacity .55s ease; }
+.intro.is-draw .intro__logo * { animation: intro-draw 1.6s cubic-bezier(.45, 0, .2, 1) forwards; }
+.intro.is-draw .intro__logo :nth-child(2) { animation-delay: .1s; } .intro.is-draw .intro__logo :nth-child(3) { animation-delay: .2s; }
+.intro.is-draw .intro__logo :nth-child(4) { animation-delay: .3s; } .intro.is-draw .intro__logo :nth-child(5) { animation-delay: .38s; }
+.intro.is-draw .intro__logo :nth-child(6) { animation-delay: .46s; } .intro.is-draw .intro__logo :nth-child(7) { animation-delay: .52s; }
+.intro.is-draw .intro__logo :nth-child(8) { animation-delay: .58s; animation-duration: 1.05s; }
+@keyframes intro-draw { to { stroke-dashoffset: 0; } }
+.intro.is-fill .intro__logo * { fill-opacity: 1; }
+.intro.is-open .intro__logo { opacity: 0; transform: scale(1.35); }
+.intro__skip { position: absolute; bottom: 28px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--muted); opacity: 0; animation: intro-skip .6s 1s forwards; }
+.intro.is-open .intro__skip, .intro.is-skip .intro__skip { opacity: 0 !important; animation: none; }
+@keyframes intro-skip { to { opacity: .8; } }
+.intro.is-skip { opacity: 0; transition: opacity .4s; }
