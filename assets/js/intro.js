@@ -1,5 +1,5 @@
 /* Wejście na stronę: logo N75 rysowane kreską (ok. 1,6 s), wypełnienie, potem okrąg otwiera widok (ok. 1,2 s).
-   Raz na wizytę (sessionStorage); kliknięcie, klawisz lub przewinięcie pomija. */
+   Przy każdym wejściu i odświeżeniu (bez powrotu „wstecz” i przejść z podstron); kliknięcie, klawisz lub przewinięcie pomija. */
 (function () {
   'use strict';
   var root = document.documentElement, intro = document.getElementById('intro');
@@ -16,7 +16,6 @@
   function finish(fast) {
     if (done) return; done = true;
     timers.forEach(clearTimeout);
-    try { sessionStorage.setItem('n75-intro', '1'); } catch (e) {}
     intro.classList.add(fast ? 'is-skip' : 'is-open');
     root.classList.remove('intro-on');
     setTimeout(function () { intro.remove(); root.classList.add('intro-done'); }, fast ? 450 : 1300);

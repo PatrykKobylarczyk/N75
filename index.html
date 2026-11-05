@@ -24,7 +24,9 @@
   (function(){try{var c=document.createElement('canvas').getContext('2d'),t='MWNmwqr075 Łódź';function w(f){c.font='72px '+f;return c.measureText(t).width}
   var m=w('monospace'),s=w('serif'),h=function(n){return w('"'+n+'",monospace')!==m||w('"'+n+'",serif')!==s},d=document.documentElement;
   if(!h('Futura')&&!h('Futura PT'))d.classList.add('no-futura');if(!h('Avenir Next')&&!h('Avenir'))d.classList.add('no-avenir')}catch(e){}})();</script>
-  <script>try{if(sessionStorage.getItem('n75-intro')||matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('intro-done')}catch(e){}</script>
+  <script>/* intro: przy każdym wejściu i odświeżeniu; bez niego przy powrocie „wstecz” i przejściu z podstrony N75 */
+  try{var n=(performance.getEntriesByType('navigation')[0]||{}).type,r=document.referrer,own=r&&r.indexOf(location.origin)===0;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||n==='back_forward'||(n==='navigate'&&own&&!/\/(index\.html)?$/.test(new URL(r).pathname))||location.hash)document.documentElement.classList.add('intro-done')}catch(e){}</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="n75-logo" viewBox="36 38 1000 518"><rect x="40" y="42" width="12" height="508"/>
