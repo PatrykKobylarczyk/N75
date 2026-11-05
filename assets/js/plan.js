@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var NS = 'http://www.w3.org/2000/svg';
-  var W = 1504, H = 1925;
+  var W = 1504, H = 1925, V = '?v=1793895635';
 
   function el(tag, attrs, parent) {
     var n = document.createElementNS(NS, tag);
@@ -37,7 +37,7 @@
 
     var svg = el('svg', { class: 'pl', viewBox: vb.join(' '), preserveAspectRatio: 'xMidYMid meet', role: 'group', 'aria-label': f === '0' ? 'Rzut parteru' : 'Rzut piętra ' + f });
     svg.style.aspectRatio = (full[2] / full[3]).toFixed(4);
-    el('image', { href: 'assets/img/plany/pietro-' + f + '.webp', x: 0, y: 0, width: W, height: H, class: 'pl-img' }, svg);
+    el('image', { href: 'assets/img/plany/pietro-' + f + '.webp' + V, x: 0, y: 0, width: W, height: H, class: 'pl-img' }, svg);
     // wersja szczegółowa (z meblami) do widoku pojedynczego lokalu; ładowana przy pierwszym przybliżeniu
     var detail = el('image', { x: 0, y: 0, width: 0, height: 0, class: 'pl-img pl-img--detal', preserveAspectRatio: 'none' }, svg);
     // wycinek z meblami w wysokiej rozdzielczości, osobny dla każdego lokalu
@@ -46,7 +46,7 @@
       detail.classList.remove('is-ready');
       detail.onload = function () { detail.classList.add('is-ready'); };
       detail.setAttribute('x', c[0]); detail.setAttribute('y', c[1]); detail.setAttribute('width', c[2]); detail.setAttribute('height', c[3]);
-      detail.setAttribute('href', 'assets/img/plany/lokale/' + u.id + '-' + f + '.webp');
+      detail.setAttribute('href', 'assets/img/plany/lokale/' + u.id + '-' + f + '.webp' + V);
     }
     var g = el('g', { class: 'pl-units' }, svg);
     var dim = el('path', { class: 'pl-dim', 'fill-rule': 'evenodd', d: '' }, svg);
