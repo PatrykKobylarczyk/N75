@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var NS = 'http://www.w3.org/2000/svg';
-  var W = 1504, H = 1925, V = '?v=1793895818';
+  var W = 1504, H = 1925, V = '?v=1793895946';
 
   function el(tag, attrs, parent) {
     var n = document.createElementNS(NS, tag);
@@ -43,10 +43,14 @@
     // wycinek z meblami w wysokiej rozdzielczości, osobny dla każdego lokalu
     function loadDetail(u) {
       var c = u.crop && u.crop[f]; if (!c) return;
+      var src = 'assets/img/plany/lokale/' + u.id + '-' + f + '.webp' + V;
+      if (detail.getAttribute('href') === src) { detail.classList.add('is-ready'); return; }   // ten sam lokal: obraz już wczytany (onload drugi raz nie przyjdzie)
       detail.classList.remove('is-ready');
       detail.onload = function () { detail.classList.add('is-ready'); };
+      detail.onerror = function () { detail.classList.remove('is-ready'); };
       detail.setAttribute('x', c[0]); detail.setAttribute('y', c[1]); detail.setAttribute('width', c[2]); detail.setAttribute('height', c[3]);
-      detail.setAttribute('href', 'assets/img/plany/lokale/' + u.id + '-' + f + '.webp' + V);
+      detail.setAttribute('href', src);
+      var probe = new Image(); probe.onload = function () { detail.classList.add('is-ready'); }; probe.src = src;   // Safari nie zawsze wysyła onload dla <image> w SVG
     }
     var g = el('g', { class: 'pl-units' }, svg);
     var dim = el('path', { class: 'pl-dim', 'fill-rule': 'evenodd', d: '' }, svg);
