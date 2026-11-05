@@ -406,7 +406,8 @@
   floors.forEach(function (f) { var o = document.createElement('option'); o.value = f; o.textContent = 'Piętro ' + f; fFloor.appendChild(o); });
 
   var cUnit = $('#c-unit');
-  units.filter(function (u) { return u.status !== 'sprzedane'; }).forEach(function (u) {
+  var uslugi = window.N75_USLUGI || [];
+  units.concat(uslugi).filter(function (u) { return u.status !== 'sprzedane'; }).forEach(function (u) {
     var o = document.createElement('option'); o.value = u.id; o.textContent = u.id + ' · ' + fmtA.format(u.area) + ' m²'; cUnit.appendChild(o);
   });
   /* index.html?lokal=M1.01#kontakt: formularz z wybranym lokalem (przycisk z karty mieszkania) */
@@ -535,7 +536,7 @@
     var NS = 'http://www.w3.org/2000/svg';
     // [x0, x1, y0, y1] kondygnacji na elewacji; 6 i 7 cofnięte tarasowo
     var GEO = { 7: [120, 380, 100, 160], 6: [80, 420, 160, 220], 5: [40, 460, 220, 280], 4: [40, 460, 280, 340], 3: [40, 460, 340, 400], 2: [40, 460, 400, 460], 1: [40, 460, 460, 520] };
-    var onFloor = function (f) { return units.filter(function (u) { return u.levels.indexOf(f) >= 0; }); };
+    var onFloor = function (f) { return f === 0 ? uslugi.slice() : units.filter(function (u) { return u.levels.indexOf(f) >= 0; }); };
     var free = function (l) { return l.filter(function (u) { return u.status === 'wolne'; }).length; };
     var lokali = function (n) { return n === 1 ? 'lokal' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'lokale' : 'lokali'); };
     var wolnych = function (n) { return n === 1 ? 'wolny' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'wolne' : 'wolnych'); };
@@ -553,19 +554,29 @@
     var base = el('g', { class: 'mk-base' }, mkSvg);
     el('rect', { x: 40, y: 598, width: 420, height: 50, class: 'mk-garage' }, base);
     el('text', { x: 250, y: 628, 'text-anchor': 'middle', class: 'mk-small' }, base).textContent = 'GARAŻ PODZIEMNY';
-    el('rect', { x: 40, y: 520, width: 420, height: 72, class: 'mk-ground' }, base);
-    for (var i = 0; i < 7; i++) {
-      var cx = 40 + i * 60 + 30;
-      el('path', { d: 'M' + (cx - 14) + ' 584V548a14 14 0 0 1 28 0V584Z', class: 'mk-door' }, base);
-    }
     el('line', { x1: 0, y1: 594, x2: 600, y2: 594, class: 'mk-groundline' }, base);
-    el('text', { x: 478, y: 552, class: 'mk-num' }, base).textContent = '00';
-    el('text', { x: 478, y: 570, class: 'mk-small' }, base).textContent = 'LOBBY · USŁUGI';
     // zielone tarasy
     [[40, 80, 220], [420, 460, 220], [80, 120, 160], [380, 420, 160]].forEach(function (t) {
       for (var x = t[0] + 6; x < t[1]; x += 11) el('circle', { cx: x, cy: t[2] - 6, r: 6, class: 'mk-green' }, base);
     });
     var floorEls = {};
+    // parter: lobby i lokale usługowe (wybieralny jak piętra)
+    (function () {
+      var list = onFloor(0), nFree = free(list);
+      var g = el('g', { class: 'mk-floor mk-floor--0', tabindex: 0, role: 'button', 'data-floor': 0,
+        'aria-label': 'Parter: lobby i ' + list.length + ' ' + lokali(list.length) + ' usługowe, ' + nFree + ' ' + wolnych(nFree) }, mkSvg);
+      el('rect', { x: 40, y: 520, width: 420, height: 72, class: 'mk-body mk-ground' }, g);
+      for (var i = 0; i < 7; i++) {
+        var cx = 40 + i * 60 + 30;
+        el('path', { d: 'M' + (cx - 14) + ' 584V548a14 14 0 0 1 28 0V584Z', class: 'mk-door' }, g);
+      }
+      el('line', { x1: 464, y1: 556, x2: 470, y2: 556, class: 'mk-lead' }, g);
+      el('text', { x: 478, y: 552, class: 'mk-num' }, g).textContent = '00';
+      el('text', { x: 478, y: 570, class: 'mk-small' }, g).textContent = 'LOBBY · USŁUGI';
+      g.addEventListener('click', function () { selectFloor(0, true); });
+      g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectFloor(0, true); } });
+      floorEls[0] = g;
+    })();
     [7, 6, 5, 4, 3, 2, 1].forEach(function (f) {
       var gm = GEO[f], list = onFloor(f), nFree = free(list);
       var g = el('g', { class: 'mk-floor', tabindex: 0, role: 'button', 'data-floor': f,
@@ -583,6 +594,7 @@
     });
 
     var plan = null, curFloor = null;
+    function shopPrice(u) { return u.status === 'sprzedane' ? '—' : u.price ? fmt.format(u.price) + ' zł' : 'Cena na zapytanie'; }
     function unitRows(list) {
       return list.map(function (u) {
         return '<li><a class="mk-unit" href="' + cardUrl(u.id) + '" data-id="' + u.id + '">' +
@@ -600,15 +612,17 @@
       });
       var list = onFloor(f).sort(function (a, b) { return a.id < b.id ? -1 : 1; });
       var nFree = free(list);
+      var g0 = f === 0;
       mkPanel.innerHTML =
-        '<div class="mk__head"><span class="num">Piętro</span><h3 class="display h3">' + f + '</h3>' +
-        '<span class="caps muted">' + list.length + ' ' + lokali(list.length) + ' · ' + nFree + ' ' + wolnych(nFree) + '</span></div>' +
+        '<div class="mk__head"><span class="num">' + (g0 ? 'Poziom' : 'Piętro') + '</span><h3 class="display h3">' + (g0 ? 'Parter' : f) + '</h3>' +
+        '<span class="caps muted">' + list.length + ' ' + lokali(list.length) + (g0 ? ' usługowe' : '') + ' · ' + nFree + ' ' + wolnych(nFree) + '</span></div>' +
         (f === 7 ? '<p class="muted mk__note">Górne kondygnacje dwupoziomowych apartamentów z&nbsp;6. piętra.</p>' : '') +
+        (g0 ? '<p class="muted mk__note">Lobby z&nbsp;recepcją, komórki lokatorskie, hala garażowa i&nbsp;trzy lokale usługowe od strony ulic Narutowicza i&nbsp;Tramwajowej. Przeznaczenie lokali do ustalenia z&nbsp;najemcą lub nabywcą.</p>' : '') +
         '<div class="mk__body"><div class="mk__plan" id="mk-plan"></div>' +
         '<div class="mk__side" id="mk-side" hidden></div></div>' +
         '<p class="mk__legend caps">Najedź na lokal, aby go podświetlić. Kliknij, aby zobaczyć jego rzut.</p>';
       plan = window.N75Plan.create($('#mk-plan'), {
-        floor: f, units: list, href: function (u) { return cardUrl(u.id); },
+        floor: f, units: list, frame: g0 ? [70, 100, 1424, 1720] : null, href: function (u) { return g0 ? '?lokal=' + encodeURIComponent(u.id) + '#kontakt' : cardUrl(u.id); },
         onPick: function (u, ev) { if (ev.metaKey || ev.ctrlKey || ev.shiftKey) return; ev.preventDefault(); showUnit(u); }
       });
       if (user && window.matchMedia('(max-width: 900px)').matches) mkPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -616,8 +630,21 @@
     function showUnit(u) {
       var side = $('#mk-side');
       side.hidden = false; side.parentNode.classList.add('has-detail');
-      var two = u.levels.length > 1;
-      side.innerHTML =
+      var shop = u.floor === 0;
+      var two = !shop && u.levels.length > 1;
+      side.innerHTML = shop ?
+        '<div class="mk-detail">' +
+          '<button type="button" class="mk-back caps" data-back>← Wszystkie lokale</button>' +
+          '<div class="mk-detail__head"><div class="mk-detail__id display">' + u.id + '</div></div>' +
+          '<span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>' +
+          '<dl class="mk-detail__spec">' +
+            '<div><dt>Rodzaj</dt><dd>' + u.name + '</dd></div>' +
+            '<div><dt>Powierzchnia</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div>' +
+            '<div><dt>Poziom</dt><dd>Parter</dd></div>' +
+            '<div><dt>Cena</dt><dd>' + shopPrice(u) + '</dd></div>' +
+          '</dl>' +
+          '<a class="btn btn--solid caps" href="?lokal=' + encodeURIComponent(u.id) + '#kontakt" data-ask="' + u.id + '">Zapytaj o lokal <span class="arrow"></span></a>' +
+        '</div>' :
         '<div class="mk-detail">' +
           '<button type="button" class="mk-back caps" data-back>← Wszystkie lokale</button>' +
           '<div class="mk-detail__head"><div class="mk-detail__id display">' + u.id + '</div>' + (window.N75Fav ? window.N75Fav.heart(u.id) : '') + '</div>' +
@@ -665,7 +692,7 @@
       var a = e.target.closest && e.target.closest('.mk-unit[data-id]');
       if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return;
       e.preventDefault();
-      showUnit(units.filter(function (u) { return u.id === a.dataset.id; })[0]);
+      showUnit(units.concat(uslugi).filter(function (u) { return u.id === a.dataset.id; })[0]);
     });
     selectFloor(2, false);
 
@@ -675,12 +702,12 @@
       mkSvg.classList.add('mk--prebuild');
       var hintTxt = mkHint ? mkHint.textContent : '';
       var build = function () {
-        var order = [mkSvg.querySelector('.mk-base')].concat([1, 2, 3, 4, 5, 6, 7].map(function (f) { return floorEls[f]; }));
+        var order = [mkSvg.querySelector('.mk-base')].concat([0, 1, 2, 3, 4, 5, 6, 7].map(function (f) { return floorEls[f]; }));
         mkSvg.classList.remove('mk--prebuild'); mkSvg.classList.add('mk--building');
         order.forEach(function (g, i) {
           setTimeout(function () {
             g.classList.add('is-built');
-            if (mkHint) mkHint.innerHTML = i ? 'Kondygnacja <b>' + (i < 10 ? '0' : '') + i + '</b> / 07' : 'Garaż i&nbsp;parter';
+            if (mkHint) mkHint.innerHTML = i > 1 ? 'Kondygnacja <b>0' + (i - 1) + '</b> / 07' : (i ? 'Parter' : 'Garaż');
             if (i === order.length - 1) setTimeout(function () { mkSvg.classList.remove('mk--building'); if (mkHint) mkHint.textContent = hintTxt; }, 900);
           }, 180 + i * 230);
         });
