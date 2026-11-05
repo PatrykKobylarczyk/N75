@@ -69,6 +69,7 @@
           '<div class="u-cta">' +
             (sold ? '<a class="btn btn--solid caps" href="index.html#makieta">Zobacz inne lokale <span class="arrow"></span></a>'
                   : '<a class="btn btn--solid caps" href="index.html?lokal=' + encodeURIComponent(u.id) + '#kontakt">Zapytaj o ten lokal <span class="arrow"></span></a>') +
+            '<button type="button" class="btn btn--line caps mk-3d" id="u-3d"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 7.5v9L12 21l9-4.5v-9L12 3Zm0 0v9m0 9v-9m9-4.5L12 12 3 7.5"/></svg><span>Wersja 3D</span></button>' +
             '<button type="button" class="btn btn--line caps" id="u-pdf">Pobierz kartę PDF</button>' +
           '</div>' +
         '</div>' +
@@ -121,6 +122,7 @@
     if (wholeFloor) planApi.zoomOut(); else planApi.zoomTo(u.id);
   });
   // „Pobierz kartę PDF”: okno druku przeglądarki z gotowym układem karty; tytuł = nazwa pliku PDF
+  document.getElementById('u-3d').addEventListener('click', function () { if (window.N75Doll) window.N75Doll.open(u.id, 'Apartament ' + u.id); });
   document.getElementById('u-pdf').addEventListener('click', function () {
     var t = document.title; document.title = 'N75-karta-' + u.id;
     if (wholeFloor) { wholeFloor = false; planApi.zoomTo(u.id, 0); }

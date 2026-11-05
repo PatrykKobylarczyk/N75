@@ -71,3 +71,8 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 - [ ] Wersja angielska (klienci zagraniczni z prezentacji strategii)
 - [ ] Dziennik budowy ze zdjęciami
 - [ ] Wybór lokalu z rzutu piętra lub elewacji
+
+## Rzuty wektorowe i wersja 3D (z plików DWG Design Lab, 2026-04-28)
+- Rzuty pięter 1–7, wycinki lokali i modele 3D (`assets/data/3d/`) generowane z DWG. Parter (rzut 0) nadal ze skanu.
+- Do weryfikacji z architektem: układ **M1.08** i **M2.09** w DWG różni się od listy pomieszczeń z cennika (inne powierzchnie pokoi). Na rzutach tych lokali opisane są tylko pomieszczenia zgodne z cennikiem.
+- Wyposażenie w 3D jest przykładowe (bryły wg bloków mebli z rzutu, styl quiet luxury).

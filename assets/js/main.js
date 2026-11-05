@@ -709,6 +709,7 @@
             '<div><dt>Cena</dt><dd>' + priceTxt(u) + '</dd></div>' +
             '<div><dt>Cena za m²</dt><dd>' + fmt.format(ppm(u)) + ' zł</dd></div>' +
           '</dl>' +
+          '<button type="button" class="btn btn--line caps mk-3d" data-3d="' + u.id + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 7.5v9L12 21l9-4.5v-9L12 3Zm0 0v9m0 9v-9m9-4.5L12 12 3 7.5"/></svg><span>Wersja 3D</span></button>' +
           '<a class="btn btn--solid caps" href="' + cardUrl(u.id) + '">Karta mieszkania <span class="arrow"></span></a>' +
           '<a class="btn btn--line caps" href="?lokal=' + encodeURIComponent(u.id) + '#kontakt" data-ask="' + u.id + '">Zapytaj o lokal</a>' +
         '</div>';
@@ -721,6 +722,8 @@
       $('[data-ask]', side).addEventListener('click', function (e) {
         e.preventDefault(); cUnit.value = u.id; $('#kontakt').scrollIntoView({ behavior: 'smooth' });
       });
+      var b3 = $('[data-3d]', side);
+      if (b3) b3.addEventListener('click', function () { if (window.N75Doll) window.N75Doll.open(u.id, 'Apartament ' + u.id); });
     }
     // lista ↔ rzut: podświetlenie i wybór lokalu
     function hl(e, on) {
