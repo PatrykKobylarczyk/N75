@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var NS = 'http://www.w3.org/2000/svg';
-  var W = 1504, H = 1925, V = '?v=1793900261';
+  var W = 1504, H = 1925, V = '?v=1793902513';
 
   function el(tag, attrs, parent) {
     var n = document.createElementNS(NS, tag);
@@ -59,12 +59,25 @@
       pk.forEach(function (s) {
         el('path', { d: pathD(s.p), class: 'pl-park pl-park--' + s.k }, gp);
         var cx = 0, cy = 0; s.p.forEach(function (q) { cx += q[0]; cy += q[1]; }); cx /= s.p.length; cy /= s.p.length;
-        var t = el('text', { x: cx, y: cy + (s.pl ? -4 : 5), class: 'pl-park-t' }, gp); t.textContent = s.n;
-        if (s.pl) {
-          el('text', { x: cx, y: cy + 18, class: 'pl-park-s' }, gp).textContent = (s.pl === 2 ? '2 PLATFORMY' : '1 PLATFORMA') + ' · ' + (s.cnt || s.pl * 2) + ' MIEJSCA';
-          // podział stanowiska na platformy
-          if (s.pl === 2) { var a = s.p; el('path', { d: 'M' + ((a[0][0] + a[1][0]) / 2) + ' ' + ((a[0][1] + a[1][1]) / 2) + 'L' + ((a[3][0] + a[2][0]) / 2) + ' ' + ((a[3][1] + a[2][1]) / 2), class: 'pl-park-div' }, gp); }
+        if (!s.pl) { el('text', { x: cx, y: cy + 5, class: 'pl-park-t' }, gp).textContent = s.n; return; }
+        // podział stanowiska na platformy (każda platforma = 2 miejsca: dół / góra)
+        var a = s.p, n0 = parseInt(s.n, 10), mid = function (u, v) { return [(u[0] + v[0]) / 2, (u[1] + v[1]) / 2]; };
+        var bays = [a];
+        if (s.pl === 2) {
+          var m1 = mid(a[0], a[1]), m2 = mid(a[3], a[2]);
+          bays = [[a[0], m1, m2, a[3]], [m1, a[1], a[2], m2]];
+          el('path', { d: 'M' + m1[0] + ' ' + m1[1] + 'L' + m2[0] + ' ' + m2[1], class: 'pl-park-div' }, gp);
         }
+        bays = bays.map(function (q) { return [(q[0][0] + q[1][0] + q[2][0] + q[3][0]) / 4, (q[0][1] + q[1][1] + q[2][1] + q[3][1]) / 4]; })
+          .sort(function (u, v) { return Math.abs(u[1] - v[1]) > 5 ? u[1] - v[1] : u[0] - v[0]; });
+        bays.forEach(function (q, i) {
+          var bx = q[0], by = q[1];
+          var lo = n0 + 2 * i, t = el('text', { x: bx, y: by - 2, class: 'pl-park-t' }, gp);
+          t.textContent = lo + ' · ' + (lo + 1);
+          el('text', { x: bx, y: by + 14, class: 'pl-park-lv' }, gp).textContent = 'DÓŁ · GÓRA';
+        });
+        var sx = cx, sy = Math.max.apply(null, a.map(function (q) { return q[1]; })) - 17;
+        el('text', { x: sx, y: sy, class: 'pl-park-s' }, gp).textContent = (s.pl === 2 ? '2 PLATFORMY' : '1 PLATFORMA') + ' · ' + (s.cnt || s.pl * 2) + ' MIEJSCA';
       });
     }
     var rr = (window.N75_ROOMS || {})[f];
