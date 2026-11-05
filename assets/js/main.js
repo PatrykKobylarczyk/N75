@@ -200,16 +200,20 @@
   /* ---------- Szkic ołówkiem: po wejściu na ekran kreski rysują się jedna po drugiej, z „grafitem” prowadzącym linię ---------- */
   var dLines = $('#draw-lines'), dStage = $('#draw-stage');
   if (dLines && window.fetch) {
-    var dPaths = [], tip = null, dStarted = false, dReady = false, dSeen = false, dScale = 1;
+    var dPaths = [], tip = null, dReady = false, dSeen = false, dScale = 1;
     var SPEED = { line: 1.25, light: 2.2, hatch: 3.2 };    // px/ms
+    var run = 0;
+    function reset() { run++; dPaths.forEach(function (p) { p.el.style.strokeDashoffset = p.L; }); if (tip) tip.style.opacity = 0; }
+    // odtwarzane za każdym razem, gdy szkic wchodzi na ekran (także po powrocie przewijaniem)
     function play() {
-      if (dStarted || !dReady || !dSeen) return;
-      dStarted = true;
-      var i = 0;
+      if (!dReady || !dSeen) return;
+      reset(); var my = run, i = 0; tip.style.opacity = 1;
       (function next() {
+        if (my !== run) return;
         if (i >= dPaths.length) { tip.style.opacity = 0; return; }
         var p = dPaths[i++], L = p.L, kind = p.k, dur = Math.max(kind === 'line' ? 90 : 30, L / SPEED[kind] * dScale), t0 = null;
         (function step(ts) {
+          if (my !== run) return;
           if (t0 === null) t0 = ts;
           var t = Math.min(1, (ts - t0) / dur), e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
           p.el.style.strokeDashoffset = (L * (1 - e)).toFixed(1);
@@ -229,11 +233,16 @@
       tip.setAttribute('r', 3.2); tip.setAttribute('class', 'draw__tip'); root.appendChild(tip);
       // całość ok. 8 s niezależnie od liczby kresek
       var raw = dPaths.reduce(function (a, p) { return a + p.L / SPEED[p.k]; }, 0);
-      dScale = 7200 / Math.max(1, raw);
+      dScale = 5200 / Math.max(1, raw);
       dReady = true; play();
     }).catch(function () {});
     if ('IntersectionObserver' in window) {
-      var dio = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { dSeen = true; dio.disconnect(); setTimeout(play, 300); } }, { threshold: .45 });
+      var dTimer = null;
+      var dio = new IntersectionObserver(function (en) {
+        var e = en[0];
+        if (e.intersectionRatio >= .4) { if (!dSeen) { dSeen = true; clearTimeout(dTimer); dTimer = setTimeout(play, 250); } }
+        else if (!e.isIntersecting) { dSeen = false; clearTimeout(dTimer); reset(); }   // całkiem poza ekranem: przygotuj do ponownego rysowania
+      }, { threshold: [0, .4] });
       dio.observe(dStage);
     } else dSeen = true;
   }
