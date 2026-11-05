@@ -1351,7 +1351,7 @@ a.tile { display: block; color: inherit; }
 .mk__cat { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; padding: 12px 0; color: var(--ink); border-bottom: 1px solid var(--line); transition: color .3s, border-color .3s; }
 .mk__cat svg { width: 16px; height: 16px; fill: none; stroke: var(--bronze); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
 .mk__cat:hover, .mk__cat:focus-visible { color: var(--bronze); border-color: var(--bronze); }
-.mk__foot { display: flex; align-items: center; justify-content: space-between; gap: 10px 24px; flex-wrap: wrap; margin-top: 16px; }
+.mk__foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px 24px; flex-wrap: wrap; margin-top: 16px; }
 .mk__foot .mk__legend { margin-top: 0; flex: 1 1 260px; min-width: 0; }
 .mk__foot .mk__cat { margin-top: 0; padding: 6px 0; font-size: 11px; white-space: nowrap; }
 
