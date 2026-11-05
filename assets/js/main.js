@@ -103,7 +103,7 @@
     var distTxt = function (m) { var mins = Math.max(1, Math.round(m * 1.3 / 80)); return (m < 995 ? Math.round(m / 10) * 10 + ' m' : (m / 1000).toFixed(1).replace('.', ',') + ' km') + ' · ok. ' + mins + ' min pieszo'; };
     var pois = {};
     $$('[data-poi]', acc).forEach(function (li) {
-      var d = $('.poi__dist', li), ll = [+d.dataset.lat, +d.dataset.lng], m = hav(home, ll);
+      var d = $('.poi__dist', li), ll = [+d.dataset.lat, +d.dataset.lng], m = d.dataset.m ? +d.dataset.m : hav(home, ll);   // data-m: odległość podana ręcznie (np. do granicy parku)
       d.textContent = distTxt(m);
       pois[li.dataset.poi] = { li: li, ll: ll, name: $('.poi__name', li).textContent, m: m };
     });
