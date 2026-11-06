@@ -213,7 +213,7 @@
     function play() {
       if (!ready || !seen) return;
       if (reduced) { finish(); return; }
-      reset(); words.forEach(function (w) { w.on = 0; }); var my = run, t0 = null, idx = 0; tip.style.opacity = 1;
+      reset(); words.forEach(function (w) { w.on = 0; }); if (opts.follow) opts.follow.reset && opts.follow.reset(); var my = run, t0 = null, idx = 0; tip.style.opacity = 1;
       var total = paths.length ? paths[paths.length - 1].s + paths[paths.length - 1].d : 0;
       (function step(ts) {
         if (my !== run) return;
@@ -225,6 +225,7 @@
           var p = paths[idx], t = (el - p.s) / p.d, e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
           p.el.style.strokeDashoffset = (p.L * (1 - e)).toFixed(1);
           var pt = p.el.getPointAtLength(p.L * e); tip.setAttribute('cx', pt.x); tip.setAttribute('cy', pt.y);
+          if (opts.follow) opts.follow(pt.x);
         }
         if (el < total) requestAnimationFrame(step); else finish();
       })(performance.now());
@@ -264,7 +265,16 @@
     } else seen = true;
   }
   sketch($('#draw-lines'), $('#draw-stage'), { total: 4500, gap: 14 });
-  sketch($('#pierzeja-lines'), $('#pierzeja-scroll'), { total: 5500, gap: 0, tip: 4, min: 1, host: $('#pierzeja-fig'),
+  /* na telefonie pasek jest szerszy od ekranu: kamera podąża za ołówkiem od lewej do N75, żeby było widać każde słowo zdania */
+  var pzSc = $('#pierzeja-scroll'), pzFig = $('#pierzeja-fig'), pzHand = false, pzMax = 0, pzCur = 0;
+  if (pzSc) ['touchstart', 'wheel', 'pointerdown'].forEach(function (ev) { pzSc.addEventListener(ev, function () { pzHand = true; }, { passive: true }); });
+  var pzFollow = function (x) {
+    if (pzHand || pzSc.scrollWidth <= pzSc.clientWidth + 4) return;
+    var w = pzFig.getBoundingClientRect().width, t = x / 2172 * w - pzSc.clientWidth * .55;
+    pzMax = Math.max(pzMax, t); pzCur += (pzMax - pzCur) * .06; pzSc.scrollLeft = pzCur;
+  };
+  pzFollow.reset = function () { pzMax = 0; pzCur = 0; if (!pzHand && pzSc) pzSc.scrollLeft = 0; };
+  sketch($('#pierzeja-lines'), $('#pierzeja-scroll'), { total: 5500, gap: 0, tip: 4, min: 1, host: $('#pierzeja-fig'), follow: pzFollow,
     words: $$('#pierzeja-fig [data-x0]').map(function (el) { return { el: el, x0: +el.dataset.x0, x1: +el.dataset.x1 }; }) });
 
   /* ---------- Modernizm to… (zmieniające się słowo) ---------- */
@@ -470,7 +480,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793979260" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793979538" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -868,6 +878,8 @@
     msg.textContent = 'Dziękujemy. Doradca skontaktuje się z Tobą w ciągu jednego dnia roboczego.';
     form.reset();
   });
+
+  var y = $('#year'); if (y) y.textContent = new Date().getFullYear();
 
   var y = $('#year'); if (y) y.textContent = new Date().getFullYear();
 
