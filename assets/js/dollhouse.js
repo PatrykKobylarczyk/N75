@@ -206,7 +206,8 @@
       seg(horiz ? x0 : z0, horiz ? x1 : z1, dy + WALL_H - 0.05, dy + WALL_H, 0.045, C.frame);
       var n = Math.max(1, Math.round(len / 1.35)), a0 = horiz ? x0 : z0;
       for (var i = 0; i <= n; i++) { var m = a0 + len * i / n; seg(m - 0.025, m + 0.025, dy + 0.06, dy + WALL_H - 0.05, 0.04, C.frame); }
-      // zasłony: tylko przy oknach pomieszczeń (strona wewnętrzna)
+      // (bez zasłon – w oknach nie ma pionowych paneli)
+      return;
       if (len < 0.9) return;
       var mid = horiz ? [(x0 + x1) / 2, c] : [c, (z0 + z1) / 2], side = 0;
       [0.3, -0.3].forEach(function (o) { var p = horiz ? [mid[0], mid[1] + o] : [mid[0] + o, mid[1]]; if (!side && inner.some(function (P) { return inside(p, P); })) side = o > 0 ? 1 : -1; });
@@ -609,7 +610,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793990173').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793990195').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
