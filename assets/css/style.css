@@ -1165,6 +1165,9 @@ a.tile { display: block; color: inherit; }
 .cmp-id { font-size: clamp(28px, 3vw, 40px); color: var(--graphite); letter-spacing: .04em; }
 .cmp-plan { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; aspect-ratio: 4 / 3; background: #f7f3ec; border: 1px solid var(--line); padding: 8px; }
 .cmp-plan img { width: 100%; height: 100%; object-fit: contain; }
+.cmp-plan { display: flex; align-items: center; justify-content: center; position: relative; }
+.cmp-plan img[style] { height: auto; max-height: none; object-fit: fill; flex: none; }
+.cmp-scale { display: block; margin-top: 6px; font-size: 10px; color: var(--muted); letter-spacing: .12em; }
 .cmp-cell.is-best { color: var(--bronze); font-weight: 600; }
 .cmp-cell.is-best::after { content: "★"; margin-left: 8px; font-size: 11px; }
 .cmp-lbl { display: none; }

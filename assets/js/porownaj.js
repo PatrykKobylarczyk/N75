@@ -13,8 +13,14 @@
 
   function favs() { return (window.N75Fav ? window.N75Fav.list() : []).filter(function (id) { return byId[id]; }); }
 
+  // rzuty w jednej skali: szerokość obrazka proporcjonalna do kadru w px rzutu (k – wspólny mnożnik dla porównywanych lokali)
+  var cropW = function (u, l) { return (u.crop && u.crop[l]) ? u.crop[l][2] : 400; };
+  var cropH = function (u, l) { return (u.crop && u.crop[l]) ? u.crop[l][3] : 400; };
+  var dimW = function (u) { return u.levels.reduce(function (s, l) { return s + cropW(u, l); }, 0) * 1.04; };
+  var dimH = function (u) { return Math.max.apply(null, u.levels.map(function (l) { return cropH(u, l); })); };
+  var K = 1;
   function thumb(u) {
-    return u.levels.map(function (l) { return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793989747" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">'; }).join('');
+    return u.levels.map(function (l) { return '<img style="width:' + (cropW(u, l) * K).toFixed(2) + '%" src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793989875" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">'; }).join('');
   }
   function roomArea(u, re) { return u.roomsList.filter(function (r) { return re.test(r[1]); }).reduce(function (s, r) { return s + r[2]; }, 0); }
 
@@ -36,6 +42,7 @@
       }).join('') + '</div></div>';
 
     var sel = picked.map(function (id) { return byId[id]; });
+    K = sel.length ? Math.min.apply(null, sel.map(function (u) { return Math.min(100 / dimW(u), 75 / dimH(u)); })) * .92 : 1;
     var rows = [
       ['Piętro', function (u) { return u.levels.join('–') + (u.levels.length > 1 ? ' (2 poziomy)' : ''); }],
       ['Pokoje', function (u) { return u.rooms; }, 'rooms'],
@@ -44,21 +51,21 @@
       ['Cena za m²', function (u) { return u.status === 'sprzedane' ? '—' : fmt.format(Math.round(u.price / u.area)) + ' zł'; }, 'ppm'],
       ['Salon z aneksem', function (u) { var a = roomArea(u, /salon/i); return a ? fmtA.format(a) + ' m²' : '—'; }],
       ['Łazienki i WC', function (u) { return u.roomsList.filter(function (r) { return /łazienka|wc/i.test(r[1]); }).length; }],
-      ['Taras / loggia', function (u) { var a = roomArea(u, /taras|loggia|balkon/i); return a ? fmtA.format(a) + ' m²' : '—'; }],
+      ['Taras / loggia', function (u) { var o = u.outdoor || []; return o.length ? o.map(function (x) { return esc(x[0]) + ' ' + fmtA.format(x[1]) + ' m²'; }).join('<br>') : '—'; }, 'outA'],
       ['Strony świata', function (u) { return u.orient ? esc(u.orient) : '—'; }],
       ['Status', function (u) { return '<span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>'; }]
     ];
     // wyróżnij najlepszą wartość w wierszach liczbowych
     function best(key) {
       if (sel.length < 2) return null;
-      var vals = sel.map(function (u) { return key === 'ppm' ? u.price / u.area : u[key]; });
+      var vals = sel.map(function (u) { return key === 'ppm' ? u.price / u.area : key === 'outA' ? (u.outdoor || []).reduce(function (s, x) { return s + x[1]; }, 0) : u[key]; });
       var target = (key === 'price' || key === 'ppm') ? Math.min.apply(null, vals) : Math.max.apply(null, vals);
       return vals.map(function (v) { return v === target; });
     }
 
     var table = '';
     if (sel.length) {
-      table = '<div class="cmp-grid" style="--n:' + sel.length + '">' +
+      table = (sel.length > 1 ? '<p class="cmp-scale caps">Rzuty w jednakowej skali · góra rzutu = ul. Narutowicza (północ)</p>' : '') + '<div class="cmp-grid" style="--n:' + sel.length + '">' +
         '<div class="cmp-col cmp-col--labels" aria-hidden="true"><div class="cmp-cell cmp-cell--head"></div>' + rows.map(function (r) { return '<div class="cmp-cell caps">' + r[0] + '</div>'; }).join('') + '<div class="cmp-cell"></div></div>' +
         sel.map(function (u, i) {
           return '<div class="cmp-col">' +
