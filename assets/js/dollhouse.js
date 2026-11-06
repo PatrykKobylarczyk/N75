@@ -12,7 +12,7 @@
     oak: [104, 74, 53], tile: [222, 214, 201], stone: [205, 198, 187],
     linen: [236, 230, 220], linen2: [244, 241, 235], boucle: [232, 226, 215], sand: [214, 200, 179], taupe: [176, 160, 141],
     mocha: [134, 108, 88], walnut: [96, 70, 52], door: [78, 52, 36], onyx: [120, 78, 56], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
-    veneer: [146, 102, 70], marble: [238, 235, 229], canvas: [234, 222, 201], terra: [184, 98, 62], ochre: [208, 152, 74], umber: [92, 62, 44], sienna: [158, 84, 52], legs: [120, 120, 118], raksa: [212, 200, 182], raksa2: [198, 186, 168], black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [110, 172, 220], rug: [226, 217, 202],
+    veneer: [146, 102, 70], marble: [238, 235, 229], canvas: [234, 222, 201], terra: [184, 98, 62], ochre: [208, 152, 74], umber: [92, 62, 44], sienna: [158, 84, 52], legs: [120, 120, 118], raksa: [212, 200, 182], raksa2: [198, 186, 168], black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [196, 216, 226], rug: [226, 217, 202],
     green: [110, 124, 92], pot: [196, 184, 166], teak: [168, 134, 98], teak2: [150, 114, 80], olive: [118, 128, 96], olive2: [134, 144, 110],
     bronze: [120, 96, 70], frame: [190, 164, 120], curtain: [240, 235, 226], rugOut: [214, 205, 190]
   };
@@ -123,15 +123,16 @@
       M.cyl(p[0], p[1], r * 1.35, dy + 0.75, dy + 1.05, C.olive, 14); M.cyl(p[0], p[1], r * 1.05, dy + 1.05, dy + 1.3, C.olive2, 12); M.cyl(p[0], p[1], 0.02, dy + 0.55, dy + 0.78, C.walnut, 6);
     };
     if (L > 1.6) { plant(-L / 2 + 0.4, 0, 0.2); plant(L / 2 - 0.4, 0, 0.2); }
-    if (D < 1.25 || L < 2.4) return;
-    [-0.55, 0.55].forEach(function (u) {
+    if (D < 0.9 || L < 1.7) return;
+    var cw = Math.min(0.33, (D - 0.2) / 2), cu = Math.min(0.55, L / 2 - 0.45);
+    [-cu, cu].forEach(function (u) {
       if (!ok(u, 0)) return;
-      var a = at(u - 0.33, -0.36), c = at(u + 0.33, 0.36);
+      var a = at(u - cw, -cw), c = at(u + cw, cw);
       var x0 = Math.min(a[0], c[0]), x1 = Math.max(a[0], c[0]), z0 = Math.min(a[1], c[1]), z1 = Math.max(a[1], c[1]);
       M.box(x0, z0, x1, z1, dy + 0.05, dy + 0.3, C.teak2); M.box(x0 + 0.04, z0 + 0.04, x1 - 0.04, z1 - 0.04, dy + 0.3, dy + 0.42, C.linen);
-      var bk = at(u, -0.36); M.box(horiz ? x0 + 0.04 : bk[0] - 0.05, horiz ? bk[1] - 0.05 : z0 + 0.04, horiz ? x1 - 0.04 : bk[0] + 0.05, horiz ? bk[1] + 0.05 : z1 - 0.04, dy + 0.3, dy + 0.75, C.linen);
+      var bk = at(u, -cw); M.box(horiz ? x0 + 0.04 : bk[0] - 0.05, horiz ? bk[1] - 0.05 : z0 + 0.04, horiz ? x1 - 0.04 : bk[0] + 0.05, horiz ? bk[1] + 0.05 : z1 - 0.04, dy + 0.3, dy + 0.75, C.linen);
     });
-    var t = at(0, 0.05); M.cyl(t[0], t[1], 0.24, dy + 0.42, dy + 0.46, C.travertine, 24); M.cyl(t[0], t[1], 0.05, dy, dy + 0.42, C.bronze, 10);
+    var t = at(0, 0.05); M.cyl(t[0], t[1], Math.min(0.24, cu - cw - 0.04), dy + 0.42, dy + 0.46, C.travertine, 24); M.cyl(t[0], t[1], 0.05, dy, dy + 0.42, C.bronze, 10);
     if (D > 1.6) { var r = at(0, 0); M.box(r[0] - (horiz ? 1.1 : 0.7), r[1] - (horiz ? 0.7 : 1.1), r[0] + (horiz ? 1.1 : 0.7), r[1] + (horiz ? 0.7 : 1.1), dy, dy + 0.01, C.rugOut); }
   }
 
@@ -229,6 +230,7 @@
         M.box(horiz ? q[0] : cc - 0.05, horiz ? cc - 0.05 : q[0], horiz ? q[1] : cc + 0.05, horiz ? cc + 0.05 : q[1], dy + 0.02, dy + WALL_H - 0.08, C.curtain);
       });
     });
+    CUR_WALLS = lv.walls.map(function (w) { return [w[0] + dx, w[1] + dz, w[2] + dx, w[3] + dz]; });
     lv.items.forEach(function (it) { try { furnish(M, it, dx, dz, dy); } catch (e) { /* pojedynczy mebel nie blokuje modelu */ } });
     try { painting(M, lv, dx, dz, dy); } catch (e) { /* obraz opcjonalny */ }
   }
@@ -239,6 +241,7 @@
     var sal = lv.floors.filter(function (f) { return /salon/i.test(f.n); })[0] || lv.floors.filter(function (f) { return f.k === 'in'; }).sort(function (a, b) { return b.a - a.a; })[0];
     if (!sal) return;
     var bad = lv.items.filter(function (it) { return /counter|appl|sink|hob|fridge|wardrobe|tv|island/.test(it.t); }).map(function (it) { return bbox(it.q); });
+    var tvs = lv.items.filter(function (it) { return it.t === 'tv'; }).map(function (it) { return bbox(it.q); });
     var sofas = lv.items.filter(function (it) { return it.t === 'sofa'; }).map(function (it) { return bbox(it.q); });
     var near = function (p, b, d) { return p[0] > b[0] - d && p[0] < b[2] + d && p[1] > b[1] - d && p[1] < b[3] + d; };
     var best = null;
@@ -251,6 +254,7 @@
         var pr = function (along, off) { return hz ? [along, c + s * off] : [c + s * off, along]; };
         for (var m = a0 + 0.65; m <= a0 + len - 0.65 + 1e-6; m += 0.25) {
           if (![-0.5, 0, 0.5].every(function (o) { return inside(pr(m + o, 0.3), sal.p); })) continue;
+          if (tvs.some(function (b) { return near(pr(m, 0.3), b, 1.4); })) continue;
           if (bad.some(function (b) { return near(pr(m, 0.3), b, 0.55) || near(pr(m - 0.5, 0.3), b, 0.3) || near(pr(m + 0.5, 0.3), b, 0.3); })) continue;
           var glassy = (lv.glass || []).some(function (g) { var gh = (g[2] - g[0]) >= (g[3] - g[1]); if (gh !== hz) return false; var gc = hz ? (g[1] + g[3]) / 2 : (g[0] + g[2]) / 2; if (Math.abs(gc - c) > 0.45) return false; var g0 = hz ? g[0] : g[1], g1 = hz ? g[2] : g[3]; return g1 > m - 0.6 && g0 < m + 0.6; });
           if (glassy) continue;
@@ -260,7 +264,7 @@
       });
     });
     if (!best) return;
-    var B = best, y0 = 0.98;
+    var B = best, y0 = 1.0;
     // prostokąt w płaszczyźnie ściany: u – wzdłuż ściany (0..1 m), v – wysokość, d – odsunięcie od ściany
     var rect = function (u0, u1, v0, v1, d0, d1, col) {
       var a = B.m - 0.5 + u0, b = B.m - 0.5 + u1, p0 = B.c + B.s * d0, p1 = B.c + B.s * d1;
@@ -284,6 +288,9 @@
     disc(0.73, 0.78, 0.07, 0.054, C.sienna);                           // małe słońce
   }
 
+  var CUR_WALLS = [];
+  // czy za blokiem (strona y=0) stoi ściana – inaczej to wyspa i nie wieszamy szafek ani okapu
+  function againstWall(pts) { return pts.every(function (p) { return CUR_WALLS.some(function (w) { return p[0] > w[0] - 0.12 && p[0] < w[2] + 0.12 && p[1] > w[1] - 0.12 && p[1] < w[3] + 0.12; }); }); }
   function furnish(M, it, dx, dz, dy) {
     var Lw = frame(it), L = function (x, y) { var p = Lw(x, y); return [p[0] + dx, p[1] + dz]; };
     var regs = it.l.map(function (P, i) { var b = bbox(P); return { P: P, W: it.r[i], b: b, w: b[2] - b[0], d: b[3] - b[1], A: polyArea(P) / 1e4 }; })
@@ -440,13 +447,16 @@
         M.prism(q, Y(0.08), Y(0.88), C.veneer, C.veneer, 5); M.prism(q, Y(0), Y(0.08), C.black);
         M.prism(q, Y(0.88), Y(0.92), C.marble, C.marble, 6);
         // ściana po stronie y=0 bloku; front po przeciwnej
-        var wallY = sgn > 0 ? lb[1] : lb[3], frontY = sgn > 0 ? lb[3] : lb[1], fw = lb[2] - lb[0];
+        var fw = lb[2] - lb[0], probe = function (yy, s) { return againstWall([L(lb[0] + fw * .25, yy + s * 8), L(lb[0] + fw * .75, yy + s * 8)]); };
+        var wA = probe(lb[1], -1), wB = probe(lb[3], 1), ksg = wA ? 1 : wB ? -1 : sgn;   // strona ściany sprawdzana geometrią
+        var wallY = ksg > 0 ? lb[1] : lb[3], frontY = ksg > 0 ? lb[3] : lb[1]; sgn = ksg;
         var nF = Math.max(1, Math.round(fw / 60)), fs = fw / nF;
         for (var k = 0; k < nF; k++) {                                       // uchwyty: smukłe mosiężne listwy na frontach
           var a0 = lb[0] + k * fs + 12, a1 = lb[0] + (k + 1) * fs - 12;
           if (a1 - a0 > 6) M.prism(R([a0, Math.min(frontY, frontY + sgn * 2.5), a1, Math.max(frontY, frontY + sgn * 2.5)]), Y(0.78), Y(0.795), C.brass);
         }
-        if (it.t !== 'hob') {                                                 // szafki górne z forniru
+        if (!wA && !wB) break;
+        if (it.t === 'appl') {} else if (it.t !== 'hob') {                    // szafki górne z forniru
           M.prism(R([lb[0] + 1, Math.min(wallY, wallY + sgn * 35), lb[2] - 1, Math.max(wallY, wallY + sgn * 35)]), Y(1.42), Y(WALL_H - 0.02), C.veneer, C.veneer, 5);
           for (var k2 = 0; k2 < nF; k2++) { var b0 = lb[0] + k2 * fs + 12, b1 = lb[0] + (k2 + 1) * fs - 12, fy = wallY + sgn * 35; if (b1 - b0 > 6) M.prism(R([b0, Math.min(fy, fy + sgn * 2.5), b1, Math.max(fy, fy + sgn * 2.5)]), Y(1.45), Y(1.465), C.brass); }
         } else {                                                              // okap nad płytą
@@ -493,7 +503,7 @@
     'vec3 lin(vec3 c){return pow(c,vec3(2.2));}' +
     'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}' +
     'float sh(){vec3 q=vL.xyz/vL.w*.5+.5;if(q.x<0.||q.x>1.||q.y<0.||q.y>1.)return 1.;float s=0.;vec2 t=1./vec2(textureSize(uS,0));' +
-    'for(int x=-2;x<=2;x++)for(int y=-2;y<=2;y++){float d=texture(uS,q.xy+vec2(x,y)*t*2.2).r;s+=q.z-.0012>d?0.:1.;}return s/25.;}' +
+    'for(int x=-2;x<=2;x++)for(int y=-2;y<=2;y++){float d=texture(uS,q.xy+vec2(x,y)*t*3.).r;s+=q.z-.0012>d?0.:1.;}return smoothstep(0.,1.,s/25.);}' +
     'void main(){vec3 N=normalize(vN);vec3 col=lin(vC);int M=int(vM+.5);' +
     'if(M==1&&N.y>.5){float cw=.42,bw=.12;float cx=vP.x/cw;float ci=floor(cx);float lx=fract(cx)*cw;float sg=mod(ci,2.)<1.?1.:-1.;' +
     'float u=(vP.z+sg*lx)*.7071;float ri=floor(u/bw);float fu=fract(u/bw);float v=h(vec2(ri,ci));' +
@@ -505,12 +515,19 @@
     'float w=m2*pw*34.+sin(yl*2.3+pi*1.7)*1.4+sin(m2*9.+yl*.9)*.5;float g=.5+.5*sin(w*6.283*1.4);col*=.86+.1*g+.05*h(vec2(floor(m2*pw*240.),pi));' +
     'if(N.y<.5){float e=min(fu,1.-fu)*pw;col*=mix(.55,1.,smoothstep(0.,.004,e));float hy=abs(yl-.5);col*=mix(.6,1.,smoothstep(0.,.004,hy));}}' +
     'if(M==6){vec2 q=vP.xz*1.7+vec2(vP.y*.7);float n=sin(q.x*2.1+sin(q.y*1.3+q.x*.7)*2.4+sin(q.y*3.7)*.6);float v=smoothstep(.93,1.,abs(n));float n2=sin(q.y*5.3+sin(q.x*4.1)*1.6);float v2=smoothstep(.97,1.,abs(n2));col=mix(col,col*vec3(.62,.6,.6),v*.55+v2*.3);col*=.97+.03*h(floor(vP.xz*40.));}' +
-    'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),3.);o=vec4(mix(vC,vec3(.85,.93,1.),fr*.5),uA+fr*.2);return;}' +
-    'float ndl=max(dot(N,uSun),0.);float s=sh();vec3 sky=vec3(1.,.975,.94),gr=vec3(.62,.56,.5);' +
-    'vec3 amb=mix(gr,sky,N.y*.5+.5)*.74;float ao=mix(.72,1.,smoothstep(0.,.5,vP.y-floor(vP.y/3.05)*3.05+.02));' +
-    'vec3 L=col*(amb*ao+vec3(1.,.93,.84)*.86*ndl*mix(.25,1.,s));' +
-    'vec3 V=normalize(uEye-vP);float sp=pow(max(dot(N,normalize(uSun+V)),0.),40.)*.06*s;L+=sp;' +
-    'L=L/(L+.75)*1.55;o=vec4(pow(L,vec3(1./2.2)),uA);}';
+    'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),3.);o=vec4(mix(vC,vec3(.9,.95,1.),fr*.5),uA+fr*.16);return;}' +
+    'float ndl=max(dot(N,uSun),0.);float s=sh();vec3 V=normalize(uEye-vP);float yl=vP.y-floor(vP.y/3.05)*3.05+.02;' +
+    // światło nieba (chłodniejsze) + odbicie od podłogi z orzecha (ciepłe), miękka okluzja przy podłodze i w narożach
+    'vec3 sky=vec3(.86,.9,1.),bounce=vec3(.78,.6,.46);vec3 amb=mix(bounce*.55,sky*.62,N.y*.5+.5);' +
+    'float ao=mix(.55,1.,smoothstep(0.,.9,yl))*mix(.82,1.,smoothstep(0.,.35,yl));if(N.y>.5)ao=1.;' +
+    'vec3 sunC=vec3(1.,.9,.76)*1.15;vec3 shC=mix(vec3(.62,.68,.8),vec3(1.),s);' +
+    'vec3 L=col*(amb*ao+sunC*ndl*shC*mix(.18,1.,s));' +
+    // połysk zależny od materiału: lakierowany parkiet, polerowany marmur, satynowy fornir, reszta matowa
+    'float gs=M==1?.35:M==6?.6:M==5?.18:M==2?.25:.04;float pw=M==6?90.:M==1?60.:30.;' +
+    'float fr=.04+.96*pow(1.-max(dot(N,V),0.),5.);vec3 Hh=normalize(uSun+V);' +
+    'L+=sunC*pow(max(dot(N,Hh),0.),pw)*gs*s*.9+sky*fr*gs*.35;' +
+    // ACES (filmowe) mapowanie tonów
+    'L*=.95;L=clamp((L*(2.51*L+.03))/(L*(2.43*L+.59)+.14),0.,1.);L=mix(vec3(dot(L,vec3(.2126,.7152,.0722))),L,.8);o=vec4(pow(L,vec3(1./2.2)),uA);}';
   var SVS = '#version 300 es\nlayout(location=0) in vec3 p;uniform mat4 uL;void main(){gl_Position=uL*vec4(p,1.);}';
   var SFS = '#version 300 es\nprecision mediump float;out vec4 o;void main(){o=vec4(1.);}';
 
@@ -591,7 +608,7 @@
     gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
     gl.bindVertexArray(this.op.vao); gl.drawArrays(gl.TRIANGLES, 0, this.op.n);
     gl.disable(gl.CULL_FACE);
-    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.5);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.26);
     gl.bindVertexArray(this.gl_.vao); gl.drawArrays(gl.TRIANGLES, 0, this.gl_.n);
     gl.depthMask(true); gl.disable(gl.BLEND);
   };
@@ -688,7 +705,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793991387').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793991758').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
