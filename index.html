@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..600;1,300..500&family=Nunito+Sans:ital,opsz,wght@0,6..12,300..700;1,6..12,300..500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/img/okolica-lotnicze.webp" imagesrcset="assets/img/okolica-lotnicze-1600.webp 1600w, assets/img/okolica-lotnicze.webp 3200w" imagesizes="100vw">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="assets/css/style.css?v=1793983716">
+  <link rel="stylesheet" href="assets/css/style.css?v=1793983764">
   <script>document.documentElement.classList.add('js');
   // Futura / Avenir Next tylko na Apple: gdy ich brak, dostrajamy darmowe zamienniki (Jost, Nunito Sans)
   (function(){try{var c=document.createElement('canvas').getContext('2d'),t='MWNmwqr075 Łódź';function w(f){c.font='72px '+f;return c.measureText(t).width}
@@ -456,32 +456,6 @@
     <div class="sec-head reveal"><span class="num">06</span><span class="line"></span></div>
     <div class="location">
       <!-- Mapa: Leaflet + OpenStreetMap. Znacznik przypięty do współrzędnych budynku (data-lat / data-lng). -->
-      <!-- Filtr „rysunek ręczny”: kontury piórkiem z rzutu OSM, lekko drżąca kreska, grafitowe ziarno i akwarelowy podkład -->
-      <svg class="map__fx" width="0" height="0" aria-hidden="true" focusable="false"><defs>
-        <filter id="map-hand" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
-          <feColorMatrix in="SourceGraphic" type="matrix" values=".3 .59 .11 0 0  .3 .59 .11 0 0  .3 .59 .11 0 0  0 0 0 1 0" result="g"/>
-          <feConvolveMatrix in="g" order="3" kernelMatrix="-1 -1 -1 -1 8 -1 -1 -1 -1" edgeMode="duplicate" preserveAlpha="true" result="e"/>
-          <feColorMatrix in="e" type="matrix" values="2.5 0 0 0 0  2.9 0 0 0 0  3.3 0 0 0 0  0 0 0 0 1" result="dark"/>
-          <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4" result="grain"/>
-          <feGaussianBlur in="dark" stdDeviation=".45" result="darkB"/>
-          <feComposite in="darkB" in2="grain" operator="arithmetic" k1="1.7" k2=".15" result="dark2"/>
-          <feColorMatrix in="dark2" type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 0 1" result="ink2"/>
-          <feTurbulence type="fractalNoise" baseFrequency=".028" numOctaves="2" seed="9" result="wob"/>
-          <feDisplacementMap in="ink2" in2="wob" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="inkW"/>
-          <feColorMatrix in="SourceGraphic" type="saturate" values=".75" result="s"/>
-          <feComponentTransfer in="s" result="wash">
-            <feFuncR type="linear" slope=".42" intercept=".57"/><feFuncG type="linear" slope=".42" intercept=".545"/><feFuncB type="linear" slope=".42" intercept=".5"/>
-          </feComponentTransfer>
-          <!-- tereny zieleni (parki, trawniki, lasy z OSM) → akwarelowa zieleń z miękką, „rozlaną” krawędzią -->
-          <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 .77  0 0 0 0 .86  0 0 0 0 .7  -6 12 -6 0 -.95" result="gm"/>
-          <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="5" result="wn"/>
-          <feDisplacementMap in="gm" in2="wn" scale="4" xChannelSelector="R" yChannelSelector="B" result="gmW"/>
-          <feColorMatrix in="wn" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  .9 0 0 0 .4" result="wnA"/>
-          <feComposite in="gmW" in2="wnA" operator="in" result="green"/>
-          <feBlend in="green" in2="wash" mode="multiply" result="washG"/>
-          <feBlend in="inkW" in2="washG" mode="multiply"/>
-        </filter>
-      </defs></svg>
       <div class="map reveal" id="map" data-lat="51.77222" data-lng="19.47703" data-zoom="16" role="region" aria-label="Mapa: Narutowicza 75A, Łódź">
         <noscript><a href="https://www.openstreetmap.org/?mlat=51.77222&amp;mlon=19.47703#map=17/51.77222/19.47703">Zobacz lokalizację na mapie OpenStreetMap</a></noscript>
       </div>
@@ -658,12 +632,12 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-<script src="assets/js/intro.js?v=1793983716"></script>
-<script src="assets/js/extras.js?v=1793983716"></script>
-<script src="assets/js/units.js?v=1793983716"></script>
-<script src="assets/js/dziennik.js?v=1793983716"></script>
-<script src="assets/js/plan.js?v=1793983716"></script>
-<script src="assets/js/dollhouse.js?v=1793983716" defer></script>
-<script src="assets/js/main.js?v=1793983716"></script>
+<script src="assets/js/intro.js?v=1793983764"></script>
+<script src="assets/js/extras.js?v=1793983764"></script>
+<script src="assets/js/units.js?v=1793983764"></script>
+<script src="assets/js/dziennik.js?v=1793983764"></script>
+<script src="assets/js/plan.js?v=1793983764"></script>
+<script src="assets/js/dollhouse.js?v=1793983764" defer></script>
+<script src="assets/js/main.js?v=1793983764"></script>
 </body>
 </html>
