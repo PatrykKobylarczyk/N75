@@ -12,7 +12,7 @@
     oak: [104, 74, 53], tile: [222, 214, 201], stone: [205, 198, 187],
     linen: [236, 230, 220], linen2: [244, 241, 235], boucle: [232, 226, 215], sand: [214, 200, 179], taupe: [176, 160, 141],
     mocha: [134, 108, 88], walnut: [96, 70, 52], door: [78, 52, 36], onyx: [120, 78, 56], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
-    veneer: [146, 102, 70], marble: [238, 235, 229], canvas: [234, 222, 201], terra: [184, 98, 62], ochre: [208, 152, 74], umber: [92, 62, 44], sienna: [158, 84, 52], legs: [120, 120, 118], raksa: [212, 200, 182], raksa2: [198, 186, 168], black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [196, 216, 226], rug: [226, 217, 202],
+    veneer: [146, 102, 70], marble: [238, 235, 229], canvas: [234, 222, 201], terra: [184, 98, 62], ochre: [208, 152, 74], umber: [92, 62, 44], sienna: [158, 84, 52], legs: [120, 120, 118], raksa: [212, 200, 182], raksa2: [198, 186, 168], black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [168, 206, 232], rug: [226, 217, 202],
     green: [110, 124, 92], pot: [196, 184, 166], teak: [168, 134, 98], wpc: [203, 194, 180], teak2: [150, 114, 80], olive: [118, 128, 96], olive2: [134, 144, 110],
     bronze: [120, 96, 70], frame: [190, 164, 120], curtain: [240, 235, 226], rugOut: [214, 205, 190]
   };
@@ -230,6 +230,7 @@
         M.box(horiz ? q[0] : cc - 0.05, horiz ? cc - 0.05 : q[0], horiz ? q[1] : cc + 0.05, horiz ? cc + 0.05 : q[1], dy + 0.02, dy + WALL_H - 0.08, C.curtain);
       });
     });
+    TV_SPOTS = []; TV_TAKEN = [];
     CUR_WALLS = lv.walls.map(function (w) { return [w[0] + dx, w[1] + dz, w[2] + dx, w[3] + dz]; });
     lv.items.forEach(function (it) { try { furnish(M, it, dx, dz, dy); } catch (e) { /* pojedynczy mebel nie blokuje modelu */ } });
     try { painting(M, lv, dx, dz, dy); } catch (e) { /* obraz opcjonalny */ }
@@ -255,6 +256,7 @@
         for (var m = a0 + 0.65; m <= a0 + len - 0.65 + 1e-6; m += 0.25) {
           if (![-0.5, 0, 0.5].every(function (o) { return inside(pr(m + o, 0.3), sal.p); })) continue;
           if (tvs.some(function (b) { return near(pr(m, 0.3), b, 1.4); })) continue;
+          if (TV_SPOTS.some(function (t) { var q = pr(m, 0); return Math.hypot(q[0] + dx - t[0], q[1] + dz - t[1]) < 1.9; })) continue;
           if (bad.some(function (b) { return near(pr(m, 0.3), b, 0.55) || near(pr(m - 0.5, 0.3), b, 0.3) || near(pr(m + 0.5, 0.3), b, 0.3); })) continue;
           var glassy = (lv.glass || []).some(function (g) { var gh = (g[2] - g[0]) >= (g[3] - g[1]); if (gh !== hz) return false; var gc = hz ? (g[1] + g[3]) / 2 : (g[0] + g[2]) / 2; if (Math.abs(gc - c) > 0.45) return false; var g0 = hz ? g[0] : g[1], g1 = hz ? g[2] : g[3]; return g1 > m - 0.6 && g0 < m + 0.6; });
           if (glassy) continue;
@@ -288,7 +290,7 @@
     disc(0.73, 0.78, 0.07, 0.054, C.sienna);                           // małe słońce
   }
 
-  var CUR_WALLS = [];
+  var CUR_WALLS = [], TV_SPOTS = [], TV_TAKEN = [];
   // czy za blokiem (strona y=0) stoi ściana – inaczej to wyspa i nie wieszamy szafek ani okapu
   function againstWall(pts) { return pts.every(function (p) { return CUR_WALLS.some(function (w) { return p[0] > w[0] - 0.12 && p[0] < w[2] + 0.12 && p[1] > w[1] - 0.12 && p[1] < w[3] + 0.12; }); }); }
   function furnish(M, it, dx, dz, dy) {
@@ -366,6 +368,20 @@
           else { if (Math.abs(r.b[0] - sb[0]) < 4) edgeLen[2] += r.d; if (Math.abs(r.b[2] - sb[2]) < 4) edgeLen[3] += r.d; }
         });
         var backE = edgeLen.indexOf(Math.max.apply(null, edgeLen));
+        // telewizor naprzeciwko sofy: szukamy ściany przed siedziskiem i wieszamy ekran nad niską szafką RTV
+        (function () {
+          var fx = backE === 0 ? 0 : backE === 1 ? 0 : backE === 2 ? 1 : -1, fy = backE === 0 ? 1 : backE === 1 ? -1 : 0;
+          var c0 = L(sbx, sby), c1 = L(sbx + fx * 100, sby + fy * 100), dX = c1[0] - c0[0], dZ = c1[1] - c0[1];
+          var hit = null;
+          for (var d = 0.8; d < 6; d += 0.05) { var p = [c0[0] + dX * d, c0[1] + dZ * d]; if (CUR_WALLS.some(function (w) { return p[0] > w[0] && p[0] < w[2] && p[1] > w[1] && p[1] < w[3]; })) { hit = d; break; } }
+          if (!hit || TV_TAKEN.some(function (t) { return Math.hypot(t[0] - c0[0], t[1] - c0[1]) < 0.5; })) return;
+          var wx = c0[0] + dX * (hit - 0.02), wz = c0[1] + dZ * (hit - 0.02), px = -dZ, pz = dX;
+          var Q = function (a, b, u0, u1) { return [[wx + px * a - dX * u0, wz + pz * a - dZ * u0], [wx + px * b - dX * u0, wz + pz * b - dZ * u0], [wx + px * b - dX * u1, wz + pz * b - dZ * u1], [wx + px * a - dX * u1, wz + pz * a - dZ * u1]]; };
+          M.prism(Q(-0.9, 0.9, 0, 0.4), Y(0.12), Y(0.46), C.veneer, C.veneer, 5);                 // szafka RTV z forniru
+          M.prism(Q(-0.86, 0.86, 0.02, 0.38), Y(0), Y(0.12), C.black);
+          M.prism(Q(-0.66, 0.66, 0, 0.035), Y(0.95), Y(1.72), C.black);                          // ekran 65"
+          TV_SPOTS.push([wx, wz]); TV_TAKEN.push(c0);
+        })();
         var isBack = function (r) {
           if (Math.min(r.w, r.d) >= 28) return false;
           return backE === 0 ? r.w >= r.d && Math.abs(r.b[1] - sb[1]) < 4 : backE === 1 ? r.w >= r.d && Math.abs(r.b[3] - sb[3]) < 4 : backE === 2 ? r.d > r.w && Math.abs(r.b[0] - sb[0]) < 4 : r.d > r.w && Math.abs(r.b[2] - sb[2]) < 4;
@@ -391,7 +407,7 @@
         regs.forEach(function (r) {
           if (part.indexOf(r) >= 0) return;
           if (Math.min(r.w, r.d) < 30 && Math.max(r.w, r.d) > 90) {        // konsola RTV
-            M.prism(P(r), Y(0), Y(0.42), C.walnut, C.walnut);
+            /* konsola z bloku pomijana – szafka RTV dodawana przy ścianie naprzeciw sofy */
           } else if (r.A > 0.15 && r.A < 1.4) {                                // stolik kawowy (trawertyn)
             M.prism(P(r), Y(0.0), Y(0.32), C.travertine);
             M.prism(P(r), Y(0.32), Y(0.38), C.travertine);
@@ -606,7 +622,7 @@
     gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
     gl.bindVertexArray(this.op.vao); gl.drawArrays(gl.TRIANGLES, 0, this.op.n);
     gl.disable(gl.CULL_FACE);
-    gl.enable(gl.BLEND); gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.26);
+    gl.enable(gl.BLEND); gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.22);
     gl.bindVertexArray(this.gl_.vao); gl.drawArrays(gl.TRIANGLES, 0, this.gl_.n);
     gl.depthMask(true); gl.disable(gl.BLEND);
   };
@@ -703,7 +719,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793992520').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793992629').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
