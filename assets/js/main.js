@@ -502,7 +502,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793990195" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793990420" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -934,49 +934,47 @@
     frame();
   })();
 
-  var y = $('#year'); if (y) y.textContent = new Date().getFullYear();
 
-
-  /* ---------- Cztery wartości: przewijana sekwencja (tusz w słowach, kurtyna kadrów, opisy) ---------- */
+  /* ---------- Hero: żywa wizualizacja – przelatujące ptaki, auto na Narutowicza, światła w oknach N75 ---------- */
   (function () {
-    var tr = document.getElementById('values-track'); if (!tr) return;
-    var vals = $$('.val', tr), imgs = $$('.val-img', tr), txts = $$('.val-txt', tr), bars = $$('.values__bar i', tr), num = document.getElementById('values-n');
-    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches, cur = -1, raf = 0;
-    var ease = function (t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
-    function set(i) {
-      if (i === cur) return; cur = i;
-      vals.forEach(function (v, k) { v.classList.toggle('is-on', k === i); });
-      txts.forEach(function (t, k) { t.classList.toggle('is-on', k === i); });
-      if (num) num.textContent = '0' + (i + 1);
+    var media = $('.hero__media'), img = media && $('img', media); if (!img) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var IW = 3200, IH = 2400;
+    var WIN = [[1546,388,11,15],[1434,403,33,35],[1470,406,28,33],[1501,406,12,39],[1355,466,27,26],[1461,479,13,24],[1508,483,16,32],[1256,522,42,34],[1243,527,8,11],[1313,529,22,33],[1401,540,31,23],[1446,546,34,36],[1631,548,15,28],[1574,550,47,13],[1494,552,30,37],[1853,553,13,39],[1587,563,9,17],[1739,581,27,36],[1845,610,18,38],[1460,620,21,20],[1162,639,9,10],[1191,643,23,25],[1273,655,24,27],[1324,665,16,35],[1348,671,40,35],[1849,671,12,24],[1394,677,16,31],[1425,680,10,30],[1499,693,29,25],[1149,697,29,33],[1769,697,19,40],[1846,696,14,13],[1589,700,20,29],[1570,707,14,12],[1742,711,8,20],[1284,724,17,21],[1349,734,12,39],[1767,740,23,10],[1649,746,16,21],[1136,764,11,23],[1558,772,21,37],[1289,785,14,20],[1129,799,19,17],[1457,819,27,39]];
+    var fx = document.createElement('div'); fx.className = 'hero__fx'; fx.setAttribute('aria-hidden', 'true');
+    var inn = document.createElement('div'); inn.className = 'hero__fxin'; fx.appendChild(inn); media.appendChild(fx);
+    // okna: nakładka „zgaszonego” okna i ciepłego rozbłysku, każde w swoim rytmie
+    WIN.forEach(function (w, i) {
+      var d = document.createElement('i'); d.className = 'hfx-win';
+      d.style.cssText = 'left:' + w[0] + 'px;top:' + w[1] + 'px;width:' + w[2] + 'px;height:' + w[3] + 'px;animation-duration:' + (14 + (i * 7.3) % 23).toFixed(1) + 's;animation-delay:-' + ((i * 5.7) % 30).toFixed(1) + 's';
+      if (i % 3 === 0) d.classList.add('hfx-win--warm');
+      inn.appendChild(d);
+    });
+    // klucz ptaków na tle nieba
+    var birds = document.createElement('div'); birds.className = 'hfx-birds';
+    [[0, 0, 1], [-46, 18, .9], [-92, 34, .85], [-40, -16, .92], [-86, -30, .8], [-138, 48, .75], [-128, -44, .78]].forEach(function (b, k) {
+      var s = document.createElement('span'); s.className = 'hfx-bird'; s.style.cssText = 'left:' + b[0] + 'px;top:' + b[1] + 'px;transform:scale(' + b[2] + ');animation-delay:-' + (k * .13).toFixed(2) + 's';
+      s.innerHTML = '<svg viewBox="0 0 40 16"><path d="M0 9 Q10 0 20 8 Q30 0 40 9 Q30 4 20 12 Q10 4 0 9Z"/></svg>'; birds.appendChild(s);
+    });
+    inn.appendChild(birds);
+    // auto jadące Narutowicza (w stronę parku) i drugie z naprzeciwka
+    ['hfx-car', 'hfx-car hfx-car--b'].forEach(function (c) {
+      var car = document.createElement('span'); car.className = c; car.innerHTML = '<b></b><i></i>'; inn.appendChild(car);
+    });
+    function fit() {
+      var W = media.clientWidth, H = media.clientHeight, s = Math.max(W / IW, H / IH);
+      var op = getComputedStyle(img).objectPosition.split(' ').map(function (v) { return parseFloat(v) / 100; });
+      var x = (W - IW * s) * (isNaN(op[0]) ? .5 : op[0]), y = (H - IH * s) * (isNaN(op[1]) ? .5 : op[1]);
+      inn.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + s.toFixed(5) + ')';
     }
-    function frame() {
-      raf = 0;
-      var r = tr.getBoundingClientRect(), span = tr.offsetHeight - window.innerHeight;
-      var p = Math.min(1, Math.max(0, -r.top / Math.max(1, span))), x = p * 4;
-      vals.forEach(function (v, k) { var f = Math.min(1, Math.max(0, (x - k + .3) * 1.8)); v.style.setProperty('--f', ease(f).toFixed(4)); });
-      imgs.forEach(function (im, k) {
-        if (k === 0) { im.style.setProperty('--r', ease(Math.min(1, x)).toFixed(4)); return; }
-        var t = Math.min(1, Math.max(0, (x - k + .25) * 1.5)), e = ease(t);
-        im.style.clipPath = 'inset(' + ((1 - e) * 100).toFixed(2) + '% 0 0 0)';
-        im.style.setProperty('--r', e.toFixed(4));
-      });
-      bars.forEach(function (b, k) { b.style.setProperty('--b', Math.min(1, Math.max(0, x - k)).toFixed(4)); });
-      set(Math.min(3, Math.floor(x + .25)));
-    }
-    if (reduced) { vals.forEach(function (v) { v.style.setProperty('--f', 1); }); set(0); return; }
-    window.addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(frame); }, { passive: true });
-    window.addEventListener('resize', frame);
-    frame();
+    fit(); window.addEventListener('resize', fit);
+    // poza ekranem animacje stoją
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { fx.classList.toggle('is-paused', !e[0].isIntersecting); }).observe(media);
   })();
 
   var y = $('#year'); if (y) y.textContent = new Date().getFullYear();
 
-  /* ---------- Pierzeja Narutowicza: na telefonie pasek startuje od N75 ---------- */
-  (function () {
-    var sc = document.getElementById('pierzeja-scroll');
-    if (!sc || !window.matchMedia('(max-width: 900px)').matches) return;
-    var toEnd = function () { sc.scrollLeft = sc.scrollWidth; };
-    var im = sc.querySelector('img'); if (im.complete) toEnd(); else im.addEventListener('load', toEnd);
-  })();
+
+
 
 })();
