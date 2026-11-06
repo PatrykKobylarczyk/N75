@@ -173,7 +173,19 @@
     (lv.doors || []).forEach(function (d) { door(d, true); });
     (lv.idoors || []).forEach(function (d) { door(d, false); });
     // ściany: przekrój ciemny na górze
-    lv.walls.forEach(function (w) { M.box(w[0] + dx, w[1] + dz, w[2] + dx, w[3] + dz, dy - 0.22, dy + WALL_H, C.wall, C.wallTop, 4); });
+    // loggie bez ścian zewnętrznych: cienki murek pod balustradą (równoległy do pochwytu) nie jest ścianą – pomijamy go
+    var railBy = function (w) {
+      var wx = Math.abs(w[2] - w[0]), wz = Math.abs(w[3] - w[1]), horiz = wx >= wz, th = horiz ? wz : wx, len = horiz ? wx : wz;
+      if (th > 0.14 || len < 0.3) return false;
+      return (lv.rails || []).some(function (r) {
+        var rh = Math.abs(r[2] - r[0]) >= Math.abs(r[3] - r[1]); if (rh !== horiz) return false;
+        var gap = horiz ? Math.max(r[1], w[1]) - Math.min(r[3], w[3]) : Math.max(r[0], w[0]) - Math.min(r[2], w[2]);
+        if (gap > 0.2) return false;
+        var ov = horiz ? Math.min(r[2], w[2]) - Math.max(r[0], w[0]) : Math.min(r[3], w[3]) - Math.max(r[1], w[1]);
+        return ov > len * 0.5;
+      });
+    };
+    lv.walls.forEach(function (w) { if (railBy(w)) return; M.box(w[0] + dx, w[1] + dz, w[2] + dx, w[3] + dz, dy - 0.22, dy + WALL_H, C.wall, C.wallTop, 4); });
     // loggie od zewnątrz otwarte: niski murek/obrzeże i smukły brązowy pochwyt na słupkach
     (lv.rails || []).forEach(function (r) {
       var x0 = r[0] + dx, z0 = r[1] + dz, x1 = r[2] + dx, z1 = r[3] + dz, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, horiz = (x1 - x0) >= (z1 - z0);
@@ -597,7 +609,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793989875').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793990028').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
