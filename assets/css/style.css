@@ -1624,3 +1624,8 @@ body.dh-open { overflow: hidden; }
 .hfx-auto--b { animation-name: hfxB; animation-duration: 41s; animation-delay: -17s; }
 @keyframes hfxA { 0% { transform: translate(230px, -102px) scale(.84); opacity: 0; } 6% { opacity: 1; } 60% { transform: translate(-150px, 67px) scale(1.06); opacity: 1; } 66%, 100% { transform: translate(-190px, 85px) scale(1.08); opacity: 0; } }
 @keyframes hfxB { 0% { transform: translate(-240px, 107px) scale(1.08); opacity: 0; } 6% { opacity: 1; } 58% { transform: translate(18px, -8px) scale(.98); opacity: 1; } 64%, 100% { transform: translate(40px, -18px) scale(.96); opacity: 0; } }
+
+/* Kontakt: indywidualna opieka sprzedażowa */
+.care{list-style:none;margin:40px 0 0;padding:0;display:grid;gap:22px;color:#d9cfc1}
+.care li{border-top:1px solid rgba(217,207,193,.22);padding-top:16px;font-size:15px;line-height:1.55}
+.care .caps{display:block;margin-bottom:6px}
