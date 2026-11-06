@@ -608,7 +608,7 @@
     gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
     gl.bindVertexArray(this.op.vao); gl.drawArrays(gl.TRIANGLES, 0, this.op.n);
     gl.disable(gl.CULL_FACE);
-    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.26);
+    gl.enable(gl.BLEND); gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.26);
     gl.bindVertexArray(this.gl_.vao); gl.drawArrays(gl.TRIANGLES, 0, this.gl_.n);
     gl.depthMask(true); gl.disable(gl.BLEND);
   };
@@ -705,7 +705,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793991957').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793992467').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
