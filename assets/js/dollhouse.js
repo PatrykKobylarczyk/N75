@@ -12,7 +12,7 @@
     oak: [104, 74, 53], tile: [222, 214, 201], stone: [205, 198, 187],
     linen: [236, 230, 220], linen2: [244, 241, 235], boucle: [232, 226, 215], sand: [214, 200, 179], taupe: [176, 160, 141],
     mocha: [134, 108, 88], walnut: [96, 70, 52], door: [78, 52, 36], onyx: [120, 78, 56], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
-    black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [110, 172, 220], rug: [226, 217, 202],
+    veneer: [146, 102, 70], legs: [120, 120, 118], raksa: [212, 200, 182], raksa2: [198, 186, 168], black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [110, 172, 220], rug: [226, 217, 202],
     green: [110, 124, 92], pot: [196, 184, 166], teak: [168, 134, 98], teak2: [150, 114, 80], olive: [118, 128, 96], olive2: [134, 144, 110],
     bronze: [120, 96, 70], frame: [74, 68, 62], curtain: [240, 235, 226], rugOut: [214, 205, 190]
   };
@@ -258,16 +258,52 @@
         var s0 = big[0]; if (!s0) return;
         // części sofy: obszary przylegające do największego (odstęp < 6 cm), reszta to stolik/konsola
         var near = function (a, b) { return !(a.b[0] > b.b[2] + 6 || b.b[0] > a.b[2] + 6 || a.b[1] > b.b[3] + 6 || b.b[1] > a.b[3] + 6); };
-        var part = [s0], changed = true;
-        while (changed) { changed = false; regs.forEach(function (r) { if (part.indexOf(r) < 0 && part.some(function (p) { return near(p, r); }) && r.A < 1.6) { part.push(r); changed = true; } }); }
+        // sofa = największa (łączną powierzchnią) grupa stykających się elementów; osobny prostokąt obok to stolik/puf
+        var grow = function (seed) { var g = [seed], ch = true; while (ch) { ch = false; regs.forEach(function (r) { if (g.indexOf(r) < 0 && g.some(function (p) { return near(p, r); }) && r.A < 1.6) { g.push(r); ch = true; } }); } return g; };
+        var part = [s0], best = 0;
+        regs.forEach(function (r) { var g = grow(r), a = g.reduce(function (s, x) { return s + x.A; }, 0); if (a > best + 1e-6) { best = a; part = g; } });
         var sb = bbox([].concat.apply([], part.map(function (r) { return [[r.b[0], r.b[1]], [r.b[2], r.b[3]]]; })));
-        M.prism(R(shrinkL(sb, 3)), Y(0.02), Y(0.18), C.taupe);
-        var lp = L(sb[0] - 24, (sb[1] + sb[3]) / 2 - (sb[3] - sb[1]) * 0.3);   // lampa podłogowa
+        // Raksa (NOBONOBO, proj. T. Rygalik): tapicerowana rama na smukłych metalowych nóżkach 13 cm, grube siedziska, duże luźne poduchy oparcia
+        var LEG = 0.13, sbx = (sb[0] + sb[2]) / 2, sby = (sb[1] + sb[3]) / 2;
+        [[sb[0] + 8, sb[1] + 8], [sb[2] - 8, sb[1] + 8], [sb[0] + 8, sb[3] - 8], [sb[2] - 8, sb[3] - 8], [sbx, sb[1] + 8], [sbx, sb[3] - 8]].forEach(function (l) { var c = L(l[0], l[1]); M.cyl(c[0], c[1], 0.018, Y(0), Y(LEG), C.legs, 8); });
+        var lp = L(sb[0] - 24, sby - (sb[3] - sb[1]) * 0.3);   // lampa podłogowa
         M.cyl(lp[0], lp[1], 0.14, Y(0), Y(0.03), C.bronze, 16); M.cyl(lp[0], lp[1], 0.012, Y(0.03), Y(1.45), C.bronze, 6); M.cyl(lp[0], lp[1], 0.2, Y(1.45), Y(1.72), C.curtain, 20);
+        var cushions = function (b, along, y0, y1, col, gap) {          // podział na poduchy z widoczną szczeliną
+          var len = along ? b[2] - b[0] : b[3] - b[1], n = Math.max(1, Math.round(len / 92)), st = len / n;
+          for (var k = 0; k < n; k++) {
+            var s = (along ? b[0] : b[1]) + k * st + gap, e = (along ? b[0] : b[1]) + (k + 1) * st - gap;
+            M.prism(R(along ? [s, b[1], e, b[3]] : [b[0], s, b[2], e]), Y(y0), Y(y1), col);
+            M.prism(R(along ? [s + 2, b[1] + 2, e - 2, b[3] - 2] : [b[0] + 2, s + 2, b[2] - 2, e - 2]), Y(y1), Y(y1 + 0.025), col);   // zaokrąglenie
+          }
+        };
+        // krawędź oparcia: ta, wzdłuż której leży najwięcej cienkich elementów (reszta to podłokietniki)
+        var edgeLen = [0, 0, 0, 0];   // 0: y-min, 1: y-max, 2: x-min, 3: x-max
         part.forEach(function (r) {
-          var thin = Math.min(r.w, r.d) < 28;
-          if (thin) M.prism(P(r), Y(0.18), Y(0.74), C.boucle);
-          else { var inn = contained(r); if (inn) strips(r, inn, 0.18, 0.72, C.boucle); else M.prism(P(r), Y(0.18), Y(0.44), C.linen); }
+          if (Math.min(r.w, r.d) >= 28) return;
+          if (r.w >= r.d) { if (Math.abs(r.b[1] - sb[1]) < 4) edgeLen[0] += r.w; if (Math.abs(r.b[3] - sb[3]) < 4) edgeLen[1] += r.w; }
+          else { if (Math.abs(r.b[0] - sb[0]) < 4) edgeLen[2] += r.d; if (Math.abs(r.b[2] - sb[2]) < 4) edgeLen[3] += r.d; }
+        });
+        var backE = edgeLen.indexOf(Math.max.apply(null, edgeLen));
+        var isBack = function (r) {
+          if (Math.min(r.w, r.d) >= 28) return false;
+          return backE === 0 ? r.w >= r.d && Math.abs(r.b[1] - sb[1]) < 4 : backE === 1 ? r.w >= r.d && Math.abs(r.b[3] - sb[3]) < 4 : backE === 2 ? r.d > r.w && Math.abs(r.b[0] - sb[0]) < 4 : r.d > r.w && Math.abs(r.b[2] - sb[2]) < 4;
+        };
+        part.forEach(function (r) {
+          var thin = Math.min(r.w, r.d) < 28, horiz = r.w >= r.d, len = Math.max(r.w, r.d);
+          if (thin) {
+            M.prism(P(r), Y(LEG), Y(0.61), C.raksa2);                             // oparcie / podłokietnik (rama)
+            M.prism(R(shrinkL(r.b, 2)), Y(0.61), Y(0.635), C.raksa2);
+            if (isBack(r) && len > 40) {                                                      // duże luźne poduchy oparcia od strony siedziska
+              var b = r.b, cb;
+              if (horiz) cb = backE === 0 ? [b[0] + 1, b[3], b[2] - 1, b[3] + 22] : [b[0] + 1, b[1] - 22, b[2] - 1, b[1]];
+              else cb = backE === 2 ? [b[2], b[1] + 1, b[2] + 22, b[3] - 1] : [b[0] - 22, b[1] + 1, b[0], b[3] - 1];
+              cushions(cb, horiz, 0.43, 0.9, C.raksa, 1.5);
+            }
+          } else {
+            var inn = contained(r);
+            if (inn) { strips(r, inn, LEG, 0.61, C.raksa2); M.prism(R(inn), Y(LEG), Y(0.3), C.raksa2); cushions(shrinkL(inn, 1), (inn[2] - inn[0]) >= (inn[3] - inn[1]), 0.3, 0.43, C.raksa, 1.2); }
+            else { M.prism(P(r), Y(LEG), Y(0.3), C.raksa2); cushions(shrinkL(r.b, 1), r.w >= r.d, 0.3, 0.43, C.raksa, 1.2); }
+          }
         });
         // poduszki dekoracyjne na grzbiecie
         regs.forEach(function (r) {
@@ -319,18 +355,18 @@
       }
       case 'island': {
         var i0 = big[0]; if (!i0) return;
-        M.prism(P(i0), Y(0.05), Y(0.88), C.walnut); M.prism(P(i0), Y(0.88), Y(0.92), C.travertine);
+        M.prism(P(i0), Y(0.05), Y(0.88), C.veneer, C.veneer, 5); M.prism(P(i0), Y(0), Y(0.05), C.black); M.prism(P(i0), Y(0.88), Y(0.92), C.travertine);
         regs.forEach(function (r) { if (r !== i0 && r.A < 0.2) { var c = cen(r.P), cc = L(c[0], c[1]); M.cyl(cc[0], cc[1], 0.18, Y(0.62), Y(0.68), C.mocha, 16); M.cyl(cc[0], cc[1], 0.025, Y(0), Y(0.62), C.brass, 8); } });
         break;
       }
       case 'counter': case 'appl': case 'sink': case 'hob': {
-        M.prism(q, Y(0.08), Y(0.88), C.cabinet); M.prism(q, Y(0), Y(0.08), C.black);
+        M.prism(q, Y(0.08), Y(0.88), C.veneer, C.veneer, 5); M.prism(q, Y(0), Y(0.08), C.black);
         M.prism(q, Y(0.88), Y(0.92), C.travertine);
         if (it.t === 'hob') { M.prism(R([lb[0] + 8, lb[1] + 8, lb[2] - 8, lb[3] - 8]), Y(0.92), Y(0.925), C.black); }
         if (it.t === 'sink') { M.prism(R([lb[0] + 10, lb[1] + 10, lb[2] - 10, lb[3] - 10]), Y(0.92), Y(0.924), C.steel); var c2 = L((lb[0] + lb[2]) / 2, sgn > 0 ? lb[1] + 6 : lb[3] - 6); M.cyl(c2[0], c2[1], 0.015, Y(0.92), Y(1.2), C.brass, 8); }
         break;
       }
-      case 'fridge': { M.prism(q, Y(0), Y(1.95), C.cabinet); break; }
+      case 'fridge': { M.prism(q, Y(0), Y(2.2), C.veneer, C.veneer, 5); break; }
       case 'wardrobe': { M.prism(q, Y(0), Y(1.95), C.oakLight, C.oakLight); break; }
       case 'tv': {
         M.prism(q, Y(0.05), Y(0.42), C.walnut);
@@ -375,6 +411,9 @@
     'float e=min(fu,1.-fu);float ec=min(fract(cx),1.-fract(cx))*cw;col*=mix(.8,1.,smoothstep(0.,.035,e))*mix(.78,1.,smoothstep(0.,.006,ec));}' +
     'if(M==2&&N.y>.5){vec2 g=fract(vP.xz/.6);float e=min(min(g.x,1.-g.x),min(g.y,1.-g.y));col*=mix(.9,1.,smoothstep(0.,.02,e));col*=.97+.05*h(floor(vP.xz/.6));}' +
     'if(M==3&&N.y>.5){float g=fract(vP.x*7.);float v=h(vec2(floor(vP.x*7.),floor(vP.z*1.2)));col*=.92+.12*v;col*=mix(.8,1.,smoothstep(0.,.08,min(g,1.-g)));}' +
+    'if(M==5){float yl=vP.y-floor(vP.y/3.05)*3.05;float u=N.y>.5?vP.x:(abs(N.x)>abs(N.z)?vP.z:vP.x);float pw=.6,pi=floor(u/pw),fu=fract(u/pw);float m2=mod(pi,2.)<1.?fu:1.-fu;' +
+    'float w=m2*pw*34.+sin(yl*2.3+pi*1.7)*1.4+sin(m2*9.+yl*.9)*.5;float g=.5+.5*sin(w*6.283*1.4);col*=.86+.1*g+.05*h(vec2(floor(m2*pw*240.),pi));' +
+    'if(N.y<.5){float e=min(fu,1.-fu)*pw;col*=mix(.55,1.,smoothstep(0.,.004,e));float hy=abs(yl-.5);col*=mix(.6,1.,smoothstep(0.,.004,hy));}}' +
     'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),3.);o=vec4(mix(vC,vec3(.85,.93,1.),fr*.5),uA+fr*.2);return;}' +
     'float ndl=max(dot(N,uSun),0.);float s=sh();vec3 sky=vec3(1.,.975,.94),gr=vec3(.62,.56,.5);' +
     'vec3 amb=mix(gr,sky,N.y*.5+.5)*.74;float ao=mix(.72,1.,smoothstep(0.,.5,vP.y-floor(vP.y/3.05)*3.05+.02));' +
@@ -558,7 +597,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793989126').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793989747').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
