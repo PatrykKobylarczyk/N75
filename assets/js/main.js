@@ -502,7 +502,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793990809" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793990924" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -946,7 +946,7 @@
     // okna: nakładka „zgaszonego” okna i ciepłego rozbłysku, każde w swoim rytmie
     WIN.forEach(function (w, i) {
       var d = document.createElement('i'); d.className = 'hfx-win';
-      d.style.cssText = 'left:' + w[0] + 'px;top:' + w[1] + 'px;width:' + w[2] + 'px;height:' + w[3] + 'px;animation-duration:' + (14 + (i * 7.3) % 23).toFixed(1) + 's;animation-delay:-' + ((i * 5.7) % 30).toFixed(1) + 's';
+      d.style.cssText = 'left:' + w[0] + 'px;top:' + w[1] + 'px;width:' + w[2] + 'px;height:' + w[3] + 'px;animation-duration:' + (48 + (i * 7.3) % 40).toFixed(1) + 's;animation-delay:-' + ((i * 11.7) % 80).toFixed(1) + 's';
       if (i % 3 === 0) d.classList.add('hfx-win--warm');
       inn.appendChild(d);
     });
@@ -957,9 +957,12 @@
       s.innerHTML = '<svg viewBox="0 0 40 16"><path d="M0 9 Q10 0 20 8 Q30 0 40 9 Q30 4 20 12 Q10 4 0 9Z"/></svg>'; birds.appendChild(s);
     });
     inn.appendChild(birds);
-    // auto jadące Narutowicza (w stronę parku) i drugie z naprzeciwka
-    ['hfx-car', 'hfx-car hfx-car--b'].forEach(function (c) {
-      var car = document.createElement('span'); car.className = c; car.innerHTML = '<b></b><i></i>'; inn.appendChild(car);
+    // prawdziwe auta z wizualizacji: w miejscu postoju łata jezdni, a samo auto (wycięte z obrazu) powoli jedzie swoim pasem
+    [['a', 1715, 928, 108, 66], ['b', 1849, 868, 92, 62]].forEach(function (c) {
+      var road = document.createElement('img'); road.className = 'hfx-road'; road.src = 'assets/img/hero-droga-' + c[0] + '.webp?v=2'; road.alt = '';
+      road.style.cssText = 'left:' + c[1] + 'px;top:' + c[2] + 'px;width:' + c[3] + 'px;height:' + c[4] + 'px'; inn.appendChild(road);
+      var car = document.createElement('img'); car.className = 'hfx-auto hfx-auto--' + c[0]; car.src = 'assets/img/hero-auto-' + c[0] + '.webp?v=2'; car.alt = '';
+      car.style.cssText = 'left:' + c[1] + 'px;top:' + c[2] + 'px;width:' + c[3] + 'px;height:' + c[4] + 'px'; inn.appendChild(car);
     });
     function fit() {
       var W = media.clientWidth, H = media.clientHeight, s = Math.max(W / IW, H / IH);
