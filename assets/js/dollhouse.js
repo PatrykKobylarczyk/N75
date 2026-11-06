@@ -13,7 +13,7 @@
     linen: [236, 230, 220], linen2: [244, 241, 235], boucle: [232, 226, 215], sand: [214, 200, 179], taupe: [176, 160, 141],
     mocha: [134, 108, 88], walnut: [96, 70, 52], door: [78, 52, 36], onyx: [120, 78, 56], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
     veneer: [146, 102, 70], marble: [238, 235, 229], canvas: [234, 222, 201], terra: [184, 98, 62], ochre: [208, 152, 74], umber: [92, 62, 44], sienna: [158, 84, 52], legs: [120, 120, 118], raksa: [212, 200, 182], raksa2: [198, 186, 168], black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [196, 216, 226], rug: [226, 217, 202],
-    green: [110, 124, 92], pot: [196, 184, 166], teak: [168, 134, 98], teak2: [150, 114, 80], olive: [118, 128, 96], olive2: [134, 144, 110],
+    green: [110, 124, 92], pot: [196, 184, 166], teak: [168, 134, 98], wpc: [203, 194, 180], teak2: [150, 114, 80], olive: [118, 128, 96], olive2: [134, 144, 110],
     bronze: [120, 96, 70], frame: [190, 164, 120], curtain: [240, 235, 226], rugOut: [214, 205, 190]
   };
 
@@ -145,7 +145,7 @@
       var n = (f.n || '').toLowerCase();
       var wet = /łazienka|wc|pralnia|sauna/.test(n);
       var out = f.k === 'out' || /loggia|balkon|taras/.test(n);
-      var top = wet ? C.tile : out ? C.teak : C.oak, mat = wet ? 2 : out ? 3 : 1;
+      var top = wet ? C.tile : out ? C.wpc : C.oak, mat = wet ? 2 : out ? 3 : 1;
       M.prism(X(f.p), dy - 0.22, dy, C.slab, top, 0, mat);
       if (out) loggia(M, X(f.p), dy); else inner.push(X(f.p));
     });
@@ -510,7 +510,7 @@
     'col*=.84+.26*v;col*=1.-.06*sin((vP.z-sg*lx)*46.+v*11.);' +
     'float e=min(fu,1.-fu);float ec=min(fract(cx),1.-fract(cx))*cw;col*=mix(.8,1.,smoothstep(0.,.035,e))*mix(.78,1.,smoothstep(0.,.006,ec));}' +
     'if(M==2&&N.y>.5){vec2 g=fract(vP.xz/.6);float e=min(min(g.x,1.-g.x),min(g.y,1.-g.y));col*=mix(.9,1.,smoothstep(0.,.02,e));col*=.97+.05*h(floor(vP.xz/.6));}' +
-    'if(M==3&&N.y>.5){float g=fract(vP.x*7.);float v=h(vec2(floor(vP.x*7.),floor(vP.z*1.2)));col*=.92+.12*v;col*=mix(.8,1.,smoothstep(0.,.08,min(g,1.-g)));}' +
+    'if(M==3&&N.y>.5){float g=fract(vP.x*6.9);float bi=floor(vP.x*6.9);float v=h(vec2(bi,floor(vP.z*.45+h(vec2(bi,3.))*3.)));col*=.95+.06*v;col*=1.-.025*sin(vP.z*190.+bi*7.);col*=mix(.72,1.,smoothstep(0.,.06,min(g,1.-g)));}' +
     'if(M==5){float yl=vP.y-floor(vP.y/3.05)*3.05;float u=N.y>.5?vP.x:(abs(N.x)>abs(N.z)?vP.z:vP.x);float pw=.6,pi=floor(u/pw),fu=fract(u/pw);float m2=mod(pi,2.)<1.?fu:1.-fu;' +
     'float w=m2*pw*34.+sin(yl*2.3+pi*1.7)*1.4+sin(m2*9.+yl*.9)*.5;float g=.5+.5*sin(w*6.283*1.4);col*=.86+.1*g+.05*h(vec2(floor(m2*pw*240.),pi));' +
     'if(N.y<.5){float e=min(fu,1.-fu)*pw;col*=mix(.55,1.,smoothstep(0.,.004,e));float hy=abs(yl-.5);col*=mix(.6,1.,smoothstep(0.,.004,hy));}}' +
@@ -705,7 +705,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793991865').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793991957').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
