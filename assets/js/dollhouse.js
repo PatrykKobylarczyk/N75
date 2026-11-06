@@ -529,7 +529,7 @@
     'float w=m2*pw*34.+sin(yl*2.3+pi*1.7)*1.4+sin(m2*9.+yl*.9)*.5;float g=.5+.5*sin(w*6.283*1.4);col*=.86+.1*g+.05*h(vec2(floor(m2*pw*240.),pi));' +
     'if(N.y<.5){float e=min(fu,1.-fu)*pw;col*=mix(.55,1.,smoothstep(0.,.004,e));float hy=abs(yl-.5);col*=mix(.6,1.,smoothstep(0.,.004,hy));}}' +
     'if(M==6){vec2 q=vP.xz*1.7+vec2(vP.y*.7);float n=sin(q.x*2.1+sin(q.y*1.3+q.x*.7)*2.4+sin(q.y*3.7)*.6);float v=smoothstep(.93,1.,abs(n));float n2=sin(q.y*5.3+sin(q.x*4.1)*1.6);float v2=smoothstep(.97,1.,abs(n2));col=mix(col,col*vec3(.62,.6,.6),v*.55+v2*.3);col*=.97+.03*h(floor(vP.xz*40.));}' +
-    'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),3.);o=vec4(mix(vC,vec3(.9,.95,1.),fr*.5),uA+fr*.16);return;}' +
+    'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),3.);o=vec4(mix(vC,vec3(.9,.95,1.),fr*.15),uA+fr*.05);return;}' +
     'float ndl=max(dot(N,uSun),0.);float s=sh();vec3 V=normalize(uEye-vP);float yl=vP.y-floor(vP.y/3.05)*3.05+.02;' +
     // światło nieba (chłodniejsze) + odbicie od podłogi z orzecha (ciepłe), miękka okluzja przy podłodze i w narożach
     'vec3 sky=vec3(.86,.9,1.),bounce=vec3(.78,.6,.46);vec3 amb=mix(bounce*.55,sky*.62,N.y*.5+.5);' +
@@ -622,9 +622,13 @@
     gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
     gl.bindVertexArray(this.op.vao); gl.drawArrays(gl.TRIANGLES, 0, this.op.n);
     gl.disable(gl.CULL_FACE);
-    gl.enable(gl.BLEND); gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.22);
-    gl.bindVertexArray(this.gl_.vao); gl.drawArrays(gl.TRIANGLES, 0, this.gl_.n);
-    gl.depthMask(true); gl.disable(gl.BLEND);
+    // szkło jednolite: najpierw sama głębia szyb, potem kolor tylko najbliższej warstwy (bez sumowania kilku tafli)
+    gl.bindVertexArray(this.gl_.vao);
+    gl.colorMask(false, false, false, false); gl.depthMask(true); gl.drawArrays(gl.TRIANGLES, 0, this.gl_.n);
+    gl.colorMask(true, true, true, true); gl.depthMask(false); gl.depthFunc(gl.LEQUAL);
+    gl.enable(gl.BLEND); gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.uniform1f(u('uA'), 0.24);
+    gl.drawArrays(gl.TRIANGLES, 0, this.gl_.n);
+    gl.depthFunc(gl.LESS); gl.depthMask(true); gl.disable(gl.BLEND);
   };
 
   function model(data, which) {
@@ -719,7 +723,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793992629').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793993029').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
