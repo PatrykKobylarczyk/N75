@@ -12,9 +12,9 @@
     oak: [104, 74, 53], tile: [222, 214, 201], stone: [205, 198, 187],
     linen: [236, 230, 220], linen2: [244, 241, 235], boucle: [232, 226, 215], sand: [214, 200, 179], taupe: [176, 160, 141],
     mocha: [134, 108, 88], walnut: [96, 70, 52], door: [78, 52, 36], onyx: [120, 78, 56], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
-    veneer: [146, 102, 70], legs: [120, 120, 118], raksa: [212, 200, 182], raksa2: [198, 186, 168], black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [110, 172, 220], rug: [226, 217, 202],
+    veneer: [146, 102, 70], marble: [238, 235, 229], canvas: [234, 222, 201], terra: [184, 98, 62], ochre: [208, 152, 74], umber: [92, 62, 44], sienna: [158, 84, 52], legs: [120, 120, 118], raksa: [212, 200, 182], raksa2: [198, 186, 168], black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [110, 172, 220], rug: [226, 217, 202],
     green: [110, 124, 92], pot: [196, 184, 166], teak: [168, 134, 98], teak2: [150, 114, 80], olive: [118, 128, 96], olive2: [134, 144, 110],
-    bronze: [120, 96, 70], frame: [74, 68, 62], curtain: [240, 235, 226], rugOut: [214, 205, 190]
+    bronze: [120, 96, 70], frame: [190, 164, 120], curtain: [240, 235, 226], rugOut: [214, 205, 190]
   };
 
   /* ---------- geometria ---------- */
@@ -185,7 +185,19 @@
         return ov > len * 0.5;
       });
     };
-    lv.walls.forEach(function (w) { if (railBy(w)) return; M.box(w[0] + dx, w[1] + dz, w[2] + dx, w[3] + dz, dy - 0.22, dy + WALL_H, C.wall, C.wallTop, 4); });
+    // ścianki i filary stojące przy loggii, które nie oddzielają jej od wnętrza – usuwamy (loggia otwarta na zewnątrz)
+    var outs = lv.floors.filter(function (f) { return f.k === 'out'; }).map(function (f) { return { p: f.p, b: bbox(f.p) }; });
+    var ins = lv.floors.filter(function (f) { return f.k !== 'out'; });
+    var loggiaStub = function (w) {
+      if (!outs.length) return false;
+      var cx = (w[0] + w[2]) / 2, cz = (w[1] + w[3]) / 2;
+      var atL = outs.some(function (o) { return cx > o.b[0] - 0.35 && cx < o.b[2] + 0.35 && cz > o.b[1] - 0.35 && cz < o.b[3] + 0.35; });
+      if (!atL) return false;
+      var pts = [], e = 0.22;
+      [[w[0] - e, cz], [w[2] + e, cz], [cx, w[1] - e], [cx, w[3] + e], [w[0] - e, w[1] - e], [w[2] + e, w[1] - e], [w[0] - e, w[3] + e], [w[2] + e, w[3] + e]].forEach(function (p) { pts.push(p); });
+      return !pts.some(function (p) { return ins.some(function (f) { return inside(p, f.p); }); });
+    };
+    lv.walls.forEach(function (w) { if (railBy(w) || loggiaStub(w)) return; M.box(w[0] + dx, w[1] + dz, w[2] + dx, w[3] + dz, dy - 0.22, dy + WALL_H, C.wall, C.wallTop, 4); });
     // loggie od zewnątrz otwarte: niski murek/obrzeże i smukły brązowy pochwyt na słupkach
     (lv.rails || []).forEach(function (r) {
       var x0 = r[0] + dx, z0 = r[1] + dz, x1 = r[2] + dx, z1 = r[3] + dz, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, horiz = (x1 - x0) >= (z1 - z0);
@@ -218,6 +230,58 @@
       });
     });
     lv.items.forEach(function (it) { try { furnish(M, it, dx, dz, dy); } catch (e) { /* pojedynczy mebel nie blokuje modelu */ } });
+    try { painting(M, lv, dx, dz, dy); } catch (e) { /* obraz opcjonalny */ }
+  }
+
+
+  // ciepła, geometryczna kompozycja 1×1 m na najlepszej ścianie salonu (najchętniej nad sofą)
+  function painting(M, lv, dx, dz, dy) {
+    var sal = lv.floors.filter(function (f) { return /salon/i.test(f.n); })[0] || lv.floors.filter(function (f) { return f.k === 'in'; }).sort(function (a, b) { return b.a - a.a; })[0];
+    if (!sal) return;
+    var bad = lv.items.filter(function (it) { return /counter|appl|sink|hob|fridge|wardrobe|tv|island/.test(it.t); }).map(function (it) { return bbox(it.q); });
+    var sofas = lv.items.filter(function (it) { return it.t === 'sofa'; }).map(function (it) { return bbox(it.q); });
+    var near = function (p, b, d) { return p[0] > b[0] - d && p[0] < b[2] + d && p[1] > b[1] - d && p[1] < b[3] + d; };
+    var best = null;
+    lv.walls.forEach(function (w) {
+      var hz = (w[2] - w[0]) >= (w[3] - w[1]), len = hz ? w[2] - w[0] : w[3] - w[1];
+      if (len < 1.3) return;
+      var a0 = hz ? w[0] : w[1];
+      [-1, 1].forEach(function (s) {
+        var c = hz ? (s > 0 ? w[3] : w[1]) : (s > 0 ? w[2] : w[0]);
+        var pr = function (along, off) { return hz ? [along, c + s * off] : [c + s * off, along]; };
+        for (var m = a0 + 0.65; m <= a0 + len - 0.65 + 1e-6; m += 0.25) {
+          if (![-0.5, 0, 0.5].every(function (o) { return inside(pr(m + o, 0.3), sal.p); })) continue;
+          if (bad.some(function (b) { return near(pr(m, 0.3), b, 0.55) || near(pr(m - 0.5, 0.3), b, 0.3) || near(pr(m + 0.5, 0.3), b, 0.3); })) continue;
+          var glassy = (lv.glass || []).some(function (g) { var gh = (g[2] - g[0]) >= (g[3] - g[1]); if (gh !== hz) return false; var gc = hz ? (g[1] + g[3]) / 2 : (g[0] + g[2]) / 2; if (Math.abs(gc - c) > 0.45) return false; var g0 = hz ? g[0] : g[1], g1 = hz ? g[2] : g[3]; return g1 > m - 0.6 && g0 < m + 0.6; });
+          if (glassy) continue;
+          var sc = len - Math.abs(m - (a0 + len / 2)) * 0.5 + (sofas.some(function (b) { return near(pr(m, 0.5), b, 0.4); }) ? 6 : 0);
+          if (!best || sc > best.sc) best = { sc: sc, hz: hz, s: s, c: c, m: m };
+        }
+      });
+    });
+    if (!best) return;
+    var B = best, y0 = 0.98;
+    // prostokąt w płaszczyźnie ściany: u – wzdłuż ściany (0..1 m), v – wysokość, d – odsunięcie od ściany
+    var rect = function (u0, u1, v0, v1, d0, d1, col) {
+      var a = B.m - 0.5 + u0, b = B.m - 0.5 + u1, p0 = B.c + B.s * d0, p1 = B.c + B.s * d1;
+      if (B.hz) M.box(a + dx, Math.min(p0, p1) + dz, b + dx, Math.max(p0, p1) + dz, dy + y0 + v0, dy + y0 + v1, col);
+      else M.box(Math.min(p0, p1) + dx, a + dz, Math.max(p0, p1) + dx, b + dz, dy + y0 + v0, dy + y0 + v1, col);
+    };
+    var disc = function (cu, cv, r, d, col, half) {                 // koło z poziomych pasków (half: tylko górna połowa)
+      var n = 22;
+      for (var i = 0; i < n; i++) {
+        var v0 = -r + 2 * r * i / n, v1 = -r + 2 * r * (i + 1) / n; if (half && v1 <= 0) continue;
+        var vm = (v0 + v1) / 2, hw = Math.sqrt(Math.max(0, r * r - vm * vm));
+        rect(cu - hw, cu + hw, cv + Math.max(half ? 0 : -9, v0), cv + v1, d, d + 0.006, col);
+      }
+    };
+    rect(-0.02, 1.02, -0.02, 1.02, 0, 0.03, C.brass);                 // cienka mosiężna rama
+    rect(0, 1, 0, 1, 0.03, 0.036, C.canvas);                           // płótno
+    rect(0.56, 0.9, 0.1, 0.62, 0.036, 0.042, C.ochre);                 // ochrowy prostokąt
+    disc(0.38, 0.58, 0.27, 0.042, C.terra);                            // terakotowe koło
+    disc(0.3, 0.1, 0.2, 0.048, C.umber, true);                          // półkole w umbrze
+    rect(0.1, 0.92, 0.43, 0.445, 0.054, 0.058, C.umber);               // cienka linia
+    disc(0.73, 0.78, 0.07, 0.054, C.sienna);                           // małe słońce
   }
 
   function furnish(M, it, dx, dz, dy) {
@@ -368,13 +432,26 @@
       }
       case 'island': {
         var i0 = big[0]; if (!i0) return;
-        M.prism(P(i0), Y(0.05), Y(0.88), C.veneer, C.veneer, 5); M.prism(P(i0), Y(0), Y(0.05), C.black); M.prism(P(i0), Y(0.88), Y(0.92), C.travertine);
+        M.prism(P(i0), Y(0.05), Y(0.88), C.veneer, C.veneer, 5); M.prism(P(i0), Y(0), Y(0.05), C.black); M.prism(P(i0), Y(0.88), Y(0.92), C.marble, C.marble, 6);
         regs.forEach(function (r) { if (r !== i0 && r.A < 0.2) { var c = cen(r.P), cc = L(c[0], c[1]); M.cyl(cc[0], cc[1], 0.18, Y(0.62), Y(0.68), C.mocha, 16); M.cyl(cc[0], cc[1], 0.025, Y(0), Y(0.62), C.brass, 8); } });
         break;
       }
       case 'counter': case 'appl': case 'sink': case 'hob': {
         M.prism(q, Y(0.08), Y(0.88), C.veneer, C.veneer, 5); M.prism(q, Y(0), Y(0.08), C.black);
-        M.prism(q, Y(0.88), Y(0.92), C.travertine);
+        M.prism(q, Y(0.88), Y(0.92), C.marble, C.marble, 6);
+        // ściana po stronie y=0 bloku; front po przeciwnej
+        var wallY = sgn > 0 ? lb[1] : lb[3], frontY = sgn > 0 ? lb[3] : lb[1], fw = lb[2] - lb[0];
+        var nF = Math.max(1, Math.round(fw / 60)), fs = fw / nF;
+        for (var k = 0; k < nF; k++) {                                       // uchwyty: smukłe mosiężne listwy na frontach
+          var a0 = lb[0] + k * fs + 12, a1 = lb[0] + (k + 1) * fs - 12;
+          if (a1 - a0 > 6) M.prism(R([a0, Math.min(frontY, frontY + sgn * 2.5), a1, Math.max(frontY, frontY + sgn * 2.5)]), Y(0.78), Y(0.795), C.brass);
+        }
+        if (it.t !== 'hob') {                                                 // szafki górne z forniru
+          M.prism(R([lb[0] + 1, Math.min(wallY, wallY + sgn * 35), lb[2] - 1, Math.max(wallY, wallY + sgn * 35)]), Y(1.42), Y(WALL_H - 0.02), C.veneer, C.veneer, 5);
+          for (var k2 = 0; k2 < nF; k2++) { var b0 = lb[0] + k2 * fs + 12, b1 = lb[0] + (k2 + 1) * fs - 12, fy = wallY + sgn * 35; if (b1 - b0 > 6) M.prism(R([b0, Math.min(fy, fy + sgn * 2.5), b1, Math.max(fy, fy + sgn * 2.5)]), Y(1.45), Y(1.465), C.brass); }
+        } else {                                                              // okap nad płytą
+          M.prism(R([lb[0] + 8, Math.min(wallY, wallY + sgn * 40), lb[2] - 8, Math.max(wallY, wallY + sgn * 40)]), Y(1.55), Y(WALL_H - 0.02), C.veneer, C.veneer, 5);
+        }
         if (it.t === 'hob') { M.prism(R([lb[0] + 8, lb[1] + 8, lb[2] - 8, lb[3] - 8]), Y(0.92), Y(0.925), C.black); }
         if (it.t === 'sink') { M.prism(R([lb[0] + 10, lb[1] + 10, lb[2] - 10, lb[3] - 10]), Y(0.92), Y(0.924), C.steel); var c2 = L((lb[0] + lb[2]) / 2, sgn > 0 ? lb[1] + 6 : lb[3] - 6); M.cyl(c2[0], c2[1], 0.015, Y(0.92), Y(1.2), C.brass, 8); }
         break;
@@ -427,6 +504,7 @@
     'if(M==5){float yl=vP.y-floor(vP.y/3.05)*3.05;float u=N.y>.5?vP.x:(abs(N.x)>abs(N.z)?vP.z:vP.x);float pw=.6,pi=floor(u/pw),fu=fract(u/pw);float m2=mod(pi,2.)<1.?fu:1.-fu;' +
     'float w=m2*pw*34.+sin(yl*2.3+pi*1.7)*1.4+sin(m2*9.+yl*.9)*.5;float g=.5+.5*sin(w*6.283*1.4);col*=.86+.1*g+.05*h(vec2(floor(m2*pw*240.),pi));' +
     'if(N.y<.5){float e=min(fu,1.-fu)*pw;col*=mix(.55,1.,smoothstep(0.,.004,e));float hy=abs(yl-.5);col*=mix(.6,1.,smoothstep(0.,.004,hy));}}' +
+    'if(M==6){vec2 q=vP.xz*1.7+vec2(vP.y*.7);float n=sin(q.x*2.1+sin(q.y*1.3+q.x*.7)*2.4+sin(q.y*3.7)*.6);float v=smoothstep(.93,1.,abs(n));float n2=sin(q.y*5.3+sin(q.x*4.1)*1.6);float v2=smoothstep(.97,1.,abs(n2));col=mix(col,col*vec3(.62,.6,.6),v*.55+v2*.3);col*=.97+.03*h(floor(vP.xz*40.));}' +
     'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),3.);o=vec4(mix(vC,vec3(.85,.93,1.),fr*.5),uA+fr*.2);return;}' +
     'float ndl=max(dot(N,uSun),0.);float s=sh();vec3 sky=vec3(1.,.975,.94),gr=vec3(.62,.56,.5);' +
     'vec3 amb=mix(gr,sky,N.y*.5+.5)*.74;float ao=mix(.72,1.,smoothstep(0.,.5,vP.y-floor(vP.y/3.05)*3.05+.02));' +
@@ -610,7 +688,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793990462').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793990809').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
