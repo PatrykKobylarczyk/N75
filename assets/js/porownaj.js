@@ -14,7 +14,7 @@
   function favs() { return (window.N75Fav ? window.N75Fav.list() : []).filter(function (id) { return byId[id]; }); }
 
   function thumb(u) {
-    return u.levels.map(function (l) { return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793986717" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">'; }).join('');
+    return u.levels.map(function (l) { return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793989126" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">'; }).join('');
   }
   function roomArea(u, re) { return u.roomsList.filter(function (r) { return re.test(r[1]); }).reduce(function (s, r) { return s + r[2]; }, 0); }
 
