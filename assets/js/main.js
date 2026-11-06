@@ -502,7 +502,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793991758" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793991865" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -902,33 +902,39 @@
   });
 
 
-  /* ---------- Cztery wartości: typograficzna sekwencja – litery wyłaniają się spod linii i odpływają w górę ---------- */
+  /* ---------- Cztery wartości: typograficzna sekwencja odtwarzana automatycznie (gdy sekcja jest na ekranie) ---------- */
   (function () {
     var tr = document.getElementById('values-track'); if (!tr) return;
     var ws = $$('.vw', tr), nav = $$('.values__nav span', tr), gh = $$('.values__ghost span', tr), num = document.getElementById('values-n');
     var ease = function (t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }, cl = function (v) { return Math.min(1, Math.max(0, v)); };
-    var L = ws.map(function (w) { return $$('.vl > span', w); }), cur = -1, raf = 0;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { ws.forEach(function (w, k) { w.style.position = 'relative'; w.style.setProperty('--o', 1); L[k].forEach(function (s) { s.style.setProperty('--y', '0%'); }); }); return; }
-    function frame() {
-      raf = 0;
-      var r = tr.getBoundingClientRect(), span = tr.offsetHeight - window.innerHeight, x = cl(-r.top / Math.max(1, span)) * 4 - .15;
+    var L = ws.map(function (w) { return $$('.vl > span', w); }), cur = -1;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { ws.forEach(function (w, k) { w.style.position = k ? 'absolute' : 'relative'; }); ws[0].style.setProperty('--o', 1); L[0].forEach(function (s) { s.style.setProperty('--y', '0%'); }); return; }
+    var PER = 4200, x = -.35, last = 0, on = false, hover = false;
+    function draw() {
       ws.forEach(function (w, k) {
-        var t = x - k, n = L[k].length;
+        var t = ((x - k + .5) % 4 + 4) % 4 - .5, n = L[k].length;
         L[k].forEach(function (s, i) {
           var d = i / Math.max(1, n - 1) * .22;
-          var inn = ease(cl((t + .32 - d) / .38)), out = k === 3 ? 0 : ease(cl((t - .72 - d * .6) / .3));
+          var inn = ease(cl((t + .32 - d) / .38)), out = ease(cl((t - .72 - d * .6) / .3));
           s.style.setProperty('--y', ((1 - inn) * 110 - out * 110).toFixed(2) + '%');
         });
-        var o = cl((t + .05) / .25) * (k === 3 ? 1 : 1 - cl((t - .62) / .18));
+        var o = cl((t + .05) / .25) * (1 - cl((t - .62) / .18));
         w.style.setProperty('--o', o.toFixed(3)); w.classList.toggle('is-on', o > .5);
       });
-      nav.forEach(function (s, k) { s.style.setProperty('--b', cl(x - k + .15).toFixed(3)); });
-      var i = Math.max(0, Math.min(3, Math.floor(x + .2)));
+      var xm = ((x % 4) + 4) % 4, i = Math.floor(xm + .2) % 4;
+      nav.forEach(function (s, k) { s.style.setProperty('--b', k === i ? cl(xm - k + .2 > 3 ? xm - 4 - k + .2 : xm - k + .2).toFixed(3) : (k < i ? 1 : 0)); });
       if (i !== cur) { cur = i; if (num) num.textContent = '0' + (i + 1); nav.forEach(function (s, k) { s.classList.toggle('is-on', k === i); }); gh.forEach(function (g, k) { g.classList.toggle('is-on', k === i); }); }
-      gh.forEach(function (g, k) { g.style.setProperty('--g', cl(x - k + .3).toFixed(3)); });
     }
-    window.addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(frame); }, { passive: true });
-    window.addEventListener('resize', frame); frame();
+    function tick(ts) {
+      if (!on) return;
+      var dt = last ? Math.min(100, ts - last) : 0; last = ts;
+      if (!hover) x += dt / PER;
+      draw(); requestAnimationFrame(tick);
+    }
+    new IntersectionObserver(function (e) { var v = e[0].isIntersecting; if (v && !on) { on = true; last = 0; requestAnimationFrame(tick); } else if (!v) on = false; }, { threshold: .35 }).observe(tr);
+    tr.addEventListener('mouseenter', function () { hover = true; }); tr.addEventListener('mouseleave', function () { hover = false; });
+    nav.forEach(function (s, k) { s.addEventListener('click', function () { x = Math.floor(x / 4) * 4 + k - .3; if (x < 0) x += 4; draw(); }); });
+    draw();
   })();
 
 
