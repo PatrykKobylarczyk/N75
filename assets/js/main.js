@@ -225,9 +225,9 @@
           var p = paths[idx], t = (el - p.s) / p.d, e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
           p.el.style.strokeDashoffset = (p.L * (1 - e)).toFixed(1);
           var pt = p.el.getPointAtLength(p.L * e); tip.setAttribute('cx', pt.x); tip.setAttribute('cy', pt.y);
-          if (opts.follow) opts.follow(pt.x);
         }
-        if (el < total) requestAnimationFrame(step); else finish();
+        if (opts.follow) opts.follow(Math.min(1, el / total));
+        if (el < total) requestAnimationFrame(step); else { finish(); if (opts.follow) opts.follow.end(); }
       })(performance.now());
     }
     fetch(lines.dataset.src).then(function (r) { return r.ok ? r.text() : Promise.reject(); }).then(function (svg) {
@@ -266,14 +266,21 @@
   }
   sketch($('#draw-lines'), $('#draw-stage'), { total: 4500, gap: 14 });
   /* na telefonie pasek jest szerszy od ekranu: kamera podąża za ołówkiem od lewej do N75, żeby było widać każde słowo zdania */
-  var pzSc = $('#pierzeja-scroll'), pzFig = $('#pierzeja-fig'), pzHand = false, pzMax = 0, pzCur = 0;
-  if (pzSc) ['touchstart', 'wheel', 'pointerdown'].forEach(function (ev) { pzSc.addEventListener(ev, function () { pzHand = true; }, { passive: true }); });
-  var pzFollow = function (x) {
-    if (pzHand || pzSc.scrollWidth <= pzSc.clientWidth + 4) return;
-    var w = pzFig.getBoundingClientRect().width, t = x / 2172 * w - pzSc.clientWidth * .55;
-    pzMax = Math.max(pzMax, t); pzCur += (pzMax - pzCur) * .06; pzSc.scrollLeft = pzCur;
+  var pzSc = $('#pierzeja-scroll'), pzHand = false, pzCur = 0, pzX0 = 0, pzY0 = 0;
+  // tylko świadomy poziomy gest palcem zatrzymuje „kamerę” (pionowe przewijanie strony jej nie wyłącza)
+  if (pzSc) {
+    pzSc.addEventListener('touchstart', function (e) { pzX0 = e.touches[0].clientX; pzY0 = e.touches[0].clientY; }, { passive: true });
+    pzSc.addEventListener('touchmove', function (e) { var dx = Math.abs(e.touches[0].clientX - pzX0), dy = Math.abs(e.touches[0].clientY - pzY0); if (dx > 12 && dx > dy * 1.5) pzHand = true; }, { passive: true });
+    pzSc.addEventListener('wheel', function (e) { if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) pzHand = true; }, { passive: true });
+  }
+  var pzMaxS = function () { return Math.max(0, pzSc.scrollWidth - pzSc.clientWidth); };
+  var pzFollow = function (k) {
+    var m = pzMaxS(); if (pzHand || m < 4) return;
+    var t = m * Math.min(1, k * 1.08);   // „kamera” jedzie od lewej i dojeżdża do N75 tuż przed końcem rysunku
+    pzCur += (t - pzCur) * .12; pzSc.scrollLeft = pzCur;
   };
-  pzFollow.reset = function () { pzMax = 0; pzCur = 0; if (!pzHand && pzSc) pzSc.scrollLeft = 0; };
+  pzFollow.reset = function () { pzHand = false; pzCur = 0; if (pzSc) pzSc.scrollLeft = 0; };
+  pzFollow.end = function () { if (!pzHand && pzMaxS() >= 4) pzSc.scrollTo({ left: pzMaxS(), behavior: 'smooth' }); };
   sketch($('#pierzeja-lines'), $('#pierzeja-scroll'), { total: 5500, gap: 0, tip: 4, min: 1, host: $('#pierzeja-fig'), follow: pzFollow,
     words: $$('#pierzeja-fig [data-x0]').map(function (el) { return { el: el, x0: +el.dataset.x0, x1: +el.dataset.x1 }; }) });
 
@@ -480,7 +487,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793979538" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793983716" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
