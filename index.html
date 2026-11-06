@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..600;1,300..500&family=Nunito+Sans:ital,opsz,wght@0,6..12,300..700;1,6..12,300..500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/img/okolica-lotnicze.webp" imagesrcset="assets/img/okolica-lotnicze-1600.webp 1600w, assets/img/okolica-lotnicze.webp 3200w" imagesizes="100vw">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="assets/css/style.css?v=1793990989">
+  <link rel="stylesheet" href="assets/css/style.css?v=1793991387">
   <script>document.documentElement.classList.add('js');
   // Futura / Avenir Next tylko na Apple: gdy ich brak, dostrajamy darmowe zamienniki (Jost, Nunito Sans)
   (function(){try{var c=document.createElement('canvas').getContext('2d'),t='MWNmwqr075 Łódź';function w(f){c.font='72px '+f;return c.measureText(t).width}
@@ -130,28 +130,32 @@
 <section class="values" id="wartosci" aria-label="N75 w czterech słowach">
   <div class="values__track" id="values-track">
     <div class="values__pin">
+      <div class="values__ghost" aria-hidden="true"><span>I</span><span>II</span><span>III</span><span>IV</span></div>
       <div class="wrap values__in">
         <div class="values__head caps"><span>N75 w&nbsp;czterech słowach</span><span class="values__count"><b id="values-n">01</b> / 04</span></div>
-        <ol class="values__list">
-          <li class="val" data-i="0"><a href="#architektura"><span class="val__n caps">I</span><span class="val__w" data-w="Klasyka"><span class="val__ink" aria-hidden="true">Klasyka</span>Klasyka</span></a></li>
-          <li class="val" data-i="1"><a href="#lokalizacja"><span class="val__n caps">II</span><span class="val__w" data-w="Adres"><span class="val__ink" aria-hidden="true">Adres</span>Adres</span></a></li>
-          <li class="val" data-i="2"><a href="#udogodnienia"><span class="val__n caps">III</span><span class="val__w" data-w="Luksus"><span class="val__ink" aria-hidden="true">Luksus</span>Luksus</span></a></li>
-          <li class="val" data-i="3"><a href="#wstep"><span class="val__n caps">IV</span><span class="val__w" data-w="Modernizm"><span class="val__ink" aria-hidden="true">Modernizm</span>Modernizm</span></a></li>
-        </ol>
-        <div class="values__media">
-          <figure class="val-img" data-i="0"><img src="assets/img/naroznik.webp" alt="Narożnik N75" loading="lazy"></figure>
-          <figure class="val-img" data-i="1"><img src="assets/img/park.webp" alt="Park Staszica" loading="lazy"></figure>
-          <figure class="val-img" data-i="2"><img src="assets/img/basen-1.webp" alt="Basen w N75" loading="lazy"></figure>
-          <figure class="val-img" data-i="3"><img src="assets/img/elewacja-wschod.webp" alt="Elewacja wschodnia N75" loading="lazy"></figure>
-          <div class="values__frame" aria-hidden="true"></div>
-          <div class="values__txts">
-            <div class="val-txt" data-i="0"><p>Proporcje, rytm okien i&nbsp;szlachetne materiały – kanon, który się nie starzeje.</p><a class="caps" href="#architektura">Architektura <span class="arrow" aria-hidden="true"></span></a></div>
-            <div class="val-txt" data-i="1"><p>Park Staszica 20&nbsp;m od drzwi, Piotrkowska i&nbsp;Fabryczna w&nbsp;zasięgu spaceru.</p><a class="caps" href="#lokalizacja">Lokalizacja <span class="arrow" aria-hidden="true"></span></a></div>
-            <div class="val-txt" data-i="2"><p>Basen, sauna i&nbsp;siłownia w&nbsp;budynku, foyer jak w&nbsp;dobrym hotelu.</p><a class="caps" href="#udogodnienia">Udogodnienia <span class="arrow" aria-hidden="true"></span></a></div>
-            <div class="val-txt" data-i="3"><p>Kontynuacja łódzkiego modernizmu: tarasy, przeszklenia i&nbsp;światło.</p><a class="caps" href="#wstep">Od szkicu do budynku <span class="arrow" aria-hidden="true"></span></a></div>
-          </div>
+        <div class="values__stage">
+          <a class="vw" data-i="0" href="#architektura" aria-label="Klasyka – Architektura">
+            <span class="vw__n caps">I</span>
+            <span class="vw__word" aria-hidden="true"><span class="vl"><span>K</span></span><span class="vl"><span>L</span></span><span class="vl"><span>A</span></span><span class="vl"><span>S</span></span><span class="vl"><span>Y</span></span><span class="vl"><span>K</span></span><span class="vl"><span>A</span></span></span>
+            <span class="vw__desc"><span>Proporcje, rytm okien i&nbsp;szlachetne materiały – kanon, który się nie starzeje.</span><span class="vw__to caps">Architektura <span class="arrow" aria-hidden="true"></span></span></span>
+          </a>
+          <a class="vw" data-i="1" href="#lokalizacja" aria-label="Adres – Lokalizacja">
+            <span class="vw__n caps">II</span>
+            <span class="vw__word" aria-hidden="true"><span class="vl"><span>A</span></span><span class="vl"><span>D</span></span><span class="vl"><span>R</span></span><span class="vl"><span>E</span></span><span class="vl"><span>S</span></span></span>
+            <span class="vw__desc"><span>Park Staszica 20&nbsp;m od drzwi, Piotrkowska i&nbsp;Fabryczna w&nbsp;zasięgu spaceru.</span><span class="vw__to caps">Lokalizacja <span class="arrow" aria-hidden="true"></span></span></span>
+          </a>
+          <a class="vw" data-i="2" href="#udogodnienia" aria-label="Luksus – Udogodnienia">
+            <span class="vw__n caps">III</span>
+            <span class="vw__word" aria-hidden="true"><span class="vl"><span>L</span></span><span class="vl"><span>U</span></span><span class="vl"><span>K</span></span><span class="vl"><span>S</span></span><span class="vl"><span>U</span></span><span class="vl"><span>S</span></span></span>
+            <span class="vw__desc"><span>Basen, sauna i&nbsp;siłownia w&nbsp;budynku, foyer jak w&nbsp;dobrym hotelu.</span><span class="vw__to caps">Udogodnienia <span class="arrow" aria-hidden="true"></span></span></span>
+          </a>
+          <a class="vw" data-i="3" href="#wstep" aria-label="Modernizm – Od szkicu do budynku">
+            <span class="vw__n caps">IV</span>
+            <span class="vw__word" aria-hidden="true"><span class="vl"><span>M</span></span><span class="vl"><span>O</span></span><span class="vl"><span>D</span></span><span class="vl"><span>E</span></span><span class="vl"><span>R</span></span><span class="vl"><span>N</span></span><span class="vl"><span>I</span></span><span class="vl"><span>Z</span></span><span class="vl"><span>M</span></span></span>
+            <span class="vw__desc"><span>Kontynuacja łódzkiego modernizmu: tarasy, przeszklenia i&nbsp;światło.</span><span class="vw__to caps">Od szkicu do budynku <span class="arrow" aria-hidden="true"></span></span></span>
+          </a>
         </div>
-        <div class="values__bar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <nav class="values__nav caps" aria-hidden="true"><span>Klasyka</span><span>Adres</span><span>Luksus</span><span>Modernizm</span></nav>
       </div>
     </div>
   </div>
@@ -667,12 +671,12 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-<script src="assets/js/intro.js?v=1793990989"></script>
-<script src="assets/js/extras.js?v=1793990989"></script>
-<script src="assets/js/units.js?v=1793990989"></script>
-<script src="assets/js/dziennik.js?v=1793990989"></script>
-<script src="assets/js/plan.js?v=1793990989"></script>
-<script src="assets/js/dollhouse.js?v=1793990989" defer></script>
-<script src="assets/js/main.js?v=1793990989"></script>
+<script src="assets/js/intro.js?v=1793991387"></script>
+<script src="assets/js/extras.js?v=1793991387"></script>
+<script src="assets/js/units.js?v=1793991387"></script>
+<script src="assets/js/dziennik.js?v=1793991387"></script>
+<script src="assets/js/plan.js?v=1793991387"></script>
+<script src="assets/js/dollhouse.js?v=1793991387" defer></script>
+<script src="assets/js/main.js?v=1793991387"></script>
 </body>
 </html>
