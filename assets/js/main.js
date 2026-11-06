@@ -67,12 +67,26 @@
   }
   if (mapEl && window.L) {
     var pos = [+mapEl.dataset.lat, +mapEl.dataset.lng];
-    var map = L.map(mapEl, { center: pos, zoom: +mapEl.dataset.zoom || 16, scrollWheelZoom: false, zoomControl: true, attributionControl: true });
+    var map = L.map(mapEl, { center: pos, zoom: +mapEl.dataset.zoom || 16, zoomSnap: .1, zoomDelta: .5, minZoom: 14, maxZoom: 18.5, scrollWheelZoom: false, zoomControl: true, attributionControl: true });
     mapEl._n75map = map;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19, subdomains: 'abc',
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+    // ilustrowana mapa okolicy (akwarela z danych OSM) na wyciszonym podkładzie
+    var ART = [[51.77018, 19.47277], [51.77423, 19.48121]];
+    mapEl.classList.add('map--art');
+    L.imageOverlay('assets/img/mapa-okolica' + (window.innerWidth < 700 ? '-1200' : '') + '.webp', ART, { className: 'map__art', interactive: false }).addTo(map);
+    fetch('assets/img/mapa-okolica-opisy.svg').then(function (r) { return r.text(); }).then(function (t) {
+      var box = document.createElement('div'); box.innerHTML = t; var sv = box.querySelector('svg');
+      L.svgOverlay(sv, ART, { className: 'map__labels', interactive: false }).addTo(map);
+    }).catch(function () {});
+    // kadr „cover”: ilustracja wypełnia całe okno mapy
+    var artView = function (fly) { var z = Math.min(18, map.getBoundsZoom(ART, true) + .05), c = L.latLngBounds(ART).getCenter(); if (fly) map.flyTo(c, z, { duration: .6 }); else map.setView(c, z, { animate: false }); };
+    artView();
+    var compass = document.createElement('div'); compass.className = 'map__compass'; compass.setAttribute('aria-hidden', 'true');
+    compass.innerHTML = '<svg viewBox="0 0 40 52"><text x="20" y="11" text-anchor="middle">N</text><circle cx="20" cy="33" r="13"/><path d="M20 15V51M7 33h26"/></svg>';
+    mapEl.appendChild(compass);
     L.marker(pos, {
       icon: L.divIcon({ className: 'map__pin', html: '<span>N75</span><i></i>', iconSize: [72, 60], iconAnchor: [36, 60] }),
       keyboard: false, title: 'N75 · Narutowicza 75A'
@@ -81,13 +95,14 @@
     var Home = L.Control.extend({ options: { position: 'topright' }, onAdd: function () {
       var b = L.DomUtil.create('button', 'map__home caps'); b.type = 'button'; b.textContent = 'N75';
       b.setAttribute('aria-label', 'Wróć do budynku N75');
-      L.DomEvent.on(b, 'click', function (e) { L.DomEvent.stop(e); map.flyTo(pos, +mapEl.dataset.zoom || 16, { duration: .6 }); });
+      L.DomEvent.on(b, 'click', function (e) { L.DomEvent.stop(e); artView(true); });
       return b;
     } });
     map.addControl(new Home());
     // mapa w animowanej sekcji: przelicz rozmiar po odsłonięciu
-    setTimeout(function () { map.invalidateSize(); }, 1200);
+    setTimeout(function () { map.invalidateSize(); artView(); }, 1200);
     window.addEventListener('resize', function () { map.invalidateSize(); });
+    mapEl._n75art = artView;
   }
 
   /* ---------- Lokalizacja: kategorie „Odkryj” ↔ punkty na mapie z odległością ---------- */
@@ -112,7 +127,7 @@
       if (!window.L || !mapEl._n75map) return;
       var m = mapEl._n75map;
       if (layer) { m.removeLayer(layer); layer = null; }
-      if (!cat) { m.flyTo(home, +mapEl.dataset.zoom || 16, { duration: .6 }); return; }
+      if (!cat) { if (mapEl._n75art) mapEl._n75art(true); return; }
       var items = Object.keys(pois).filter(function (k) { return k.indexOf(cat + '-') === 0; }).map(function (k) { return pois[k]; });
       layer = L.layerGroup();
       if (!items.length) { L.circle(home, { radius: 260, color: '#9c7149', weight: 1, dashArray: '4 6', fillColor: '#9c7149', fillOpacity: .06 }).addTo(layer); layer.addTo(m); m.flyTo(home, 16, { duration: .6 }); return; }
@@ -487,7 +502,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793983764" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793985754" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
