@@ -350,8 +350,6 @@
         // Raksa (NOBONOBO, proj. T. Rygalik): tapicerowana rama na smukłych metalowych nóżkach 13 cm, grube siedziska, duże luźne poduchy oparcia
         var LEG = 0.13, sbx = (sb[0] + sb[2]) / 2, sby = (sb[1] + sb[3]) / 2;
         [[sb[0] + 8, sb[1] + 8], [sb[2] - 8, sb[1] + 8], [sb[0] + 8, sb[3] - 8], [sb[2] - 8, sb[3] - 8], [sbx, sb[1] + 8], [sbx, sb[3] - 8]].forEach(function (l) { var c = L(l[0], l[1]); M.cyl(c[0], c[1], 0.018, Y(0), Y(LEG), C.legs, 8); });
-        var lp = L(sb[0] - 24, sby - (sb[3] - sb[1]) * 0.3);   // lampa podłogowa
-        M.cyl(lp[0], lp[1], 0.14, Y(0), Y(0.03), C.bronze, 16); M.cyl(lp[0], lp[1], 0.012, Y(0.03), Y(1.45), C.bronze, 6); M.cyl(lp[0], lp[1], 0.2, Y(1.45), Y(1.72), C.curtain, 20);
         var cushions = function (b, along, y0, y1, col, gap) {          // podział na poduchy z widoczną szczeliną
           var len = along ? b[2] - b[0] : b[3] - b[1], n = Math.max(1, Math.round(len / 92)), st = len / n;
           for (var k = 0; k < n; k++) {
@@ -705,7 +703,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1793992467').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1793992520').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
