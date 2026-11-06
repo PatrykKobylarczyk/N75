@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..600;1,300..500&family=Nunito+Sans:ital,opsz,wght@0,6..12,300..700;1,6..12,300..500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/img/okolica-lotnicze.webp" imagesrcset="assets/img/okolica-lotnicze-1600.webp 1600w, assets/img/okolica-lotnicze.webp 3200w" imagesizes="100vw">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="assets/css/style.css?v=1793990420">
+  <link rel="stylesheet" href="assets/css/style.css?v=1793990462">
   <script>document.documentElement.classList.add('js');
   // Futura / Avenir Next tylko na Apple: gdy ich brak, dostrajamy darmowe zamienniki (Jost, Nunito Sans)
   (function(){try{var c=document.createElement('canvas').getContext('2d'),t='MWNmwqr075 Łódź';function w(f){c.font='72px '+f;return c.measureText(t).width}
@@ -112,19 +112,17 @@
 <section class="section section--alt" id="inwestycja">
   <div class="wrap">
     <div class="sec-head reveal"><span class="num">01</span><span class="line"></span></div>
-    <div class="duo">
-      <div class="duo__col reveal">
+    <div class="split">
+      <div class="reveal">
         <h2 class="display h2">Misja</h2>
-        <p class="lead">Naszą misją stało się stworzenie kontynuacji dla szlachetnej tradycji architektonicznej, podanej w&nbsp;nowoczesnej odsłonie, nastawionej na zapewnienie optymalnego komfortu miłośnikom miejskiego życia.</p>
-        <p class="muted">Nieprzypadkowo międzywojenne apartamentowce nazywano luxami – łączył się w&nbsp;tym słoneczny blask z&nbsp;nutą luksusu.</p>
+        <p class="lead" style="margin:36px 0 28px">Naszą misją stało się stworzenie kontynuacji dla szlachetnej tradycji architektonicznej, podanej w&nbsp;nowoczesnej odsłonie, nastawionej na zapewnienie optymalnego komfortu miłośnikom miejskiego życia.</p>
+        <p class="muted" style="margin:0">Nieprzypadkowo międzywojenne apartamentowce nazywano luxami – łączył się w&nbsp;tym słoneczny blask z&nbsp;nutą luksusu.</p>
       </div>
-      <div class="duo__col reveal">
-        <h2 class="display h2 modern__title">Modernizm to <span class="modern__rot" id="modern-rot" aria-hidden="true"><span class="modern__word">luksus</span></span><span class="sr-only">luksus, wyrafinowanie, etos i&nbsp;filozofia</span></h2>
-        <p class="lead">Modernizm – styl, w&nbsp;którym po prostu najlepiej się mieszka.</p>
-        <p class="muted">Hołd dla idei śmiałego wytyczania kierunków i&nbsp;troski o&nbsp;zdrowie i&nbsp;równowagę w&nbsp;życiu człowieka.</p>
-      </div>
+              <figure class="split__media" style="margin:0">
+        <img class="reveal-img" src="assets/img/elewacja-zachod.webp" alt="Widok na N75 wzdłuż ulicy z przystankiem tramwajowym" loading="lazy" data-lightbox="Elewacja od strony zachodniej">
+        <figcaption class="caps">Widok od strony zachodniej</figcaption>
+      </figure>
     </div>
-
   </div>
 </section>
 
@@ -190,10 +188,11 @@
   <div class="draw__track" id="draw-track">
     <div class="draw__pin">
       <div class="wrap draw__in">
-        <figure class="draw__txt draw__photo">
-        <img class="reveal-img" src="assets/img/elewacja-zachod.webp" alt="Widok na N75 wzdłuż ulicy z przystankiem tramwajowym" loading="lazy" data-lightbox="Elewacja od strony zachodniej">
-        <figcaption class="caps">Widok od strony zachodniej</figcaption>
-      </figure>
+        <div class="draw__txt">
+          <h2 class="display modern__title">Modernizm to <span class="modern__rot" id="modern-rot" aria-hidden="true"><span class="modern__word">luksus</span></span><span class="sr-only">luksus, wyrafinowanie, etos i&nbsp;filozofia</span></h2>
+          <p class="lead">Modernizm – styl, w&nbsp;którym po prostu najlepiej się mieszka.</p>
+          <p class="muted">Hołd dla idei śmiałego wytyczania kierunków i&nbsp;troski o&nbsp;zdrowie i&nbsp;równowagę w&nbsp;życiu człowieka.</p>
+        </div>
         <figure class="draw__stage" id="draw-stage">
           <div class="draw__lines" id="draw-lines" data-src="assets/img/szkic-modernizm.svg" role="img" aria-label="Szkic ołówkiem: modernistyczna bryła N75 z poziomymi pasami stropów i tarasami"></div>
         </figure>
@@ -668,12 +667,12 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-<script src="assets/js/intro.js?v=1793990420"></script>
-<script src="assets/js/extras.js?v=1793990420"></script>
-<script src="assets/js/units.js?v=1793990420"></script>
-<script src="assets/js/dziennik.js?v=1793990420"></script>
-<script src="assets/js/plan.js?v=1793990420"></script>
-<script src="assets/js/dollhouse.js?v=1793990420" defer></script>
-<script src="assets/js/main.js?v=1793990420"></script>
+<script src="assets/js/intro.js?v=1793990462"></script>
+<script src="assets/js/extras.js?v=1793990462"></script>
+<script src="assets/js/units.js?v=1793990462"></script>
+<script src="assets/js/dziennik.js?v=1793990462"></script>
+<script src="assets/js/plan.js?v=1793990462"></script>
+<script src="assets/js/dollhouse.js?v=1793990462" defer></script>
+<script src="assets/js/main.js?v=1793990462"></script>
 </body>
 </html>
