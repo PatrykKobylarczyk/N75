@@ -67,22 +67,23 @@
   }
   if (mapEl && window.L) {
     var pos = [+mapEl.dataset.lat, +mapEl.dataset.lng];
-    var map = L.map(mapEl, { center: pos, zoom: +mapEl.dataset.zoom || 16, zoomSnap: .1, zoomDelta: .5, minZoom: 14, maxZoom: 18.5, scrollWheelZoom: false, zoomControl: true, attributionControl: true });
+    var map = L.map(mapEl, { center: pos, zoom: +mapEl.dataset.zoom || 16, zoomSnap: .1, zoomDelta: .5, minZoom: 15, maxZoom: 18.5, scrollWheelZoom: false, zoomControl: true, attributionControl: true });
     mapEl._n75map = map;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19, subdomains: 'abc',
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     // ilustrowana mapa okolicy (akwarela z danych OSM) na wyciszonym podkładzie
-    var ART = [[51.77018, 19.47277], [51.77423, 19.48121]];
+    var ART = [[51.7632, 19.4625], [51.7812, 19.4915]];          // akwarela: ok. 1 km wokół N75
+    var VIEW = [[51.77018, 19.47277], [51.77423, 19.48121]];     // kadr startowy: najbliższe sąsiedztwo
     mapEl.classList.add('map--art');
-    L.imageOverlay('assets/img/mapa-okolica' + (window.innerWidth < 700 ? '-1200' : '') + '.webp?v=2', ART, { className: 'map__art', interactive: false }).addTo(map);
-    fetch('assets/img/mapa-okolica-opisy.svg').then(function (r) { return r.text(); }).then(function (t) {
+    L.imageOverlay('assets/img/mapa-okolica' + (window.innerWidth < 700 ? '-1200' : '') + '.webp?v=3', ART, { className: 'map__art', interactive: false }).addTo(map);
+    fetch('assets/img/mapa-okolica-opisy.svg?v=3').then(function (r) { return r.text(); }).then(function (t) {
       var box = document.createElement('div'); box.innerHTML = t; var sv = box.querySelector('svg');
       L.svgOverlay(sv, ART, { className: 'map__labels', interactive: false }).addTo(map);
     }).catch(function () {});
     // kadr „cover”: ilustracja wypełnia całe okno mapy
-    var artView = function (fly) { var z = Math.min(18, map.getBoundsZoom(ART, true) + .05), c = L.latLngBounds(ART).getCenter(); if (fly) map.flyTo(c, z, { duration: .6 }); else map.setView(c, z, { animate: false }); };
+    var artView = function (fly) { var z = Math.min(18, map.getBoundsZoom(VIEW, true) + .05), c = L.latLngBounds(VIEW).getCenter(); if (fly) map.flyTo(c, z, { duration: .6 }); else map.setView(c, z, { animate: false }); };
     artView();
     var compass = document.createElement('div'); compass.className = 'map__compass'; compass.setAttribute('aria-hidden', 'true');
     compass.innerHTML = '<svg viewBox="0 0 40 52"><text x="20" y="11" text-anchor="middle">N</text><circle cx="20" cy="33" r="13"/><path d="M20 15V51M7 33h26"/></svg>';
@@ -373,7 +374,7 @@
   var hMode = false, hMax = 0;
   var wantH = window.matchMedia('(min-width: 901px) and (pointer: fine)');
   function hLayout() {
-    hMode = wantH.matches && !!hs;
+    hMode = false; // strona przewija się normalnie – galerię przesuwa się strzałkami, myszką lub palcem
     document.body.classList.toggle('h-rail', hMode);
     hs.style.height = '';
     if (!hMode) return;
@@ -503,7 +504,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793994211" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794053001" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -909,18 +910,20 @@
     var ws = $$('.vw', tr), nav = $$('.values__nav span', tr), gh = $$('.values__ghost span', tr), num = document.getElementById('values-n');
     var ease = function (t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }, cl = function (v) { return Math.min(1, Math.max(0, v)); };
     var L = ws.map(function (w) { return $$('.vl > span', w); }), cur = -1;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { ws.forEach(function (w, k) { w.style.position = k ? 'absolute' : 'relative'; }); ws[0].style.setProperty('--o', 1); L[0].forEach(function (s) { s.style.setProperty('--y', '0%'); }); return; }
-    var PER = 4200, x = -.35, last = 0, on = false, hover = false;
+    // przy „ograniczonym ruchu” (często domyślnie w Windows) słowa tylko przenikają się, bez wjazdu liter
+    var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var PER = 4200, x = -.35, last = 0, on = false;
     function draw() {
       ws.forEach(function (w, k) {
         var t = ((x - k + .5) % 4 + 4) % 4 - .5, n = L[k].length;
         L[k].forEach(function (s, i) {
           var d = i / Math.max(1, n - 1) * .22;
           var inn = ease(cl((t + .32 - d) / .38)), out = ease(cl((t - .72 - d * .6) / .3));
-          s.style.setProperty('--y', ((1 - inn) * 110 - out * 110).toFixed(2) + '%');
+          s.style.setProperty('--y', RM ? '0%' : ((1 - inn) * 110 - out * 110).toFixed(2) + '%');
         });
         var o = cl((t + .05) / .25) * (1 - cl((t - .62) / .18));
         w.style.setProperty('--o', o.toFixed(3)); w.classList.toggle('is-on', o > .5);
+        if (RM) w.firstElementChild.nextElementSibling.style.opacity = o.toFixed(3);
       });
       var xm = ((x % 4) + 4) % 4, i = Math.floor(xm + .2) % 4;
       nav.forEach(function (s, k) { s.style.setProperty('--b', k === i ? cl(xm - k + .2 > 3 ? xm - 4 - k + .2 : xm - k + .2).toFixed(3) : (k < i ? 1 : 0)); });
@@ -929,11 +932,10 @@
     function tick(ts) {
       if (!on) return;
       var dt = last ? Math.min(100, ts - last) : 0; last = ts;
-      if (!hover) x += dt / PER;
+      x += dt / PER;
       draw(); requestAnimationFrame(tick);
     }
     new IntersectionObserver(function (e) { var v = e[0].isIntersecting; if (v && !on) { on = true; last = 0; requestAnimationFrame(tick); } else if (!v) on = false; }, { threshold: .35 }).observe(tr);
-    tr.addEventListener('mouseenter', function () { hover = true; }); tr.addEventListener('mouseleave', function () { hover = false; });
     nav.forEach(function (s, k) { s.addEventListener('click', function () { x = Math.floor(x / 4) * 4 + k - .3; if (x < 0) x += 4; draw(); }); });
     draw();
   })();
