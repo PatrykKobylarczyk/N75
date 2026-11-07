@@ -320,6 +320,7 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTitle);
     window.addEventListener('resize', fitTitle);
     var wEl = $('.modern__word', rot), wi = 0;
+    wEl.textContent = words[0];
     setInterval(function () {
       wEl.classList.add('is-out');
       setTimeout(function () {
@@ -502,7 +503,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793992629" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1793994211" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -897,7 +898,7 @@
     if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = 'Podaj imię i poprawny adres e-mail.'; return; }
     if (!$('#c-consent').checked) { msg.textContent = 'Zaznacz zgodę na przetwarzanie danych.'; return; }
     // TODO: wysyłka do CRM / API sprzedaży
-    msg.textContent = 'Dziękujemy. Doradca skontaktuje się z Tobą w ciągu jednego dnia roboczego.';
+    msg.textContent = 'Dziękujemy! Twój osobisty doradca zadzwoni w ciągu jednego dnia roboczego, by ustalić termin prywatnej prezentacji.';
     form.reset();
   });
 
