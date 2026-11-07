@@ -75,16 +75,19 @@
     }).addTo(map);
     // ilustrowana mapa okolicy (akwarela z danych OSM) na wyciszonym podkładzie
     var ART = [[51.7632, 19.4625], [51.7812, 19.4915]];          // akwarela: ok. 1 km wokół N75
-    var VIEW = [[51.77018, 19.47277], [51.77423, 19.48121]];     // kadr startowy: najbliższe sąsiedztwo
     mapEl.classList.add('map--art');
     L.imageOverlay('assets/img/mapa-okolica' + (window.innerWidth < 700 ? '-1200' : '') + '.webp?v=3', ART, { className: 'map__art', interactive: false }).addTo(map);
     fetch('assets/img/mapa-okolica-opisy.svg?v=3').then(function (r) { return r.text(); }).then(function (t) {
       var box = document.createElement('div'); box.innerHTML = t; var sv = box.querySelector('svg');
       L.svgOverlay(sv, ART, { className: 'map__labels', interactive: false }).addTo(map);
     }).catch(function () {});
-    // kadr „cover”: ilustracja wypełnia całe okno mapy
-    var artView = function (fly) { var z = Math.min(18, map.getBoundsZoom(VIEW, true) + .05), c = L.latLngBounds(VIEW).getCenter(); if (fly) map.flyTo(c, z, { duration: .6 }); else map.setView(c, z, { animate: false }); };
+    // kadr „cover”: ilustracja wypełnia całe okno mapy; mapy nie da się oddalić ani przesunąć poza akwarelę
+    var artBounds = L.latLngBounds(ART);
+    map.setMaxBounds(artBounds); map.options.maxBoundsViscosity = 1;
+    var coverZoom = function () { return Math.min(18, map.getBoundsZoom(artBounds, true) + .05); };
+    var artView = function (fly) { map.setMinZoom(coverZoom()); var z = coverZoom(), c = artBounds.getCenter(); if (fly) map.flyTo(c, z, { duration: .6 }); else map.setView(c, z, { animate: false }); };
     artView();
+    mapEl._n75cover = coverZoom; mapEl._n75bounds = artBounds;
     var compass = document.createElement('div'); compass.className = 'map__compass'; compass.setAttribute('aria-hidden', 'true');
     compass.innerHTML = '<svg viewBox="0 0 40 52"><text x="20" y="11" text-anchor="middle">N</text><circle cx="20" cy="33" r="13"/><path d="M20 15V51M7 33h26"/></svg>';
     mapEl.appendChild(compass);
@@ -102,7 +105,7 @@
     map.addControl(new Home());
     // mapa w animowanej sekcji: przelicz rozmiar po odsłonięciu
     setTimeout(function () { map.invalidateSize(); artView(); }, 1200);
-    window.addEventListener('resize', function () { map.invalidateSize(); });
+    window.addEventListener('resize', function () { map.invalidateSize(); map.setMinZoom(coverZoom()); });
     mapEl._n75art = artView;
   }
 
@@ -124,6 +127,12 @@
       pois[li.dataset.poi] = { li: li, ll: ll, name: $('.poi__name', li).textContent, m: m };
     });
     var layer = null;
+    // punkt poza ilustracją: pokazany przy jej krawędzi, w kierunku prawdziwego położenia (odległość bez zmian)
+    var onArt = function (ll) {
+      var b = mapEl._n75bounds; if (!b) return ll;
+      var padLa = (b.getNorth() - b.getSouth()) * .03, padLo = (b.getEast() - b.getWest()) * .03;
+      return [Math.min(b.getNorth() - padLa, Math.max(b.getSouth() + padLa, ll[0])), Math.min(b.getEast() - padLo, Math.max(b.getWest() + padLo, ll[1]))];
+    };
     function show(cat) {
       if (!window.L || !mapEl._n75map) return;
       var m = mapEl._n75map;
@@ -131,15 +140,18 @@
       if (!cat) { if (mapEl._n75art) mapEl._n75art(true); return; }
       var items = Object.keys(pois).filter(function (k) { return k.indexOf(cat + '-') === 0; }).map(function (k) { return pois[k]; });
       layer = L.layerGroup();
-      if (!items.length) { L.circle(home, { radius: 260, color: '#9c7149', weight: 1, dashArray: '4 6', fillColor: '#9c7149', fillOpacity: .06 }).addTo(layer); layer.addTo(m); m.flyTo(home, 16, { duration: .6 }); return; }
+      if (!items.length) { L.circle(home, { radius: 260, color: '#9c7149', weight: 1, dashArray: '4 6', fillColor: '#9c7149', fillOpacity: .06 }).addTo(layer); layer.addTo(m); m.flyTo(home, Math.max(16, mapEl._n75cover ? mapEl._n75cover() : 16), { duration: .6 }); return; }
       items.forEach(function (p) {
-        L.polyline([home, p.ll], { color: '#9c7149', weight: 1.5, dashArray: '4 6', opacity: .9 }).addTo(layer);
-        var mk = L.marker(p.ll, { icon: L.divIcon({ className: 'poi-pin', html: '<i></i>', iconSize: [18, 18], iconAnchor: [9, 9] }), title: p.name }).addTo(layer);
+        var at = onArt(p.ll);
+        L.polyline([home, at], { color: '#9c7149', weight: 1.5, dashArray: '4 6', opacity: .9 }).addTo(layer);
+        var mk = L.marker(at, { icon: L.divIcon({ className: 'poi-pin', html: '<i></i>', iconSize: [18, 18], iconAnchor: [9, 9] }), title: p.name }).addTo(layer);
         mk.bindTooltip('<b>' + p.name + '</b><br>' + distTxt(p.m), { direction: 'top', offset: [0, -8], className: 'poi-tip', permanent: items.length <= 2 });
         p.marker = mk;
       });
       layer.addTo(m);
-      m.flyToBounds(L.latLngBounds([home].concat(items.map(function (p) { return p.ll; }))).pad(.25), { duration: .7, maxZoom: 17 });
+      var fit = L.latLngBounds([home].concat(items.map(function (p) { return onArt(p.ll); }))).pad(.2);
+      var z = Math.max(mapEl._n75cover ? mapEl._n75cover() : 15, Math.min(17, m.getBoundsZoom(fit)));
+      m.flyTo(fit.getCenter(), z, { duration: .7 });
     }
     $$('.place-cat', acc).forEach(function (d) {
       d.addEventListener('toggle', function () {
@@ -151,7 +163,7 @@
     acc.addEventListener('mouseover', function (e) { var li = e.target.closest && e.target.closest('[data-poi]'); if (li && pois[li.dataset.poi].marker) pois[li.dataset.poi].marker.openTooltip(); });
     acc.addEventListener('click', function (e) {
       var li = e.target.closest && e.target.closest('[data-poi]'); if (!li || !mapEl._n75map) return;
-      var p = pois[li.dataset.poi]; if (p.marker) { mapEl._n75map.flyTo(p.ll, 17, { duration: .6 }); p.marker.openTooltip(); }
+      var p = pois[li.dataset.poi]; if (p.marker) { mapEl._n75map.flyTo(p.marker.getLatLng(), 17, { duration: .6 }); p.marker.openTooltip(); }
     });
   }
 

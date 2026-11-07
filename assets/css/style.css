@@ -1630,9 +1630,6 @@ body.dh-open { overflow: hidden; }
 #udogodnienia .arch-slider__dots { display: none; }
 #udogodnienia .arch-slider__bar { grid-template-columns: 1fr auto; border-bottom: 0; }
 
-/* Hero: podtytuł pod claimem */
-.hero__sub { max-width: 470px; margin: -18px 0 36px; font-size: clamp(15px, 1.15vw, 17px); line-height: 1.6; color: rgba(247, 243, 236, .88); text-shadow: 0 1px 14px rgba(20, 16, 12, .45); }
-@media (max-width: 900px) { .hero__sub { margin: -14px 0 26px; font-size: 14.5px; max-width: 92%; } }
 
 /* Misja: trzy dowody */
 .mission-proof { list-style: none; margin: 0 0 28px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -1668,4 +1665,10 @@ body.dh-open { overflow: hidden; }
   .cmp-grid--many .cmp-plan { padding: 2px; }
   .cmp-grid--many .cmp-cell--cta .btn { padding: 7px 4px; font-size: 8px; letter-spacing: .04em; width: 100%; justify-content: center; }
   .cmp-grid--many .status { font-size: 8px; padding: 3px 4px; }
+}
+
+/* Mapa: stała wysokość (nie rośnie razem z listą miejsc), zostaje na ekranie przy przeglądaniu kategorii */
+@media (min-width: 901px) {
+  .location { align-items: start; }
+  .location > .map { height: clamp(520px, 41vw, 600px); position: sticky; top: 96px; }
 }
