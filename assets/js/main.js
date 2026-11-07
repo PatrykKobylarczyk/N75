@@ -67,22 +67,23 @@
   }
   if (mapEl && window.L) {
     var pos = [+mapEl.dataset.lat, +mapEl.dataset.lng];
-    var map = L.map(mapEl, { center: pos, zoom: +mapEl.dataset.zoom || 16, zoomSnap: .1, zoomDelta: .5, minZoom: 14, maxZoom: 18.5, scrollWheelZoom: false, zoomControl: true, attributionControl: true });
+    var map = L.map(mapEl, { center: pos, zoom: +mapEl.dataset.zoom || 16, zoomSnap: .1, zoomDelta: .5, minZoom: 15, maxZoom: 18.5, scrollWheelZoom: false, zoomControl: true, attributionControl: true });
     mapEl._n75map = map;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19, subdomains: 'abc',
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     // ilustrowana mapa okolicy (akwarela z danych OSM) na wyciszonym podkładzie
-    var ART = [[51.77018, 19.47277], [51.77423, 19.48121]];
+    var ART = [[51.7632, 19.4625], [51.7812, 19.4915]];          // akwarela: ok. 1 km wokół N75
+    var VIEW = [[51.77018, 19.47277], [51.77423, 19.48121]];     // kadr startowy: najbliższe sąsiedztwo
     mapEl.classList.add('map--art');
-    L.imageOverlay('assets/img/mapa-okolica' + (window.innerWidth < 700 ? '-1200' : '') + '.webp?v=2', ART, { className: 'map__art', interactive: false }).addTo(map);
-    fetch('assets/img/mapa-okolica-opisy.svg').then(function (r) { return r.text(); }).then(function (t) {
+    L.imageOverlay('assets/img/mapa-okolica' + (window.innerWidth < 700 ? '-1200' : '') + '.webp?v=3', ART, { className: 'map__art', interactive: false }).addTo(map);
+    fetch('assets/img/mapa-okolica-opisy.svg?v=3').then(function (r) { return r.text(); }).then(function (t) {
       var box = document.createElement('div'); box.innerHTML = t; var sv = box.querySelector('svg');
       L.svgOverlay(sv, ART, { className: 'map__labels', interactive: false }).addTo(map);
     }).catch(function () {});
     // kadr „cover”: ilustracja wypełnia całe okno mapy
-    var artView = function (fly) { var z = Math.min(18, map.getBoundsZoom(ART, true) + .05), c = L.latLngBounds(ART).getCenter(); if (fly) map.flyTo(c, z, { duration: .6 }); else map.setView(c, z, { animate: false }); };
+    var artView = function (fly) { var z = Math.min(18, map.getBoundsZoom(VIEW, true) + .05), c = L.latLngBounds(VIEW).getCenter(); if (fly) map.flyTo(c, z, { duration: .6 }); else map.setView(c, z, { animate: false }); };
     artView();
     var compass = document.createElement('div'); compass.className = 'map__compass'; compass.setAttribute('aria-hidden', 'true');
     compass.innerHTML = '<svg viewBox="0 0 40 52"><text x="20" y="11" text-anchor="middle">N</text><circle cx="20" cy="33" r="13"/><path d="M20 15V51M7 33h26"/></svg>';
@@ -503,7 +504,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794052016" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794053001" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 

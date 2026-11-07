@@ -1558,8 +1558,8 @@ body.dh-open { overflow: hidden; }
 /* Ilustrowana mapa okolicy */
 .map.map--art .leaflet-tile-pane { filter: saturate(.35) sepia(.3) contrast(.85) brightness(1.08); opacity: .5; }
 .map__art { image-rendering: auto; }
-.map__labels .ml { font-family: var(--head); font-weight: 500; font-size: 30px; letter-spacing: .32em; fill: #8b8174; paint-order: stroke; stroke: #e6e0d6; stroke-width: 7px; stroke-linejoin: round; dominant-baseline: central; }
-.map__labels .ml--park { font-size: 40px; letter-spacing: .34em; fill: #4f6b40; stroke: #c3d5a3; stroke-width: 8px; font-weight: 400; }
+.map__labels .ml { font-family: var(--head); font-weight: 500; font-size: 19px; letter-spacing: .3em; fill: #8b8174; paint-order: stroke; stroke: #e6e0d6; stroke-width: 4.5px; stroke-linejoin: round; dominant-baseline: central; }
+.map__labels .ml--park { font-size: 26px; letter-spacing: .32em; fill: #4f6b40; stroke: #c3d5a3; stroke-width: 5px; font-weight: 400; }
 .map__compass { position: absolute; left: 18px; bottom: 22px; z-index: 460; width: 34px; pointer-events: none; }
 .map__compass svg { display: block; width: 100%; overflow: visible; }
 .map__compass text { font-family: var(--head); font-size: 11px; font-weight: 500; fill: #7b4f2e; }
