@@ -1599,10 +1599,6 @@ body.dh-open { overflow: hidden; }
   .vw__desc { padding: 0 6px; }
   .values__nav { font-size: 8.5px; letter-spacing: .12em; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .values__track { height: auto; }
-  .values__pin { position: relative; height: auto; padding: 100px 0; }
-}
 .section--cont { padding-top: clamp(40px, 6vw, 90px); }
 
 /* Hero: żywa wizualizacja (warstwa w układzie pikseli obrazu 3200×2400) */
@@ -1629,3 +1625,28 @@ body.dh-open { overflow: hidden; }
 .care{list-style:none;margin:40px 0 0;padding:0;display:grid;gap:22px;color:#d9cfc1}
 .care li{border-top:1px solid rgba(217,207,193,.22);padding-top:16px;font-size:15px;line-height:1.55}
 .care .caps{display:block;margin-bottom:6px}
+
+/* Wellness: bez pasków postępu i linii pod zdjęciami */
+#udogodnienia .arch-slider__dots { display: none; }
+#udogodnienia .arch-slider__bar { grid-template-columns: 1fr auto; border-bottom: 0; }
+
+/* Hero: podtytuł pod claimem */
+.hero__sub { max-width: 470px; margin: -18px 0 36px; font-size: clamp(15px, 1.15vw, 17px); line-height: 1.6; color: rgba(247, 243, 236, .88); text-shadow: 0 1px 14px rgba(20, 16, 12, .45); }
+@media (max-width: 900px) { .hero__sub { margin: -14px 0 26px; font-size: 14.5px; max-width: 92%; } }
+
+/* Misja: trzy dowody */
+.mission-proof { list-style: none; margin: 0 0 28px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.mission-proof li { padding: 18px 16px 18px 0; display: flex; flex-direction: column; gap: 6px; }
+.mission-proof li + li { padding-left: 16px; border-left: 1px solid var(--line); }
+.mission-proof b { font-family: var(--head); font-weight: 400; font-size: clamp(20px, 1.9vw, 28px); color: var(--bronze); letter-spacing: .01em; line-height: 1.1; }
+.mission-proof span { font-size: 13.5px; line-height: 1.45; color: var(--muted); }
+@media (max-width: 560px) { .mission-proof { grid-template-columns: 1fr; } .mission-proof li + li { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); } .mission-proof li { padding: 14px 0; } }
+
+/* Fakty: pięć kolumn */
+.facts { grid-template-columns: repeat(5, 1fr); }
+@media (max-width: 900px) { .facts { grid-template-columns: 1fr 1fr; } .facts .fact:last-child { grid-column: 1 / -1; } }
+
+/* Rzut piętra mieści się w wysokości ekranu (np. laptopy 1366×768 / 1280×720) */
+@media (min-width: 901px) {
+  .mk__plan .pl { max-height: calc(100vh - 130px); }
+}

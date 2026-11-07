@@ -373,7 +373,7 @@
   var hMode = false, hMax = 0;
   var wantH = window.matchMedia('(min-width: 901px) and (pointer: fine)');
   function hLayout() {
-    hMode = wantH.matches && !!hs;
+    hMode = false; // strona przewija się normalnie – galerię przesuwa się strzałkami, myszką lub palcem
     document.body.classList.toggle('h-rail', hMode);
     hs.style.height = '';
     if (!hMode) return;
@@ -909,18 +909,20 @@
     var ws = $$('.vw', tr), nav = $$('.values__nav span', tr), gh = $$('.values__ghost span', tr), num = document.getElementById('values-n');
     var ease = function (t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }, cl = function (v) { return Math.min(1, Math.max(0, v)); };
     var L = ws.map(function (w) { return $$('.vl > span', w); }), cur = -1;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { ws.forEach(function (w, k) { w.style.position = k ? 'absolute' : 'relative'; }); ws[0].style.setProperty('--o', 1); L[0].forEach(function (s) { s.style.setProperty('--y', '0%'); }); return; }
-    var PER = 4200, x = -.35, last = 0, on = false, hover = false;
+    // przy „ograniczonym ruchu” (często domyślnie w Windows) słowa tylko przenikają się, bez wjazdu liter
+    var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var PER = 4200, x = -.35, last = 0, on = false;
     function draw() {
       ws.forEach(function (w, k) {
         var t = ((x - k + .5) % 4 + 4) % 4 - .5, n = L[k].length;
         L[k].forEach(function (s, i) {
           var d = i / Math.max(1, n - 1) * .22;
           var inn = ease(cl((t + .32 - d) / .38)), out = ease(cl((t - .72 - d * .6) / .3));
-          s.style.setProperty('--y', ((1 - inn) * 110 - out * 110).toFixed(2) + '%');
+          s.style.setProperty('--y', RM ? '0%' : ((1 - inn) * 110 - out * 110).toFixed(2) + '%');
         });
         var o = cl((t + .05) / .25) * (1 - cl((t - .62) / .18));
         w.style.setProperty('--o', o.toFixed(3)); w.classList.toggle('is-on', o > .5);
+        if (RM) w.firstElementChild.nextElementSibling.style.opacity = o.toFixed(3);
       });
       var xm = ((x % 4) + 4) % 4, i = Math.floor(xm + .2) % 4;
       nav.forEach(function (s, k) { s.style.setProperty('--b', k === i ? cl(xm - k + .2 > 3 ? xm - 4 - k + .2 : xm - k + .2).toFixed(3) : (k < i ? 1 : 0)); });
@@ -929,11 +931,10 @@
     function tick(ts) {
       if (!on) return;
       var dt = last ? Math.min(100, ts - last) : 0; last = ts;
-      if (!hover) x += dt / PER;
+      x += dt / PER;
       draw(); requestAnimationFrame(tick);
     }
     new IntersectionObserver(function (e) { var v = e[0].isIntersecting; if (v && !on) { on = true; last = 0; requestAnimationFrame(tick); } else if (!v) on = false; }, { threshold: .35 }).observe(tr);
-    tr.addEventListener('mouseenter', function () { hover = true; }); tr.addEventListener('mouseleave', function () { hover = false; });
     nav.forEach(function (s, k) { s.addEventListener('click', function () { x = Math.floor(x / 4) * 4 + k - .3; if (x < 0) x += 4; draw(); }); });
     draw();
   })();
