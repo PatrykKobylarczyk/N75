@@ -7,7 +7,7 @@
   var fmt = new Intl.NumberFormat('pl-PL');
   var fmtA = new Intl.NumberFormat('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   var STATUS = { wolne: 'Wolne', rezerwacja: 'Rezerwacja', sprzedane: 'Sprzedane' };
-  var MAX = 3, picked = null;
+  var MAX = 5, picked = null;
   var card = function (id) { return 'mieszkanie.html?id=' + encodeURIComponent(id); };
   var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
 
@@ -20,7 +20,7 @@
   var dimH = function (u) { return Math.max.apply(null, u.levels.map(function (l) { return cropH(u, l); })); };
   var K = 1;
   function thumb(u) {
-    return u.levels.map(function (l) { return '<img style="width:' + (cropW(u, l) * K).toFixed(2) + '%" src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794038778" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">'; }).join('');
+    return u.levels.map(function (l) { return '<img style="width:' + (cropW(u, l) * K).toFixed(2) + '%" src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794052016" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">'; }).join('');
   }
   function roomArea(u, re) { return u.roomsList.filter(function (r) { return re.test(r[1]); }).reduce(function (s, r) { return s + r[2]; }, 0); }
 
@@ -65,7 +65,7 @@
 
     var table = '';
     if (sel.length) {
-      table = (sel.length > 1 ? '<p class="cmp-scale caps">Rzuty w jednakowej skali · góra rzutu = ul. Narutowicza (północ)</p>' : '') + '<div class="cmp-grid" style="--n:' + sel.length + '">' +
+      table = (sel.length > 1 ? '<p class="cmp-scale caps">Rzuty w jednakowej skali · góra rzutu = ul. Narutowicza (północ)</p>' : '') + '<div class="cmp-grid' + (sel.length >= 4 ? ' cmp-grid--many' : '') + '" style="--n:' + sel.length + '">' +
         '<div class="cmp-col cmp-col--labels" aria-hidden="true"><div class="cmp-cell cmp-cell--head"></div>' + rows.map(function (r) { return '<div class="cmp-cell caps">' + r[0] + '</div>'; }).join('') + '<div class="cmp-cell"></div></div>' +
         sel.map(function (u, i) {
           return '<div class="cmp-col">' +

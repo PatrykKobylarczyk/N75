@@ -1650,3 +1650,22 @@ body.dh-open { overflow: hidden; }
 @media (min-width: 901px) {
   .mk__plan .pl { max-height: calc(100vh - 130px); }
 }
+
+/* Porównanie do 5 lokali: ciaśniejsza siatka, wszystko mieści się na ekranie */
+.cmp-grid--many { grid-template-columns: 130px repeat(var(--n), minmax(0, 1fr)); gap: 0 14px; }
+.cmp-grid--many .cmp-id { font-size: clamp(20px, 2vw, 28px); }
+.cmp-grid--many .cmp-cell { font-size: 14px; }
+.cmp-grid--many .cmp-plan { padding: 5px; }
+.cmp-grid--many .cmp-cell--cta .btn { padding: 10px 12px; font-size: 10px; letter-spacing: .1em; }
+.cmp-cell > span { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 800px) {
+  .cmp-grid--many { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 0 6px; }
+  .cmp-grid--many .cmp-cell { font-size: 11px; line-height: 1.3; padding: 9px 0; min-height: 44px; }
+  .cmp-grid--many .cmp-lbl { font-size: 7.5px; letter-spacing: .06em; }
+  .cmp-grid--many .cmp-id { font-size: 13px; letter-spacing: 0; }
+  .cmp-grid--many .cmp-head { flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 6px; }
+  .cmp-grid--many .cmp-head .fav, .cmp-grid--many .cmp-head button { transform: scale(.8); transform-origin: left; }
+  .cmp-grid--many .cmp-plan { padding: 2px; }
+  .cmp-grid--many .cmp-cell--cta .btn { padding: 7px 4px; font-size: 8px; letter-spacing: .04em; width: 100%; justify-content: center; }
+  .cmp-grid--many .status { font-size: 8px; padding: 3px 4px; }
+}

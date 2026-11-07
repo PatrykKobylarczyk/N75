@@ -4,17 +4,17 @@
 (function () {
   'use strict';
   var BASE = 'assets/data/3d/';
-  var WALL_H = 2.05, GLASS_H = 1.95, LEVEL_DZ = 3.05;
+  var WALL_H = 2.6, GLASS_H = 2.5, LEVEL_DZ = 3.05;   // mieszkania 300 cm netto – ściany przycięte nad obrazami
 
   /* ---------- paleta quiet luxury (sRGB 0–255) ---------- */
   var C = {
-    wall: [238, 233, 225], wallTop: [58, 54, 50], slab: [70, 65, 60],
-    oak: [104, 74, 53], tile: [222, 214, 201], stone: [205, 198, 187],
+    wall: [237, 231, 219], wallTop: [58, 54, 50], slab: [70, 65, 60],
+    oak: [112, 86, 66], tile: [222, 214, 201], stone: [205, 198, 187],
     linen: [236, 230, 220], linen2: [244, 241, 235], boucle: [232, 226, 215], sand: [214, 200, 179], taupe: [176, 160, 141],
     mocha: [134, 108, 88], walnut: [96, 70, 52], door: [78, 52, 36], onyx: [120, 78, 56], oakLight: [204, 182, 150], travertine: [221, 210, 192], brass: [178, 145, 92],
-    veneer: [146, 102, 70], marble: [238, 235, 229], canvas: [234, 222, 201], terra: [184, 98, 62], ochre: [208, 152, 74], umber: [92, 62, 44], sienna: [158, 84, 52], legs: [120, 120, 118], raksa: [212, 200, 182], raksa2: [198, 186, 168], black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [168, 206, 232], rug: [226, 217, 202],
+    veneer: [146, 102, 70], marble: [238, 235, 229], canvas: [234, 222, 201], terra: [184, 98, 62], ochre: [208, 152, 74], umber: [92, 62, 44], sienna: [158, 84, 52], legs: [120, 120, 118], raksa: [226, 213, 192], raksa2: [214, 200, 178], black: [38, 36, 34], white: [247, 246, 242], cabinet: [217, 208, 194], steel: [150, 150, 148], glass: [168, 206, 232], rug: [226, 217, 202],
     green: [110, 124, 92], pot: [196, 184, 166], teak: [168, 134, 98], wpc: [203, 194, 180], teak2: [150, 114, 80], olive: [118, 128, 96], olive2: [134, 144, 110],
-    bronze: [120, 96, 70], frame: [190, 164, 120], curtain: [240, 235, 226], rugOut: [214, 205, 190]
+    bronze: [120, 96, 70], frame: [190, 164, 120], curtain: [240, 235, 226], rugOut: [214, 205, 190], knit: [196, 182, 160], trousers: [96, 110, 128], skin: [222, 188, 158], hair: [86, 64, 48], book: [150, 70, 52]
   };
 
   /* ---------- geometria ---------- */
@@ -111,33 +111,32 @@
   function shrinkL(b, d) { return [b[0] + d, b[1] + d, b[2] - d, b[3] - d]; }
 
   // loggia: leżaki z teku, stolik i oliwki w donicach
-  function loggia(M, P, dy) {
+  function loggia(M, P, dy, inner) {
     var b = bbox(P), w = b[2] - b[0], d = b[3] - b[1], horiz = w >= d, L = horiz ? w : d, D = horiz ? d : w;
     var cx = (b[0] + b[2]) / 2, cz = (b[1] + b[3]) / 2;
     var at = function (u, v) { return horiz ? [cx + u, cz + v] : [cx + v, cz + u]; };
     var ok = function (u, v) { return inside(at(u, v), P); };
-    var plant = function (u, v, r) {
-      return;
-      if (!ok(u, v)) return; var p = at(u, v);
-      M.cyl(p[0], p[1], r, dy, dy + 0.55, C.pot, 18);
-      M.cyl(p[0], p[1], r * 1.35, dy + 0.75, dy + 1.05, C.olive, 14); M.cyl(p[0], p[1], r * 1.05, dy + 1.05, dy + 1.3, C.olive2, 12); M.cyl(p[0], p[1], 0.02, dy + 0.55, dy + 0.78, C.walnut, 6);
-    };
-    if (L > 1.6) { plant(-L / 2 + 0.4, 0, 0.2); plant(L / 2 - 0.4, 0, 0.2); }
     if (D < 0.9 || L < 1.7) return;
-    var cw = Math.min(0.33, (D - 0.2) / 2), cu = Math.min(0.55, L / 2 - 0.45);
-    [-cu, cu].forEach(function (u) {
-      if (!ok(u, 0)) return;
-      var a = at(u - cw, -cw), c = at(u + cw, cw);
-      var x0 = Math.min(a[0], c[0]), x1 = Math.max(a[0], c[0]), z0 = Math.min(a[1], c[1]), z1 = Math.max(a[1], c[1]);
-      M.box(x0, z0, x1, z1, dy + 0.05, dy + 0.3, C.teak2); M.box(x0 + 0.04, z0 + 0.04, x1 - 0.04, z1 - 0.04, dy + 0.3, dy + 0.42, C.linen);
-      var bk = at(u, -cw); M.box(horiz ? x0 + 0.04 : bk[0] - 0.05, horiz ? bk[1] - 0.05 : z0 + 0.04, horiz ? x1 - 0.04 : bk[0] + 0.05, horiz ? bk[1] + 0.05 : z1 - 0.04, dy + 0.3, dy + 0.75, C.linen);
+    // strona widoku: przeciwna do mieszkania
+    var inApt = function (v) { return [-L / 4, 0, L / 4].some(function (u) { var p = at(u, v); return (inner || []).some(function (Q) { return inside(p, Q); }); }); };
+    var so = inApt(D / 2 + 0.35) ? -1 : inApt(-D / 2 - 0.35) ? 1 : 1;
+    var Fv = horiz ? [0, so] : [so, 0], Su = horiz ? [1, 0] : [0, 1];
+    var cu = Math.min(0.62, L / 2 - 0.42), ang = 0.45;               // fotele po skosie do siebie (ok. 26°)
+    var v0 = -so * Math.min(0.08, (D - 0.8) / 2);
+    var t = at(0, v0 + so * 0.18);
+    [-1, 1].forEach(function (k, i) {
+      var u = k * cu; if (!ok(u, v0)) return;
+      var F = [Fv[0] * Math.cos(ang) - Su[0] * k * Math.sin(ang), Fv[1] * Math.cos(ang) - Su[1] * k * Math.sin(ang)];
+      lounger(M, at(u, v0), F, dy, i === 0 && !PEOPLE.loggia);
     });
-    var t = at(0, 0.05); M.cyl(t[0], t[1], Math.min(0.24, cu - cw - 0.04), dy + 0.42, dy + 0.46, C.travertine, 24); M.cyl(t[0], t[1], 0.05, dy, dy + 0.42, C.bronze, 10);
+    PEOPLE.loggia = true;
+    M.cyl(t[0], t[1], Math.min(0.22, cu - 0.38), dy + 0.42, dy + 0.46, C.travertine, 24); M.cyl(t[0], t[1], 0.05, dy, dy + 0.42, C.bronze, 10);
     if (D > 1.6) { var r = at(0, 0); M.box(r[0] - (horiz ? 1.1 : 0.7), r[1] - (horiz ? 0.7 : 1.1), r[0] + (horiz ? 1.1 : 0.7), r[1] + (horiz ? 0.7 : 1.1), dy, dy + 0.01, C.rugOut); }
   }
 
   /* ---------- budowa modelu ---------- */
   function buildLevel(M, lv, dx, dz, dy, opaque, glassM) {
+    GLASS_M = glassM;
     var X = function (P) { return P.map(function (p) { return [p[0] + dx, p[1] + dz]; }); };
     // posadzki z płytą stropu
     var inner = [];
@@ -147,8 +146,9 @@
       var out = f.k === 'out' || /loggia|balkon|taras/.test(n);
       var top = wet ? C.tile : out ? C.wpc : C.oak, mat = wet ? 2 : out ? 3 : 1;
       M.prism(X(f.p), dy - 0.22, dy, C.slab, top, 0, mat);
-      if (out) loggia(M, X(f.p), dy); else inner.push(X(f.p));
+      if (!out) inner.push(X(f.p));
     });
+    lv.floors.forEach(function (f) { if (f.k === 'out' || /loggia|balkon|taras/i.test(f.n || '')) loggia(M, X(f.p), dy, inner); });
     // drzwi: uchylone skrzydło na zawiasie z rzutu (h – zawias, c – koniec w zamknięciu, sw – kierunek otwierania)
     function door(d, entry) {
       var h = [d[0][0] + dx, d[0][1] + dz], c = [d[1][0] + dx, d[1][1] + dz], sw = [d[2][0] + dx, d[2][1] + dz];
@@ -200,7 +200,7 @@
     };
     lv.walls.forEach(function (w) { if (railBy(w) || loggiaStub(w)) return; M.box(w[0] + dx, w[1] + dz, w[2] + dx, w[3] + dz, dy - 0.22, dy + WALL_H, C.wall, C.wallTop, 4); });
     // loggie od zewnątrz otwarte: niski murek/obrzeże i smukły brązowy pochwyt na słupkach
-    (lv.rails || []).forEach(function (r) {
+    (lv.rails || []).filter(function (r) { return !nearGlass(r, mergeGlass(lv.glass)); }).forEach(function (r) {
       var x0 = r[0] + dx, z0 = r[1] + dz, x1 = r[2] + dx, z1 = r[3] + dz, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, horiz = (x1 - x0) >= (z1 - z0);
       var a0 = horiz ? x0 : z0, a1 = horiz ? x1 : z1, c = horiz ? cz : cx;
       var B_ = function (u0, u1, w, y0, y1, col) { M.box(horiz ? u0 : c - w, horiz ? c - w : u0, horiz ? u1 : c + w, horiz ? c + w : u1, y0, y1, col); };
@@ -209,8 +209,11 @@
       var n = Math.max(1, Math.round((a1 - a0) / 1.2));
       for (var i = 0; i <= n; i++) { var m = a0 + (a1 - a0) * i / n; B_(m - 0.015, m + 0.015, 0.015, dy + 0.06, dy + 1.05, C.bronze); }
     });
-    // okna: półprzezroczyste szkło w smukłych ramach + lniane zasłony od środka
-    lv.glass.forEach(function (g) {
+    // okna: w rzucie okno to kilka równoległych linii – scalamy je w jedną taflę (zawsze jedno okno)
+    var GL = mergeGlass(lv.glass);
+    GLASS_CUR = GL;
+    // okna: półprzezroczyste szkło w smukłych ramach
+    GL.forEach(function (g) {
       var x0 = g[0] + dx, z0 = g[1] + dz, x1 = g[2] + dx, z1 = g[3] + dz, horiz = (x1 - x0) >= (z1 - z0);
       var len = horiz ? x1 - x0 : z1 - z0, c = horiz ? (z0 + z1) / 2 : (x0 + x1) / 2, t = 0.018;
       var seg = function (a, b, y0, y1, th, col, mesh) { (mesh || M).box(horiz ? a : c - th, horiz ? c - th : a, horiz ? b : c + th, horiz ? c + th : b, y0, y1, col, col, mesh ? 9 : 0); };
@@ -234,6 +237,7 @@
     CUR_WALLS = lv.walls.map(function (w) { return [w[0] + dx, w[1] + dz, w[2] + dx, w[3] + dz]; });
     lv.items.forEach(function (it) { try { furnish(M, it, dx, dz, dy); } catch (e) { /* pojedynczy mebel nie blokuje modelu */ } });
     try { painting(M, lv, dx, dz, dy); } catch (e) { /* obraz opcjonalny */ }
+    try { singleBeds(M, lv, dx, dz, dy, X); } catch (e) { /* łóżko opcjonalne */ }
   }
 
 
@@ -266,7 +270,7 @@
       });
     });
     if (!best) return;
-    var B = best, y0 = 1.0;
+    var B = best, y0 = 1.5;   // obraz zaczyna się 150 cm nad podłogą
     // prostokąt w płaszczyźnie ściany: u – wzdłuż ściany (0..1 m), v – wysokość, d – odsunięcie od ściany
     var rect = function (u0, u1, v0, v1, d0, d1, col) {
       var a = B.m - 0.5 + u0, b = B.m - 0.5 + u1, p0 = B.c + B.s * d0, p1 = B.c + B.s * d1;
@@ -290,7 +294,88 @@
     disc(0.73, 0.78, 0.07, 0.054, C.sienna);                           // małe słońce
   }
 
-  var CUR_WALLS = [], TV_SPOTS = [], TV_TAKEN = [];
+  var CUR_WALLS = [], TV_SPOTS = [], TV_TAKEN = [], GLASS_M = null, GLASS_CUR = [], PEOPLE = {};
+  // równoległe, nakładające się linie szkła w odległości < 50 cm to jedno okno (rama ma kilka linii w DWG)
+  function mergeGlass(G) {
+    var A = G.map(function (g) { return g.slice(); }), ch = true;
+    var hz = function (g) { return (g[2] - g[0]) >= (g[3] - g[1]); };
+    while (ch) {
+      ch = false;
+      for (var i = 0; i < A.length && !ch; i++) for (var j = i + 1; j < A.length && !ch; j++) {
+        var a = A[i], b = A[j]; if (hz(a) !== hz(b)) continue;
+        var h = hz(a), ca = h ? (a[1] + a[3]) / 2 : (a[0] + a[2]) / 2, cb = h ? (b[1] + b[3]) / 2 : (b[0] + b[2]) / 2;
+        var ov = h ? Math.min(a[2], b[2]) - Math.max(a[0], b[0]) : Math.min(a[3], b[3]) - Math.max(a[1], b[1]);
+        var la = h ? a[2] - a[0] : a[3] - a[1], lb_ = h ? b[2] - b[0] : b[3] - b[1];
+        if (Math.abs(ca - cb) < 0.5 && ov > Math.min(la, lb_) * 0.5 - 0.01) {
+          A[i] = [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])];
+          if (h) { var cm = (la >= lb_ ? ca : cb); A[i][1] = cm - 0.03; A[i][3] = cm + 0.03; } else { var cm2 = (la >= lb_ ? ca : cb); A[i][0] = cm2 - 0.03; A[i][2] = cm2 + 0.03; }
+          A.splice(j, 1); ch = true;
+        }
+      }
+    }
+    return A;
+  }
+  function nearGlass(r, G) {
+    var hr = (r[2] - r[0]) >= (r[3] - r[1]);
+    return G.some(function (g) {
+      var hg = (g[2] - g[0]) >= (g[3] - g[1]); if (hr !== hg) return false;
+      var dc = hr ? Math.abs((r[1] + r[3]) / 2 - (g[1] + g[3]) / 2) : Math.abs((r[0] + r[2]) / 2 - (g[0] + g[2]) / 2);
+      var ov = hr ? Math.min(r[2], g[2]) - Math.max(r[0], g[0]) : Math.min(r[3], g[3]) - Math.max(r[1], g[1]);
+      return dc < 0.6 && ov > 0.3;
+    });
+  }
+  // prostokąt obrócony: środek c, kierunek „do przodu” F (jednostkowy), półgłębokość hf, półszerokość hs
+  function orect(c, F, hf, hs) { var S = [-F[1], F[0]]; return [[c[0] + F[0] * hf + S[0] * hs, c[1] + F[1] * hf + S[1] * hs], [c[0] - F[0] * hf + S[0] * hs, c[1] - F[1] * hf + S[1] * hs], [c[0] - F[0] * hf - S[0] * hs, c[1] - F[1] * hf - S[1] * hs], [c[0] + F[0] * hf - S[0] * hs, c[1] + F[1] * hf - S[1] * hs]]; }
+  function add(c, F, k) { return [c[0] + F[0] * k, c[1] + F[1] * k]; }
+  // leżak tarasowy zwrócony w stronę F; opcjonalnie z siedzącą osobą
+  function lounger(M, c, F, dy, person) {
+    M.prism(orect(c, F, 0.36, 0.33), dy + 0.05, dy + 0.3, C.teak2);
+    M.prism(orect(add(c, F, 0.03), F, 0.32, 0.29), dy + 0.3, dy + 0.42, C.linen);
+    M.prism(orect(add(c, F, -0.31), F, 0.05, 0.31), dy + 0.3, dy + 0.8, C.teak2);
+    M.prism(orect(add(c, F, -0.24), F, 0.04, 0.28), dy + 0.42, dy + 0.78, C.linen);
+    if (!person) return;
+    var S = [-F[1], F[0]];
+    M.prism(orect(add(c, F, -0.12), F, 0.1, 0.17), dy + 0.42, dy + 0.93, C.knit);                       // tułów
+    var hd = add(c, F, -0.13); M.cyl(hd[0], hd[1], 0.05, dy + 0.9, dy + 0.98, C.skin, 10); M.cyl(hd[0], hd[1], 0.095, dy + 0.98, dy + 1.18, C.skin, 16); M.cyl(hd[0], hd[1], 0.1, dy + 1.08, dy + 1.2, C.hair, 16);
+    M.prism(orect(add(c, F, 0.1), F, 0.2, 0.15), dy + 0.42, dy + 0.56, C.trousers);                    // uda
+    M.prism(orect(add(c, F, 0.33), F, 0.05, 0.13), dy + 0.04, dy + 0.54, C.trousers);                  // łydki
+    M.prism(orect(add(c, F, 0.38), F, 0.08, 0.12), dy, dy + 0.06, C.umber);                           // buty
+    [-1, 1].forEach(function (s) { var a = [c[0] + S[0] * s * 0.21 + F[0] * 0.0, c[1] + S[1] * s * 0.21 + F[1] * 0.0]; M.prism(orect(a, F, 0.17, 0.04), dy + 0.56, dy + 0.66, C.knit); });   // ręce
+  }
+  // brakujące łóżka pojedyncze w pokojach bez łóżka
+  function singleBeds(M, lv, dx, dz, dy, X) {
+    var occ = lv.items.map(function (it) { var b = bbox(it.q); return [b[0] + dx, b[1] + dz, b[2] + dx, b[3] + dz, it.t]; });
+    var doors = (lv.idoors || []).concat(lv.doors || []).map(function (d) { return [d[0][0] + dx, d[0][1] + dz, d[1][0] + dx, d[1][1] + dz]; });
+    var GW = GLASS_CUR.map(function (g) { return [g[0] + dx, g[1] + dz, g[2] + dx, g[3] + dz]; });
+    lv.floors.forEach(function (f) {
+      if (f.k === 'out' || !/pokój|sypialnia/i.test(f.n || '') || f.a < 6) return;
+      var P = X(f.p);
+      if (occ.some(function (o) { return /bed/.test(o[4]) && inside([(o[0] + o[2]) / 2, (o[1] + o[3]) / 2], P); })) return;
+      var b = bbox(P), BW = 0.92, BL = 2.06, best = null;
+      [[0, 0], [1, 0], [0, 1], [1, 1]].forEach(function (cr) {
+        [true, false].forEach(function (alongX) {
+          var w = alongX ? BL : BW, d = alongX ? BW : BL;
+          var x0 = cr[0] ? b[2] - 0.02 - w : b[0] + 0.02, z0 = cr[1] ? b[3] - 0.02 - d : b[1] + 0.02, x1 = x0 + w, z1 = z0 + d;
+          var pts = [[x0 + 0.03, z0 + 0.03], [x1 - 0.03, z0 + 0.03], [x1 - 0.03, z1 - 0.03], [x0 + 0.03, z1 - 0.03], [(x0 + x1) / 2, (z0 + z1) / 2]];
+          if (!pts.every(function (p) { return inside(p, P); })) return;
+          if (occ.some(function (o) { return o[0] < x1 + 0.05 && o[2] > x0 - 0.05 && o[1] < z1 + 0.05 && o[3] > z0 - 0.05; })) return;
+          if (doors.some(function (dd) { return [[dd[0], dd[1]], [dd[2], dd[3]]].some(function (p) { return p[0] > x0 - 0.85 && p[0] < x1 + 0.85 && p[1] > z0 - 0.85 && p[1] < z1 + 0.85; }); })) return;
+          // zagłówek przy krótszym boku, od strony narożnika
+          var head = alongX ? (cr[0] ? [x1, z0, x1 + 0.12, z1] : [x0 - 0.12, z0, x0, z1]) : (cr[1] ? [x0, z1, x1, z1 + 0.12] : [x0, z0 - 0.12, x1, z0]);
+          var glassy = GW.some(function (g) { return g[0] < head[2] + 0.15 && g[2] > head[0] - 0.15 && g[1] < head[3] + 0.15 && g[3] > head[1] - 0.15; });
+          var sc = glassy ? 0 : 2;
+          if (!best || sc > best.sc) best = { sc: sc, r: [x0, z0, x1, z1], alongX: alongX, cr: cr };
+        });
+      });
+      if (!best) return;
+      var r = best.r, ax = best.alongX, hs = ax ? (best.cr[0] ? 1 : -1) : (best.cr[1] ? 1 : -1);   // strona zagłówka (+ = koniec osi)
+      M.box(r[0] + 0.01, r[1] + 0.01, r[2] - 0.01, r[3] - 0.01, dy + 0.06, dy + 0.3, C.taupe);
+      M.box(r[0] + 0.02, r[1] + 0.02, r[2] - 0.02, r[3] - 0.02, dy + 0.3, dy + 0.5, C.linen2);
+      var dl = (ax ? r[2] - r[0] : r[3] - r[1]) * 0.3;
+      if (ax) { var fx0 = hs > 0 ? r[0] : r[2] - dl; M.box(fx0 - 0.01, r[1] - 0.01, fx0 + dl + 0.01, r[3] + 0.01, dy + 0.3, dy + 0.52, C.mocha); var hx = hs > 0 ? r[2] : r[0]; M.box(Math.min(hx, hx + hs * 0.08), r[1] - 0.03, Math.max(hx, hx + hs * 0.08), r[3] + 0.03, dy + 0.06, dy + 1.0, C.sand); var px0 = hs > 0 ? r[2] - 0.45 : r[0] + 0.06; M.box(px0, r[1] + 0.06, px0 + 0.39, r[3] - 0.06, dy + 0.5, dy + 0.61, C.white); }
+      else { var fz0 = hs > 0 ? r[1] : r[3] - dl; M.box(r[0] - 0.01, fz0 - 0.01, r[2] + 0.01, fz0 + dl + 0.01, dy + 0.3, dy + 0.52, C.mocha); var hz_ = hs > 0 ? r[3] : r[1]; M.box(r[0] - 0.03, Math.min(hz_, hz_ + hs * 0.08), r[2] + 0.03, Math.max(hz_, hz_ + hs * 0.08), dy + 0.06, dy + 1.0, C.sand); var pz0 = hs > 0 ? r[3] - 0.45 : r[1] + 0.06; M.box(r[0] + 0.06, pz0, r[2] - 0.06, pz0 + 0.39, dy + 0.5, dy + 0.61, C.white); }
+    });
+  }
   // czy za blokiem (strona y=0) stoi ściana – inaczej to wyspa i nie wieszamy szafek ani okapu
   function againstWall(pts) { return pts.every(function (p) { return CUR_WALLS.some(function (w) { return p[0] > w[0] - 0.12 && p[0] < w[2] + 0.12 && p[1] > w[1] - 0.12 && p[1] < w[3] + 0.12; }); }); }
   function furnish(M, it, dx, dz, dy) {
@@ -321,6 +406,10 @@
         var mains = big[0]; if (!mains) return;
         var mb = mains.b;
         var headY = Math.abs(mb[1]) < Math.abs(mb[3]) ? mb[1] : mb[3], footY = headY === mb[1] ? mb[3] : mb[1], dir = footY > headY ? 1 : -1;
+        (function () {                                                       // zagłówek przy ścianie: dosuń łóżko, jeśli w rzucie stoi z odstępem
+          var mx = (mb[0] + mb[2]) / 2, h0 = L(mx, headY - dir * 9), f0 = L(mx, footY), vx = h0[0] - f0[0], vz = h0[1] - f0[1], vl = Math.hypot(vx, vz); vx /= vl; vz /= vl;
+          for (var d = 0; d < 0.8; d += 0.01) { var p = [h0[0] + vx * d, h0[1] + vz * d]; if (CUR_WALLS.some(function (w) { return p[0] > w[0] && p[0] < w[2] && p[1] > w[1] && p[1] < w[3]; })) { if (d > 0.02) { var L0 = L, sx = vx * (d - 0.005), sz = vz * (d - 0.005); L = function (x, y) { var q = L0(x, y); return [q[0] + sx, q[1] + sz]; }; } return; } }
+        })();
         M.prism(R(shrinkL(mb, 1)), Y(0.06), Y(0.3), C.taupe);                                   // podstawa
         M.prism(R([mb[0] + 2, Math.min(headY, footY) + 2, mb[2] - 2, Math.max(headY, footY) - 2]), Y(0.3), Y(0.5), C.linen2);   // materac i pościel
         var fy0 = footY - dir * Math.abs(footY - headY) * 0.28;
@@ -356,8 +445,8 @@
           var len = along ? b[2] - b[0] : b[3] - b[1], n = Math.max(1, Math.round(len / 92)), st = len / n;
           for (var k = 0; k < n; k++) {
             var s = (along ? b[0] : b[1]) + k * st + gap, e = (along ? b[0] : b[1]) + (k + 1) * st - gap;
-            M.prism(R(along ? [s, b[1], e, b[3]] : [b[0], s, b[2], e]), Y(y0), Y(y1), col);
-            M.prism(R(along ? [s + 2, b[1] + 2, e - 2, b[3] - 2] : [b[0] + 2, s + 2, b[2] - 2, e - 2]), Y(y1), Y(y1 + 0.025), col);   // zaokrąglenie
+            M.prism(R(along ? [s, b[1], e, b[3]] : [b[0], s, b[2], e]), Y(y0), Y(y1), col, col, 7, 7);
+            M.prism(R(along ? [s + 2, b[1] + 2, e - 2, b[3] - 2] : [b[0] + 2, s + 2, b[2] - 2, e - 2]), Y(y1), Y(y1 + 0.025), col, col, 7, 7);   // zaokrąglenie
           }
         };
         // krawędź oparcia: ta, wzdłuż której leży najwięcej cienkich elementów (reszta to podłokietniki)
@@ -379,7 +468,7 @@
           var Q = function (a, b, u0, u1) { return [[wx + px * a - dX * u0, wz + pz * a - dZ * u0], [wx + px * b - dX * u0, wz + pz * b - dZ * u0], [wx + px * b - dX * u1, wz + pz * b - dZ * u1], [wx + px * a - dX * u1, wz + pz * a - dZ * u1]]; };
           M.prism(Q(-0.9, 0.9, 0, 0.4), Y(0.12), Y(0.46), C.veneer, C.veneer, 5);                 // szafka RTV z forniru
           M.prism(Q(-0.86, 0.86, 0.02, 0.38), Y(0), Y(0.12), C.black);
-          M.prism(Q(-0.66, 0.66, 0, 0.035), Y(0.95), Y(1.72), C.black);                          // ekran 65"
+          M.prism(Q(-0.66, 0.66, 0, 0.035), Y(0.875), Y(1.525), C.black);                        // ekran 65", środek 120 cm nad podłogą
           TV_SPOTS.push([wx, wz]); TV_TAKEN.push(c0);
         })();
         var isBack = function (r) {
@@ -389,8 +478,8 @@
         part.forEach(function (r) {
           var thin = Math.min(r.w, r.d) < 28, horiz = r.w >= r.d, len = Math.max(r.w, r.d);
           if (thin) {
-            M.prism(P(r), Y(LEG), Y(0.61), C.raksa2);                             // oparcie / podłokietnik (rama)
-            M.prism(R(shrinkL(r.b, 2)), Y(0.61), Y(0.635), C.raksa2);
+            M.prism(P(r), Y(LEG), Y(0.61), C.raksa2, C.raksa2, 7, 7);                             // oparcie / podłokietnik (rama)
+            M.prism(R(shrinkL(r.b, 2)), Y(0.61), Y(0.635), C.raksa2, C.raksa2, 7, 7);
             if (isBack(r) && len > 40) {                                                      // duże luźne poduchy oparcia od strony siedziska
               var b = r.b, cb;
               if (horiz) cb = backE === 0 ? [b[0] + 1, b[3], b[2] - 1, b[3] + 22] : [b[0] + 1, b[1] - 22, b[2] - 1, b[1]];
@@ -399,10 +488,27 @@
             }
           } else {
             var inn = contained(r);
-            if (inn) { strips(r, inn, LEG, 0.61, C.raksa2); M.prism(R(inn), Y(LEG), Y(0.3), C.raksa2); cushions(shrinkL(inn, 1), (inn[2] - inn[0]) >= (inn[3] - inn[1]), 0.3, 0.43, C.raksa, 1.2); }
-            else { M.prism(P(r), Y(LEG), Y(0.3), C.raksa2); cushions(shrinkL(r.b, 1), r.w >= r.d, 0.3, 0.43, C.raksa, 1.2); }
+            if (inn) { strips(r, inn, LEG, 0.61, C.raksa2); M.prism(R(inn), Y(LEG), Y(0.3), C.raksa2, C.raksa2, 7, 7); cushions(shrinkL(inn, 1), (inn[2] - inn[0]) >= (inn[3] - inn[1]), 0.3, 0.43, C.raksa, 1.2); }
+            else { M.prism(P(r), Y(LEG), Y(0.3), C.raksa2, C.raksa2, 7, 7); cushions(shrinkL(r.b, 1), r.w >= r.d, 0.3, 0.43, C.raksa, 1.2); }
           }
         });
+        if (!PEOPLE.sofa) { try { reader(); PEOPLE.sofa = true; } catch (e) {} }
+        function reader() {                                                    // leżąca osoba z książką na siedzisku
+          var seats = part.filter(function (r) { return Math.min(r.w, r.d) >= 28; }); if (!seats.length) return;
+          var sS = bbox([].concat.apply([], seats.map(function (r) { return [[r.b[0], r.b[1]], [r.b[2], r.b[3]]]; })));
+          var alongX = (sS[2] - sS[0]) >= (sS[3] - sS[1]), len = alongX ? sS[2] - sS[0] : sS[3] - sS[1];
+          if (len < 150) return;
+          var e = (alongX ? sS[0] : sS[1]) + 6, c = alongX ? (sS[1] + sS[3]) / 2 : (sS[0] + sS[2]) / 2, k = Math.min(1, (len - 12) / 178);
+          var B = function (a0, a1, c0, c1, y0, y1, col) { M.prism(R(alongX ? [e + a0 * k, c + c0, e + a1 * k, c + c1] : [c + c0, e + a0 * k, c + c1, e + a1 * k]), Y(y0), Y(y1), col); };
+          var P2 = function (a, cc) { return alongX ? L(e + a * k, c + cc) : L(c + cc, e + a * k); };
+          B(0, 40, -26, 26, 0.43, 0.55, C.white);                              // poduszka pod głowę
+          var hp = P2(18, 0); M.cyl(hp[0], hp[1], 0.095, Y(0.55), Y(0.73), C.skin, 16); M.cyl(hp[0], hp[1], 0.1, Y(0.66), Y(0.75), C.hair, 16);
+          B(32, 96, -19, 19, 0.45, 0.68, C.knit);                              // tułów w swetrze
+          B(96, 168, -15, 15, 0.45, 0.6, C.trousers);                          // nogi
+          B(166, 178, -14, 14, 0.45, 0.6, C.trousers);
+          B(52, 82, -21, -14, 0.66, 0.8, C.knit); B(52, 82, 14, 21, 0.66, 0.8, C.knit);   // ręce trzymające książkę
+          B(70, 90, -13, 13, 0.8, 0.825, C.book); B(71, 89, -12, 12, 0.825, 0.83, C.white);
+        }
         // poduszki dekoracyjne na grzbiecie
         regs.forEach(function (r) {
           if (part.indexOf(r) >= 0) return;
@@ -481,10 +587,21 @@
         break;
       }
       case 'fridge': { M.prism(q, Y(0), Y(2.2), C.veneer, C.veneer, 5); break; }
-      case 'wardrobe': { M.prism(q, Y(0), Y(1.95), C.oakLight, C.oakLight); break; }
+      case 'wardrobe': {
+        M.prism(q, Y(0), Y(2.3), C.oakLight, C.oakLight);
+        var ww = lb[2] - lb[0], wd = lb[3] - lb[1], wx = ww >= wd;              // fronty wzdłuż dłuższego boku
+        var wl = wx ? ww : wd, side = function (v, s) { return wx ? againstWall([L(lb[0] + ww * .25, v + s * 8), L(lb[0] + ww * .75, v + s * 8)]) : againstWall([L(v + s * 8, lb[1] + wd * .25), L(v + s * 8, lb[1] + wd * .75)]); };
+        var lo = wx ? lb[1] : lb[0], hi = wx ? lb[3] : lb[2], bA = side(lo, -1), bB = side(hi, 1), fs_ = bA ? 1 : bB ? -1 : sgn, fr = fs_ > 0 ? hi : lo;
+        var A0 = wx ? lb[0] : lb[1], nD = Math.max(1, Math.round(wl / 60)), dw = wl / nD;
+        var WR = function (a0, a1, d0, d1, y0, y1, col) { M.prism(R(wx ? [a0, Math.min(d0, d1), a1, Math.max(d0, d1)] : [Math.min(d0, d1), a0, Math.max(d0, d1), a1]), Y(y0), Y(y1), col); };
+        for (var k = 1; k < nD; k++) { var g = A0 + k * dw; WR(g - 0.4, g + 0.4, fr, fr + fs_ * 0.4, 0.02, 2.28, C.umber); }   // szczeliny między drzwiami
+        for (var k3 = 0; k3 < nD; k3++) { var hx = A0 + k3 * dw + (k3 % 2 ? 5 : dw - 5); WR(hx - 0.8, hx + 0.8, fr, fr + fs_ * 2.5, 0.95, 1.4, C.brass); }   // pionowe mosiężne uchwyty
+        break;
+      }
       case 'tv': {
         M.prism(q, Y(0.05), Y(0.42), C.walnut);
-        var ty = sgn > 0 ? lb[1] : lb[3] - 4; M.prism(R([lb[0] + 8, Math.min(ty, ty + 4), lb[2] - 8, Math.max(ty, ty + 4)]), Y(0.75), Y(1.4), C.black);
+        var ty = sgn > 0 ? lb[1] : lb[3] - 4; M.prism(R([lb[0] + 8, Math.min(ty, ty + 4), lb[2] - 8, Math.max(ty, ty + 4)]), Y(0.9), Y(1.5), C.black);   // środek ekranu 120 cm
+        var tc = L((lb[0] + lb[2]) / 2, ty + 2); M.cyl(tc[0], tc[1], 0.025, Y(0.42), Y(0.92), C.black, 8);   // stopka ekranu
         break;
       }
       case 'bath': {
@@ -492,7 +609,23 @@
         if (inn) { strips(b0, inn, 0, 0.56, C.white); M.prism(R(inn), Y(0), Y(0.4), [214, 222, 224]); } else M.prism(P(b0), Y(0), Y(0.56), C.white);
         break;
       }
-      case 'shower': { var s1 = big[0]; if (s1) M.prism(P(s1), Y(0), Y(0.03), C.travertine); break; }
+      case 'shower': {
+        var s1 = big[0]; if (!s1) break; M.prism(P(s1), Y(0), Y(0.03), C.travertine, C.travertine, 2, 2);
+        var sb_ = s1.b, sw_ = sb_[2] - sb_[0], sd_ = sb_[3] - sb_[1];
+        var edges = [[sb_[0], sb_[1], sb_[2], sb_[1], 0, -1], [sb_[0], sb_[3], sb_[2], sb_[3], 0, 1], [sb_[0], sb_[1], sb_[0], sb_[3], -1, 0], [sb_[2], sb_[1], sb_[2], sb_[3], 1, 0]];
+        var wallE = null;
+        edges.forEach(function (e) {
+          var hz = e[1] === e[3], ln = hz ? sw_ : sd_; if (ln < 30) return;
+          var w_ = againstWall([L(e[0] + (e[2] - e[0]) * .3 + e[4] * 8, e[1] + (e[3] - e[1]) * .3 + e[5] * 8), L(e[0] + (e[2] - e[0]) * .7 + e[4] * 8, e[1] + (e[3] - e[1]) * .7 + e[5] * 8)]);
+          if (w_) { if (!wallE) wallE = e; return; }
+          var gq = hz ? [e[0] + 2, e[1] - 0.6, e[2] - 2, e[1] + 0.6] : [e[0] - 0.6, e[1] + 2, e[0] + 0.6, e[3] - 2];
+          if (GLASS_M) GLASS_M.prism(R(gq), Y(0.03), Y(2.0), C.glass, C.glass, 9, 9);
+          M.prism(R(hz ? [e[0] + 1, e[1] - 1, e[2] - 1, e[1] + 1] : [e[0] - 1, e[1] + 1, e[0] + 1, e[3] - 1]), Y(1.99), Y(2.01), C.brass);   // mosiężny profil
+        });
+        if (wallE) { var hc = L((wallE[0] + wallE[2]) / 2 - wallE[4] * 22, (wallE[1] + wallE[3]) / 2 - wallE[5] * 22); M.cyl(hc[0], hc[1], 0.12, Y(2.05), Y(2.07), C.brass, 20); var hw = L((wallE[0] + wallE[2]) / 2, (wallE[1] + wallE[3]) / 2); M.cyl(hw[0], hw[1], 0.015, Y(0.9), Y(2.07), C.brass, 8); }
+        var dc = L((sb_[0] + sb_[2]) / 2, (sb_[1] + sb_[3]) / 2); M.cyl(dc[0], dc[1], 0.05, Y(0.03), Y(0.034), C.steel, 12);
+        break;
+      }
       case 'wc': {
         regs.forEach(function (r) {
           if (r.A > 0.5) return;
@@ -529,10 +662,11 @@
     'float w=m2*pw*34.+sin(yl*2.3+pi*1.7)*1.4+sin(m2*9.+yl*.9)*.5;float g=.5+.5*sin(w*6.283*1.4);col*=.86+.1*g+.05*h(vec2(floor(m2*pw*240.),pi));' +
     'if(N.y<.5){float e=min(fu,1.-fu)*pw;col*=mix(.55,1.,smoothstep(0.,.004,e));float hy=abs(yl-.5);col*=mix(.6,1.,smoothstep(0.,.004,hy));}}' +
     'if(M==6){vec2 q=vP.xz*1.7+vec2(vP.y*.7);float n=sin(q.x*2.1+sin(q.y*1.3+q.x*.7)*2.4+sin(q.y*3.7)*.6);float v=smoothstep(.93,1.,abs(n));float n2=sin(q.y*5.3+sin(q.x*4.1)*1.6);float v2=smoothstep(.97,1.,abs(n2));col=mix(col,col*vec3(.62,.6,.6),v*.55+v2*.3);col*=.97+.03*h(floor(vP.xz*40.));}' +
+    'if(M==7){vec3 q=vP*140.;float b=h(floor(q.xz)+floor(q.y)*vec2(1.7,2.3));float b2=h(floor(q.xz*.5+q.y*.3));col*=.86+.12*b+.06*b2;}' +
     'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),3.);o=vec4(mix(vC,vec3(.9,.95,1.),fr*.15),uA+fr*.05);return;}' +
     'float ndl=max(dot(N,uSun),0.);float s=sh();vec3 V=normalize(uEye-vP);float yl=vP.y-floor(vP.y/3.05)*3.05+.02;' +
     // światło nieba (chłodniejsze) + odbicie od podłogi z orzecha (ciepłe), miękka okluzja przy podłodze i w narożach
-    'vec3 sky=vec3(.86,.9,1.),bounce=vec3(.78,.6,.46);vec3 amb=mix(bounce*.55,sky*.62,N.y*.5+.5);' +
+    'vec3 sky=vec3(.86,.9,1.),bounce=vec3(.76,.66,.56);vec3 amb=mix(bounce*.55,sky*.62,N.y*.5+.5);' +
     'float ao=mix(.55,1.,smoothstep(0.,.9,yl))*mix(.82,1.,smoothstep(0.,.35,yl));if(N.y>.5)ao=1.;' +
     'vec3 sunC=vec3(1.,.9,.76)*1.15;vec3 shC=mix(vec3(.62,.68,.8),vec3(1.),s);' +
     'vec3 L=col*(amb*ao+sunC*ndl*shC*mix(.18,1.,s));' +
@@ -633,6 +767,7 @@
 
   function model(data, which) {
     var M = new Mesh(), G = new Mesh(), lv = data.levels;
+    PEOPLE = {};
     var base = lv[0], box = [Infinity, Infinity, -Infinity, -Infinity, WALL_H];
     lv.forEach(function (l, i) {
       if (which !== undefined && which !== i) return;
@@ -723,7 +858,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1794038778').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1794052016').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
