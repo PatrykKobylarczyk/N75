@@ -284,7 +284,7 @@
       }
     });
     // rysowane elewacje pierzei Narutowicza (ten sam rysunek co animacja „pierzeja” na stronie); px – zakres rysunku, t – linia gzymsu
-    var PZ = [{ x: 27, px: [1278, 1571], t: 106 }, { x: 50, px: [970, 1278], t: 130 }, { x: 73, px: [711, 970], t: 157 }, { x: 98, px: [410, 711], t: 121 }, { x: 148, px: [27, 358], t: 87 },
+    var PZ = [{ x: 50, px: [970, 1278], t: 130 }, { x: 73, px: [711, 970], t: 157 }, { x: 98, px: [410, 711], t: 121 }, { x: 148, px: [27, 358], t: 87 },
       // na zachód od N75 (drugi pas atlasu): Okręgowy Urząd Miar, żółty biurowiec, beżowa kamienica
       { x: -59.5, px: [60, 279], t: 448, b: 844, d: 4 }, { x: -78, px: [360, 670], t: 661, b: 844 }, { x: -112, px: [700, 1280], t: 618, b: 844 }];
     // pozostałe budynki: proceduralny szkic elewacji (okna, gzymsy, bramy) rysowany w shaderze (M 16)
@@ -354,6 +354,13 @@
     e.b.forEach(function (b) {
       M.prism(b.p, -0.36, b.h, C.nb, C.nbTop, 8, 8, true); drawnFront(b); sketchWalls(b);
       if (b.d) tower(M, b);
+      if (b.r) {   // dach czterospadowy (kryty blachą/papą) na prostokącie obrysu
+        var xs = b.p.map(function (q) { return q[0]; }), zs = b.p.map(function (q) { return q[1]; }), X0 = Math.min.apply(null, xs) - 0.3, X1 = Math.max.apply(null, xs) + 0.3, Z0 = Math.min.apply(null, zs) - 0.3, Z1 = Math.max.apply(null, zs) + 0.3;
+        var hr = b.h, ht = b.h + b.r, rc = [118, 120, 124], zc = (Z0 + Z1) / 2, hd = (Z1 - Z0) / 2, ra = [X0 + hd, ht, zc], rb = [X1 - hd, ht, zc];
+        var c00 = [X0, hr, Z0], c10 = [X1, hr, Z0], c11 = [X1, hr, Z1], c01 = [X0, hr, Z1];
+        M.tri(c00, c10, rb, rc, 0); M.tri(c00, rb, ra, rc, 0); M.tri(c11, c01, ra, rc, 0); M.tri(c11, ra, rb, rc, 0); M.tri(c01, c00, ra, rc, 0); M.tri(c10, c11, rb, rc, 0);
+        M.tri(c10, c00, rb, rc, 0); M.tri(rb, c00, ra, rc, 0); M.tri(c01, c11, ra, rc, 0); M.tri(ra, c11, rb, rc, 0); M.tri(c00, c01, ra, rc, 0); M.tri(c11, c10, rb, rc, 0);
+      }
       if (b.i && Math.abs(area2(b.p)) > 600) grid(b.p, 6.5, 5.5, function (c, u, v) { M.prism(orect(c, u, v, 2.2, 0.8), b.h, b.h + 0.55, C.sky, C.sky, 0, 0, true); }, 1.2);   // świetliki hal zajezdni
     });
     // chodnik granitowy między budynkiem a zielenią
