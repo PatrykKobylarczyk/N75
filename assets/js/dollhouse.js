@@ -791,7 +791,7 @@
   };
 
   var MK = null, MKP = null;
-  function mkData() { if (!MKP) MKP = fetch('assets/data/makieta.json?v=1794253897').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) { MK = d; return d; }); return MKP; }
+  function mkData() { if (!MKP) MKP = fetch('assets/data/makieta.json?v=1794254399').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) { MK = d; return d; }); return MKP; }
   function envMesh(d, id, data, which) {
     var M = new Mesh(), base = data.levels[0], f = parseInt(String(id).replace(/^\D+/, ''), 10) + (which || 0), Y0 = d.z[f] || 0;
     var ox = d.o[0] - base.ox, oz = base.oy - d.o[1];
@@ -921,7 +921,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1794253897').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1794254399').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);

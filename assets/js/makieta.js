@@ -294,7 +294,7 @@
     function covered(x, z, self) { for (var i = 0; i < OCC.length; i++) { var o = OCC[i]; if (o.p === self || x < o.x0 || x > o.x1 || z < o.z0 || z > o.z1) continue; if (inPoly(o.p, x, z)) return true; } return false; }
     function sketchWalls(b) {
       var P = b.p, A = area2(P), ar = Math.abs(A) / 2, rnd = Math.abs(Math.sin(P[0][0] * 12.9898 + P[0][1] * 78.233) * 43758.5453) % 1;
-      var k = b.h < 4.5 ? 3 : (b.i || (b.h <= 12 && ar > 900)) ? 2 : b.h > 20 ? 1 : 0, spN = [3.3 + rnd * 0.5, 2.6 + rnd * 0.4, 5.5, 3.2][k];
+      var k = b.k !== undefined ? b.k : b.h < 4.5 ? 3 : (b.i || (b.h <= 12 && ar > 900)) ? 2 : b.h > 20 ? 1 : 0, spN = [3.3 + rnd * 0.5, 2.6 + rnd * 0.4, 5.5, 3.2][k];
       for (var i = 0; i < P.length; i++) {
         var a = P[i], c = P[(i + 1) % P.length];
         if (b._E && b._E.some(function (q) { return q[0] === a; })) continue;
@@ -330,6 +330,7 @@
     }
     e.b.forEach(function (b) {
       M.prism(b.p, -0.36, b.h, C.nb, C.nbTop, 8, 8, true); drawnFront(b); sketchWalls(b);
+      if (b.d) { var dc = cen(b.p); M.prism(offset(b.p, 0.35), b.h - 0.3, b.h, C.nb, C.nbTop, 8, 8, true); M.sphere(dc[0], b.h, dc[1], 2.4, 2.6, [150, 160, 166], 0); }   // kopułka wieży
       if (b.i && Math.abs(area2(b.p)) > 600) grid(b.p, 6.5, 5.5, function (c, u, v) { M.prism(orect(c, u, v, 2.2, 0.8), b.h, b.h + 0.55, C.sky, C.sky, 0, 0, true); }, 1.2);   // świetliki hal zajezdni
     });
     // ciąg pieszo-rowerowy między budynkiem a zielenią (od Tramwajowej do ściany sąsiada)
