@@ -356,20 +356,14 @@
       if (b.d) tower(M, b);
       if (b.i && Math.abs(area2(b.p)) > 600) grid(b.p, 6.5, 5.5, function (c, u, v) { M.prism(orect(c, u, v, 2.2, 0.8), b.h, b.h + 0.55, C.sky, C.sky, 0, 0, true); }, 1.2);   // świetliki hal zajezdni
     });
-    // ciąg pieszo-rowerowy między budynkiem a zielenią (od Tramwajowej do ściany sąsiada)
+    // chodnik granitowy między budynkiem a zielenią
     (function () {
       var sl = D.floors[1].slab[0], bz = Math.max.apply(null, sl.map(function (p) { return p[1]; })), x0 = -21.6, x1 = Math.max.apply(null, sl.map(function (p) { return p[0]; }));
       var y = -0.325, za = bz + 0.05, zb = 23.15, x2 = 116, zm = (za + zb) / 2;
-      // jeden prosty ciąg pieszo-rowerowy tuż przy budynku, w linii z odcinkiem wzdłuż tyłów pierzei (do chodnika ulicy na wschodzie)
-      M.box(x0, za, x2, zb, y - 0.01, y + 0.004, C.bike, 6);
-      for (var x = x0 + 0.5; x < x2 - 1; x += 2) M.box(x, zm - 0.05, x + 1, zm + 0.05, y, y + 0.009, C.white, 0);   // przerywana oś
+      // prosty chodnik z płyt granitowych tuż przy budynku, w linii z przejściem wzdłuż tyłów pierzei (do chodnika ulicy na wschodzie)
+      M.box(x0, za, x2, zb, y - 0.01, y + 0.004, [184, 182, 178], 10);
       M.box(x0, zb, x2, zb + 0.15, y - 0.01, y + 0.04, C.stone, 0);                     // obrzeże
       M.box(x0, zb + 0.15, x1, bz + 5, y - 0.01, y + 0.002, C.grass, 5);               // pas trawy do skweru
-      [-18, -4, 9].forEach(function (cx) {                                              // znaki rowerowe na nawierzchni
-        var r = 0.32, z = zm + 0.75; M.cyl(cx - 0.55, z, r, y + 0.006, y + 0.009, C.white, 14); M.cyl(cx + 0.55, z, r, y + 0.006, y + 0.009, C.white, 14);
-        M.cyl(cx - 0.55, z, r - 0.07, y + 0.007, y + 0.01, C.bike, 14); M.cyl(cx + 0.55, z, r - 0.07, y + 0.007, y + 0.01, C.bike, 14);
-        M.beam([cx - 0.55, z], [cx + 0.1, z - 0.45], 0.07, y + 0.006, y + 0.011, C.white); M.beam([cx + 0.1, z - 0.45], [cx + 0.55, z], 0.07, y + 0.006, y + 0.011, C.white);
-      });
     })();
     // parkingi (bez aut)
     var CARS = [[236, 236, 234], [40, 42, 46], [150, 152, 156], [196, 198, 200], [52, 66, 92], [128, 34, 30], [84, 86, 90], [226, 222, 214]], ci = 0;
