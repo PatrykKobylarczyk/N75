@@ -10,11 +10,11 @@
 
   /* ---------- geometria ---------- */
   function Mesh() { this.p = []; this.n = []; this.c = []; this.m = []; }
-  Mesh.prototype.tri = function (a, b, c, col, mat) {
+  Mesh.prototype.tri = function (a, b, c, col, mat, uv) {
     var ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2], vx = c[0] - a[0], vy = c[1] - a[1], vz = c[2] - a[2];
     var nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx, l = Math.hypot(nx, ny, nz) || 1;
     nx /= l; ny /= l; nz /= l;
-    for (var i = 0; i < 3; i++) { var v = i === 0 ? a : i === 1 ? b : c; this.p.push(v[0], v[1], v[2]); this.n.push(nx, ny, nz); this.c.push(col[0] / 255, col[1] / 255, col[2] / 255); this.m.push(mat || 0); }
+    for (var i = 0; i < 3; i++) { var v = i === 0 ? a : i === 1 ? b : c; this.p.push(v[0], v[1], v[2]); this.n.push(nx, ny, nz); if (uv) this.c.push(uv[i][0], uv[i][1], 0); else this.c.push(col[0] / 255, col[1] / 255, col[2] / 255); this.m.push(mat || 0); }
   };
   Mesh.prototype.quad = function (a, b, c, d, col, mat) { this.tri(a, b, c, col, mat); this.tri(a, c, d, col, mat); };
   function area2(P) { var s = 0; for (var i = 0; i < P.length; i++) { var a = P[i], b = P[(i + 1) % P.length]; s += a[0] * b[1] - b[0] * a[1]; } return s / 2; }
@@ -243,8 +243,28 @@
         for (var t = 0.25; t < l - 0.3; t += 1.0) { var c = [a[0] + u[0] * (t + 0.25), a[1] + u[1] * (t + 0.25)]; M.prism(orect(c, u, v, 0.25, 1.9), -0.33, -0.318, C.white, C.white, 0, 0, true); }
       }
     });
+    // rysowane elewacje pierzei Narutowicza (ten sam rysunek co animacja „pierzeja” na stronie); px – zakres rysunku, t – linia gzymsu
+    var PZ = [{ x: 27, px: [1278, 1571], t: 106 }, { x: 50, px: [970, 1278], t: 130 }, { x: 73, px: [711, 970], t: 157 }, { x: 98, px: [410, 711], t: 121 }, { x: 148, px: [27, 358], t: 87 }];
+    function drawnFront(b) {
+      var P = b.p, xs = P.map(function (q) { return q[0]; }), zs = P.map(function (q) { return q[1]; }), bx0 = Math.min.apply(null, xs), bx1 = Math.max.apply(null, xs), z0 = Math.min.apply(null, zs);
+      if (z0 > -10 || z0 < -30) return;
+      var f = PZ.filter(function (q) { return q.x > bx0 && q.x < bx1; })[0]; if (!f) return;
+      var E = [], cx = xs.reduce(function (a, v) { return a + v; }, 0) / P.length, cz = zs.reduce(function (a, v) { return a + v; }, 0) / P.length;
+      for (var i = 0; i < P.length; i++) { var a = P[i], c = P[(i + 1) % P.length]; if (Math.abs(c[1] - a[1]) < 0.25 * Math.abs(c[0] - a[0]) && (a[1] + c[1]) / 2 < z0 + 1.5 && Math.abs(c[0] - a[0]) > 0.5) E.push([a, c]); }
+      if (!E.length) return;
+      var fx0 = Math.min.apply(null, E.map(function (q) { return Math.min(q[0][0], q[1][0]); })), fx1 = Math.max.apply(null, E.map(function (q) { return Math.max(q[0][0], q[1][0]); }));
+      var U = function (x) { return (f.px[1] - (x - fx0) / (fx1 - fx0) * (f.px[1] - f.px[0])) / 2172; }, vb = 409 / 435, vt = f.t / 435;
+      E.forEach(function (q) {
+        var a = q[0], c = q[1], dx = c[0] - a[0], dz = c[1] - a[1], l = Math.hypot(dx, dz), nx = dz / l, nz = -dx / l;
+        if (nx * (a[0] - cx) + nz * (a[1] - cz) < 0) { nx = -nx; nz = -nz; }
+        var o = 0.05, A = [a[0] + nx * o, a[1] + nz * o], Cc = [c[0] + nx * o, c[1] + nz * o];
+        var ua = U(a[0]), uc = U(c[0]);
+        M.tri([A[0], -0.3, A[1]], [Cc[0], -0.3, Cc[1]], [Cc[0], b.h, Cc[1]], [uc * 255, vb * 255, 0], 15, [[ua, vb], [uc, vb], [uc, vt]]);
+        M.tri([A[0], -0.3, A[1]], [Cc[0], b.h, Cc[1]], [A[0], b.h, A[1]], [ua * 255, vt * 255, 0], 15, [[ua, vb], [uc, vt], [ua, vt]]);
+      });
+    }
     e.b.forEach(function (b) {
-      M.prism(b.p, -0.36, b.h, C.nb, C.nbTop, 8, 8, true);
+      M.prism(b.p, -0.36, b.h, C.nb, C.nbTop, 8, 8, true); drawnFront(b);
       if (b.i && Math.abs(area2(b.p)) > 600) grid(b.p, 6.5, 5.5, function (c, u, v) { M.prism(orect(c, u, v, 2.2, 0.8), b.h, b.h + 0.55, C.sky, C.sky, 0, 0, true); }, 1.2);   // świetliki hal zajezdni
     });
     // ciąg pieszo-rowerowy między budynkiem a zielenią (od Tramwajowej do ściany sąsiada)
@@ -256,6 +276,11 @@
       M.box(x0, bz + 4.8, x1, bz + 4.95, y - 0.01, y + 0.04, C.stone, 0);                // obrzeże od strony zieleni
       for (var x = x0 + 0.5; x < x1 - 1; x += 2) M.box(x, bz + 3.5, x + 1, bz + 3.6, y, y + 0.007, C.white, 0);   // przerywana oś
       M.box(x0, bz + 2.27, x1, bz + 2.33, y, y + 0.007, C.white, 0);                   // linia krawędziowa
+      // dalej na wschód: wspólny ciąg pieszo-rowerowy wzdłuż tyłów pierzei, aż do chodnika ulicy (x ≈ 116)
+      var za = 19.7, zb = 23.15, x2 = 116;
+      M.box(x1, za, x2, zb, y - 0.01, y + 0.004, C.bike, 6);
+      for (var x = x1 + 1; x < x2 - 1; x += 2) M.box(x, (za + zb) / 2 - 0.05, x + 1, (za + zb) / 2 + 0.05, y, y + 0.009, C.white, 0);
+      M.box(x1, zb, x2, zb + 0.15, y - 0.01, y + 0.04, C.stone, 0);
       [-18, -4, 9].forEach(function (cx) {                                              // znaki rowerowe na nawierzchni
         var r = 0.32, z = bz + 2.95; M.cyl(cx - 0.55, z, r, y + 0.006, y + 0.009, C.white, 14); M.cyl(cx + 0.55, z, r, y + 0.006, y + 0.009, C.white, 14);
         M.cyl(cx - 0.55, z, r - 0.07, y + 0.007, y + 0.01, C.bike, 14); M.cyl(cx + 0.55, z, r - 0.07, y + 0.007, y + 0.01, C.bike, 14);
@@ -284,12 +309,13 @@
   /* ---------- WebGL ---------- */
   var VS = '#version 300 es\nlayout(location=0) in vec3 p;layout(location=1) in vec3 n;layout(location=2) in vec3 c;layout(location=3) in float m;' +
     'uniform mat4 uVP,uL;out vec3 vP,vN,vC;out float vM;out vec4 vL;void main(){vP=p;vN=n;vC=c;vM=m;vL=uL*vec4(p,1.);gl_Position=uVP*vec4(p,1.);}';
-  var FS = '#version 300 es\nprecision highp float;in vec3 vP,vN,vC;in float vM;in vec4 vL;uniform sampler2D uS;uniform vec3 uSun,uEye;uniform float uA;out vec4 o;' +
+  var FS = '#version 300 es\nprecision highp float;in vec3 vP,vN,vC;in float vM;in vec4 vL;uniform sampler2D uS,uF;uniform float uFT;uniform vec3 uSun,uEye;uniform float uA;out vec4 o;' +
     'vec3 lin(vec3 c){return pow(c,vec3(2.2));}float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}' +
     'float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}' +
     'float sh(){vec3 q=vL.xyz/vL.w*.5+.5;if(q.x<0.||q.x>1.||q.y<0.||q.y>1.||q.z>1.)return 1.;float s=0.;vec2 t=1./vec2(textureSize(uS,0));' +
     'for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++){float d=texture(uS,q.xy+vec2(x,y)*t*1.5).r;s+=q.z-.0009>d?0.:1.;}return s/9.;}' +
     'void main(){vec3 N=normalize(vN);if(!gl_FrontFacing)N=-N;vec3 col=lin(vC);int M=int(vM+.5);vec2 hz=abs(N.x)>abs(N.z)?vP.zy:vP.xy;' +
+    'if(M==15){float k=texture(uF,vC.xy).a*uFT;col=lin(mix(vec3(.86,.85,.83),vec3(.3,.27,.24),k));}' +
     'if(M==1){vec2 q=N.y>.5?vP.xz:hz;col*=.95+.04*vn(q*3.)+.07*h(floor(q*180.))+.04*vn(q*45.);}' +
     'if(M==2){vec2 q=N.y>.5?vP.xz:hz;float jy=fract(q.y/.6),jx=fract((q.x+floor(q.y/.6)*.6)/1.2);col*=mix(.82,1.,smoothstep(0.,.03,min(jy,1.-jy)))*mix(.85,1.,smoothstep(0.,.015,min(jx,1.-jx)));' +
     'col*=.93+.1*vn(q*vec2(1.2,6.)+vn(q*2.)*2.);}' +
@@ -303,7 +329,7 @@
     'if(M==10&&N.y>.5){vec2 g=fract(vP.xz/1.);col*=mix(.93,1.,smoothstep(0.,.03,min(min(g.x,1.-g.x),min(g.y,1.-g.y))));}' +
     'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),2.5);vec3 sky=mix(vec3(.82,.88,.94),vec3(.62,.74,.86),clamp(reflect(-V,N).y,0.,1.));o=vec4(pow(mix(col,sky,.45+fr*.4),vec3(1./2.2)),uA+fr*.25);return;}' +
     'float ndl=max(dot(N,uSun),0.),s=sh();vec3 sky=vec3(.82,.88,1.),bnc=vec3(.78,.74,.68);vec3 amb=mix(bnc*.62,sky*.8,N.y*.5+.5);' +
-    'float ao=M==8||M==1||M==2||M==3?mix(.78,1.,smoothstep(-.3,6.,vP.y)):1.;' +
+    'float ao=M==8||M==15||M==1||M==2||M==3?mix(.78,1.,smoothstep(-.3,6.,vP.y)):1.;' +
     'vec3 sunC=vec3(1.,.93,.8)*1.12;vec3 L=col*(amb*ao+sunC*ndl*mix(.16,1.,s));' +
     'if(M==12){L=col*(.8+.25*ndl);}' +
     'vec3 V=normalize(uEye-vP);float gs=M==3?.35:M==2?.12:.03;L+=sunC*pow(max(dot(N,normalize(uSun+V)),0.),40.)*gs*s;' +
@@ -342,6 +368,17 @@
   [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER].forEach(function (k) { gl.texParameteri(gl.TEXTURE_2D, k, gl.NEAREST); });
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   var fb = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, fb); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, depth, 0); gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  // rysunek pierzei jako tekstura elewacji sąsiadów
+  var ftex = gl.createTexture(), ftexOK = false;
+  gl.bindTexture(gl.TEXTURE_2D, ftex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));
+  (function () {
+    var im = new Image(); im.onload = function () {
+      gl.bindTexture(gl.TEXTURE_2D, ftex); gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im); gl.generateMipmap(gl.TEXTURE_2D);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      var an = gl.getExtension('EXT_texture_filter_anisotropic'); if (an) gl.texParameterf(gl.TEXTURE_2D, an.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(8, gl.getParameter(an.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));
+      ftexOK = true; if (typeof draw === 'function' && VP) draw();
+    }; im.src = 'assets/img/pierzeja-narutowicza.webp';
+  })();
   function upload(M) {
     if (!M || !M.p.length) return null;
     var vao = gl.createVertexArray(); gl.bindVertexArray(vao);
@@ -388,6 +425,7 @@
     gl.uniformMatrix4fv(u('uVP'), false, VP); gl.uniformMatrix4fv(u('uL'), false, LM);
     gl.uniform3fv(u('uSun'), sun); gl.uniform3fv(u('uEye'), EYE); gl.uniform1f(u('uA'), 1);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, depth); gl.uniform1i(u('uS'), 0);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, ftex); gl.uniform1i(u('uF'), 1); gl.uniform1f(u('uFT'), ftexOK ? 1 : 0); gl.activeTexture(gl.TEXTURE0);
     gl.disable(gl.CULL_FACE);
     list.forEach(function (o) { if (o) { gl.bindVertexArray(o.vao); gl.drawArrays(gl.TRIANGLES, 0, o.n); } });
     gl.enable(gl.BLEND); gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.5);
@@ -404,7 +442,8 @@
   function labels() {
     var html = '';
     if (SEL >= 1) PICK.forEach(function (k, i) { if (PICK.findIndex(function (q) { return q.id === k.id; }) !== i) return; var c = cen(k.P), s = proj(c[0], k.y + 0.3, c[1]); if (s) html += '<span style="left:' + s[0].toFixed(0) + 'px;top:' + s[1].toFixed(0) + 'px"' + (k.id === HOVER ? ' class="is-h"' : '') + '>' + k.id + '</span>'; });
-    if (SEL < 0 && D) { var sl = D.floors[1].slab[0], bz = Math.max.apply(null, sl.map(function (p) { return p[1]; })), xs = sl.map(function (p) { return p[0]; }), sq = proj((Math.min.apply(null, xs) + Math.max.apply(null, xs)) / 2, 9, bz + 16); if (sq) html += '<span class="mk3d__place" style="left:' + sq[0].toFixed(0) + 'px;top:' + sq[1].toFixed(0) + 'px">Planowany skwer</span>'; }
+    if (SEL < 0 && D && EYE[2] > 0) { var sl = D.floors[1].slab[0], bz = Math.max.apply(null, sl.map(function (p) { return p[1]; })), xs = sl.map(function (p) { return p[0]; }), sq = proj((Math.min.apply(null, xs) + Math.max.apply(null, xs)) / 2, 9, bz + 16); if (sq) html += '<span class="mk3d__place" style="left:' + sq[0].toFixed(0) + 'px;top:' + sq[1].toFixed(0) + 'px">Planowany skwer</span>'; }
+    if (SEL < 0 && D && D.env.n) D.env.n.forEach(function (q) { var s = proj(q.p[0], 6, q.p[1]); if (s) html += '<span class="mk3d__place" style="left:' + s[0].toFixed(0) + 'px;top:' + s[1].toFixed(0) + 'px">' + q.t + '</span>'; });
     if (lab.innerHTML !== html) lab.innerHTML = html;
   }
   function compass() { if (comp) { var a = Math.atan2(NORTH[0], -NORTH[1]); comp.style.transform = 'rotate(' + (-(cam.az + Math.PI) + a) + 'rad)'; } }
