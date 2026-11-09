@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..600;1,300..500&family=Nunito+Sans:ital,opsz,wght@0,6..12,300..700;1,6..12,300..500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/img/okolica-lotnicze.webp" imagesrcset="assets/img/okolica-lotnicze-1600.webp 1600w, assets/img/okolica-lotnicze.webp 3200w" imagesizes="100vw">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="assets/css/style.css?v=1794255160">
+  <link rel="stylesheet" href="assets/css/style.css?v=1794255356">
   <script>document.documentElement.classList.add('js');
   // Futura / Avenir Next tylko na Apple: gdy ich brak, dostrajamy darmowe zamienniki (Jost, Nunito Sans)
   (function(){try{var c=document.createElement('canvas').getContext('2d'),t='MWNmwqr075 Łódź';function w(f){c.font='72px '+f;return c.measureText(t).width}
@@ -422,7 +422,7 @@
       <h2 class="display h2 reveal">Znajdź<br>swoje miejsce</h2>
       <div class="reveal">
       <p class="muted" style="margin:0;max-width:540px">50 apartamentów od 32 do 167&nbsp;m², od kompaktowych studiów po dwupoziomowe apartamenty z&nbsp;tarasami na ostatnich kondygnacjach. Uniwersalne, ponadczasowe układy i&nbsp;3&nbsp;metry wysokości to wartość dodana, która zostaje na lata. Wybierz piętro na makiecie, a&nbsp;potem mieszkanie na rzucie.</p>
-        <a href="makieta.html" class="btn caps mk3d-cta">Makieta 3D budynku z&nbsp;otoczeniem <span class="arrow"></span></a>
+        <a href="#makieta-3d" class="btn caps mk3d-cta">Makieta 3D budynku z&nbsp;otoczeniem <span class="arrow"></span></a>
       </div>
     </div>
 
@@ -447,6 +447,11 @@
         <svg class="mk__svg" id="mk-svg" viewBox="0 0 600 620" role="group" aria-label="Makieta budynku: wybierz piętro"></svg>
       </div>
       <div class="mk__panel" id="mk-panel" aria-live="polite"></div>
+    </div>
+
+    <div class="mk3d-embed reveal" id="makieta-3d">
+      <div class="mk3d-embed__head"><span class="caps muted">Makieta 3D budynku z&nbsp;otoczeniem</span><a href="makieta.html" class="caps bronze">Pełny ekran <span class="arrow"></span></a></div>
+      <iframe src="makieta.html?embed=1" title="Makieta 3D budynku N75 z otoczeniem" loading="lazy" allow="fullscreen"></iframe>
     </div>
 
     <div class="mk-sep reveal"><span class="caps">lub przeszukaj wszystkie lokale</span></div>
@@ -685,12 +690,12 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-<script src="assets/js/intro.js?v=1794255160"></script>
-<script src="assets/js/extras.js?v=1794255160"></script>
-<script src="assets/js/units.js?v=1794255160"></script>
-<script src="assets/js/dziennik.js?v=1794255160"></script>
-<script src="assets/js/plan.js?v=1794255160"></script>
-<script src="assets/js/dollhouse.js?v=1794255160" defer></script>
-<script src="assets/js/main.js?v=1794255160"></script>
+<script src="assets/js/intro.js?v=1794255356"></script>
+<script src="assets/js/extras.js?v=1794255356"></script>
+<script src="assets/js/units.js?v=1794255356"></script>
+<script src="assets/js/dziennik.js?v=1794255356"></script>
+<script src="assets/js/plan.js?v=1794255356"></script>
+<script src="assets/js/dollhouse.js?v=1794255356" defer></script>
+<script src="assets/js/main.js?v=1794255356"></script>
 </body>
 </html>
