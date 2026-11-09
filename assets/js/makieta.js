@@ -187,7 +187,7 @@
     (fl.cols || []).forEach(function (c) { M.prism(c, fl.z0, fl.z1, C.cream, C.cream, 1, 1); });
     (fl.rails || []).forEach(function (r) { if (Math.hypot(r[2] - r[0], r[3] - r[1]) > 0.7) rail(M, [r[0], r[1]], [r[2], r[3]], fl.z0 + 0.05, 1.1); });
     // dach nad ostatnią kondygnacją
-    if (f === 7) fl.mass.forEach(function (e) { M.prism(offset(e.p, 0.25), fl.z1, fl.z1 + 0.45, C.cornice, C.cream, 1); });
+    if (f === 7) fl.mass.forEach(function (e) { M.prism(offset(e.p, 0.25), fl.z1, fl.z1 + 0.45, C.cornice, C.cornice, 1); M.prism(offset(e.p, -0.35), fl.z1 + 0.45, fl.z1 + 0.6, C.green, C.green, 5, 5, true); });   // zielony dach
     return { M: M, G: G };
   }
   // przekrój kondygnacji: płyta, niskie ściany i lokale w kolorach statusu
@@ -238,16 +238,10 @@
       M.prism(b.p, -0.36, b.h, C.nb, C.nbTop, 8, 8, true);
       if (b.i && Math.abs(area2(b.p)) > 600) grid(b.p, 6.5, 5.5, function (c, u, v) { M.prism(orect(c, u, v, 2.2, 0.8), b.h, b.h + 0.55, C.sky, C.sky, 0, 0, true); }, 1.2);   // świetliki hal zajezdni
     });
-    // parkingi z autami
+    // parkingi (bez aut)
     var CARS = [[236, 236, 234], [40, 42, 46], [150, 152, 156], [196, 198, 200], [52, 66, 92], [128, 34, 30], [84, 86, 90], [226, 222, 214]], ci = 0;
     (e.k || []).forEach(function (P) {
       M.cap(area2(P) > 0 ? P.slice().reverse() : P, -0.335, C.road, 6);
-      grid(P, 2.6, 0, function (c, u, v) {
-        if ((ci++ * 7919) % 100 < 22) return;
-        var col = CARS[(ci * 31) % CARS.length];
-        M.prism(orect(c, v, u, 2.2, 0.9), -0.33, 0.42, col, col, 0, 0, true);
-        M.prism(orect([c[0] - v[0] * 0.15, c[1] - v[1] * 0.15], v, u, 1.15, 0.78), 0.42, 1.05, [70, 78, 86], col, 0, 0, true);
-      }, 0.3, true);
     });
     // tory tramwajowe
     (e.tr || []).forEach(function (P) {
