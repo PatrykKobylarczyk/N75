@@ -1752,3 +1752,4 @@ body.dh-open { overflow: hidden; }
 .is-embed .mk3d__legal { display: none; }
 /* bez napisu „Makieta 3D / Wybierz piętro i mieszkanie” (zostaje tylko dla czytników ekranu) */
 .mk3d__top > div > * { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.is-embed .mk3d__full { display: inline-block; text-decoration: none; color: inherit; }

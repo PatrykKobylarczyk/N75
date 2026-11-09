@@ -562,7 +562,7 @@
     for (var t = 1; t < 600; t += 0.35) {
       var p = [R.o[0] + R.d[0] * t, R.o[1] + R.d[1] * t, R.o[2] + R.d[2] * t];
       if (p[1] < -0.4) return null;
-      for (var f = top; f >= 0; f--) { var fl = D.floors[f]; if (p[1] >= fl.z0 - 0.4 && p[1] < (f === 7 ? fl.z1 + 0.5 : fl.z1 - 0.4) && fl.slab.some(function (P) { return inside([p[0], p[2]], P); })) return f; }
+      for (var f = top; f >= 0; f--) { var fl = D.floors[f]; if (p[1] >= fl.z0 - 0.4 && p[1] < (f === 7 ? fl.z1 + 0.5 : fl.z1 - 0.4) && fl.slab.some(function (P) { return inside([p[0], p[2]], P); })) return f === 7 ? 6 : f; }
     }
     return null;
   }
@@ -631,7 +631,7 @@
 
   function buildPanel() {
     var h = '<button type="button" class="chip" data-f="-1" aria-pressed="true">Cały budynek</button>';
-    for (var f = 7; f >= 0; f--) { var a = avail(f); h += '<button type="button" class="chip" data-f="' + f + '" aria-pressed="false"><b>' + (f === 0 ? 'P' : f) + '</b><span>' + (f === 0 ? 'Parter · usługi' : a ? 'wolne: ' + a : '') + '</span></button>'; }
+    for (var f = 6; f >= 0; f--) { var a = avail(f); h += '<button type="button" class="chip" data-f="' + f + '" aria-pressed="false"><b>' + (f === 0 ? 'P' : f) + '</b><span>' + (f === 0 ? 'Parter · usługi' : a ? 'wolne: ' + a : '') + '</span></button>'; }
     panel.innerHTML = h;
     panel.addEventListener('click', function (e) { var b = e.target.closest('button[data-f]'); if (b) select(+b.dataset.f); });
     var sl = root.querySelector('.mk3d__sun input'), out = root.querySelector('.mk3d__sun output');
