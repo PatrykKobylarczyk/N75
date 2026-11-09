@@ -14,7 +14,7 @@
     var ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2], vx = c[0] - a[0], vy = c[1] - a[1], vz = c[2] - a[2];
     var nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx, l = Math.hypot(nx, ny, nz) || 1;
     nx /= l; ny /= l; nz /= l;
-    for (var i = 0; i < 3; i++) { var v = i === 0 ? a : i === 1 ? b : c; this.p.push(v[0], v[1], v[2]); this.n.push(nx, ny, nz); if (uv) this.c.push(uv[i][0], uv[i][1], 0); else this.c.push(col[0] / 255, col[1] / 255, col[2] / 255); this.m.push(mat || 0); }
+    for (var i = 0; i < 3; i++) { var v = i === 0 ? a : i === 1 ? b : c; this.p.push(v[0], v[1], v[2]); this.n.push(nx, ny, nz); if (uv) this.c.push(uv[i][0], uv[i][1], uv[i][2] || 0); else this.c.push(col[0] / 255, col[1] / 255, col[2] / 255); this.m.push(mat || 0); }
   };
   Mesh.prototype.quad = function (a, b, c, d, col, mat) { this.tri(a, b, c, col, mat); this.tri(a, c, d, col, mat); };
   function area2(P) { var s = 0; for (var i = 0; i < P.length; i++) { var a = P[i], b = P[(i + 1) % P.length]; s += a[0] * b[1] - b[0] * a[1]; } return s / 2; }
@@ -247,6 +247,28 @@
     var PZ = [{ x: 27, px: [1278, 1571], t: 106 }, { x: 50, px: [970, 1278], t: 130 }, { x: 73, px: [711, 970], t: 157 }, { x: 98, px: [410, 711], t: 121 }, { x: 148, px: [27, 358], t: 87 },
       // na zachód od N75 (drugi pas atlasu): Okręgowy Urząd Miar, żółty biurowiec, beżowa kamienica
       { x: -59.5, px: [60, 279], t: 448, b: 844, d: 4 }, { x: -78, px: [360, 670], t: 661, b: 844 }, { x: -112, px: [700, 1280], t: 618, b: 844 }];
+    // pozostałe budynki: proceduralny szkic elewacji (okna, gzymsy, bramy) rysowany w shaderze (M 16)
+    var OCC = e.b.map(function (b) { var xs = b.p.map(function (q) { return q[0]; }), zs = b.p.map(function (q) { return q[1]; }); return { p: b.p, x0: Math.min.apply(null, xs), x1: Math.max.apply(null, xs), z0: Math.min.apply(null, zs), z1: Math.max.apply(null, zs) }; });
+    (function () { var sl = D.floors[1].slab[0], xs = sl.map(function (q) { return q[0]; }), zs = sl.map(function (q) { return q[1]; }); OCC.push({ p: sl, x0: Math.min.apply(null, xs), x1: Math.max.apply(null, xs), z0: Math.min.apply(null, zs), z1: Math.max.apply(null, zs) }); })();
+    function inPoly(P, x, z) { var r = false; for (var i = 0, j = P.length - 1; i < P.length; j = i++) { if ((P[i][1] > z) !== (P[j][1] > z) && x < (P[j][0] - P[i][0]) * (z - P[i][1]) / (P[j][1] - P[i][1]) + P[i][0]) r = !r; } return r; }
+    function covered(x, z, self) { for (var i = 0; i < OCC.length; i++) { var o = OCC[i]; if (o.p === self || x < o.x0 || x > o.x1 || z < o.z0 || z > o.z1) continue; if (inPoly(o.p, x, z)) return true; } return false; }
+    function sketchWalls(b) {
+      var P = b.p, A = area2(P), ar = Math.abs(A) / 2, rnd = Math.abs(Math.sin(P[0][0] * 12.9898 + P[0][1] * 78.233) * 43758.5453) % 1;
+      var k = b.h < 4.5 ? 3 : (b.i || (b.h <= 12 && ar > 900)) ? 2 : b.h > 20 ? 1 : 0, spN = [3.3 + rnd * 0.5, 2.6 + rnd * 0.4, 5.5, 3.2][k];
+      for (var i = 0; i < P.length; i++) {
+        var a = P[i], c = P[(i + 1) % P.length];
+        if (b._E && b._E.some(function (q) { return q[0] === a; })) continue;
+        var dx = c[0] - a[0], dz = c[1] - a[1], l = Math.hypot(dx, dz); if (l < 1.2) continue;
+        var nx = dz / l, nz = -dx / l; if (A < 0) { nx = -nx; nz = -nz; }
+        var mx = (a[0] + c[0]) / 2, mz = (a[1] + c[1]) / 2;
+        if (inPoly(P, mx + nx * 0.3, mz + nz * 0.3)) { nx = -nx; nz = -nz; }
+        if (covered(mx + nx * 0.6, mz + nz * 0.6, P)) continue;          // ściana szczytowa przy sąsiednim budynku
+        var n = Math.max(1, Math.round(l / spN)), sp = l / n, spq = Math.round(sp * 10) * 1000, kz = k * 1000 + b.h;
+        var o = 0.04, Aa = [a[0] + nx * o, a[1] + nz * o], Cc = [c[0] + nx * o, c[1] + nz * o], y0 = -0.3, y1 = b.h;
+        M.tri([Aa[0], y0, Aa[1]], [Cc[0], y0, Cc[1]], [Cc[0], y1, Cc[1]], C.nb, 16, [[0, spq + y0 + 0.5, kz], [n, spq + y0 + 0.5, kz], [n, spq + y1 + 0.5, kz]].map(function (q) { return q; }));
+        M.tri([Aa[0], y0, Aa[1]], [Cc[0], y1, Cc[1]], [Aa[0], y1, Aa[1]], C.nb, 16, [[0, spq + y0 + 0.5, kz], [n, spq + y1 + 0.5, kz], [0, spq + y1 + 0.5, kz]]);
+      }
+    }
     function drawnFront(b) {
       var P = b.p, xs = P.map(function (q) { return q[0]; }), zs = P.map(function (q) { return q[1]; }), bx0 = Math.min.apply(null, xs), bx1 = Math.max.apply(null, xs), z0 = Math.min.apply(null, zs);
       if (z0 > -10 || z0 < -30) return;
@@ -254,6 +276,7 @@
       var E = [], cx = xs.reduce(function (a, v) { return a + v; }, 0) / P.length, cz = zs.reduce(function (a, v) { return a + v; }, 0) / P.length;
       for (var i = 0; i < P.length; i++) { var a = P[i], c = P[(i + 1) % P.length]; if (Math.abs(c[1] - a[1]) < 0.25 * Math.abs(c[0] - a[0]) && (a[1] + c[1]) / 2 < z0 + (f.d || 1.5) && Math.abs(c[0] - a[0]) > 0.5) E.push([a, c]); }
       if (!E.length) return;
+      b._E = E;
       var fx0 = Math.min.apply(null, E.map(function (q) { return Math.min(q[0][0], q[1][0]); })), fx1 = Math.max.apply(null, E.map(function (q) { return Math.max(q[0][0], q[1][0]); }));
       var U = function (x) { return (f.px[1] - (x - fx0) / (fx1 - fx0) * (f.px[1] - f.px[0])) / 2172; }, vb = (f.b || 409) / 870, vt = f.t / 870;
       E.forEach(function (q) {
@@ -266,7 +289,7 @@
       });
     }
     e.b.forEach(function (b) {
-      M.prism(b.p, -0.36, b.h, C.nb, C.nbTop, 8, 8, true); drawnFront(b);
+      M.prism(b.p, -0.36, b.h, C.nb, C.nbTop, 8, 8, true); drawnFront(b); sketchWalls(b);
       if (b.i && Math.abs(area2(b.p)) > 600) grid(b.p, 6.5, 5.5, function (c, u, v) { M.prism(orect(c, u, v, 2.2, 0.8), b.h, b.h + 0.55, C.sky, C.sky, 0, 0, true); }, 1.2);   // świetliki hal zajezdni
     });
     // ciąg pieszo-rowerowy między budynkiem a zielenią (od Tramwajowej do ściany sąsiada)
@@ -313,10 +336,22 @@
     'uniform mat4 uVP,uL;out vec3 vP,vN,vC;out float vM;out vec4 vL;void main(){vP=p;vN=n;vC=c;vM=m;vL=uL*vec4(p,1.);gl_Position=uVP*vec4(p,1.);}';
   var FS = '#version 300 es\nprecision highp float;in vec3 vP,vN,vC;in float vM;in vec4 vL;uniform sampler2D uS,uF;uniform float uFT;uniform vec3 uSun,uEye;uniform float uA;out vec4 o;' +
     'vec3 lin(vec3 c){return pow(c,vec3(2.2));}float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}' +
+    'float LX(float d,float f,float w){return 1.-smoothstep(w,w+f,abs(d));}' +
+    'float BX(float ds,float y,float hw,float a,float b,float fx,float fy,float w){float iy=smoothstep(a-fy,a,y)*(1.-smoothstep(b,b+fy,y));float ix=1.-smoothstep(hw,hw+fx,ds);return max(LX(ds-hw,fx,w)*iy,max(LX(y-a,fy,w),LX(y-b,fy,w))*ix);}' +
+    'float sketch(vec3 c){float q=floor(c.y/1000.);float sp=q/10.;float y=c.y-q*1000.-.5;float k=floor(c.z/1000.);float H=c.z-k*1000.;' +
+    'float cu=fract(c.x)-.5;float ds=abs(cu)*sp;float fx=fwidth(c.x)*sp+1e-4,fy=fwidth(c.y)+1e-4;float w=.04;float ink=LX(y-H+.04,fy,w*1.4);' +
+    'if(k<.5){float g=4.;float fl=3.4;float hw=min(.62,sp*.3);ink=max(ink,LX(y-H+.9,fy,w*1.6));ink=max(ink,.5*LX(y-H+.72,fy,w));ink=max(ink,LX(y-g+.15,fy,w*1.4));ink=max(ink,.5*LX(y-.45,fy,w));' +
+    'float sw=min(1.05,sp*.38);ink=max(ink,BX(ds,y,sw,.6,3.3,fx,fy,w));ink=max(ink,.8*LX(ds,fx,w)*step(.6,y)*step(y,3.3));' +
+    'float j=floor((y-g)/fl);float b0=g+j*fl+.85;float b1=b0+1.8;if(j>=0.&&b1<H-1.1){ink=max(ink,BX(ds,y,hw,b0,b1,fx,fy,w));ink=max(ink,.45*BX(ds,y,hw+.14,b0-.14,b1+.14,fx,fy,w*.8));ink=max(ink,.85*LX(ds,fx,w*.8)*step(b0,y)*step(y,b1));ink=max(ink,LX(y-b0+.1,fy,w*1.5)*step(ds,hw+.22));}}' +
+    'else if(k<1.5){float g=3.2;float fl=2.85;float hw=min(.8,sp*.33);ink=max(ink,.5*LX(y-H+.6,fy,w));float j=floor((y-.0)/fl);float b0=j*fl+.85;float b1=b0+1.45;if(b1<H-.5){ink=max(ink,BX(ds,y,hw,b0,b1,fx,fy,w));ink=max(ink,.8*LX(ds,fx,w*.8)*step(b0,y)*step(y,b1));}ink=max(ink,.3*LX(y-j*fl,fy,w*.7));}' +
+    'else if(k<2.5){float hw=sp*.38;float b1=min(H-.8,5.2);float gate=step(abs(mod(floor(c.x),5.)-2.),.1);if(gate>.5){ink=max(ink,BX(ds,y,min(1.8,sp*.4),0.,3.8,fx,fy,w*1.3));ink=max(ink,.4*LX(fract(y/.35)-.5,fy/.35,.06)*step(ds,min(1.8,sp*.4))*step(y,3.8));}else if(b1>2.6){ink=max(ink,BX(ds,y,hw,2.2,b1,fx,fy,w));ink=max(ink,.8*LX(ds-hw/3.,fx,w*.7)*step(2.2,y)*step(y,b1));ink=max(ink,.8*LX(ds,fx,w*.7)*step(2.2,y)*step(y,b1)*0.);}}' +
+    'else{float hw=sp*.38;ink=max(ink,BX(ds,y,hw,0.,min(2.3,H-.4),fx,fy,w));ink=max(ink,.35*LX(fract(y/.3)-.5,fy/.3,.07)*step(ds,hw)*step(y,min(2.3,H-.4)));}' +
+    'return clamp(ink,0.,1.)*.85;}' +
     'float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}' +
     'float sh(){vec3 q=vL.xyz/vL.w*.5+.5;if(q.x<0.||q.x>1.||q.y<0.||q.y>1.||q.z>1.)return 1.;float s=0.;vec2 t=1./vec2(textureSize(uS,0));' +
     'for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++){float d=texture(uS,q.xy+vec2(x,y)*t*1.5).r;s+=q.z-.0009>d?0.:1.;}return s/9.;}' +
     'void main(){vec3 N=normalize(vN);if(!gl_FrontFacing)N=-N;vec3 col=lin(vC);int M=int(vM+.5);vec2 hz=abs(N.x)>abs(N.z)?vP.zy:vP.xy;' +
+    'if(M==16){col=lin(mix(vec3(.86,.85,.83),vec3(.3,.27,.24),sketch(vC)));}' +
     'if(M==15){float k=texture(uF,vC.xy).a*uFT;col=lin(mix(vec3(.86,.85,.83),vec3(.3,.27,.24),k));}' +
     'if(M==1){vec2 q=N.y>.5?vP.xz:hz;col*=.95+.04*vn(q*3.)+.07*h(floor(q*180.))+.04*vn(q*45.);}' +
     'if(M==2){vec2 q=N.y>.5?vP.xz:hz;float jy=fract(q.y/.6),jx=fract((q.x+floor(q.y/.6)*.6)/1.2);col*=mix(.82,1.,smoothstep(0.,.03,min(jy,1.-jy)))*mix(.85,1.,smoothstep(0.,.015,min(jx,1.-jx)));' +
@@ -331,7 +366,7 @@
     'if(M==10&&N.y>.5){vec2 g=fract(vP.xz/1.);col*=mix(.93,1.,smoothstep(0.,.03,min(min(g.x,1.-g.x),min(g.y,1.-g.y))));}' +
     'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),2.5);vec3 sky=mix(vec3(.82,.88,.94),vec3(.62,.74,.86),clamp(reflect(-V,N).y,0.,1.));o=vec4(pow(mix(col,sky,.45+fr*.4),vec3(1./2.2)),uA+fr*.25);return;}' +
     'float ndl=max(dot(N,uSun),0.),s=sh();vec3 sky=vec3(.82,.88,1.),bnc=vec3(.78,.74,.68);vec3 amb=mix(bnc*.62,sky*.8,N.y*.5+.5);' +
-    'float ao=M==8||M==15||M==1||M==2||M==3?mix(.78,1.,smoothstep(-.3,6.,vP.y)):1.;' +
+    'float ao=M==8||M==15||M==16||M==1||M==2||M==3?mix(.78,1.,smoothstep(-.3,6.,vP.y)):1.;' +
     'vec3 sunC=vec3(1.,.93,.8)*1.12;vec3 L=col*(amb*ao+sunC*ndl*mix(.16,1.,s));' +
     'if(M==12){L=col*(.8+.25*ndl);}' +
     'vec3 V=normalize(uEye-vP);float gs=M==3?.35:M==2?.12:.03;L+=sunC*pow(max(dot(N,normalize(uSun+V)),0.),40.)*gs*s;' +
