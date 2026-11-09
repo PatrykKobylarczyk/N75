@@ -127,7 +127,7 @@
           // pilaster: lekko wysunięty pas muru między oknami (rytm elewacji)
           // parter od Narutowicza: pełne pola to bramy garażowe z bulajami
           if (f === 0 && n[1] < -0.6 && s1 - s0 >= 2.4) {
-            var gw = Math.min(3.6, s1 - s0 - 0.5), gm = (s0 + s1) / 2, ga = gm - gw / 2, gb = gm + gw / 2, gh = fl.z0 + 3.55;
+            var gw = Math.min(5.4, s1 - s0 - 0.16), gm = (s0 + s1) / 2, ga = gm - gw / 2, gb = gm + gw / 2, gh = fl.z0 + 3.55;
             M.quad(V(ga, 0.012, fl.z0), V(gb, 0.012, fl.z0), V(gb, 0.012, gh), V(ga, 0.012, gh), C.gate, 14);
             var bf = function (sa, sb, ya, yb2) { M.beam(at(sa, 0.03), at(sb, 0.03), 0.05, ya, yb2, C.bronze, 0); };
             bf(ga, ga + 0.06, fl.z0, gh); bf(gb - 0.06, gb, fl.z0, gh); bf(ga, gb, gh - 0.06, gh); bf(gm - 0.02, gm + 0.02, fl.z0, gh);
@@ -164,6 +164,43 @@
     });
   }
   // balustrada: pochwyt + pręty co 11 cm
+  // patio na stropie parteru (poziom +1) wg wizualizacji: żwirowa ścieżka z płytami, wyspy roślin, głazy, okrągły pokład z meblami, drzewa, bluszcz na ścianie sąsiada
+  function patio(M, y) {
+    var X = function (xi) { return 4.6 + (xi - 740) / 470 * 10.4; }, Z = function (yi) { return -9.3 + (yi - 210) / 700 * 14; };
+    var blob = function (xi, yi, rx, rz, w, sd) { var P = []; for (var i = 0; i < 18; i++) { var a = -i / 18 * Math.PI * 2, k = 1 + w * Math.sin(a * 3 + sd) * 0.5 + w * Math.cos(a * 2 + sd * 1.7) * 0.3; P.push([X(xi) + Math.cos(a) * rx * k, Z(yi) + Math.sin(a) * rz * k]); } return P; };
+    var gr = [196, 190, 178], ivy = [72, 98, 58], shrub = [86, 116, 70], shrub2 = [108, 138, 84], stone = [150, 148, 142], step = [214, 208, 196];
+    M.box(X(740), Z(210), X(1210), Z(290), y, y + 0.12, C.walk, 10);                                  // pas płyt przy skrzydle północnym
+    M.box(X(815), Z(290), X(1205), Z(345), y, y + 0.9, shrub, 5);                                     // żywopłot ogródka
+    M.box(X(740), Z(290), X(815), Z(345), y, y + 0.12, C.grass, 5);
+    rail(M, [X(740), Z(352)], [X(1210), Z(352)], y + 0.1, 1.3);                                       // ażurowe ogrodzenie z mosiężnych listew
+    M.box(X(740), Z(355), X(1210), Z(885), y, y + 0.14, C.grass, 5);                                  // trawnik / runo
+    M.box(X(740), Z(885), X(1210), Z(910), y, y + 0.12, C.walk, 10);                                  // pas płyt przy skrzydle południowym
+    // żwirowa ścieżka meandrująca od góry do pokładu
+    [[985, 405], [955, 440], [915, 470], [870, 500], [835, 530], [825, 570], [845, 610], [880, 640], [930, 650], [985, 640], [1040, 630], [1080, 610], [1110, 580],
+     [835, 650], [850, 700], [880, 740], [930, 770], [975, 790]].forEach(function (q, i) { M.prism(blob(q[0], q[1], 0.95, 0.85, 0.25, i), y + 0.14, y + 0.17, gr, gr, 10); });
+    [[960, 430], [900, 485], [842, 548], [870, 625], [945, 648], [1030, 628], [858, 700], [905, 752]].forEach(function (q, i) { M.prism(blob(q[0], q[1], 0.42, 0.32, 0.3, i * 2), y + 0.17, y + 0.2, step, step, 10); });   // płyty
+    // wyspy roślin z krzewami
+    [[930, 560, 1.5, 1.3], [790, 470, 0.9, 1.2], [790, 690, 0.9, 1.0], [930, 860, 1.1, 0.6], [1175, 430, 0.9, 1.2]].forEach(function (q, i) {
+      M.prism(blob(q[0], q[1], q[2], q[3], 0.3, i), y + 0.14, y + 0.3, C.grass, C.grass, 5);
+      for (var k = 0; k < 4; k++) { var a = k * 1.9 + i, rr = 0.5 * Math.min(q[2], q[3]); M.sphere(X(q[0]) + Math.cos(a) * rr, y + 0.55, Z(q[1]) + Math.sin(a) * rr, 0.55, 0.45, k % 2 ? shrub : shrub2, 7); }
+    });
+    // głazy
+    [[905, 515], [940, 590], [880, 690], [950, 780], [810, 790], [1120, 650], [965, 455], [1000, 660]].forEach(function (q, i) { M.prism(blob(q[0], q[1], 0.38, 0.3, 0.6, i * 3), y + 0.14, y + 0.5 + (i % 3) * 0.12, stone, stone, 0, 0, true); });
+    // okrągły pokład z dwoma stolikami i czterema krzesłami
+    M.cyl(X(1065), Z(755), 2.1, y + 0.14, y + 0.24, C.deck, 28);
+    [[1040, 765], [1075, 775]].forEach(function (q) { M.cyl(X(q[0]), Z(q[1]), 0.06, y + 0.24, y + 0.95, C.bronze, 8); M.cyl(X(q[0]), Z(q[1]), 0.36, y + 0.95, y + 0.99, C.deck, 18); });
+    [[1025, 700, 0.6], [1105, 705, -0.6], [1025, 820, 2.5], [1110, 815, -2.5]].forEach(function (q) {
+      var c = [X(q[0]), Z(q[1])], u = [Math.cos(q[2]), Math.sin(q[2])], v = [-u[1], u[0]];
+      M.prism(orect(c, u, v, 0.28, 0.32), y + 0.24, y + 0.68, [120, 96, 74], [120, 96, 74], 0, 0, true);
+    });
+    // drzewa (wielopniowe, lekkie korony)
+    [[1180, 590, 3.0, 6.2], [990, 615, 2.1, 5.0]].forEach(function (q, i) {
+      var x = X(q[0]), z = Z(q[1]); M.cyl(x, z, 0.12, y + 0.14, y + q[3] * 0.5, C.trunk, 8);
+      M.sphere(x, y + q[3] * 0.7, z, q[2], q[3] * 0.33, i ? C.leaf : C.leaf2, 7); M.sphere(x + 0.6, y + q[3] * 0.9, z - 0.4, q[2] * 0.7, q[3] * 0.25, C.leaf, 7);
+    });
+    // bluszcz na ścianie sąsiada (poszarpana górna krawędź)
+    for (var zz = Z(300); zz < Z(905); zz += 0.6) { var hh = 3.2 + 2.6 * Math.abs(Math.sin(zz * 1.7) * Math.cos(zz * 0.6)); M.box(14.98, zz, 15.08, zz + 0.62, y + 0.1, y + hh, ivy, 5); }
+  }
   function rail(M, a, b, y0, h) {
     var L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L < 0.2) return;
     M.beam(a, b, 0.045, y0 + h - 0.04, y0 + h, C.rail); M.beam(a, b, 0.035, y0 + 0.06, y0 + 0.1, C.rail);
@@ -183,6 +220,7 @@
       else { M.prism(offset(P, 0.34), fl.z0 - 0.38, fl.z0 + 0.06, C.cornice, C.cornice, 1); M.prism(offset(P, 0.16), fl.z0 - 0.52, fl.z0 - 0.38, [206, 197, 176], [206, 197, 176], 1); }
     });
     // tarasy, loggie, zielone dachy
+    if (f === 1) patio(M, fl.z0 + 0.02);
     (fl.out || []).forEach(function (o) { M.prism(o.p, fl.z0 + 0.03, fl.z0 + 0.1, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? 5 : 4); });
     facade(M, G, fl);
     (fl.cols || []).forEach(function (c) { M.prism(c, fl.z0, fl.z1, C.cream, C.cream, 1, 1); });
@@ -195,6 +233,7 @@
   function buildCut(f) {
     var fl = D.floors[f], M = new Mesh(), G = new Mesh(), y = fl.z0;
     fl.slab.forEach(function (P) { M.prism(f === 1 ? offset(P, 0.12) : offset(P, 0.22), y - 0.42, y, C.cornice, C.plate, 1, 0); });
+    if (f === 1) patio(M, y + 0.02);
     (fl.out || []).forEach(function (o) { M.prism(o.p, y + 0.03, y + 0.1, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? 5 : 4); });
     var low = { f: fl.f, z0: fl.z0, z1: fl.z0 + 1.15, mass: fl.mass, out: fl.out };
     facade(M, G, low, fl.z0 + 1.15);
@@ -360,7 +399,10 @@
     'if(M==7){col*=.75+.45*vn(vP.xz*1.6+vP.y*1.3)+.08*h(floor(vP.xz*9.+vP.y*9.));}' +
     'if(M==8&&N.y<.5){float fy=fract(vP.y/3.2);col*=mix(.9,1.,smoothstep(0.,.05,min(fy,1.-fy)));}' +
     'if(M==10&&N.y>.5){vec2 g=fract(vP.xz/1.);col*=mix(.93,1.,smoothstep(0.,.03,min(min(g.x,1.-g.x),min(g.y,1.-g.y))));}' +
-    'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),2.5);vec3 sky=mix(vec3(.82,.88,.94),vec3(.62,.74,.86),clamp(reflect(-V,N).y,0.,1.));o=vec4(pow(mix(col,sky,.45+fr*.4),vec3(1./2.2)),uA+fr*.25);return;}' +
+    'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),2.5);vec3 R=reflect(-V,N);float az=atan(R.z,R.x);' +
+    'float hz=.07+.05*sin(az*7.)*sin(az*3.1+1.)+.03*sin(az*23.+2.);float lf=fract(sin(floor(az*40.)*91.7)*43758.5);' +
+    'vec3 env=R.y>hz?mix(vec3(.80,.86,.92),vec3(.52,.66,.84),clamp((R.y-hz)*1.6,0.,1.)):R.y>-.4?mix(vec3(.27,.37,.24),vec3(.47,.56,.39),lf*.55+.25*smoothstep(hz-.08,hz,R.y)+.15*sin(R.y*40.+az*9.)):vec3(.5,.5,.48);' +
+    'vec3 c=mix(col*.42,env,.6+fr*.3);o=vec4(pow(c,vec3(1./2.2)),min(1.,uA*1.65+fr*.15));return;}' +
     'float ndl=max(dot(N,uSun),0.),s=sh();vec3 sky=vec3(.82,.88,1.),bnc=vec3(.78,.74,.68);vec3 amb=mix(bnc*.62,sky*.8,N.y*.5+.5);' +
     'float ao=M==8||M==15||M==16||M==1||M==2||M==3?mix(.78,1.,smoothstep(-.3,6.,vP.y)):1.;' +
     'vec3 sunC=vec3(1.,.93,.8)*1.12;vec3 L=col*(amb*ao+sunC*ndl*mix(.16,1.,s));' +

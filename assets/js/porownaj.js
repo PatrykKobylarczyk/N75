@@ -20,7 +20,7 @@
   var dimH = function (u) { return Math.max.apply(null, u.levels.map(function (l) { return cropH(u, l); })); };
   var K = 1;
   function thumb(u) {
-    return u.levels.map(function (l) { return '<img style="width:' + (cropW(u, l) * K).toFixed(2) + '%" src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794252878" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">'; }).join('');
+    return u.levels.map(function (l) { return '<img style="width:' + (cropW(u, l) * K).toFixed(2) + '%" src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794253331" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">'; }).join('');
   }
   function roomArea(u, re) { return u.roomsList.filter(function (r) { return re.test(r[1]); }).reduce(function (s, r) { return s + r[2]; }, 0); }
 
