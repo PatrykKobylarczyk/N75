@@ -95,7 +95,7 @@
     cream: [238, 231, 211], cornice: [244, 239, 224], stone: [224, 214, 192], bronze: [176, 148, 108], rail: [176, 148, 108], gate: [118, 88, 66], glass: [196, 222, 236],
     deck: [180, 152, 118], green: [128, 150, 96], ground: [222, 218, 210], road: [92, 92, 94], walk: [204, 200, 192], grass: [150, 172, 118],
     nb: [208, 207, 204], nbTop: [194, 193, 190], trunk: [104, 86, 70], leaf: [122, 146, 94], leaf2: [104, 132, 84], water: [150, 182, 196],
-    wolne: [138, 170, 124], sky: [168, 180, 190], bike: [150, 145, 138], roof: [168, 167, 164], white: [242, 240, 236], ballast: [150, 145, 138], steel: [118, 118, 122], rezerwacja: [214, 172, 92], sprzedane: [184, 178, 170], plate: [236, 230, 218], wall: [214, 206, 190]
+    wolne: [200, 164, 100], sky: [168, 180, 190], bike: [150, 145, 138], roof: [168, 167, 164], white: [242, 240, 236], ballast: [150, 145, 138], steel: [118, 118, 122], rezerwacja: [170, 112, 70], sprzedane: [150, 146, 138], pwall: [150, 140, 124], plate: [236, 230, 218], wall: [214, 206, 190]
   };
   // M: 1 elewacja, 2 trawertyn, 3 lamele mosiężne, 4 deski, 5 zieleń, 6 asfalt, 7 korony drzew, 8 sąsiednie budynki, 10 chodnik, 12 lokale (płaskie)
 
@@ -207,7 +207,8 @@
       D.units[id].forEach(function (lv) {
         if (lv.f !== f) return;
         var u = UNITS[id] || {}, st = u.status || 'wolne', col = id === HOVER ? lighten(C[st] || C.wolne) : (C[st] || C.wolne);
-        lv.p.forEach(function (P) { U.prism(P, y + 0.03, y + 0.09, col, col, 12); PICK.push({ id: id, P: P, y: y + 0.09 }); });
+        (lv.w || []).forEach(function (w) { M.box(Math.min(w[0], w[2]), Math.min(w[1], w[3]), Math.max(w[0], w[2]), Math.max(w[1], w[3]), y + 0.02, y + 0.42, C.pwall, 0); });   // lekki rzut: ściany
+        lv.p.forEach(function (P) { U.prism(P, y + 0.03, y + 0.62, col, col, 12); PICK.push({ id: id, P: P, y: y + 0.62 }); });   // półprzezroczysty mosiądz
       });
     });
     return { M: M, G: G, U: U };
@@ -295,19 +296,14 @@
     // ciąg pieszo-rowerowy między budynkiem a zielenią (od Tramwajowej do ściany sąsiada)
     (function () {
       var sl = D.floors[1].slab[0], bz = Math.max.apply(null, sl.map(function (p) { return p[1]; })), x0 = -21.6, x1 = Math.max.apply(null, sl.map(function (p) { return p[0]; }));
-      var y = -0.325;
-      M.box(x0, bz + 0.3, x1, bz + 2.3, y - 0.01, y, C.walk, 10);                       // chodnik z płyt
-      M.box(x0, bz + 2.3, x1, bz + 4.8, y - 0.01, y + 0.004, C.bike, 6);                 // droga rowerowa (stonowany grafitowo-beżowy asfalt)
-      M.box(x0, bz + 4.8, x1, bz + 4.95, y - 0.01, y + 0.04, C.stone, 0);                // obrzeże od strony zieleni
-      for (var x = x0 + 0.5; x < x1 - 1; x += 2) M.box(x, bz + 3.5, x + 1, bz + 3.6, y, y + 0.007, C.white, 0);   // przerywana oś
-      M.box(x0, bz + 2.27, x1, bz + 2.33, y, y + 0.007, C.white, 0);                   // linia krawędziowa
-      // dalej na wschód: wspólny ciąg pieszo-rowerowy wzdłuż tyłów pierzei, aż do chodnika ulicy (x ≈ 116)
-      var za = 19.7, zb = 23.15, x2 = 116;
-      M.box(x1, za, x2, zb, y - 0.01, y + 0.004, C.bike, 6);
-      for (var x = x1 + 1; x < x2 - 1; x += 2) M.box(x, (za + zb) / 2 - 0.05, x + 1, (za + zb) / 2 + 0.05, y, y + 0.009, C.white, 0);
-      M.box(x1, zb, x2, zb + 0.15, y - 0.01, y + 0.04, C.stone, 0);
+      var y = -0.325, za = bz + 0.05, zb = 23.15, x2 = 116, zm = (za + zb) / 2;
+      // jeden prosty ciąg pieszo-rowerowy tuż przy budynku, w linii z odcinkiem wzdłuż tyłów pierzei (do chodnika ulicy na wschodzie)
+      M.box(x0, za, x2, zb, y - 0.01, y + 0.004, C.bike, 6);
+      for (var x = x0 + 0.5; x < x2 - 1; x += 2) M.box(x, zm - 0.05, x + 1, zm + 0.05, y, y + 0.009, C.white, 0);   // przerywana oś
+      M.box(x0, zb, x2, zb + 0.15, y - 0.01, y + 0.04, C.stone, 0);                     // obrzeże
+      M.box(x0, zb + 0.15, x1, bz + 5, y - 0.01, y + 0.002, C.grass, 5);               // pas trawy do skweru
       [-18, -4, 9].forEach(function (cx) {                                              // znaki rowerowe na nawierzchni
-        var r = 0.32, z = bz + 2.95; M.cyl(cx - 0.55, z, r, y + 0.006, y + 0.009, C.white, 14); M.cyl(cx + 0.55, z, r, y + 0.006, y + 0.009, C.white, 14);
+        var r = 0.32, z = zm + 0.75; M.cyl(cx - 0.55, z, r, y + 0.006, y + 0.009, C.white, 14); M.cyl(cx + 0.55, z, r, y + 0.006, y + 0.009, C.white, 14);
         M.cyl(cx - 0.55, z, r - 0.07, y + 0.007, y + 0.01, C.bike, 14); M.cyl(cx + 0.55, z, r - 0.07, y + 0.007, y + 0.01, C.bike, 14);
         M.beam([cx - 0.55, z], [cx + 0.1, z - 0.45], 0.07, y + 0.006, y + 0.011, C.white); M.beam([cx + 0.1, z - 0.45], [cx + 0.55, z], 0.07, y + 0.006, y + 0.011, C.white);
       });
@@ -368,10 +364,10 @@
     'float ndl=max(dot(N,uSun),0.),s=sh();vec3 sky=vec3(.82,.88,1.),bnc=vec3(.78,.74,.68);vec3 amb=mix(bnc*.62,sky*.8,N.y*.5+.5);' +
     'float ao=M==8||M==15||M==16||M==1||M==2||M==3?mix(.78,1.,smoothstep(-.3,6.,vP.y)):1.;' +
     'vec3 sunC=vec3(1.,.93,.8)*1.12;vec3 L=col*(amb*ao+sunC*ndl*mix(.16,1.,s));' +
-    'if(M==12){L=col*(.8+.25*ndl);}' +
+    'if(M==12){vec3 V0=normalize(uEye-vP);L=col*(.78+.25*ndl)+vec3(1.,.9,.7)*pow(max(dot(N,normalize(uSun+V0)),0.),24.)*.35;}' +
     'vec3 V=normalize(uEye-vP);float gs=M==3?.35:M==2?.12:.03;L+=sunC*pow(max(dot(N,normalize(uSun+V)),0.),40.)*gs*s;' +
     'float d=length(uEye-vP);L=mix(L,vec3(.93,.92,.9),smoothstep(260.,700.,d)*.7);' +
-    'L=clamp((L*(2.51*L+.03))/(L*(2.43*L+.59)+.14),0.,1.);o=vec4(pow(L,vec3(1./2.2)),1.);}';
+    'L=clamp((L*(2.51*L+.03))/(L*(2.43*L+.59)+.14),0.,1.);o=vec4(pow(L,vec3(1./2.2)),M==12?(N.y>.5?.42:.28):1.);}';
   var SVS = '#version 300 es\nlayout(location=0) in vec3 p;uniform mat4 uL;void main(){gl_Position=uL*vec4(p,1.);}';
   var SFS = '#version 300 es\nprecision mediump float;out vec4 o;void main(){o=vec4(1.);}';
   function mat4() { return new Float32Array(16); }
@@ -447,9 +443,9 @@
     var sun = sunDir(), Rs = 95, se = [sun[0] * 200, sun[1] * 200, sun[2] * 200];
     var LM = mul(ortho(-Rs, Rs, -Rs, Rs, 20, 420), look(se, [0, 8, 0], [0, 1, 0]));
     var list = [SCN.env].concat(SCN.floors.filter(function (o, i) { return SEL < 0 || i < SEL; }).map(function (o) { return o.op; }));
-    if (SEL >= 0 && SCN.cut) list.push(SCN.cut.op, SCN.cut.u);
+    if (SEL >= 0 && SCN.cut) list.push(SCN.cut.op);
     var glist = SCN.floors.filter(function (o, i) { return SEL < 0 || i < SEL; }).map(function (o) { return o.gl; });
-    if (SEL >= 0 && SCN.cut) glist.push(SCN.cut.gl);
+    if (SEL >= 0 && SCN.cut) glist.push(SCN.cut.gl, SCN.cut.u);
     // cienie
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb); gl.viewport(0, 0, SS, SS); gl.clear(gl.DEPTH_BUFFER_BIT); gl.enable(gl.DEPTH_TEST); gl.colorMask(false, false, false, false);
     gl.useProgram(SP); gl.uniformMatrix4fv(gl.getUniformLocation(SP, 'uL'), false, LM);
