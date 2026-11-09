@@ -95,7 +95,7 @@
     cream: [238, 231, 211], cornice: [244, 239, 224], stone: [224, 214, 192], bronze: [176, 148, 108], rail: [176, 148, 108], gate: [118, 88, 66], glass: [196, 222, 236],
     deck: [180, 152, 118], green: [128, 150, 96], ground: [222, 218, 210], road: [92, 92, 94], walk: [204, 200, 192], grass: [150, 172, 118],
     nb: [208, 207, 204], nbTop: [194, 193, 190], trunk: [104, 86, 70], leaf: [122, 146, 94], leaf2: [104, 132, 84], water: [150, 182, 196],
-    wolne: [138, 170, 124], sky: [168, 180, 190], bike: [172, 96, 78], roof: [168, 167, 164], white: [242, 240, 236], ballast: [150, 145, 138], steel: [118, 118, 122], rezerwacja: [214, 172, 92], sprzedane: [184, 178, 170], plate: [236, 230, 218], wall: [214, 206, 190]
+    wolne: [138, 170, 124], sky: [168, 180, 190], bike: [150, 145, 138], roof: [168, 167, 164], white: [242, 240, 236], ballast: [150, 145, 138], steel: [118, 118, 122], rezerwacja: [214, 172, 92], sprzedane: [184, 178, 170], plate: [236, 230, 218], wall: [214, 206, 190]
   };
   // M: 1 elewacja, 2 trawertyn, 3 lamele mosiężne, 4 deski, 5 zieleń, 6 asfalt, 7 korony drzew, 8 sąsiednie budynki, 10 chodnik, 12 lokale (płaskie)
 
@@ -249,10 +249,10 @@
     });
     // ciąg pieszo-rowerowy między budynkiem a zielenią (od Tramwajowej do ściany sąsiada)
     (function () {
-      var sl = D.floors[1].slab[0], bz = Math.max.apply(null, sl.map(function (p) { return p[1]; })), x0 = -27, x1 = Math.max.apply(null, sl.map(function (p) { return p[0]; }));
+      var sl = D.floors[1].slab[0], bz = Math.max.apply(null, sl.map(function (p) { return p[1]; })), x0 = -21.6, x1 = Math.max.apply(null, sl.map(function (p) { return p[0]; }));
       var y = -0.325;
       M.box(x0, bz + 0.3, x1, bz + 2.3, y - 0.01, y, C.walk, 10);                       // chodnik z płyt
-      M.box(x0, bz + 2.3, x1, bz + 4.8, y - 0.01, y + 0.004, C.bike, 6);                 // droga rowerowa (czerwony asfalt)
+      M.box(x0, bz + 2.3, x1, bz + 4.8, y - 0.01, y + 0.004, C.bike, 6);                 // droga rowerowa (stonowany grafitowo-beżowy asfalt)
       M.box(x0, bz + 4.8, x1, bz + 4.95, y - 0.01, y + 0.04, C.stone, 0);                // obrzeże od strony zieleni
       for (var x = x0 + 0.5; x < x1 - 1; x += 2) M.box(x, bz + 3.5, x + 1, bz + 3.6, y, y + 0.007, C.white, 0);   // przerywana oś
       M.box(x0, bz + 2.27, x1, bz + 2.33, y, y + 0.007, C.white, 0);                   // linia krawędziowa
