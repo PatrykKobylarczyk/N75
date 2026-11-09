@@ -93,9 +93,9 @@
   /* ---------- kolory i materiały ---------- */
   var C = {
     cream: [238, 231, 211], cornice: [244, 239, 224], stone: [224, 214, 192], bronze: [176, 148, 108], rail: [176, 148, 108], gate: [118, 88, 66], glass: [196, 222, 236],
-    deck: [180, 152, 118], green: [128, 150, 96], ground: [222, 218, 210], road: [92, 92, 94], walk: [204, 200, 192], grass: [150, 172, 118],
+    deck: [180, 152, 118], green: [128, 150, 96], ground: [222, 218, 210], road: [140, 140, 138], walk: [204, 200, 192], grass: [150, 172, 118],
     nb: [208, 207, 204], nbTop: [194, 193, 190], trunk: [104, 86, 70], leaf: [122, 146, 94], leaf2: [104, 132, 84], water: [150, 182, 196],
-    wolne: [200, 164, 100], sky: [168, 180, 190], bike: [150, 145, 138], roof: [168, 167, 164], white: [242, 240, 236], ballast: [150, 145, 138], steel: [118, 118, 122], rezerwacja: [170, 112, 70], sprzedane: [150, 146, 138], pwall: [150, 140, 124], plate: [236, 230, 218], wall: [214, 206, 190]
+    wolne: [200, 164, 100], sky: [168, 180, 190], bike: [168, 163, 156], roof: [168, 167, 164], white: [242, 240, 236], ballast: [150, 145, 138], steel: [118, 118, 122], rezerwacja: [170, 112, 70], sprzedane: [150, 146, 138], pwall: [150, 140, 124], plate: [236, 230, 218], wall: [214, 206, 190]
   };
   // M: 1 elewacja, 2 trawertyn, 3 lamele mosiężne, 4 deski, 5 zieleń, 6 asfalt, 7 korony drzew, 8 sąsiednie budynki, 10 chodnik, 12 lokale (płaskie)
 
@@ -292,6 +292,29 @@
     (function () { var sl = D.floors[1].slab[0], xs = sl.map(function (q) { return q[0]; }), zs = sl.map(function (q) { return q[1]; }); OCC.push({ p: sl, x0: Math.min.apply(null, xs), x1: Math.max.apply(null, xs), z0: Math.min.apply(null, zs), z1: Math.max.apply(null, zs) }); })();
     function inPoly(P, x, z) { var r = false; for (var i = 0, j = P.length - 1; i < P.length; j = i++) { if ((P[i][1] > z) !== (P[j][1] > z) && x < (P[j][0] - P[i][0]) * (z - P[i][1]) / (P[j][1] - P[i][1]) + P[i][0]) r = !r; } return r; }
     function covered(x, z, self) { for (var i = 0; i < OCC.length; i++) { var o = OCC[i]; if (o.p === self || x < o.x0 || x > o.x1 || z < o.z0 || z > o.z1) continue; if (inPoly(o.p, x, z)) return true; } return false; }
+    // wieża narożna Rektoratu UŁ: gzyms, kondygnacja z łukowymi oknami, gzyms, ośmioboczny bęben, kopuła z latarnią i iglicą
+    function tower(M, b) {
+      var c = cen(b.p), h = b.h, zinc = [132, 144, 150], ink = [92, 84, 76], wall = [222, 220, 214];
+      M.prism(offset(b.p, 0.4), h - 0.35, h, wall, wall, 0, 0, true);
+      var P2 = offset(b.p, -0.45); M.prism(P2, h, h + 3.4, wall, C.nbTop, 0, 0, true);
+      for (var i = 0; i < P2.length; i++) {            // po dwa wysokie, łukowe okna na każdej ścianie
+        var a = P2[i], q = P2[(i + 1) % P2.length], l = Math.hypot(q[0] - a[0], q[1] - a[1]), u = [(q[0] - a[0]) / l, (q[1] - a[1]) / l], nn = [u[1], -u[0]];
+        if ((c[0] - a[0]) * nn[0] + (c[1] - a[1]) * nn[1] > 0) nn = [-nn[0], -nn[1]];
+        [0.3, 0.7].forEach(function (t) {
+          var m = [a[0] + u[0] * l * t + nn[0] * 0.03, a[1] + u[1] * l * t + nn[1] * 0.03];
+          M.prism(orect(m, u, nn, 0.42, 0.02), h + 0.7, h + 2.5, ink, ink, 0, 0, true);
+          var arc = []; for (var k = 0; k <= 8; k++) { var an = k / 8 * Math.PI; arc.push([Math.cos(an) * 0.42, Math.sin(an) * 0.42]); }
+          for (var k2 = 0; k2 < 8; k2++) { var p0 = arc[k2], p1 = arc[k2 + 1]; var A = [m[0] + u[0] * p0[0], h + 2.5 + p0[1], m[1] + u[1] * p0[0]], B = [m[0] + u[0] * p1[0], h + 2.5 + p1[1], m[1] + u[1] * p1[0]], C0 = [m[0], h + 2.5, m[1]]; M.tri(C0, A, B, ink, 0); M.tri(C0, B, A, ink, 0); }
+        });
+      }
+      M.prism(offset(b.p, -0.15), h + 3.4, h + 3.8, wall, wall, 0, 0, true);
+      var oct = function (r) { var P = []; for (var k = 0; k < 8; k++) { var an = (k + 0.5) / 8 * Math.PI * 2; P.push([c[0] + Math.cos(an) * r, c[1] + Math.sin(an) * r]); } return P; };
+      M.prism(oct(2.15), h + 3.8, h + 4.9, wall, wall, 0, 0, true);
+      M.sphere(c[0], h + 4.9, c[1], 2.15, 2.3, zinc, 0);
+      M.prism(oct(0.5), h + 6.9, h + 7.9, wall, zinc, 0, 0, true);
+      M.sphere(c[0], h + 7.9, c[1], 0.5, 0.5, zinc, 0);
+      M.prism(oct(0.06), h + 8.3, h + 9.6, ink, ink, 0, 0, true);
+    }
     function sketchWalls(b) {
       var P = b.p, A = area2(P), ar = Math.abs(A) / 2, rnd = Math.abs(Math.sin(P[0][0] * 12.9898 + P[0][1] * 78.233) * 43758.5453) % 1;
       var k = b.k !== undefined ? b.k : b.h < 4.5 ? 3 : (b.i || (b.h <= 12 && ar > 900)) ? 2 : b.h > 20 ? 1 : 0, spN = [3.3 + rnd * 0.5, 2.6 + rnd * 0.4, 5.5, 3.2][k];
@@ -330,7 +353,7 @@
     }
     e.b.forEach(function (b) {
       M.prism(b.p, -0.36, b.h, C.nb, C.nbTop, 8, 8, true); drawnFront(b); sketchWalls(b);
-      if (b.d) { var dc = cen(b.p); M.prism(offset(b.p, 0.35), b.h - 0.3, b.h, C.nb, C.nbTop, 8, 8, true); M.sphere(dc[0], b.h, dc[1], 2.4, 2.6, [150, 160, 166], 0); }   // kopułka wieży
+      if (b.d) tower(M, b);
       if (b.i && Math.abs(area2(b.p)) > 600) grid(b.p, 6.5, 5.5, function (c, u, v) { M.prism(orect(c, u, v, 2.2, 0.8), b.h, b.h + 0.55, C.sky, C.sky, 0, 0, true); }, 1.2);   // świetliki hal zajezdni
     });
     // ciąg pieszo-rowerowy między budynkiem a zielenią (od Tramwajowej do ściany sąsiada)

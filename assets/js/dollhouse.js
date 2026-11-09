@@ -791,7 +791,7 @@
   };
 
   var MK = null, MKP = null;
-  function mkData() { if (!MKP) MKP = fetch('assets/data/makieta.json?v=1794254399').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) { MK = d; return d; }); return MKP; }
+  function mkData() { if (!MKP) MKP = fetch('assets/data/makieta.json?v=1794254634').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) { MK = d; return d; }); return MKP; }
   function envMesh(d, id, data, which) {
     var M = new Mesh(), base = data.levels[0], f = parseInt(String(id).replace(/^\D+/, ''), 10) + (which || 0), Y0 = d.z[f] || 0;
     var ox = d.o[0] - base.ox, oz = base.oy - d.o[1];
@@ -802,7 +802,7 @@
     M.box(-700, -700, 700, 700, Y(-0.5), Y(-0.36), G, G, 30);
     (e.g || []).forEach(function (P) { if (near(P, 260)) M.prism(TP(P), Y(-0.36), Y(-0.33), [150, 170, 120], [150, 170, 120], 30); });
     (e.r || []).forEach(function (r) {
-      var P = r.p, w = (r.w || 6) / 2, c = r.c ? [205, 202, 196] : [120, 120, 122];
+      var P = r.p, w = (r.w || 6) / 2, c = r.c ? [205, 202, 196] : [146, 146, 144];
       for (var i = 0; i + 1 < P.length; i++) {
         var a = P[i], b = P[i + 1], l = Math.hypot(b[0] - a[0], b[1] - a[1]); if (l < 0.1 || Math.hypot(a[0] - cx, a[1] - cz) > 300) continue;
         var nx = -(b[1] - a[1]) / l * w, nz = (b[0] - a[0]) / l * w;
@@ -921,7 +921,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1794254399').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1794254634').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
