@@ -91,9 +91,9 @@
 
   /* ---------- kolory i materiały ---------- */
   var C = {
-    cream: [238, 231, 211], cornice: [244, 239, 224], stone: [224, 214, 192], bronze: [132, 100, 70], rail: [44, 42, 40], glass: [196, 222, 236],
-    deck: [196, 168, 132], green: [128, 150, 96], ground: [222, 218, 210], road: [92, 92, 94], walk: [204, 200, 192], grass: [150, 172, 118],
-    nb: [226, 223, 216], nbTop: [212, 208, 200], trunk: [104, 86, 70], leaf: [122, 146, 94], leaf2: [104, 132, 84], water: [150, 182, 196],
+    cream: [238, 231, 211], cornice: [244, 239, 224], stone: [224, 214, 192], bronze: [176, 148, 108], rail: [176, 148, 108], gate: [118, 88, 66], glass: [196, 222, 236],
+    deck: [180, 152, 118], green: [128, 150, 96], ground: [222, 218, 210], road: [92, 92, 94], walk: [204, 200, 192], grass: [150, 172, 118],
+    nb: [208, 207, 204], nbTop: [194, 193, 190], trunk: [104, 86, 70], leaf: [122, 146, 94], leaf2: [104, 132, 84], water: [150, 182, 196],
     wolne: [138, 170, 124], rezerwacja: [214, 172, 92], sprzedane: [184, 178, 170], plate: [236, 230, 218], wall: [214, 206, 190]
   };
   // M: 1 elewacja, 2 trawertyn, 3 lamele mosiężne, 4 deski, 5 zieleń, 6 asfalt, 7 korony drzew, 8 sąsiednie budynki, 10 chodnik, 12 lokale (płaskie)
@@ -124,6 +124,13 @@
           if (s1 - s0 <= 0.005) return;
           M.quad(V(s0, 0, z0), V(s1, 0, z0), V(s1, 0, z1), V(s0, 0, z1), wallCol, wallM);
           // pilaster: lekko wysunięty pas muru między oknami (rytm elewacji)
+          // parter od Narutowicza: pełne pola to bramy garażowe z bulajami
+          if (f === 0 && n[1] < -0.6 && s1 - s0 >= 2.4) {
+            var gw = Math.min(3.6, s1 - s0 - 0.5), gm = (s0 + s1) / 2, ga = gm - gw / 2, gb = gm + gw / 2, gh = fl.z0 + 3.55;
+            M.quad(V(ga, 0.012, fl.z0), V(gb, 0.012, fl.z0), V(gb, 0.012, gh), V(ga, 0.012, gh), C.gate, 14);
+            var bf = function (sa, sb, ya, yb2) { M.beam(at(sa, 0.03), at(sb, 0.03), 0.05, ya, yb2, C.bronze, 0); };
+            bf(ga, ga + 0.06, fl.z0, gh); bf(gb - 0.06, gb, fl.z0, gh); bf(ga, gb, gh - 0.06, gh); bf(gm - 0.02, gm + 0.02, fl.z0, gh);
+          }
           if (f >= 1 && f <= 6 && s1 - s0 > 0.25 && s1 - s0 < 2.4 && g.length) {
             var pa = s0 + 0.04, pb = s1 - 0.04, A = at(pa, 0), B = at(pb, 0), A2 = at(pa, 0.1), B2 = at(pb, 0.1);
             M.prism([A, B, B2, A2], fl.z0, z1 - 0.02, C.cornice, C.cornice, 1, 1, true);
@@ -146,11 +153,10 @@
           var bx = function (sa, sb, ya, yb2) { var A = at(sa, -inset + 0.03), B = at(sb, -inset + 0.03); M.beam(A, B, 0.06, ya, yb2, C.bronze, 0); };
           bx(s0, s0 + fr, yb, yh); bx(s1 - fr, s1, yb, yh); bx(s0, s1, yh - fr, yh); bx(s0, s1, yb, yb + fr);
           var w = s1 - s0;
-          if (w > 1.1) { var nm = Math.max(1, Math.round(w / 1.15)) ; for (var k = 1; k < nm + (f === 0 ? 0 : 0); k++) { var sm = s0 + w * k / nm; bx(sm - fr / 2, sm + fr / 2, yb, yh); } }
-          if (f > 0 && f < 7 && yb + 2.2 < yh) bx(s0, s1, yb + 2.15, yb + 2.15 + fr);
+          if (w > 0.9) { var sm = s0 + w / 2; bx(sm - fr / 2, sm + fr / 2, yb, yh); }   // jeden pionowy podział: lewo / prawo
           // francuski balkon: balustrada w licu elewacji (gdy okno nie wychodzi na loggię / taras)
           var mid = at((s0 + s1) / 2, 0.5);
-          if (f >= 1 && f <= 6 && !outAt(f, mid) && !(f > 0 && outAt(f, at((s0 + s1) / 2, 1.2)))) rail(M, at(s0 + 0.02, 0.06), at(s1 - 0.02, 0.06), yb, 1.0);
+          if (f >= 1 && f <= 6 && ![0.3, 0.6, 1.0, 1.5].some(function (o) { return outAt(f, at((s0 + s1) / 2, o)); })) rail(M, at(s0 + 0.02, 0.06), at(s1 - 0.02, 0.06), yb, 1.0);
         });
         solid(s, L);
       }
@@ -178,7 +184,7 @@
     // tarasy, loggie, zielone dachy
     (fl.out || []).forEach(function (o) { M.prism(o.p, fl.z0, fl.z0 + 0.05, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? 5 : 4); });
     facade(M, G, fl);
-    (fl.rails || []).forEach(function (r) { rail(M, [r[0], r[1]], [r[2], r[3]], fl.z0 + 0.05, 1.1); });
+    (fl.rails || []).forEach(function (r) { if (Math.hypot(r[2] - r[0], r[3] - r[1]) > 0.7) rail(M, [r[0], r[1]], [r[2], r[3]], fl.z0 + 0.05, 1.1); });
     // dach nad ostatnią kondygnacją
     if (f === 7) fl.mass.forEach(function (e) { M.prism(offset(e.p, 0.25), fl.z1, fl.z1 + 0.45, C.cornice, C.cream, 1); });
     return { M: M, G: G };
@@ -191,7 +197,7 @@
     var low = { f: fl.f, z0: fl.z0, z1: fl.z0 + 1.15, mass: fl.mass, out: fl.out };
     facade(M, G, low, fl.z0 + 1.15);
     fl.mass.forEach(function (e) { M.cap(area2(e.p) > 0 ? e.p.slice().reverse() : e.p, y + 0.02, C.plate, 0); });
-    (fl.rails || []).forEach(function (r) { rail(M, [r[0], r[1]], [r[2], r[3]], y + 0.05, 1.1); });
+    (fl.rails || []).forEach(function (r) { if (Math.hypot(r[2] - r[0], r[3] - r[1]) > 0.7) rail(M, [r[0], r[1]], [r[2], r[3]], y + 0.05, 1.1); });
     var U = new Mesh();
     PICK = [];
     Object.keys(D.units).forEach(function (id) {
@@ -232,11 +238,12 @@
     'float sh(){vec3 q=vL.xyz/vL.w*.5+.5;if(q.x<0.||q.x>1.||q.y<0.||q.y>1.||q.z>1.)return 1.;float s=0.;vec2 t=1./vec2(textureSize(uS,0));' +
     'for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++){float d=texture(uS,q.xy+vec2(x,y)*t*1.5).r;s+=q.z-.0009>d?0.:1.;}return s/9.;}' +
     'void main(){vec3 N=normalize(vN);if(!gl_FrontFacing)N=-N;vec3 col=lin(vC);int M=int(vM+.5);vec2 hz=abs(N.x)>abs(N.z)?vP.zy:vP.xy;' +
-    'if(M==1){col*=.97+.04*vn(hz*3.)+.02*h(floor(hz*60.));}' +
+    'if(M==1){vec2 q=N.y>.5?vP.xz:hz;col*=.95+.04*vn(q*3.)+.07*h(floor(q*180.))+.04*vn(q*45.);}' +
     'if(M==2){vec2 q=N.y>.5?vP.xz:hz;float jy=fract(q.y/.6),jx=fract((q.x+floor(q.y/.6)*.6)/1.2);col*=mix(.82,1.,smoothstep(0.,.03,min(jy,1.-jy)))*mix(.85,1.,smoothstep(0.,.015,min(jx,1.-jx)));' +
     'col*=.93+.1*vn(q*vec2(1.2,6.)+vn(q*2.)*2.);}' +
     'if(M==3&&N.y<.5){float s=fract(hz.x/.11);col*=mix(.45,1.15,smoothstep(.1,.35,s)*smoothstep(.9,.65,s));}' +
-    'if(M==4&&N.y>.5){float s=fract((abs(N.y)>.5?vP.x:vP.z)*7.);col*=mix(.8,1.,smoothstep(0.,.08,min(s,1.-s)));col*=.94+.08*h(vec2(floor(vP.x*7.),floor(vP.z*.6)));}' +
+    'if(M==14){vec2 q=hz/.3;vec2 c=fract(q)-.5;float r=length(c);col*=mix(.42,1.,smoothstep(.27,.31,r))*mix(1.25,1.,smoothstep(.31,.36,r));}' +
+    'if(M==4&&N.y>.5){float s=fract(vP.x*6.9),bi=floor(vP.x*6.9);float w=fwidth(vP.x*6.9)*1.5;col*=mix(.68,1.,smoothstep(.04,.04+w+.06,min(s,1.-s)));col*=.9+.16*h(vec2(bi,floor(vP.z*.45+h(vec2(bi,3.))*3.)));col*=1.-.04*sin(vP.z*60.+bi*5.);}' +
     'if(M==5){col*=.8+.35*vn(vP.xz*.9)+.1*h(floor(vP.xz*8.));}' +
     'if(M==6){col*=.9+.12*vn(vP.xz*.7)+.05*h(floor(vP.xz*30.));}' +
     'if(M==7){col*=.75+.45*vn(vP.xz*1.6+vP.y*1.3)+.08*h(floor(vP.xz*9.+vP.y*9.));}' +
