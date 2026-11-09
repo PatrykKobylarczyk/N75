@@ -244,16 +244,18 @@
       }
     });
     // rysowane elewacje pierzei Narutowicza (ten sam rysunek co animacja „pierzeja” na stronie); px – zakres rysunku, t – linia gzymsu
-    var PZ = [{ x: 27, px: [1278, 1571], t: 106 }, { x: 50, px: [970, 1278], t: 130 }, { x: 73, px: [711, 970], t: 157 }, { x: 98, px: [410, 711], t: 121 }, { x: 148, px: [27, 358], t: 87 }];
+    var PZ = [{ x: 27, px: [1278, 1571], t: 106 }, { x: 50, px: [970, 1278], t: 130 }, { x: 73, px: [711, 970], t: 157 }, { x: 98, px: [410, 711], t: 121 }, { x: 148, px: [27, 358], t: 87 },
+      // na zachód od N75 (drugi pas atlasu): Okręgowy Urząd Miar, żółty biurowiec, beżowa kamienica
+      { x: -59.5, px: [60, 279], t: 448, b: 844, d: 4 }, { x: -78, px: [360, 670], t: 661, b: 844 }, { x: -112, px: [700, 1280], t: 618, b: 844 }];
     function drawnFront(b) {
       var P = b.p, xs = P.map(function (q) { return q[0]; }), zs = P.map(function (q) { return q[1]; }), bx0 = Math.min.apply(null, xs), bx1 = Math.max.apply(null, xs), z0 = Math.min.apply(null, zs);
       if (z0 > -10 || z0 < -30) return;
       var f = PZ.filter(function (q) { return q.x > bx0 && q.x < bx1; })[0]; if (!f) return;
       var E = [], cx = xs.reduce(function (a, v) { return a + v; }, 0) / P.length, cz = zs.reduce(function (a, v) { return a + v; }, 0) / P.length;
-      for (var i = 0; i < P.length; i++) { var a = P[i], c = P[(i + 1) % P.length]; if (Math.abs(c[1] - a[1]) < 0.25 * Math.abs(c[0] - a[0]) && (a[1] + c[1]) / 2 < z0 + 1.5 && Math.abs(c[0] - a[0]) > 0.5) E.push([a, c]); }
+      for (var i = 0; i < P.length; i++) { var a = P[i], c = P[(i + 1) % P.length]; if (Math.abs(c[1] - a[1]) < 0.25 * Math.abs(c[0] - a[0]) && (a[1] + c[1]) / 2 < z0 + (f.d || 1.5) && Math.abs(c[0] - a[0]) > 0.5) E.push([a, c]); }
       if (!E.length) return;
       var fx0 = Math.min.apply(null, E.map(function (q) { return Math.min(q[0][0], q[1][0]); })), fx1 = Math.max.apply(null, E.map(function (q) { return Math.max(q[0][0], q[1][0]); }));
-      var U = function (x) { return (f.px[1] - (x - fx0) / (fx1 - fx0) * (f.px[1] - f.px[0])) / 2172; }, vb = 409 / 435, vt = f.t / 435;
+      var U = function (x) { return (f.px[1] - (x - fx0) / (fx1 - fx0) * (f.px[1] - f.px[0])) / 2172; }, vb = (f.b || 409) / 870, vt = f.t / 870;
       E.forEach(function (q) {
         var a = q[0], c = q[1], dx = c[0] - a[0], dz = c[1] - a[1], l = Math.hypot(dx, dz), nx = dz / l, nz = -dx / l;
         if (nx * (a[0] - cx) + nz * (a[1] - cz) < 0) { nx = -nx; nz = -nz; }
@@ -377,7 +379,7 @@
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       var an = gl.getExtension('EXT_texture_filter_anisotropic'); if (an) gl.texParameterf(gl.TEXTURE_2D, an.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(8, gl.getParameter(an.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));
       ftexOK = true; if (typeof draw === 'function' && VP) draw();
-    }; im.src = 'assets/img/pierzeja-narutowicza.webp';
+    }; im.src = 'assets/img/makieta-elewacje.png';
   })();
   function upload(M) {
     if (!M || !M.p.length) return null;
