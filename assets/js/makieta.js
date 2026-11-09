@@ -94,7 +94,7 @@
     cream: [238, 231, 211], cornice: [244, 239, 224], stone: [224, 214, 192], bronze: [176, 148, 108], rail: [176, 148, 108], gate: [118, 88, 66], glass: [196, 222, 236],
     deck: [180, 152, 118], green: [128, 150, 96], ground: [222, 218, 210], road: [92, 92, 94], walk: [204, 200, 192], grass: [150, 172, 118],
     nb: [208, 207, 204], nbTop: [194, 193, 190], trunk: [104, 86, 70], leaf: [122, 146, 94], leaf2: [104, 132, 84], water: [150, 182, 196],
-    wolne: [138, 170, 124], rezerwacja: [214, 172, 92], sprzedane: [184, 178, 170], plate: [236, 230, 218], wall: [214, 206, 190]
+    wolne: [138, 170, 124], sky: [168, 180, 190], ballast: [150, 145, 138], steel: [118, 118, 122], rezerwacja: [214, 172, 92], sprzedane: [184, 178, 170], plate: [236, 230, 218], wall: [214, 206, 190]
   };
   // M: 1 elewacja, 2 trawertyn, 3 lamele mosiężne, 4 deski, 5 zieleń, 6 asfalt, 7 korony drzew, 8 sąsiednie budynki, 10 chodnik, 12 lokale (płaskie)
 
@@ -182,8 +182,9 @@
       else { M.prism(offset(P, 0.34), fl.z0 - 0.38, fl.z0 + 0.06, C.cornice, C.cornice, 1); M.prism(offset(P, 0.16), fl.z0 - 0.52, fl.z0 - 0.38, [206, 197, 176], [206, 197, 176], 1); }
     });
     // tarasy, loggie, zielone dachy
-    (fl.out || []).forEach(function (o) { M.prism(o.p, fl.z0, fl.z0 + 0.05, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? 5 : 4); });
+    (fl.out || []).forEach(function (o) { M.prism(o.p, fl.z0 + 0.03, fl.z0 + 0.1, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? 5 : 4); });
     facade(M, G, fl);
+    (fl.cols || []).forEach(function (c) { M.prism(c, fl.z0, fl.z1, C.cream, C.cream, 1, 1); });
     (fl.rails || []).forEach(function (r) { if (Math.hypot(r[2] - r[0], r[3] - r[1]) > 0.7) rail(M, [r[0], r[1]], [r[2], r[3]], fl.z0 + 0.05, 1.1); });
     // dach nad ostatnią kondygnacją
     if (f === 7) fl.mass.forEach(function (e) { M.prism(offset(e.p, 0.25), fl.z1, fl.z1 + 0.45, C.cornice, C.cream, 1); });
@@ -193,9 +194,10 @@
   function buildCut(f) {
     var fl = D.floors[f], M = new Mesh(), G = new Mesh(), y = fl.z0;
     fl.slab.forEach(function (P) { M.prism(f === 1 ? offset(P, 0.12) : offset(P, 0.22), y - 0.42, y, C.cornice, C.plate, 1, 0); });
-    (fl.out || []).forEach(function (o) { M.prism(o.p, y, y + 0.05, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? 5 : 4); });
+    (fl.out || []).forEach(function (o) { M.prism(o.p, y + 0.03, y + 0.1, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? C.green : C.deck, o.t === 'dach' ? 5 : 4); });
     var low = { f: fl.f, z0: fl.z0, z1: fl.z0 + 1.15, mass: fl.mass, out: fl.out };
     facade(M, G, low, fl.z0 + 1.15);
+    (fl.cols || []).forEach(function (c) { M.prism(c, y, y + 1.15, C.cream, C.cream, 1, 1); });
     fl.mass.forEach(function (e) { M.cap(area2(e.p) > 0 ? e.p.slice().reverse() : e.p, y + 0.02, C.plate, 0); });
     (fl.rails || []).forEach(function (r) { if (Math.hypot(r[2] - r[0], r[3] - r[1]) > 0.7) rail(M, [r[0], r[1]], [r[2], r[3]], y + 0.05, 1.1); });
     var U = new Mesh();
@@ -209,6 +211,18 @@
     });
     return { M: M, G: G, U: U };
   }
+  // prostokąt obrócony: środek c, kierunek u (długość 2·hu), prostopadle v (2·hv)
+  function orect(c, u, v, hu, hv) { return [[c[0] + u[0] * hu + v[0] * hv, c[1] + u[1] * hu + v[1] * hv], [c[0] - u[0] * hu + v[0] * hv, c[1] - u[1] * hu + v[1] * hv], [c[0] - u[0] * hu - v[0] * hv, c[1] - u[1] * hu - v[1] * hv], [c[0] + u[0] * hu - v[0] * hv, c[1] + u[1] * hu - v[1] * hv]]; }
+  // siatka punktów wewnątrz wielokąta, w układzie jego najdłuższej krawędzi; rows=true: rzędy miejsc postojowych (2×5 m + alejka 6 m)
+  function grid(P, su, sv, fn, margin, rows) {
+    var bi = 0, bl = 0; for (var i = 0; i < P.length; i++) { var a = P[i], b = P[(i + 1) % P.length], l = Math.hypot(b[0] - a[0], b[1] - a[1]); if (l > bl) { bl = l; bi = i; } }
+    var a0 = P[bi], b0 = P[(bi + 1) % P.length], u = [(b0[0] - a0[0]) / bl, (b0[1] - a0[1]) / bl], v = [-u[1], u[0]];
+    var us = P.map(function (p) { return (p[0] - a0[0]) * u[0] + (p[1] - a0[1]) * u[1]; }), vs = P.map(function (p) { return (p[0] - a0[0]) * v[0] + (p[1] - a0[1]) * v[1]; });
+    var u0 = Math.min.apply(null, us), u1 = Math.max.apply(null, us), v0 = Math.min.apply(null, vs), v1 = Math.max.apply(null, vs);
+    var V = []; if (rows) { for (var r = v0 + 2.6; r < v1 - 2; r += 16) { V.push(r); if (r + 5 < v1 - 2) V.push(r + 5); } } else for (var q = v0 + sv / 2; q < v1; q += sv) V.push(q);
+    var at = function (uu, vv) { return [a0[0] + u[0] * uu + v[0] * vv, a0[1] + u[1] * uu + v[1] * vv]; };
+    V.forEach(function (vv) { for (var uu = u0 + su / 2 + margin; uu < u1 - margin; uu += su) { var c = at(uu, vv), ok = [[-1, -1], [1, -1], [1, 1], [-1, 1]].every(function (k) { return inside(at(uu + k[0] * (rows ? 1 : 2), vv + k[1] * (rows ? 2.3 : 1)), P); }); if (ok && inside(c, P)) fn(c, u, v); } });
+  }
   function lighten(c) { return c.map(function (v) { return Math.min(255, v + 45); }); }
   function buildEnv() {
     var M = new Mesh(), e = D.env, R = 330;
@@ -220,7 +234,27 @@
       for (var i = 0; i + 1 < P.length; i++) { var a = P[i], b = P[i + 1], dx = b[0] - a[0], dz = b[1] - a[1], l = Math.hypot(dx, dz); if (l < 0.01) continue; var nx = -dz / l * w / 2, nz = dx / l * w / 2, ex = dx / l * w / 2, ez = dz / l * w / 2;
         M.quad([a[0] + nx - ex, y, a[1] + nz - ez], [a[0] - nx - ex, y, a[1] - nz - ez], [b[0] - nx + ex, y, b[1] - nz + ez], [b[0] + nx + ex, y, b[1] + nz + ez], col, mat); }
     });
-    e.b.forEach(function (b) { M.prism(b.p, -0.36, b.h, C.nb, C.nbTop, 8, 8, true); });
+    e.b.forEach(function (b) {
+      M.prism(b.p, -0.36, b.h, C.nb, C.nbTop, 8, 8, true);
+      if (b.i && Math.abs(area2(b.p)) > 600) grid(b.p, 6.5, 5.5, function (c, u, v) { M.prism(orect(c, u, v, 2.2, 0.8), b.h, b.h + 0.55, C.sky, C.sky, 0, 0, true); }, 1.2);   // świetliki hal zajezdni
+    });
+    // parkingi z autami
+    var CARS = [[236, 236, 234], [40, 42, 46], [150, 152, 156], [196, 198, 200], [52, 66, 92], [128, 34, 30], [84, 86, 90], [226, 222, 214]], ci = 0;
+    (e.k || []).forEach(function (P) {
+      M.cap(area2(P) > 0 ? P.slice().reverse() : P, -0.335, C.road, 6);
+      grid(P, 2.6, 0, function (c, u, v) {
+        if ((ci++ * 7919) % 100 < 22) return;
+        var col = CARS[(ci * 31) % CARS.length];
+        M.prism(orect(c, v, u, 2.2, 0.9), -0.33, 0.42, col, col, 0, 0, true);
+        M.prism(orect([c[0] - v[0] * 0.15, c[1] - v[1] * 0.15], v, u, 1.15, 0.78), 0.42, 1.05, [70, 78, 86], col, 0, 0, true);
+      }, 0.3, true);
+    });
+    // tory tramwajowe
+    (e.tr || []).forEach(function (P) {
+      for (var i = 0; i + 1 < P.length; i++) { var a = P[i], b = P[i + 1], l = Math.hypot(b[0] - a[0], b[1] - a[1]); if (l < 0.05) continue; var n = [-(b[1] - a[1]) / l, (b[0] - a[0]) / l];
+        M.beam(a, b, 2.9, -0.36, -0.325, C.ballast, 0);
+        [-0.72, 0.72].forEach(function (o) { M.beam([a[0] + n[0] * o, a[1] + n[1] * o], [b[0] + n[0] * o, b[1] + n[1] * o], 0.08, -0.33, -0.26, C.steel, 0); }); }
+    });
     e.t.forEach(function (t, i) {
       var h = 7 + ((i * 37) % 7), r = 2.6 + ((i * 13) % 5) * 0.35, x = t[0], z = t[1];
       M.prism([[x - .18, z - .18], [x + .18, z - .18], [x + .18, z + .18], [x - .18, z + .18]], -0.36, h * 0.55, C.trunk, C.trunk, 0, 0, true);
