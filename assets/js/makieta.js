@@ -62,6 +62,7 @@
     }
   };
   Mesh.prototype.box = function (x0, z0, x1, z1, y0, y1, col, mat) { this.prism([[x0, z0], [x1, z0], [x1, z1], [x0, z1]], y0, y1, col, col, mat); };
+  Mesh.prototype.cyl = function (cx, cz, r, y0, y1, col, seg) { var P = []; seg = seg || 20; for (var i = 0; i < seg; i++) { var a = -i / seg * Math.PI * 2; P.push([cx + Math.cos(a) * r, cz + Math.sin(a) * r]); } this.prism(P, y0, y1, col, col, 0, 0, true); };
   // belka wzdłuż odcinka a→b (szerokość w, wysokość y0..y1)
   Mesh.prototype.beam = function (a, b, w, y0, y1, col, mat) {
     var dx = b[0] - a[0], dz = b[1] - a[1], l = Math.hypot(dx, dz); if (l < 1e-4) return;
@@ -94,7 +95,7 @@
     cream: [238, 231, 211], cornice: [244, 239, 224], stone: [224, 214, 192], bronze: [176, 148, 108], rail: [176, 148, 108], gate: [118, 88, 66], glass: [196, 222, 236],
     deck: [180, 152, 118], green: [128, 150, 96], ground: [222, 218, 210], road: [92, 92, 94], walk: [204, 200, 192], grass: [150, 172, 118],
     nb: [208, 207, 204], nbTop: [194, 193, 190], trunk: [104, 86, 70], leaf: [122, 146, 94], leaf2: [104, 132, 84], water: [150, 182, 196],
-    wolne: [138, 170, 124], sky: [168, 180, 190], ballast: [150, 145, 138], steel: [118, 118, 122], rezerwacja: [214, 172, 92], sprzedane: [184, 178, 170], plate: [236, 230, 218], wall: [214, 206, 190]
+    wolne: [138, 170, 124], sky: [168, 180, 190], bike: [172, 96, 78], roof: [168, 167, 164], white: [242, 240, 236], ballast: [150, 145, 138], steel: [118, 118, 122], rezerwacja: [214, 172, 92], sprzedane: [184, 178, 170], plate: [236, 230, 218], wall: [214, 206, 190]
   };
   // M: 1 elewacja, 2 trawertyn, 3 lamele mosiężne, 4 deski, 5 zieleń, 6 asfalt, 7 korony drzew, 8 sąsiednie budynki, 10 chodnik, 12 lokale (płaskie)
 
@@ -187,7 +188,7 @@
     (fl.cols || []).forEach(function (c) { M.prism(c, fl.z0, fl.z1, C.cream, C.cream, 1, 1); });
     (fl.rails || []).forEach(function (r) { if (Math.hypot(r[2] - r[0], r[3] - r[1]) > 0.7) rail(M, [r[0], r[1]], [r[2], r[3]], fl.z0 + 0.05, 1.1); });
     // dach nad ostatnią kondygnacją
-    if (f === 7) fl.mass.forEach(function (e) { M.prism(offset(e.p, 0.25), fl.z1, fl.z1 + 0.45, C.cornice, C.cornice, 1); M.prism(offset(e.p, -0.35), fl.z1 + 0.45, fl.z1 + 0.6, C.green, C.green, 5, 5, true); });   // zielony dach
+    if (f === 7) fl.mass.forEach(function (e) { M.prism(offset(e.p, 0.25), fl.z1, fl.z1 + 0.45, C.cornice, C.cornice, 1); M.prism(offset(e.p, -0.35), fl.z1 + 0.45, fl.z1 + 0.52, C.roof, C.roof, 10, 10, true); });   // dach: szara papa / płyty
     return { M: M, G: G };
   }
   // przekrój kondygnacji: płyta, niskie ściany i lokale w kolorach statusu
@@ -234,10 +235,33 @@
       for (var i = 0; i + 1 < P.length; i++) { var a = P[i], b = P[i + 1], dx = b[0] - a[0], dz = b[1] - a[1], l = Math.hypot(dx, dz); if (l < 0.01) continue; var nx = -dz / l * w / 2, nz = dx / l * w / 2, ex = dx / l * w / 2, ez = dz / l * w / 2;
         M.quad([a[0] + nx - ex, y, a[1] + nz - ez], [a[0] - nx - ex, y, a[1] - nz - ez], [b[0] - nx + ex, y, b[1] - nz + ez], [b[0] + nx + ex, y, b[1] + nz + ez], col, mat); }
     });
+    // przejścia dla pieszych: pasy (zebra) w poprzek jezdni
+    e.r.forEach(function (r) {
+      if (!r.c) return; var P = r.p;
+      for (var i = 0; i + 1 < P.length; i++) {
+        var a = P[i], b = P[i + 1], l = Math.hypot(b[0] - a[0], b[1] - a[1]); if (l < 1) continue; var u = [(b[0] - a[0]) / l, (b[1] - a[1]) / l], v = [-u[1], u[0]];
+        for (var t = 0.25; t < l - 0.3; t += 1.0) { var c = [a[0] + u[0] * (t + 0.25), a[1] + u[1] * (t + 0.25)]; M.prism(orect(c, u, v, 0.25, 1.9), -0.33, -0.318, C.white, C.white, 0, 0, true); }
+      }
+    });
     e.b.forEach(function (b) {
       M.prism(b.p, -0.36, b.h, C.nb, C.nbTop, 8, 8, true);
       if (b.i && Math.abs(area2(b.p)) > 600) grid(b.p, 6.5, 5.5, function (c, u, v) { M.prism(orect(c, u, v, 2.2, 0.8), b.h, b.h + 0.55, C.sky, C.sky, 0, 0, true); }, 1.2);   // świetliki hal zajezdni
     });
+    // ciąg pieszo-rowerowy między budynkiem a zielenią (od Tramwajowej do ściany sąsiada)
+    (function () {
+      var sl = D.floors[1].slab[0], bz = Math.max.apply(null, sl.map(function (p) { return p[1]; })), x0 = -27, x1 = Math.max.apply(null, sl.map(function (p) { return p[0]; }));
+      var y = -0.325;
+      M.box(x0, bz + 0.3, x1, bz + 2.3, y - 0.01, y, C.walk, 10);                       // chodnik z płyt
+      M.box(x0, bz + 2.3, x1, bz + 4.8, y - 0.01, y + 0.004, C.bike, 6);                 // droga rowerowa (czerwony asfalt)
+      M.box(x0, bz + 4.8, x1, bz + 4.95, y - 0.01, y + 0.04, C.stone, 0);                // obrzeże od strony zieleni
+      for (var x = x0 + 0.5; x < x1 - 1; x += 2) M.box(x, bz + 3.5, x + 1, bz + 3.6, y, y + 0.007, C.white, 0);   // przerywana oś
+      M.box(x0, bz + 2.27, x1, bz + 2.33, y, y + 0.007, C.white, 0);                   // linia krawędziowa
+      [-18, -4, 9].forEach(function (cx) {                                              // znaki rowerowe na nawierzchni
+        var r = 0.32, z = bz + 2.95; M.cyl(cx - 0.55, z, r, y + 0.006, y + 0.009, C.white, 14); M.cyl(cx + 0.55, z, r, y + 0.006, y + 0.009, C.white, 14);
+        M.cyl(cx - 0.55, z, r - 0.07, y + 0.007, y + 0.01, C.bike, 14); M.cyl(cx + 0.55, z, r - 0.07, y + 0.007, y + 0.01, C.bike, 14);
+        M.beam([cx - 0.55, z], [cx + 0.1, z - 0.45], 0.07, y + 0.006, y + 0.011, C.white); M.beam([cx + 0.1, z - 0.45], [cx + 0.55, z], 0.07, y + 0.006, y + 0.011, C.white);
+      });
+    })();
     // parkingi (bez aut)
     var CARS = [[236, 236, 234], [40, 42, 46], [150, 152, 156], [196, 198, 200], [52, 66, 92], [128, 34, 30], [84, 86, 90], [226, 222, 214]], ci = 0;
     (e.k || []).forEach(function (P) {
@@ -380,6 +404,7 @@
   function labels() {
     var html = '';
     if (SEL >= 1) PICK.forEach(function (k, i) { if (PICK.findIndex(function (q) { return q.id === k.id; }) !== i) return; var c = cen(k.P), s = proj(c[0], k.y + 0.3, c[1]); if (s) html += '<span style="left:' + s[0].toFixed(0) + 'px;top:' + s[1].toFixed(0) + 'px"' + (k.id === HOVER ? ' class="is-h"' : '') + '>' + k.id + '</span>'; });
+    if (SEL < 0 && D) { var sl = D.floors[1].slab[0], bz = Math.max.apply(null, sl.map(function (p) { return p[1]; })), xs = sl.map(function (p) { return p[0]; }), sq = proj((Math.min.apply(null, xs) + Math.max.apply(null, xs)) / 2, 9, bz + 16); if (sq) html += '<span class="mk3d__place" style="left:' + sq[0].toFixed(0) + 'px;top:' + sq[1].toFixed(0) + 'px">Planowany skwer</span>'; }
     if (lab.innerHTML !== html) lab.innerHTML = html;
   }
   function compass() { if (comp) { var a = Math.atan2(NORTH[0], -NORTH[1]); comp.style.transform = 'rotate(' + (-(cam.az + Math.PI) + a) + 'rad)'; } }

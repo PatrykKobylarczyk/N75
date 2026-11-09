@@ -1736,3 +1736,4 @@ body.dh-open { overflow: hidden; }
 }
 .mk3d-cta { margin-top: 22px; }
 @media (max-width: 760px) { .mk3d__floors .chip { flex: 0 0 auto; } }
+.mk3d__labels span.mk3d__place { background: #5d7a55; color: #f7f3ec; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; padding: 5px 9px; }
