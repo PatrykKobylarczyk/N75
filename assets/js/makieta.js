@@ -583,7 +583,7 @@
     var u = UNITS[id]; if (!u) return;
     card.innerHTML = '<button class="mk3d__cx" type="button" aria-label="Zamknij">×</button><span class="caps bronze">' + NAMES[u.floor] + '</span><h3 class="display">' + id + '</h3>' +
       '<dl><div><dt class="caps">Pokoje</dt><dd>' + u.rooms + '</dd></div><div><dt class="caps">Metraż</dt><dd>' + String(u.area).replace('.', ',') + '&nbsp;m²</dd></div><div><dt class="caps">Cena</dt><dd>' + FMT(u.price) + '&nbsp;zł</dd></div></dl>' +
-      '<p class="status status--' + u.status + '">' + u.status + '</p><div class="mk3d__ca"><a class="btn caps" href="mieszkanie.html?id=' + encodeURIComponent(id) + '">Karta mieszkania</a>' +
+      '<p class="status status--' + u.status + '">' + u.status + '</p><div class="mk3d__ca"><a class="btn caps" target="_top" href="mieszkanie.html?id=' + encodeURIComponent(id) + '">Karta mieszkania</a>' +
       (window.N75Doll && D.units[id] ? '<button type="button" class="btn btn--ghost caps" data-doll="' + id + '">Wnętrze 3D</button>' : '') + '</div>';
     card.hidden = false;
     card.querySelector('.mk3d__cx').onclick = function () { card.hidden = true; };
@@ -607,7 +607,10 @@
     if (was && moved < 6) click(e.clientX, e.clientY);
   }
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', function (e) { delete pts[e.pointerId]; });
-  cv.addEventListener('wheel', function (e) { e.preventDefault(); cam.dist = Math.min(300, Math.max(28, cam.dist * Math.exp(e.deltaY * 0.0012))); req(); }, { passive: false });
+  // osadzona w stronie: kółko przybliża dopiero po kliknięciu w makietę (inaczej przewija stronę)
+  var EMBED = /[?&]embed=1/.test(location.search), ACTIVE = !EMBED;
+  if (EMBED) { document.body.classList.add('is-embed'); cv.addEventListener('pointerdown', function () { ACTIVE = true; document.body.classList.add('is-active'); }); document.addEventListener('mouseleave', function () { ACTIVE = false; document.body.classList.remove('is-active'); }); }
+  cv.addEventListener('wheel', function (e) { if (!ACTIVE) return; e.preventDefault(); cam.dist = Math.min(300, Math.max(28, cam.dist * Math.exp(e.deltaY * 0.0012))); req(); }, { passive: false });
   function hover(x, y) {
     if (!VP || !D) return;
     if (SEL >= 1) { var id = pickUnit(x, y); if (id !== HOVER) { HOVER = id; refreshUnits(); req(); } cv.style.cursor = id ? 'pointer' : 'grab'; tipAt(id ? id + ' · ' + (UNITS[id] ? String(UNITS[id].area).replace('.', ',') + ' m² · ' + UNITS[id].status : '') : '', x, y); return; }
