@@ -284,7 +284,7 @@
       }
     });
     // rysowane elewacje pierzei Narutowicza (ten sam rysunek co animacja „pierzeja” na stronie); px – zakres rysunku, t – linia gzymsu
-    var PZ = [{ x: 50, px: [970, 1278], t: 130 }, { x: 73, px: [711, 970], t: 157 }, { x: 98, px: [410, 711], t: 121 }, { x: 148, px: [27, 358], t: 87 },
+    var PZ = [{ x: 27, px: [1278, 1571], t: 106 }, { x: 50, px: [970, 1278], t: 130 }, { x: 73, px: [711, 970], t: 157 }, { x: 98, px: [410, 711], t: 121 }, { x: 148, px: [27, 358], t: 87 },
       // na zachód od N75 (drugi pas atlasu): Okręgowy Urząd Miar, żółty biurowiec, beżowa kamienica
       { x: -59.5, px: [60, 279], t: 448, b: 844, d: 4 }, { x: -78, px: [360, 670], t: 661, b: 844 }, { x: -112, px: [700, 1280], t: 618, b: 844 }];
     // pozostałe budynki: proceduralny szkic elewacji (okna, gzymsy, bramy) rysowany w shaderze (M 16)
