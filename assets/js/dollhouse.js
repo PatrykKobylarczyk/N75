@@ -676,15 +676,6 @@
     'L+=sunC*pow(max(dot(N,Hh),0.),pw)*gs*s*.9+sky*fr*gs*.35;' +
     // ACES (filmowe) mapowanie tonów
     'L*=.95;L=clamp((L*(2.51*L+.03))/(L*(2.43*L+.59)+.14),0.,1.);L=mix(vec3(dot(L,vec3(.2126,.7152,.0722))),L,.8);o=vec4(pow(L,vec3(1./2.2)),uA);}';
-  // otoczenie widoczne tylko przez szyby (makieta 3D: sąsiednie budynki, drzewa, ulice, bryła N75, niebo)
-  var EFS = '#version 300 es\nprecision highp float;in vec3 vP,vN,vC;in float vM;in vec4 vL;uniform vec3 uSun,uEye,uB0,uB1;uniform float uCut;out vec4 o;' +
-    'void main(){int M=int(vM+.5);vec3 d=normalize(vP-uEye);vec3 sky=mix(vec3(.88,.91,.94),vec3(.6,.74,.9),clamp(d.y*1.8,0.,1.));' +
-    'if(M==33){o=vec4(sky,1.);return;}' +
-    'if(length(vP-uEye)<uCut)discard;if(all(greaterThan(vP,uB0))&&all(lessThan(vP,uB1)))discard;' +
-    'vec3 N=normalize(vN);if(dot(N,d)>0.)N=-N;vec3 col=vC;' +
-    'if(M==31&&abs(N.y)<.5){float fy=fract((vP.y+40.)/3.3);float u=abs(N.x)>abs(N.z)?vP.z:vP.x;float fx=fract(u/2.7);if(fy>.32&&fy<.8&&fx>.22&&fx<.78)col=mix(col,vec3(.5,.56,.62),.75);}' +
-    'if(M==32){float fy=fract((vP.y+40.)/3.4);float u=abs(N.x)>abs(N.z)?vP.z:vP.x;float fx=fract(u/1.9);if(abs(N.y)<.5&&fy>.12&&fy<.86&&fx>.08&&fx<.92)col=mix(col,vec3(.55,.6,.64),.7);}' +
-    'col*=.62+.42*max(dot(N,uSun),0.);float fd=smoothstep(60.,420.,length(vP-uEye));o=vec4(mix(col,sky,fd*.75),1.);}';
   var SVS = '#version 300 es\nlayout(location=0) in vec3 p;uniform mat4 uL;void main(){gl_Position=uL*vec4(p,1.);}';
   var SFS = '#version 300 es\nprecision mediump float;out vec4 o;void main(){o=vec4(1.);}';
 
@@ -702,7 +693,7 @@
   function mul(a, b) { var o = mat4(); for (var i = 0; i < 4; i++) for (var j = 0; j < 4; j++) { var s = 0; for (var k = 0; k < 4; k++) s += a[k * 4 + j] * b[i * 4 + k]; o[i * 4 + j] = s; } return o; }
 
   function Viewer(canvas) {
-    var gl = canvas.getContext('webgl2', { antialias: true, preserveDrawingBuffer: true, stencil: true });
+    var gl = canvas.getContext('webgl2', { antialias: true, preserveDrawingBuffer: true });
     if (!gl) throw new Error('webgl2');
     this.gl = gl; this.cv = canvas;
     function prog(vs, fs) {
@@ -710,7 +701,7 @@
       [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]].forEach(function (s) { var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh)); gl.attachShader(p, sh); });
       gl.linkProgram(p); return p;
     }
-    this.P = prog(VS, FS); this.SP = prog(SVS, SFS); this.EP = prog(VS, EFS); this.env = null;
+    this.P = prog(VS, FS); this.SP = prog(SVS, SFS);
     var S = 2048; this.SS = S;
     this.depth = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, this.depth);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT24, S, S, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null);
@@ -737,8 +728,6 @@
     this.box = box;   // [x0, z0, x1, z1, yTop]
     this.draw();
   };
-  Viewer.prototype.setEnv = function (M) { var gl = this.gl; if (this.env) gl.deleteVertexArray(this.env.vao); this.env = M ? this.upload(M) : null; this.draw();
-  };
   Viewer.prototype.draw = function () {
     var gl = this.gl, cv = this.cv, b = this.box; if (!b) return;
     var dpr = Math.min(window.devicePixelRatio || 1, 2), W = Math.round(cv.clientWidth * dpr), H = Math.round(cv.clientHeight * dpr);
@@ -747,7 +736,7 @@
     var fov = 0.5, dist = R / Math.sin(fov / 2) * 0.86 / this.zoom * Math.max(1, (H / W) * 1.25);
     var eye = [cx + Math.cos(this.el) * Math.sin(this.az) * dist, b[4] * 0.3 + Math.sin(this.el) * dist, cz + Math.cos(this.el) * Math.cos(this.az) * dist];
     var tgt = [cx, b[4] * 0.12, cz];
-    var VP = mul(persp(fov, W / H, 0.5, 2000), look(eye, tgt, [0, 1, 0]));
+    var VP = mul(persp(fov, W / H, 0.5, dist * 3), look(eye, tgt, [0, 1, 0]));
     var sun = [-0.42, 0.82, 0.38], sl = Math.hypot(sun[0], sun[1], sun[2]); sun = sun.map(function (v) { return v / sl; });
     var se = [cx + sun[0] * 30, sun[1] * 30, cz + sun[2] * 30];
     var LM = mul(ortho(-R, R, -R, R, 1, 70), look(se, [cx, 0, cz], [0, 1, 0]));
@@ -758,7 +747,7 @@
     gl.bindVertexArray(this.op.vao); gl.drawArrays(gl.TRIANGLES, 0, this.op.n);
     gl.colorMask(true, true, true, true); gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     // scena
-    gl.viewport(0, 0, W, H); gl.clearColor(0, 0, 0, 0); gl.clearStencil(0); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+    gl.viewport(0, 0, W, H); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.useProgram(this.P);
     var u = function (n) { return gl.getUniformLocation(this.P, n); }.bind(this);
     gl.uniformMatrix4fv(u('uVP'), false, VP); gl.uniformMatrix4fv(u('uL'), false, LM);
@@ -767,20 +756,6 @@
     gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
     gl.bindVertexArray(this.op.vao); gl.drawArrays(gl.TRIANGLES, 0, this.op.n);
     gl.disable(gl.CULL_FACE);
-    // widok za oknem: szyby zaznaczają maskę (stencil), w niej rysujemy otoczenie z makiety
-    if (this.env) {
-      gl.enable(gl.STENCIL_TEST); gl.stencilFunc(gl.ALWAYS, 1, 0xff); gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
-      gl.colorMask(false, false, false, false); gl.depthMask(false);
-      gl.bindVertexArray(this.gl_.vao); gl.drawArrays(gl.TRIANGLES, 0, this.gl_.n);
-      gl.colorMask(true, true, true, true); gl.depthMask(true); gl.stencilFunc(gl.EQUAL, 1, 0xff); gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
-      gl.useProgram(this.EP);
-      var ue = function (n) { return gl.getUniformLocation(this.EP, n); }.bind(this);
-      gl.uniformMatrix4fv(ue('uVP'), false, VP); gl.uniformMatrix4fv(ue('uL'), false, LM); gl.uniform3fv(ue('uSun'), sun); gl.uniform3fv(ue('uEye'), eye);
-      gl.uniform3fv(ue('uB0'), [b[0] - 1.3, -0.6, b[1] - 1.3]); gl.uniform3fv(ue('uB1'), [b[2] + 1.3, b[4] + 0.8, b[3] + 1.3]);
-      gl.uniform1f(ue('uCut'), Math.hypot(eye[0] - cx, eye[1] - b[4] * 0.5, eye[2] - cz) - R * 0.9);
-      gl.bindVertexArray(this.env.vao); gl.drawArrays(gl.TRIANGLES, 0, this.env.n);
-      gl.disable(gl.STENCIL_TEST); gl.useProgram(this.P);
-    }
     // szkło jednolite: najpierw sama głębia szyb, potem kolor tylko najbliższej warstwy (bez sumowania kilku tafli)
     gl.bindVertexArray(this.gl_.vao);
     gl.colorMask(false, false, false, false); gl.depthMask(true); gl.drawArrays(gl.TRIANGLES, 0, this.gl_.n);
@@ -790,41 +765,6 @@
     gl.depthFunc(gl.LESS); gl.depthMask(true); gl.disable(gl.BLEND);
   };
 
-  var MK = null, MKP = null;
-  function mkData() { if (!MKP) MKP = fetch('assets/data/makieta.json?v=1794254634').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) { MK = d; return d; }); return MKP; }
-  function envMesh(d, id, data, which) {
-    var M = new Mesh(), base = data.levels[0], f = parseInt(String(id).replace(/^\D+/, ''), 10) + (which || 0), Y0 = d.z[f] || 0;
-    var ox = d.o[0] - base.ox, oz = base.oy - d.o[1];
-    var T = function (q) { return [q[0] + ox, q[1] + oz]; }, TP = function (P) { return P.map(T); }, Y = function (y) { return y - Y0; };
-    var cx = (base.ox - d.o[0]), cz = (d.o[1] - base.oy);   // środek lokalu w układzie makiety (≈)
-    var near = function (P, r) { return P.some(function (q) { return Math.hypot(q[0] - cx, q[1] - cz) < r; }); };
-    var e = d.env, G = [188, 188, 184];
-    M.box(-700, -700, 700, 700, Y(-0.5), Y(-0.36), G, G, 30);
-    (e.g || []).forEach(function (P) { if (near(P, 260)) M.prism(TP(P), Y(-0.36), Y(-0.33), [150, 170, 120], [150, 170, 120], 30); });
-    (e.r || []).forEach(function (r) {
-      var P = r.p, w = (r.w || 6) / 2, c = r.c ? [205, 202, 196] : [146, 146, 144];
-      for (var i = 0; i + 1 < P.length; i++) {
-        var a = P[i], b = P[i + 1], l = Math.hypot(b[0] - a[0], b[1] - a[1]); if (l < 0.1 || Math.hypot(a[0] - cx, a[1] - cz) > 300) continue;
-        var nx = -(b[1] - a[1]) / l * w, nz = (b[0] - a[0]) / l * w;
-        M.prism(TP([[a[0] + nx, a[1] + nz], [b[0] + nx, b[1] + nz], [b[0] - nx, b[1] - nz], [a[0] - nx, a[1] - nz]]), Y(-0.36), Y(r.c ? -0.3 : -0.32), c, c, 30);
-      }
-    });
-    (e.b || []).forEach(function (b) { if (near(b.p, 320)) M.prism(TP(b.p), Y(-0.36), Y(b.h), [214, 212, 207], [196, 195, 192], b.i ? 30 : 31, 30); });
-    (e.t || []).forEach(function (t, i) {
-      if (Math.hypot(t[0] - cx, t[1] - cz) > 260) return;
-      var h = 7 + ((i * 37) % 7), r = 2.6 + ((i * 13) % 5) * 0.35, p = T(t), k = [], n = 8;
-      for (var j = 0; j < n; j++) { var a = j / n * Math.PI * 2; k.push([p[0] + Math.cos(a) * r, p[1] + Math.sin(a) * r]); }
-      M.prism([[p[0] - .18, p[1] - .18], [p[0] + .18, p[1] - .18], [p[0] + .18, p[1] + .18], [p[0] - .18, p[1] + .18]], Y(-0.36), Y(h * 0.4), [104, 86, 70], [104, 86, 70], 30);
-      M.prism(k, Y(h * 0.35), Y(h * 0.95), i % 3 ? [122, 146, 94] : [104, 132, 84], i % 3 ? [136, 160, 104] : [116, 144, 92], 30);
-    });
-    // bryła N75 (pozostałe lokale i piętra – kremowa elewacja z oknami)
-    d.floors.forEach(function (fl) { (fl.mass || []).forEach(function (m) { M.prism(TP(m.p), Y(fl.z0), Y(fl.z1 - 0.02), [236, 230, 214], [226, 220, 206], 32, 30); }); });
-    // niebo
-    var S = 900, sk = [200, 210, 220];
-    [[[-S, -S], [S, -S]], [[S, -S], [S, S]], [[S, S], [-S, S]], [[-S, S], [-S, -S]]].forEach(function (q) { M.tri([q[0][0], -200, q[0][1]], [q[1][0], -200, q[1][1]], [q[1][0], 600, q[1][1]], sk, 33); M.tri([q[0][0], -200, q[0][1]], [q[1][0], 600, q[1][1]], [q[0][0], 600, q[0][1]], sk, 33); });
-    M.tri([-S, 600, -S], [S, 600, -S], [S, 600, S], sk, 33); M.tri([-S, 600, -S], [S, 600, S], [-S, 600, S], sk, 33);
-    return M;
-  }
   function model(data, which) {
     var M = new Mesh(), G = new Mesh(), lv = data.levels;
     PEOPLE = {};
@@ -898,8 +838,6 @@
   function show(which) {
     var m = model(data, which);
     viewer.set(m.M, m.G, m.box);
-    var id = CUR, d0 = data;
-    mkData().then(function (d) { if (data !== d0 || !viewer) return; try { viewer.setEnv(envMesh(d, id, data, which)); } catch (err) { viewer.setEnv(null); } }).catch(function () {});
   }
   function setLevels() {
     var box = dlg.querySelector('.dh__lv');
@@ -913,19 +851,18 @@
       });
     });
   }
-  var CUR = null;
   function open(id, label) {
-    ensure(); CUR = id;
+    ensure();
     dlg.querySelector('.dh__t').textContent = label || id;
     dlg.classList.add('is-open'); document.body.classList.add('dh-open');
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1794254634').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1794254648').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
   }
   function close() { if (!dlg) return; stopSpin(); dlg.classList.remove('is-open'); document.body.classList.remove('dh-open'); }
-  window.N75Doll = { open: open, close: close, has: function (id) { return (window.N75_3D || []).indexOf(id) >= 0; }, _model: model, _Viewer: Viewer, _v: function () { return viewer; } };
+  window.N75Doll = { open: open, close: close, has: function (id) { return (window.N75_3D || []).indexOf(id) >= 0; }, _model: model, _Viewer: Viewer };
 })();
