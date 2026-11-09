@@ -118,7 +118,7 @@
         var u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L], n = outward(P, a, b);
         var at = function (s, o) { return [a[0] + u[0] * s + n[0] * o, a[1] + u[1] * s + n[1] * o]; };
         var V = function (s, o, y) { var q = at(s, o); return [q[0], y, q[1]]; };
-        var g = (e.g[i] || []).map(function (iv) { return [iv[0] * L + 0.04, iv[1] * L - 0.04]; }).filter(function (iv) { return iv[1] - iv[0] > 0.4; });
+        var g = (e.g[i] || []).map(function (iv) { return [iv[0] * L + 0.04, iv[1] * L - 0.04, iv[2]]; }).filter(function (iv) { return iv[1] - iv[0] > 0.4; });
         var s = 0;
         var solid = function (s0, s1) {
           if (s1 - s0 <= 0.005) return;
@@ -153,10 +153,10 @@
           var bx = function (sa, sb, ya, yb2) { var A = at(sa, -inset + 0.03), B = at(sb, -inset + 0.03); M.beam(A, B, 0.06, ya, yb2, C.bronze, 0); };
           bx(s0, s0 + fr, yb, yh); bx(s1 - fr, s1, yb, yh); bx(s0, s1, yh - fr, yh); bx(s0, s1, yb, yb + fr);
           var w = s1 - s0;
-          if (w > 0.9) { var sm = s0 + w / 2; bx(sm - fr / 2, sm + fr / 2, yb, yh); }   // jeden pionowy podział: lewo / prawo
+          if (w > 0.9 && !iv[2]) { var sm = s0 + w / 2; bx(sm - fr / 2, sm + fr / 2, yb, yh); }   // jeden pionowy podział: lewo / prawo
           // francuski balkon: balustrada w licu elewacji (gdy okno nie wychodzi na loggię / taras)
           var mid = at((s0 + s1) / 2, 0.5);
-          if (f >= 1 && f <= 6 && ![0.3, 0.6, 1.0, 1.5].some(function (o) { return outAt(f, at((s0 + s1) / 2, o)); })) rail(M, at(s0 + 0.02, 0.06), at(s1 - 0.02, 0.06), yb, 1.0);
+          if (f >= 1 && f <= 6 && !iv[2] && ![0.3, 0.6, 1.0, 1.5].some(function (o) { return outAt(f, at((s0 + s1) / 2, o)); })) rail(M, at(s0 + 0.02, 0.06), at(s1 - 0.02, 0.06), yb, 1.0);
         });
         solid(s, L);
       }
