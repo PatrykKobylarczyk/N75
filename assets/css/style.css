@@ -1669,3 +1669,70 @@ body.dh-open { overflow: hidden; }
   .cmp-grid--many .cmp-cell--cta .btn { padding: 7px 4px; font-size: 8px; letter-spacing: .04em; width: 100%; justify-content: center; }
   .cmp-grid--many .status { font-size: 8px; padding: 3px 4px; }
 }
+
+/* ---------- Makieta 3D (makieta.html) ---------- */
+.page-mk { margin: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 30%, #f8f5ef 0%, #ebe5da 70%, #e3dccf 100%); }
+.mk3d { position: fixed; inset: 0; overflow: hidden; color: var(--ink); }
+.mk3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; opacity: 0; transition: opacity .8s ease; }
+.mk3d.is-ready canvas { opacity: 1; }
+.mk3d canvas:active { cursor: grabbing; }
+.mk3d__top { position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: center; gap: 28px; padding: 22px clamp(16px, 3vw, 40px); pointer-events: none; }
+.mk3d__top > * { pointer-events: auto; }
+.mk3d__top .logo-svg { width: 74px; height: auto; fill: var(--ink); display: block; }
+.mk3d__top > div { flex: 1; }
+.mk3d__top h1 { margin: 6px 0 0; font-size: clamp(20px, 2.2vw, 30px); line-height: 1.05; }
+.mk3d__floors { position: absolute; right: clamp(16px, 3vw, 40px); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 6px; }
+.mk3d__floors .chip { display: grid; grid-template-columns: 26px 1fr; align-items: center; gap: 10px; min-width: 150px; text-align: left; background: rgba(247, 243, 236, .86); backdrop-filter: blur(6px); }
+.mk3d__floors .chip[data-f="-1"] { display: block; text-align: center; margin-bottom: 6px; }
+.mk3d__floors .chip b { font-family: var(--head); font-weight: 500; font-size: 18px; }
+.mk3d__floors .chip span { font-size: 11px; color: #5d7a55; letter-spacing: .04em; }
+.mk3d__floors .chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.mk3d__floors .chip[aria-pressed="true"] span { color: #c9dcc0; }
+.mk3d__bottom { position: absolute; left: clamp(16px, 3vw, 40px); bottom: 22px; display: flex; align-items: center; gap: 22px; }
+.mk3d__sun { display: flex; align-items: center; gap: 10px; background: rgba(247, 243, 236, .86); backdrop-filter: blur(6px); padding: 10px 14px; border: 1px solid var(--line); }
+.mk3d__sun span { font-size: 10px; }
+.mk3d__sun input { width: 160px; accent-color: var(--bronze); }
+.mk3d__sun output { font-size: 12px; min-width: 40px; }
+.mk3d__home { background: none; border: 1px solid var(--line); padding: 12px 14px; font-size: 10px; cursor: pointer; background: rgba(247, 243, 236, .86); }
+.mk3d__home:hover { border-color: var(--bronze); }
+.mk3d__compass { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); position: relative; background: rgba(247, 243, 236, .86); }
+.mk3d__compass::before { content: ""; position: absolute; left: 50%; top: 6px; width: 2px; height: 16px; margin-left: -1px; background: var(--bronze); }
+.mk3d__compass span { position: absolute; left: 0; right: 0; bottom: 6px; text-align: center; font-size: 10px; font-family: var(--head); }
+.mk3d__hint { position: absolute; left: 50%; bottom: 74px; transform: translateX(-50%); font-size: 10px; color: rgba(42, 38, 34, .55); text-align: center; margin: 0; pointer-events: none; }
+.mk3d__legal { position: absolute; right: clamp(16px, 3vw, 40px); bottom: 22px; margin: 0; max-width: 360px; font-size: 11px; line-height: 1.4; color: rgba(42, 38, 34, .55); text-align: right; }
+.mk3d__tip { position: absolute; z-index: 3; background: var(--ink); color: var(--paper); font-size: 10px; padding: 7px 10px; pointer-events: none; white-space: nowrap; }
+.mk3d__labels { position: absolute; inset: 0; pointer-events: none; }
+.mk3d__labels span { position: absolute; transform: translate(-50%, -50%); font-family: var(--head); font-size: 11px; letter-spacing: .08em; color: #2a2622; background: rgba(247, 243, 236, .8); padding: 2px 6px; }
+.mk3d__labels span.is-h { background: var(--ink); color: var(--paper); }
+.mk3d__card { position: absolute; z-index: 4; left: clamp(16px, 3vw, 40px); top: 120px; width: 280px; background: #f7f3ec; border: 1px solid var(--line); padding: 22px 22px 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, .12); }
+.mk3d__card h3 { margin: 6px 0 14px; font-size: 34px; line-height: 1; }
+.mk3d__card dl { margin: 0 0 12px; display: grid; gap: 8px; }
+.mk3d__card dl div { display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.mk3d__card dt { font-size: 10px; color: var(--muted); }
+.mk3d__card dd { margin: 0; font-size: 15px; }
+.mk3d__card .status { text-transform: capitalize; margin: 0 0 16px; }
+.mk3d__ca { display: flex; flex-direction: column; gap: 8px; }
+.mk3d__ca .btn { justify-content: center; }
+.mk3d__cx { position: absolute; right: 10px; top: 8px; border: 0; background: none; font-size: 24px; cursor: pointer; color: var(--ink); }
+@media (max-width: 760px) {
+  .mk3d__top { padding: 14px 16px; gap: 14px; }
+  .mk3d__top .logo-svg { width: 52px; }
+  .mk3d__top h1 { font-size: 17px; }
+  .mk3d__back { display: none; }
+  .mk3d__floors { top: auto; bottom: 86px; right: 0; left: 0; transform: none; flex-direction: row; overflow-x: auto; padding: 0 16px; gap: 6px; scrollbar-width: none; }
+  .mk3d__floors .chip { min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; align-items: center; }
+  .mk3d__floors .chip[data-f="-1"] { margin: 0; white-space: nowrap; }
+  .mk3d__floors .chip span { font-size: 9px; white-space: nowrap; }
+  .mk3d__bottom { left: 16px; right: 16px; bottom: 16px; gap: 10px; }
+  .mk3d__sun { flex: 1; padding: 8px 10px; }
+  .mk3d__sun span { display: none; }
+  .mk3d__sun input { width: 100%; }
+  .mk3d__home { padding: 11px 10px; }
+  .mk3d__hint, .mk3d__legal { display: none; }
+  .mk3d__card { left: 16px; right: 16px; top: auto; bottom: 150px; width: auto; padding: 18px; }
+  .mk3d__card h3 { font-size: 28px; margin-bottom: 10px; }
+  .mk3d__ca { flex-direction: row; }
+  .mk3d__ca .btn { flex: 1; }
+}
+.mk3d-cta { margin-top: 22px; }
+@media (max-width: 760px) { .mk3d__floors .chip { flex: 0 0 auto; } }
