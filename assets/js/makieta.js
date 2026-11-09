@@ -401,8 +401,8 @@
     'if(M==10&&N.y>.5){vec2 g=fract(vP.xz/1.);col*=mix(.93,1.,smoothstep(0.,.03,min(min(g.x,1.-g.x),min(g.y,1.-g.y))));}' +
     'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),2.5);vec3 R=reflect(-V,N);float az=atan(R.z,R.x);' +
     'float hz=.07+.05*sin(az*7.)*sin(az*3.1+1.)+.03*sin(az*23.+2.);float lf=fract(sin(floor(az*40.)*91.7)*43758.5);' +
-    'vec3 env=R.y>hz?mix(vec3(.80,.86,.92),vec3(.52,.66,.84),clamp((R.y-hz)*1.6,0.,1.)):R.y>-.4?mix(vec3(.27,.37,.24),vec3(.47,.56,.39),lf*.55+.25*smoothstep(hz-.08,hz,R.y)+.15*sin(R.y*40.+az*9.)):vec3(.5,.5,.48);' +
-    'vec3 c=mix(col*.42,env,.6+fr*.3);o=vec4(pow(c,vec3(1./2.2)),min(1.,uA*1.65+fr*.15));return;}' +
+    'vec3 env=R.y>hz?mix(vec3(.80,.86,.92),vec3(.52,.66,.84),clamp((R.y-hz)*1.6,0.,1.)):R.y>-.4?mix(vec3(.40,.47,.50),vec3(.58,.64,.68),lf*.55+.25*smoothstep(hz-.08,hz,R.y)+.15*sin(R.y*40.+az*9.)):vec3(.55,.57,.6);' +
+    'vec3 c=mix(col*.5,env,.55+fr*.3);o=vec4(pow(c,vec3(1./2.2)),min(1.,uA*1.65+fr*.15));return;}' +
     'float ndl=max(dot(N,uSun),0.),s=sh();vec3 sky=vec3(.82,.88,1.),bnc=vec3(.78,.74,.68);vec3 amb=mix(bnc*.62,sky*.8,N.y*.5+.5);' +
     'float ao=M==8||M==15||M==16||M==1||M==2||M==3?mix(.78,1.,smoothstep(-.3,6.,vP.y)):1.;' +
     'vec3 sunC=vec3(1.,.93,.8)*1.12;vec3 L=col*(amb*ao+sunC*ndl*mix(.16,1.,s));' +
