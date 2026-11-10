@@ -35,13 +35,17 @@
   /* ---------- kafle Google ---------- */
   var tiles = null, D = null;
   C.GoogleMaps.defaultApiKey = KEY;
-  function fail(e) { console.error('[N75 miasto]', e); if (msg) { msg.hidden = false; msg.textContent = 'Nie udało się wczytać prawdziwego otoczenia (Google Map Tiles). Pokazuję sam budynek.'; } root.classList.add('is-ready'); }
+  function note(t) { if (msg) { msg.hidden = false; msg.textContent = t; } }
+  function fail(e) { console.error('[N75 miasto]', e); if (msg) { msg.hidden = false; msg.textContent = 'Nie udało się wczytać otoczenia z Google: ' + ((e && (e.message || e.statusCode)) || e) + '. Pokazuję sam budynek.'; } root.classList.add('is-ready'); }
   function loadTiles() {
     var pr;
-    try { pr = C.createGooglePhotorealistic3DTileset(undefined, { showCreditsOnScreen: true, maximumScreenSpaceError: matchMedia('(max-width: 700px)').matches ? 24 : 16, cacheBytes: 384 * 1024 * 1024 }); } catch (e) { pr = Promise.reject(e); }
+    try { pr = C.createGooglePhotorealistic3DTileset(undefined, { showCreditsOnScreen: true, maximumScreenSpaceError: 12 }); } catch (e) { pr = Promise.reject(e); }
     return pr.then(function (ts) {
       tiles = ts; scene.primitives.add(ts);
-      ts.tileFailed.addEventListener(function (e) { console.warn('[N75 miasto] tile', e && e.message); });
+      var nf = 0, ok = false;
+      ts.tileFailed.addEventListener(function (e) { console.warn('[N75 miasto] tile', e && e.message); if (++nf === 3 && !ok) note('Google nie zwraca kafli miasta: ' + ((e && e.message) || 'błąd') + '. Sprawdź w Google Cloud, czy Map Tiles API jest włączone i czy nie wyczerpał się limit.'); });
+      ts.tileLoad.addEventListener(function () { if (!ok) { ok = true; if (msg) msg.hidden = true; } });
+      setTimeout(function () { if (!ok) note('Otoczenie z Google wciąż się wczytuje…'); }, 12000);
       clip();
       return ts;
     });
