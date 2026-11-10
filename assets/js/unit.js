@@ -10,6 +10,9 @@
   var STATUS = { wolne: 'Wolne', rezerwacja: 'Rezerwacja', sprzedane: 'Sprzedane' };
   var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var card = function (x) { return 'mieszkanie.html?id=' + encodeURIComponent(x.id); };
+  // widok z okien: kierunek okien z modelu 3D (północ – park, wnętrze kwartału – patio, południe – planowany skwer)
+  var VIEWS = {"M1.01": ["park im. Staszica"], "M1.02": ["park im. Staszica"], "M1.03": ["park im. Staszica", "zabudowa miejska od zachodu"], "M1.04": ["zabudowa miejska od zachodu"], "M1.05": ["zabudowa miejska od zachodu"], "M1.06": ["planowany skwer", "zabudowa miejska od zachodu"], "M1.07": ["planowany skwer"], "M1.08": ["planowany skwer"], "M2.01": ["park im. Staszica", "zielone patio"], "M2.02": ["park im. Staszica"], "M2.03": ["park im. Staszica", "zabudowa miejska od zachodu"], "M2.04": ["zabudowa miejska od zachodu"], "M2.05": ["zabudowa miejska od zachodu"], "M2.06": ["planowany skwer", "zabudowa miejska od zachodu"], "M2.07": ["planowany skwer"], "M2.08": ["planowany skwer", "zabudowa miejska od wschodu"], "M2.09": ["zielone patio"], "M2.10": ["zielone patio"], "M2.11": ["zielone patio"], "M3.01": ["park im. Staszica", "zielone patio"], "M3.02": ["park im. Staszica"], "M3.03": ["park im. Staszica", "zabudowa miejska od zachodu"], "M3.04": ["zabudowa miejska od zachodu"], "M3.05": ["zabudowa miejska od zachodu"], "M3.06": ["planowany skwer", "zabudowa miejska od zachodu"], "M3.07": ["planowany skwer"], "M3.08": ["zielone patio", "planowany skwer"], "M3.09": ["zielone patio"], "M3.10": ["zielone patio"], "M4.01": ["park im. Staszica", "zielone patio"], "M4.02": ["park im. Staszica"], "M4.03": ["park im. Staszica", "zabudowa miejska od zachodu"], "M4.04": ["zabudowa miejska od zachodu"], "M4.05": ["zabudowa miejska od zachodu"], "M4.06": ["planowany skwer", "zabudowa miejska od zachodu"], "M4.07": ["planowany skwer"], "M4.08": ["zielone patio", "planowany skwer"], "M4.09": ["zielone patio"], "M4.10": ["zielone patio"], "M5.01": ["park im. Staszica", "zielone patio"], "M5.02": ["park im. Staszica", "zabudowa miejska od zachodu"], "M5.03": ["zabudowa miejska od zachodu"], "M5.04": ["planowany skwer", "zabudowa miejska od zachodu"], "M5.05": ["planowany skwer", "zabudowa miejska od wschodu"], "M5.06": ["zielone patio"], "M5.07": ["zielone patio"], "M6.01": ["park im. Staszica", "zielone patio"], "M6.02": ["park im. Staszica", "zielone patio"], "M6.03": ["planowany skwer", "zielone patio"], "M6.04": ["planowany skwer", "zielone patio"]};
+  var TEL = '+48799278344', TEL_TXT = '+48 799 278 344', MAIL = 'sprzedaz@n75.pl';
 
   if (!u) {
     root.innerHTML = '<section class="u-hero"><div class="wrap"><nav class="crumbs caps" aria-label="Ścieżka"><a href="index.html">N75</a><span>/</span><a href="index.html#mieszkania">Apartamenty</a></nav>' +
@@ -48,36 +51,70 @@
     return '<button type="button" data-level="' + l + '" aria-pressed="' + (k === 0) + '">Piętro ' + l + '</button>';
   }).join('') + '</div>' : '';
 
+  var outd = u.outdoor || [], outA = outd.reduce(function (a, o) { return a + o[1]; }, 0);
+  var outTxt = outd.length ? outd.map(function (o) { return esc(o[0]) + ' ' + fmtA.format(o[1]) + '&nbsp;m²'; }).join(' + ') : 'brak';
+  var views = VIEWS[u.id] || [];
+  var subj = encodeURIComponent('Apartament ' + u.id + ' – N75');
+  var body = encodeURIComponent('Dzień dobry,\nproszę o kontakt w sprawie apartamentu ' + u.id + ' (' + fmtA.format(u.area) + ' m², piętro ' + u.floor + ').\n');
+  var spec = function (dt, dd, cls) { return '<div' + (cls ? ' class="' + cls + '"' : '') + '><dt>' + dt + '</dt><dd>' + dd + '</dd></div>'; };
+
   root.innerHTML =
     '<section class="u-hero"><div class="wrap">' +
       '<nav class="crumbs caps" aria-label="Ścieżka"><a href="index.html">N75</a><span>/</span><a href="index.html#mieszkania">Apartamenty</a><span>/</span><a href="index.html#makieta">Piętro ' + u.floor + '</a><span>/</span><span aria-current="page">' + u.id + '</span></nav>' +
-      '<div class="u-grid">' +
+      '<div class="u-head">' +
         '<div>' +
-          '<div class="caps bronze">Piętro ' + floorTxt + ' · <span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></div>' +
+          '<div class="caps bronze">Apartament · piętro ' + floorTxt + '</div>' +
           '<div class="u-title-row"><h1 class="display u-title">' + u.id + '</h1>' + (window.N75Fav ? window.N75Fav.heart(u.id, 'fav--lg') : '') + '</div>' +
-          '<p class="lead">' + u.rooms + ' ' + pokoje + ' · ' + fmtA.format(u.area) + ' m²' + (two ? ' · dwa poziomy' : '') + '</p>' +
-          '<dl class="u-spec">' +
-            '<div><dt>Powierzchnia</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div>' +
-            '<div><dt>Pokoje</dt><dd>' + u.rooms + '</dd></div>' +
-            '<div><dt>Piętro</dt><dd>' + u.levels.join('–') + '</dd></div>' +
-            '<div><dt>Status</dt><dd><span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></dd></div>' +
-            '<div><dt>Cena</dt><dd>' + (sold ? '—' : fmt.format(u.price) + ' zł') + '</dd></div>' +
-            '<div><dt>Cena za m²</dt><dd>' + (sold ? '—' : fmt.format(ppm) + ' zł') + '</dd></div>' +
-            (u.orient ? '<div><dt>Strony świata</dt><dd>' + esc(u.orient) + '</dd></div>' : '') +
-            (u.view ? '<div><dt>Widok z okien</dt><dd class="u-spec__txt">' + esc(u.view) + '</dd></div>' : '') +
+          '<p class="lead u-lead">' + u.rooms + ' ' + pokoje + ' · ' + fmtA.format(u.area) + ' m²' + (outA ? ' + ' + fmtA.format(outA) + ' m² ' + (outd.length > 1 ? 'na zewnątrz' : esc(outd[0][0].toLowerCase())) : '') + (two ? ' · dwa poziomy' : '') + '</p>' +
+        '</div>' +
+        '<div class="u-price">' + (sold ? '<span class="status status--sprzedane">Sprzedane</span>' :
+          '<span class="caps muted">Cena</span><strong>' + fmt.format(u.price) + ' zł</strong><span class="muted">' + fmt.format(ppm) + ' zł/m² · <span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></span>') + '</div>' +
+      '</div>' +
+      '<div class="u-main">' +
+        '<div class="u-planbox">' + tabs +
+          '<div class="mk__plan u-plan--big" id="u-plan"></div>' +
+          '<div class="u-plan-foot"><p class="u-plan-cap">Rzut apartamentu ' + u.id + '. Na widoku całego piętra kliknij inny lokal, aby otworzyć jego kartę.</p>' +
+          '<button type="button" class="u-whole caps" id="u-whole" aria-pressed="false">Pokaż całe piętro</button></div>' +
+          '<dl class="u-spec u-spec--3">' +
+            spec('Powierzchnia', fmtA.format(u.area) + ' m²') +
+            spec('Cena', sold ? '—' : fmt.format(u.price) + ' zł') +
+            spec('Cena za m²', sold ? '—' : fmt.format(ppm) + ' zł') +
+            spec('Pokoje', u.rooms) +
+            spec('Piętro', two ? u.levels.join(' i ') : u.floor) +
+            spec('Status', '<span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>') +
+            spec('Ekspozycja', esc(u.orient || '—'), 'u-spec__txt') +
+            spec('Powierzchnia zewnętrzna', outTxt, 'u-spec__txt') +
+            spec('Miejsce postojowe', 'opcjonalnie, w garażu podziemnym', 'u-spec__txt') +
+            spec('Komórka lokatorska', 'opcjonalnie, w budynku', 'u-spec__txt') +
+            spec('Widok z okien', (views.length ? esc(views.join(', ')) : '—') + ' <a class="u-link caps" href="makieta.html?okno=' + encodeURIComponent(u.id) + '">Zobacz widok z okna w 3D →</a>', 'u-spec__txt u-spec__wide') +
           '</dl>' +
           '<div class="u-cta">' +
-            (sold ? '<a class="btn btn--solid caps" href="index.html#makieta">Zobacz inne lokale <span class="arrow"></span></a>'
-                  : '<a class="btn btn--solid caps" href="index.html?lokal=' + encodeURIComponent(u.id) + '#kontakt">Zapytaj o ten lokal <span class="arrow"></span></a>') +
-            '<button type="button" class="btn btn--line caps mk-3d" id="u-3d"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 7.5v9L12 21l9-4.5v-9L12 3Zm0 0v9m0 9v-9m9-4.5L12 12 3 7.5"/></svg><span>Wersja 3D</span></button>' +
+            '<button type="button" class="btn btn--line caps mk-3d" id="u-3d"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 7.5v9L12 21l9-4.5v-9L12 3Zm0 0v9m0 9v-9m9-4.5L12 12 3 7.5"/></svg><span>Wnętrze 3D</span></button>' +
+            '<a class="btn btn--line caps" href="makieta.html?okno=' + encodeURIComponent(u.id) + '">Widok z okna</a>' +
             '<button type="button" class="btn btn--line caps" id="u-pdf">Pobierz kartę PDF</button>' +
           '</div>' +
         '</div>' +
-        '<div>' + tabs +
-          '<div class="mk__plan" id="u-plan"></div>' +
-          '<div class="u-plan-foot"><p class="u-plan-cap">Rzut lokalu ' + u.id + '. Na widoku całego piętra kliknij inny lokal, aby otworzyć jego kartę.</p>' +
-          '<button type="button" class="u-whole caps" id="u-whole" aria-pressed="false">Pokaż całe piętro</button></div>' +
-        '</div>' +
+        '<aside class="u-contact" id="u-contact" aria-label="Kontakt w sprawie apartamentu ' + u.id + '">' +
+          '<span class="caps bronze">Prywatna prezentacja</span>' +
+          '<h2 class="display u-contact__t">Porozmawiajmy o&nbsp;' + u.id + '</h2>' +
+          (sold ? '<p class="muted">Ten apartament jest już sprzedany. Chętnie pokażemy podobne lokale.</p>' :
+          '<p class="muted">Pokażemy ten apartament na rzutach i&nbsp;w&nbsp;biurze sprzedaży, odpowiemy na pytania o&nbsp;cenę, miejsce postojowe i&nbsp;komórkę.</p>') +
+          '<div class="u-contact__direct">' +
+            '<a class="btn btn--solid caps" href="tel:' + TEL + '">Zadzwoń · ' + TEL_TXT + '</a>' +
+            '<a class="btn btn--line caps" href="mailto:' + MAIL + '?subject=' + subj + '&amp;body=' + body + '">Napisz e-mail</a>' +
+          '</div>' +
+          '<form class="u-form" id="u-form" novalidate>' +
+            '<input type="hidden" name="unit" value="' + u.id + '">' +
+            '<label><span class="caps">Imię</span><input name="name" id="u-name" autocomplete="given-name" required></label>' +
+            '<label><span class="caps">Telefon lub e-mail</span><input name="contact" id="u-contactf" autocomplete="email" required></label>' +
+            '<fieldset class="u-form__opts"><legend class="caps">Interesuje mnie też <span class="opt">(opcjonalnie)</span></legend>' +
+              '<label class="u-chk"><input type="checkbox" name="parking"> miejsce postojowe</label><label class="u-chk"><input type="checkbox" name="storage"> komórka lokatorska</label></fieldset>' +
+            '<label><span class="caps">Wiadomość <span class="opt">(opcjonalnie)</span></span><textarea name="message" rows="2"></textarea></label>' +
+            '<label class="u-chk u-consent"><input type="checkbox" id="u-consent" required><span>Zgoda na przetwarzanie danych w&nbsp;celu odpowiedzi, zgodnie z&nbsp;<a href="polityka-prywatnosci.html" target="_blank">polityką prywatności</a>.</span></label>' +
+            '<button type="submit" class="btn btn--solid caps">Umów prezentację ' + u.id + '</button>' +
+            '<p class="form__msg" id="u-msg" aria-live="polite"></p>' +
+          '</form>' +
+        '</aside>' +
       '</div>' +
     '</div></section>' +
 
@@ -120,6 +157,18 @@
     tog.setAttribute('aria-pressed', String(wholeFloor));
     tog.textContent = wholeFloor ? 'Pokaż tylko lokal' : 'Pokaż całe piętro';
     if (wholeFloor) planApi.zoomOut(); else planApi.zoomTo(u.id);
+  });
+  var ask = document.querySelector('.mbar__ask'); if (ask) { ask.href = '#u-contact'; var sp = ask.querySelector('span'); if (sp) sp.textContent = 'Zapytaj o ' + u.id; }
+  var uf = document.getElementById('u-form'), um = document.getElementById('u-msg');
+  uf.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var n = document.getElementById('u-name').value.trim(), c = document.getElementById('u-contactf').value.trim();
+    var okMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c), okTel = c.replace(/[^\d]/g, '').length >= 9 && /^[+\d\s()-]+$/.test(c);
+    if (!n || !(okMail || okTel)) { um.textContent = 'Podaj imię oraz numer telefonu lub adres e-mail.'; return; }
+    if (!document.getElementById('u-consent').checked) { um.textContent = 'Zaznacz zgodę na przetwarzanie danych.'; return; }
+    // TODO: wysyłka do CRM / API sprzedaży (jak formularz na stronie głównej)
+    um.textContent = 'Dziękujemy! Doradca skontaktuje się w sprawie ' + u.id + ' w ciągu jednego dnia roboczego.';
+    uf.reset();
   });
   // „Pobierz kartę PDF”: okno druku przeglądarki z gotowym układem karty; tytuł = nazwa pliku PDF
   document.getElementById('u-3d').addEventListener('click', function () { if (window.N75Doll) window.N75Doll.open(u.id, 'Apartament ' + u.id); });
