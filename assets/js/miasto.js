@@ -38,7 +38,7 @@
   function fail(e) { console.error('[N75 miasto]', e); if (msg) { msg.hidden = false; msg.textContent = 'Nie udało się wczytać prawdziwego otoczenia (Google Map Tiles). Pokazuję sam budynek.'; } root.classList.add('is-ready'); }
   function loadTiles() {
     var pr;
-    try { pr = C.createGooglePhotorealistic3DTileset(undefined, { showCreditsOnScreen: true, maximumScreenSpaceError: 8 }); } catch (e) { pr = Promise.reject(e); }
+    try { pr = C.createGooglePhotorealistic3DTileset(undefined, { showCreditsOnScreen: true, maximumScreenSpaceError: matchMedia('(max-width: 700px)').matches ? 24 : 16, cacheBytes: 384 * 1024 * 1024 }); } catch (e) { pr = Promise.reject(e); }
     return pr.then(function (ts) {
       tiles = ts; scene.primitives.add(ts);
       ts.tileFailed.addEventListener(function (e) { console.warn('[N75 miasto] tile', e && e.message); });

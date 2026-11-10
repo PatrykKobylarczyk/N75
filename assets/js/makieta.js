@@ -727,6 +727,15 @@
   }
   function avail(f) { return (window.N75_UNITS || []).filter(function (u) { return (u.levels || [u.floor])[0] === f && u.status === 'wolne'; }).length; }
 
+  // po przełączeniu na rysunek kolejny krok to miasto: wczytujemy w tle bibliotekę 3D i modele pięter
+  var pf = false;
+  function prefetchCity() {
+    if (pf) return; pf = true;
+    var v = (/\?v=\d+/.exec((document.querySelector('script[src*="makieta.js"]') || {}).src || '') || [''])[0];
+    ['https://cdn.jsdelivr.net/npm/cesium@1.123.0/Build/Cesium/Cesium.js', 'https://cdn.jsdelivr.net/npm/cesium@1.123.0/Build/Cesium/Widgets/widgets.css', 'miasto.html', 'assets/js/miasto.js' + v]
+      .concat([0, 1, 2, 3, 4, 5, 6, 7].map(function (f) { return 'assets/data/miasto/p' + f + '.glb' + v; }))
+      .forEach(function (u) { var l = document.createElement('link'); l.rel = 'prefetch'; l.href = u; document.head.appendChild(l); });
+  }
   function buildPanel() {
     var h = '<button type="button" class="chip" data-f="-1" aria-pressed="true">Cały budynek</button>';
     for (var f = 6; f >= 0; f--) { var a = avail(f); h += '<button type="button" class="chip" data-f="' + f + '" aria-pressed="false"><b>' + (f === 0 ? 'P' : f) + '</b><span>' + (f === 0 ? 'Parter · usługi' : a ? 'wolne: ' + a : '') + '</span></button>'; }
@@ -735,7 +744,7 @@
     var sl = root.querySelector('.mk3d__sun input'), out = root.querySelector('.mk3d__sun output');
     if (sl) { var upd = function () { sunT = +sl.value; out.textContent = (Math.floor(sunT) + ':' + (sunT % 1 ? '30' : '00')); req(); }; sl.addEventListener('input', upd); upd(); }
     var home = root.querySelector('[data-home]'); if (home) home.addEventListener('click', function () { select(-1); tween({ az: 3.75, el: 0.36, dist: 100, ty: 12 }); });
-    var st = root.querySelector('[data-style]'); if (st) { var sy = function () { st.textContent = STYLE ? 'Styl: rysunek' : 'Styl: model'; root.classList.toggle('is-sketch', !!STYLE); }; sy(); st.addEventListener('click', function () { if (STYLE && CITY) { location.href = 'miasto.html' + (/[?&]embed=1/.test(location.search) ? '?embed=1' : ''); return; } STYLE = STYLE ? 0 : 1; sy(); draw(); }); }
+    var st = root.querySelector('[data-style]'); if (st) { var sy = function () { st.textContent = STYLE ? 'Styl: rysunek' : 'Styl: model'; root.classList.toggle('is-sketch', !!STYLE); }; sy(); st.addEventListener('click', function () { if (!STYLE && CITY) prefetchCity(); if (STYLE && CITY) { location.href = 'miasto.html' + (/[?&]embed=1/.test(location.search) ? '?embed=1' : ''); return; } STYLE = STYLE ? 0 : 1; sy(); draw(); }); }
   }
   window.addEventListener('resize', req);
 
