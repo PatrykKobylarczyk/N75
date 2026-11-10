@@ -46,15 +46,11 @@
       return ts;
     });
   }
-  function clip() {   // wycięcie z kafli obecnego stanu działki (pod bryłą N75)
+  function clip() {   // wycięcie z kafli obecnego stanu działki – dokładnie po obrysach pięter N75 (bez zapasu, żeby nie odsłonić szczeliny przy sąsiadach)
     if (!tiles || !D || !C.ClippingPolygonCollection) return;
-    var pts = []; D.floors.forEach(function (fl) { fl.slab.forEach(function (P) { P.forEach(function (p) { pts.push(p); }); }); });
-    var h = hull(pts).map(function (p) { var c = [0, 0]; return p; });
-    var cx = 0, cy = 0; h.forEach(function (p) { cx += p[0]; cy += p[1]; }); cx /= h.length; cy /= h.length;
-    h = h.map(function (p) { var dx = p[0] - cx, dy = p[1] - cy, l = Math.hypot(dx, dy) || 1; return [p[0] + dx / l * 0.6, p[1] + dy / l * 0.6]; });
-    try {
-      tiles.clippingPolygons = new C.ClippingPolygonCollection({ polygons: [new C.ClippingPolygon({ positions: ring(h, 0) })] });
-    } catch (e) { console.warn('[N75 miasto] clip', e); }
+    var polys = [];
+    D.floors.forEach(function (fl) { fl.slab.forEach(function (P) { if (P.length > 2) polys.push(new C.ClippingPolygon({ positions: ring(P, 0) })); }); });
+    try { tiles.clippingPolygons = new C.ClippingPolygonCollection({ polygons: polys }); } catch (e) { console.warn('[N75 miasto] clip', e); }
   }
   function hull(P) {
     P = P.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
