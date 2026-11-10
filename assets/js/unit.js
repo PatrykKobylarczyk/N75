@@ -22,6 +22,16 @@
   }
 
   document.title = 'Apartament ' + u.id + ' · N75 · Narutowicza 75A, Łódź';
+  (function () {
+    var d = 'Apartament ' + u.id + ' w N75, Narutowicza 75A, Łódź: ' + u.rooms + ' ' + (u.rooms === 1 ? 'pokój' : u.rooms < 5 ? 'pokoje' : 'pokoi') + ', ' + String(u.area).replace('.', ',') + ' m², piętro ' + u.floor + (u.orient ? ', ekspozycja ' + u.orient : '') + '. Rzut, cena i kontakt w sprawie lokalu.';
+    var m = document.querySelector('meta[name=description]'); if (m) m.setAttribute('content', d);
+    var c = document.createElement('link'); c.rel = 'canonical'; c.href = 'https://n75.vercel.app/mieszkanie.html?id=' + encodeURIComponent(u.id); document.head.appendChild(c);
+    var ld = document.createElement('script'); ld.type = 'application/ld+json';
+    ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Apartment', name: 'Apartament ' + u.id + ' – N75', url: c.href, numberOfRooms: u.rooms, floorLevel: String(u.floor),
+      floorSize: { '@type': 'QuantitativeValue', value: u.area, unitCode: 'MTK' }, address: { '@type': 'PostalAddress', streetAddress: 'ul. Narutowicza 75A', postalCode: '90-132', addressLocality: 'Łódź', addressCountry: 'PL' },
+      offers: u.status === 'sprzedane' ? undefined : { '@type': 'Offer', price: u.price, priceCurrency: 'PLN', availability: u.status === 'wolne' ? 'https://schema.org/InStock' : 'https://schema.org/LimitedAvailability' } });
+    document.head.appendChild(ld);
+  })();
   var sold = u.status === 'sprzedane';
   var two = u.levels.length > 1;
   var floorTxt = two ? u.levels.join(' i ') + ' (dwupoziomowy)' : String(u.floor);
@@ -104,7 +114,7 @@
             '<a class="btn btn--line caps" href="mailto:' + MAIL + '?subject=' + subj + '&amp;body=' + body + '">Napisz e-mail</a>' +
           '</div>' +
           '<form class="u-form" id="u-form" novalidate>' +
-            '<input type="hidden" name="unit" value="' + u.id + '">' +
+            '<input type="hidden" name="unit" value="' + u.id + '"><input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">' +
             '<label><span class="caps">Imię</span><input name="name" id="u-name" autocomplete="given-name" required></label>' +
             '<label><span class="caps">Telefon lub e-mail</span><input name="contact" id="u-contactf" autocomplete="email" required></label>' +
             '<fieldset class="u-form__opts"><legend class="caps">Interesuje mnie też <span class="opt">(opcjonalnie)</span></legend>' +
@@ -166,9 +176,15 @@
     var okMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c), okTel = c.replace(/[^\d]/g, '').length >= 9 && /^[+\d\s()-]+$/.test(c);
     if (!n || !(okMail || okTel)) { um.textContent = 'Podaj imię oraz numer telefonu lub adres e-mail.'; return; }
     if (!document.getElementById('u-consent').checked) { um.textContent = 'Zaznacz zgodę na przetwarzanie danych.'; return; }
-    // TODO: wysyłka do CRM / API sprzedaży (jak formularz na stronie głównej)
-    um.textContent = 'Dziękujemy! Doradca skontaktuje się w sprawie ' + u.id + ' w ciągu jednego dnia roboczego.';
-    uf.reset();
+    if (uf.elements._honey && uf.elements._honey.value) return;
+    var extra = [uf.elements.parking.checked ? 'miejsce postojowe' : '', uf.elements.storage.checked ? 'komórka lokatorska' : ''].filter(Boolean).join(', ');
+    var btn = uf.querySelector('button[type=submit]'); btn.disabled = true; um.textContent = 'Wysyłanie…';
+    window.N75Send({ 'Imię': n, 'Kontakt': c, 'Lokal': u.id + ' (' + fmtA.format(u.area) + ' m², piętro ' + u.floor + ', ' + fmt.format(u.price) + ' zł)', 'Dodatkowo': extra, 'Wiadomość': uf.elements.message.value.trim(), 'Formularz': 'Karta mieszkania' }).then(function () {
+      um.textContent = 'Dziękujemy! Doradca skontaktuje się w sprawie ' + u.id + ' w ciągu jednego dnia roboczego.';
+      uf.reset();
+    }).catch(function () {
+      um.innerHTML = 'Nie udało się wysłać formularza. Zadzwoń: <a href="tel:' + TEL + '">' + TEL_TXT + '</a> lub napisz: <a href="mailto:' + MAIL + '">' + MAIL + '</a>.';
+    }).then(function () { btn.disabled = false; });
   });
   // „Pobierz kartę PDF”: okno druku przeglądarki z gotowym układem karty; tytuł = nazwa pliku PDF
   document.getElementById('u-3d').addEventListener('click', function () { if (window.N75Doll) window.N75Doll.open(u.id, 'Apartament ' + u.id); });

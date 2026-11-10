@@ -6,6 +6,16 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var KEY = 'n75-ulubione';
   var PHONE = '+48799278344', PHONE_TXT = '+48 799 278 344';
+  /* Wysyłka zgłoszeń z formularzy na e-mail działu sprzedaży (FormSubmit, bez własnego serwera).
+     Pierwsze zgłoszenie wysyła na adres prośbę o aktywację – trzeba w niej kliknąć „Activate Form”. */
+  var LEAD_MAIL = 'fryderyk@uniqum.pl';
+  window.N75Send = function (data) {
+    var body = { _subject: 'N75 – zapytanie' + (data['Lokal'] ? ' o ' + data['Lokal'] : '') + ' (' + (data['Imię'] || '') + ')', _template: 'table', _captcha: 'false', 'Strona': location.href };
+    Object.keys(data).forEach(function (k) { if (data[k]) body[k] = data[k]; });
+    if (/@/.test(data['Kontakt'] || '')) body._replyto = data['Kontakt'];
+    return fetch('https://formsubmit.co/ajax/' + LEAD_MAIL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || j.success === 'false' || j.success === false) throw new Error(j.message || ('HTTP ' + r.status)); return j; }); });
+  };
   var onIndex = !!document.getElementById('kontakt');
   var base = onIndex ? '' : 'index.html';
 
