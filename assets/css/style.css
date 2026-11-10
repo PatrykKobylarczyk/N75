@@ -1839,3 +1839,7 @@ body.dh-open { overflow: hidden; }
 @media (max-width: 900px) { .ideas { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .ideas { grid-template-columns: 1fr; gap: 34px; } }
 .mission-sign { margin-top: 26px !important; }
+.draw__more p { margin: 0 0 12px; font-size: clamp(14px, 1.05vw, 16px); line-height: 1.65; }
+.draw__more .draw__sign { margin-top: 18px; font-family: var(--serif); font-style: italic; font-weight: 300; font-size: clamp(18px, 1.5vw, 22px); color: inherit; opacity: .95; }
+@media (max-width: 900px) { .draw__more .muted { display: block; font-size: 14.5px; } .draw__more { margin-bottom: 4px; } }
+.draw__txt .draw__more p.muted { margin: 0 0 12px; }
