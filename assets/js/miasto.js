@@ -75,7 +75,7 @@
   var MODELS = [], CUTS = [], UN = [], SEL = -1, HOVER = null;
   function frame() { return C.Matrix4.multiplyByMatrix3(C.Transforms.eastNorthUpToFixedFrame(C.Cartesian3.fromDegrees(LON0, LAT0, H0)), C.Matrix3.fromRotationZ(ANG), new C.Matrix4()); }
   function model(url, f, kind) {
-    return C.Model.fromGltfAsync({ url: url + VER, modelMatrix: frame(), id: { n75: { f: f, k: kind } }, backFaceCulling: false, show: true }).then(function (m) { m.modelMatrix = frame(); scene.primitives.add(m); m.readyEvent && m.readyEvent.addEventListener(req); return m; });
+    return C.Model.fromGltfAsync({ url: url + VER, upAxis: C.Axis.Y, forwardAxis: C.Axis.X, modelMatrix: frame(), id: { n75: { f: f, k: kind } }, backFaceCulling: false, show: true }).then(function (m) { m.modelMatrix = frame(); scene.primitives.add(m); m.readyEvent && m.readyEvent.addEventListener(req); return m; });
   }
   function build() {
     D.floors.forEach(function (fl, f) { MODELS[f] = model('assets/data/miasto/p' + f + '.glb', f, 'm').then(function (m) { MODELS[f] = m; show(); return m; }); });
