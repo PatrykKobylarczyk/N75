@@ -485,6 +485,7 @@
   function prog(vs, fs) { var p = gl.createProgram(); [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]].forEach(function (s) { var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh)); gl.attachShader(p, sh); }); gl.linkProgram(p); return p; }
   var P = prog(VS, FS), SP = prog(SVS, SFS), QP = prog(QVS, QFS), SS = 4096;
   var STYLE = /[?&]styl=rysunek/.test(location.search) ? 1 : 0, VIEW = null;
+  var CITY = /[?&]miasto=1/.test(location.search); try { if (CITY) sessionStorage.setItem('n75miasto', '1'); else CITY = sessionStorage.getItem('n75miasto') === '1'; } catch (e) {}
   var qb = gl.createBuffer(), qv = gl.createVertexArray(); gl.bindVertexArray(qv); gl.bindBuffer(gl.ARRAY_BUFFER, qb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW); gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
   var PF = { w: 0, h: 0, fb: null, c: null, d: null };
   function postFB(W, H) {
@@ -660,7 +661,7 @@
     card.hidden = true; root.classList.add('is-window');
     if (!wv) { wv = document.createElement('div'); wv.className = 'mk3d__window'; root.appendChild(wv); }
     var u = UNITS[id];
-    wv.innerHTML = '<div class="mk3d__frame"><i></i></div><div class="mk3d__wbar"><span class="caps bronze">Widok z okna</span><b>' + id + ' · ' + NAMES[u ? u.floor : 0] + ' · kierunek: ' + w.dir + '</b>' +
+    wv.innerHTML = '<div class="mk3d__wbar"><span class="caps bronze">Widok z okna</span><b>' + id + ' · ' + NAMES[u ? u.floor : 0] + ' · kierunek: ' + w.dir + '</b>' +
       (W.length > 1 ? '<button type="button" class="mk3d__home caps" data-wn>Inne okno (' + (k + 1) + '/' + W.length + ')</button>' : '') +
       '<button type="button" class="mk3d__home caps" data-wx>Zamknij</button></div><p class="mk3d__whint caps">Przeciągnij, aby rozejrzeć się</p>';
     wv.hidden = false;
@@ -728,7 +729,7 @@
     var sl = root.querySelector('.mk3d__sun input'), out = root.querySelector('.mk3d__sun output');
     if (sl) { var upd = function () { sunT = +sl.value; out.textContent = (Math.floor(sunT) + ':' + (sunT % 1 ? '30' : '00')); req(); }; sl.addEventListener('input', upd); upd(); }
     var home = root.querySelector('[data-home]'); if (home) home.addEventListener('click', function () { select(-1); tween({ az: 3.75, el: 0.36, dist: 100, ty: 12 }); });
-    var st = root.querySelector('[data-style]'); if (st) { var sy = function () { st.textContent = STYLE ? 'Styl: rysunek' : 'Styl: model'; root.classList.toggle('is-sketch', !!STYLE); }; sy(); st.addEventListener('click', function () { STYLE = STYLE ? 0 : 1; sy(); draw(); }); }
+    var st = root.querySelector('[data-style]'); if (st) { var sy = function () { st.textContent = STYLE ? 'Styl: rysunek' : 'Styl: model'; root.classList.toggle('is-sketch', !!STYLE); }; sy(); st.addEventListener('click', function () { if (STYLE && CITY) { location.href = 'miasto.html' + (/[?&]embed=1/.test(location.search) ? '?embed=1' : ''); return; } STYLE = STYLE ? 0 : 1; sy(); draw(); }); }
   }
   window.addEventListener('resize', req);
 
