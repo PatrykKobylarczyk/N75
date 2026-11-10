@@ -635,10 +635,16 @@
         var n = [(b[1] - a[1]) / l, -(b[0] - a[0]) / l], m0 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
         if (inside([m0[0] + n[0] * 0.2, m0[1] + n[1] * 0.2], P)) n = [-n[0], -n[1]];
         ((e.g || [])[i] || []).forEach(function (iv) {
-          var w = (iv[1] - iv[0]) * l; if (w < 0.6) return;
-          var t = (iv[0] + iv[1]) / 2, c = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
-          var own = [1.0, 1.6, 2.4].some(function (d) { var q = [c[0] - n[0] * d, c[1] - n[1] * d]; return L.p.some(function (U) { return inside(q, U); }); });
-          if (!own) return;
+          if ((iv[1] - iv[0]) * l < 0.6) return;
+          // długie przeszklenie bywa wspólne dla kilku lokali: bierzemy odcinek należący do tego lokalu
+          var at = function (s) { return [a[0] + (b[0] - a[0]) * s / l, a[1] + (b[1] - a[1]) * s / l]; };
+          var mine = function (c) { return [1.0, 1.6, 2.4].some(function (d) { var q = [c[0] - n[0] * d, c[1] - n[1] * d]; return L.p.some(function (U) { return inside(q, U); }); }); };
+          var seg = null, cur = null;
+          for (var s = iv[0] * l + 0.15; s <= iv[1] * l - 0.15 + 1e-6; s += 0.3) { if (mine(at(s))) { if (cur) cur[1] = s; else cur = [s, s]; } else if (cur) { if (!seg || cur[1] - cur[0] > seg[1] - seg[0]) seg = cur; cur = null; } }
+          if (cur && (!seg || cur[1] - cur[0] > seg[1] - seg[0])) seg = cur;
+          if (!seg) return;
+          var w = seg[1] - seg[0] + 0.3; if (w < 0.6) return;
+          var c = at((seg[0] + seg[1]) / 2);
           var ang = Math.atan2(n[0] * EAST[0] + n[1] * EAST[1], n[0] * NORTH[0] + n[1] * NORTH[1]);
           var di = DIRS[((Math.round(ang / (Math.PI / 4)) % 8) + 8) % 8];
           var prev = out.filter(function (o) { return o.dir === di; })[0];
@@ -742,5 +748,5 @@
     var m = /[?&]p=(\d)/.exec(location.search); if (m) select(+m[1]);
     draw();
   });
-  window.N75Mk = { select: function (f) { select(f); }, cam: cam, draw: draw, sun: function (t) { sunT = t; draw(); }, style: function (v) { STYLE = v ? 1 : 0; var st = root.querySelector('[data-style]'); if (st) st.textContent = STYLE ? 'Styl: rysunek' : 'Styl: model'; draw(); }, win: function (id, k) { windowView(id, k); }, wins: function (id) { return windows(id); }, card: function (id) { showCard(id); } };
+  window.N75Mk = { select: function (f) { select(f); }, cam: cam, draw: draw, sun: function (t) { sunT = t; draw(); }, style: function (v) { STYLE = v ? 1 : 0; var st = root.querySelector('[data-style]'); if (st) st.textContent = STYLE ? 'Styl: rysunek' : 'Styl: model'; draw(); }, win: function (id, k) { windowView(id, k); }, wins: function (id) { return windows(id); }, card: function (id) { showCard(id); }, mesh: function (f, cut) { var b = cut ? buildCut(f) : buildFloor(D.floors[f]), o = function (m) { return { p: m.p, n: m.n, c: m.c, m: m.m }; }; return { M: o(b.M), G: o(b.G) }; } };
 })();
