@@ -315,7 +315,7 @@
   /* ---------- Modernizm to… (zmieniające się słowo) ---------- */
   var rot = $('#modern-rot');
   if (rot) {
-    var words = ['luksus', 'wyrafinowanie', 'etos', 'filozofia'];
+    var words = ['kanon', 'proporcja', 'rytm', 'kunszt', 'esencja'];
     // dopasowanie wielkości: najdłuższe słowo musi zmieścić się w szerokości kolumny (każdy font, każdy ekran)
     var title = rot.closest('.modern__title');
     var fitTitle = function () {
@@ -516,7 +516,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794338477" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794338963" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
