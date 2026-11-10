@@ -751,7 +751,7 @@
         '<div class="mk__body"><div class="mk__plan" id="mk-plan"></div>' +
         '<div class="mk__side" id="mk-side" hidden></div></div>' +
         '<div class="mk__foot">' +
-        '<a class="mk__cat caps" href="assets/N75_katalog.pdf?v=1793898045" download="N75_katalog.pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg><span>Pobierz katalog inwestycji</span></a></div>';
+        '<a class="mk__cat caps" href="assets/N75_katalog.pdf?v=1794338643" download="N75_katalog.pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg><span>Pobierz katalog inwestycji</span></a></div>';
       // jeden kadr dla wszystkich pięter mieszkalnych: rzuty w tej samej skali i położeniu
       if (!FRAME_UP) {
         var bx = [Infinity, Infinity, -Infinity, -Infinity];
