@@ -1867,3 +1867,4 @@ body.dh-open { overflow: hidden; }
 @media (max-width: 900px) { .motives { grid-template-columns: 1fr; } .trust { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .trust { grid-template-columns: 1fr; } .to-offer__b .btn { flex: 1 1 100%; justify-content: center; } }
 .timeline__note { margin: 6px 0 0; font-size: 13px; }
+.mission-txt p.lead { color: var(--graphite); font-size: clamp(18px, 1.5vw, 21px); line-height: 1.5; margin-bottom: 18px; }
