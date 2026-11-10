@@ -69,56 +69,38 @@
     }).catch(function () { return null; });
   }
 
-  /* ---------- bryła N75 ---------- */
-  var COL = { mass: C.Color.fromCssColorString('#ece5d8'), slab: C.Color.fromCssColorString('#cfc5b4'), glass: C.Color.fromCssColorString('#8fa3b0').withAlpha(0.9), roof: C.Color.fromCssColorString('#8d8a86'),
-    wolne: C.Color.fromCssColorString('#b08d57').withAlpha(0.7), zarezerwowane: C.Color.fromCssColorString('#9a958c').withAlpha(0.65), sprzedane: C.Color.fromCssColorString('#6c665e').withAlpha(0.6), hov: C.Color.fromCssColorString('#d8b77a').withAlpha(0.85), wall: C.Color.fromCssColorString('#f4efe6').withAlpha(0.9) };
-  var FL = [], UN = [], SEL = -1, HOVER = null;
-  function add(o, f, kind, id) { var e = E.add(o); e.n75 = { f: f, k: kind, id: id }; return e; }
+  /* ---------- bryła N75: szczegółowe modele pięter (GLB wyeksportowane z makiety) ---------- */
+  var VER = (document.querySelector('script[src*="miasto.js"]') || {}).src; VER = VER && VER.indexOf('?') > 0 ? VER.slice(VER.indexOf('?')) : '';
+  var COL = { wolne: C.Color.fromCssColorString('#c8a464').withAlpha(0.5), zarezerwowane: C.Color.fromCssColorString('#aa7046').withAlpha(0.5), rezerwacja: C.Color.fromCssColorString('#aa7046').withAlpha(0.5), sprzedane: C.Color.fromCssColorString('#96928a').withAlpha(0.45), hov: C.Color.fromCssColorString('#e6c88c').withAlpha(0.7) };
+  var MODELS = [], CUTS = [], UN = [], SEL = -1, HOVER = null;
+  function frame() { return C.Matrix4.multiplyByMatrix3(C.Transforms.eastNorthUpToFixedFrame(C.Cartesian3.fromDegrees(LON0, LAT0, H0)), C.Matrix3.fromRotationZ(ANG), new C.Matrix4()); }
+  function model(url, f, kind) {
+    return C.Model.fromGltfAsync({ url: url + VER, modelMatrix: frame(), id: { n75: { f: f, k: kind } }, backFaceCulling: false, show: true }).then(function (m) { m.modelMatrix = frame(); scene.primitives.add(m); m.readyEvent && m.readyEvent.addEventListener(req); return m; });
+  }
   function build() {
-    E.removeAll(); FL = D.floors.map(function () { return { full: [], cut: [] }; }); UN = [];
-    var top = D.floors.length - 1;
-    D.floors.forEach(function (fl, f) {
-      var z0 = +fl.z0, z1 = +fl.z1, isTop = f === top;
-      (fl.mass || []).forEach(function (m) {
-        FL[f].full.push(add({ polygon: { hierarchy: ring(m.p, 0), height: H0 + z0 + 0.02, extrudedHeight: H0 + z1 - (isTop ? 0 : 0.32), material: COL.mass, perPositionHeight: false } }, f, 'm'));
-        if (!isTop) FL[f].full.push(add({ polygon: { hierarchy: ring(m.p, 0), height: H0 + z1 - 0.32, extrudedHeight: H0 + z1, material: COL.slab } }, f, 'm'));
-        else FL[f].full.push(add({ polygon: { hierarchy: ring(m.p, 0), height: H0 + z1, extrudedHeight: H0 + z1 + 0.05, material: COL.roof } }, f, 'm'));
-        // przeszklenia (odcinki szyb na krawędziach bryły)
-        var P = m.p;
-        for (var i = 0; i < P.length; i++) {
-          var a = P[i], b = P[(i + 1) % P.length], l = Math.hypot(b[0] - a[0], b[1] - a[1]); if (l < 0.5) continue;
-          var n = [(b[1] - a[1]) / l, -(b[0] - a[0]) / l], mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-          if (inside([mid[0] + n[0] * 0.2, mid[1] + n[1] * 0.2], P)) n = [-n[0], -n[1]];
-          ((m.g || [])[i] || []).forEach(function (iv) {
-            if ((iv[1] - iv[0]) * l < 0.4) return;
-            var s = [a[0] + (b[0] - a[0]) * iv[0] + n[0] * 0.04, a[1] + (b[1] - a[1]) * iv[0] + n[1] * 0.04], t = [a[0] + (b[0] - a[0]) * iv[1] + n[0] * 0.04, a[1] + (b[1] - a[1]) * iv[1] + n[1] * 0.04];
-            FL[f].full.push(add({ wall: { positions: [P3(s[0], s[1], 0), P3(t[0], t[1], 0)], minimumHeights: [H0 + z0 + 0.12, H0 + z0 + 0.12], maximumHeights: [H0 + z1 - 0.45, H0 + z1 - 0.45], material: COL.glass } }, f, 'm'));
-          });
-        }
-      });
-      // przekrój piętra: płyta, niskie ściany obrysu, lokale
-      fl.slab.forEach(function (P) { FL[f].cut.push(add({ show: false, polygon: { hierarchy: ring(P, 0), height: H0 + z0 - 0.3, extrudedHeight: H0 + z0, material: COL.slab } }, f, 'c')); });
-      (fl.mass || []).forEach(function (m) { FL[f].cut.push(add({ show: false, wall: { positions: ring(m.p.concat([m.p[0]]), 0), minimumHeights: m.p.concat([m.p[0]]).map(function () { return H0 + z0; }), maximumHeights: m.p.concat([m.p[0]]).map(function () { return H0 + z0 + 1.1; }), material: COL.wall } }, f, 'c')); });
-    });
+    D.floors.forEach(function (fl, f) { MODELS[f] = model('assets/data/miasto/p' + f + '.glb', f, 'm').then(function (m) { MODELS[f] = m; show(); return m; }); });
+    units();
+  }
+  function units() {
+    UN.forEach(function (e) { E.remove(e); }); UN = [];
     Object.keys(D.units).forEach(function (id) {
       D.units[id].forEach(function (L) {
         var fl = D.floors[L.f]; if (!fl) return; var z0 = +fl.z0;
-        L.p.forEach(function (P) {
-          var e = add({ show: false, polygon: { hierarchy: ring(P, 0), height: H0 + z0 + 0.02, extrudedHeight: H0 + z0 + 0.12, material: col(id) } }, L.f, 'u', id); UN.push(e); FL[L.f].cut.push(e);
-        });
-        (L.w || []).forEach(function (w) { FL[L.f].cut.push(add({ show: false, wall: { positions: [P3(w[0], w[1], 0), P3(w[2], w[3], 0)], minimumHeights: [H0 + z0 + 0.12, H0 + z0 + 0.12], maximumHeights: [H0 + z0 + 1.6, H0 + z0 + 1.6], material: C.Color.fromCssColorString('#b08d57').withAlpha(0.35) } }, L.f, 'c')); });
+        L.p.forEach(function (P) { var e = E.add({ show: false, polygon: { hierarchy: ring(P, 0), height: H0 + z0 + 0.03, extrudedHeight: H0 + z0 + 0.62, material: col(id) } }); e.n75 = { f: L.f, k: 'u', id: id }; UN.push(e); });
       });
     });
     show();
   }
+  function rehome() { var M = frame(); MODELS.concat(CUTS).forEach(function (m) { if (m && m.modelMatrix) m.modelMatrix = M; }); units(); }
+  function cut(f) {
+    if (!CUTS[f] && f >= 1 && f <= 6) CUTS[f] = model('assets/data/miasto/p' + f + 'c.glb', f, 'c').then(function (m) { CUTS[f] = m; show(); return m; });
+  }
   function col(id) { var u = UNITS[id]; return id === HOVER ? COL.hov : COL[(u && u.status) || 'sprzedane'] || COL.sprzedane; }
   function show() {
-    FL.forEach(function (o, f) {
-      var full = SEL < 0 || f < SEL, cut = f === SEL;
-      o.full.forEach(function (e) { e.show = full; });
-      o.cut.forEach(function (e) { e.show = cut; });
-    });
-    UN.forEach(function (e) { e.polygon.material = col(e.n75.id); });
+    if (SEL >= 1) cut(SEL);
+    MODELS.forEach(function (m, f) { if (m && 'show' in m && !m.then) m.show = SEL < 0 || f < SEL || (f === SEL && !(CUTS[f] && !CUTS[f].then)); });
+    CUTS.forEach(function (m, f) { if (m && !m.then) m.show = f === SEL; });
+    UN.forEach(function (e) { e.show = e.n75.f === SEL; e.polygon.material = col(e.n75.id); });
     req();
   }
 
@@ -177,10 +159,16 @@
         var n = [(b[1] - a[1]) / l, -(b[0] - a[0]) / l], m0 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
         if (inside([m0[0] + n[0] * 0.2, m0[1] + n[1] * 0.2], P)) n = [-n[0], -n[1]];
         ((e.g || [])[i] || []).forEach(function (iv) {
-          var w = (iv[1] - iv[0]) * l; if (w < 0.6) return;
-          var t = (iv[0] + iv[1]) / 2, c = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
-          var own = [1.0, 1.6, 2.4].some(function (d) { var q = [c[0] - n[0] * d, c[1] - n[1] * d]; return L.p.some(function (U) { return inside(q, U); }); });
-          if (!own) return;
+          if ((iv[1] - iv[0]) * l < 0.6) return;
+          // długie przeszklenie bywa wspólne dla kilku lokali: bierzemy odcinek należący do tego lokalu
+          var at = function (s) { return [a[0] + (b[0] - a[0]) * s / l, a[1] + (b[1] - a[1]) * s / l]; };
+          var mine = function (c) { return [1.0, 1.6, 2.4].some(function (d) { var q = [c[0] - n[0] * d, c[1] - n[1] * d]; return L.p.some(function (U) { return inside(q, U); }); }); };
+          var seg = null, cur = null;
+          for (var s = iv[0] * l + 0.15; s <= iv[1] * l - 0.15 + 1e-6; s += 0.3) { if (mine(at(s))) { if (cur) cur[1] = s; else cur = [s, s]; } else if (cur) { if (!seg || cur[1] - cur[0] > seg[1] - seg[0]) seg = cur; cur = null; } }
+          if (cur && (!seg || cur[1] - cur[0] > seg[1] - seg[0])) seg = cur;
+          if (!seg) return;
+          var w = seg[1] - seg[0] + 0.3; if (w < 0.6) return;
+          var c = at((seg[0] + seg[1]) / 2);
           var ang = Math.atan2(n[0] * EAST[0] + n[1] * EAST[1], n[0] * NORTH[0] + n[1] * NORTH[1]);
           var di = DIRS[((Math.round(ang / (Math.PI / 4)) % 8) + 8) % 8];
           var prev = out.filter(function (o) { return o.dir === di; })[0];
@@ -266,7 +254,7 @@
     D = d; build(); buildPanel(); place();
     loadTiles().then(function () {
       root.classList.add('is-ready'); req();
-      return ground().then(function (h) { if (h !== null && Math.abs(h - H0) > 0.3) { H0 = h; build(); clip(); place(); } });
+      return ground().then(function (h) { if (h !== null && Math.abs(h - H0) > 0.3) { H0 = h; rehome(); clip(); place(); } });
     }).catch(fail);
     var m = /[?&]p=(\d)/.exec(location.search); if (m) select(+m[1]);
   });
