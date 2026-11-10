@@ -19,7 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..600;1,300..500&family=Nunito+Sans:ital,opsz,wght@0,6..12,300..700;1,6..12,300..500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/img/okolica-lotnicze.webp" imagesrcset="assets/img/okolica-lotnicze-1600.webp 1600w, assets/img/okolica-lotnicze.webp 3200w" imagesizes="100vw">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="assets/css/style.css?v=1794337331">
+  <link rel="stylesheet" href="assets/css/style.css?v=1794337475">
   <script>document.documentElement.classList.add('js');
   // Futura / Avenir Next tylko na Apple: gdy ich brak, dostrajamy darmowe zamienniki (Jost, Nunito Sans)
   (function(){try{var c=document.createElement('canvas').getContext('2d'),t='MWNmwqr075 Łódź';function w(f){c.font='72px '+f;return c.measureText(t).width}
@@ -218,7 +218,12 @@
         <div class="draw__txt">
           <h2 class="display modern__title" aria-label="Modernizm to luksus, wyrafinowanie, etos i filozofia">Modernizm to <span class="modern__rot" id="modern-rot" aria-hidden="true"><span class="modern__word">luksus</span></span></h2>
           <p class="lead">Modernizm – styl, w&nbsp;którym po prostu najlepiej się mieszka.</p>
-          <p class="muted">Hołd dla idei śmiałego wytyczania kierunków i&nbsp;troski o&nbsp;zdrowie i&nbsp;równowagę w&nbsp;życiu człowieka.</p>
+          <div class="draw__more">
+            <p class="muted">Modernizm zmienił sposób myślenia o&nbsp;mieszkaniu. Postawił człowieka w&nbsp;centrum architektury, nadając szczególne znaczenie światłu, przestrzeni, funkcjonalności i&nbsp;jakości codziennego życia.</p>
+            <p class="muted">N75 rozwija tę ideę we współczesnym języku. Harmonijne proporcje, duże przeszklenia i&nbsp;starannie dobrane materiały tworzą architekturę, która jest jednocześnie elegancka i&nbsp;racjonalna.</p>
+            <p class="muted">Nie szukamy efektu na chwilę. Projektujemy budynek, który naturalnie wpisuje się w&nbsp;miasto i&nbsp;pozostaje wierny zasadom dobrej architektury.</p>
+            <p class="draw__sign">Łódzki modernizm. Nowy rozdział.</p>
+          </div>
         </div>
         <figure class="draw__stage" id="draw-stage">
           <div class="draw__lines" id="draw-lines" data-src="assets/img/szkic-modernizm.svg" role="img" aria-label="Szkic ołówkiem: modernistyczna bryła N75 z poziomymi pasami stropów i tarasami"></div>
@@ -284,19 +289,19 @@
     <div class="materials">
       <div class="material reveal">
         <div class="material__img"><img src="assets/img/material-trawertyn.webp" alt="Trawertyn, zbliżenie" loading="lazy"></div>
-        <h4>Trawertyn</h4><p class="material__where caps">Elewacja · strefa wellness</p><p>Naturalny kamień w&nbsp;ciepłym, jasnym odcieniu, o&nbsp;porowatej fakturze, którą widać i&nbsp;czuć pod dłonią. Wybrany, bo z&nbsp;wiekiem nabiera charakteru, zamiast się zużywać.</p>
+        <h4>Trawertyn</h4><p class="material__where caps">Elewacja · strefa wellness</p><p>Naturalny kamień o&nbsp;ciepłej tonacji i&nbsp;niepowtarzalnej strukturze. Nadaje przestrzeniom spokojny, szlachetny charakter.</p>
       </div>
       <div class="material reveal">
         <div class="material__img"><img src="assets/img/material-lastryko.webp" alt="Lastryko z płytkami białego marmuru, zbliżenie" loading="lazy"></div>
-        <h4>Lastryko</h4><p class="material__where caps">Posadzki</p><p>Jasna posadzka z&nbsp;drobnym kruszywem i&nbsp;osadzonymi płytkami białego marmuru. Wybrane, bo jest bardzo trwałe, a&nbsp;każdy fragment ma niepowtarzalny rysunek – to klasyka modernistycznych kamienic.</p>
+        <h4>Lastryko</h4><p class="material__where caps">Posadzki</p><p>Klasyczny materiał w&nbsp;nowoczesnym wydaniu. Subtelny rysunek kruszywa i&nbsp;marmuru podkreśla modernistyczną tożsamość wnętrz.</p>
       </div>
       <div class="material reveal">
         <div class="material__img"><img src="assets/img/material-orzech.webp" alt="Drewniany kasetonowy sufit, zbliżenie" loading="lazy"></div>
-        <h4>Orzech</h4><p class="material__where caps">Sufity kasetonowe · drzwi · okładziny</p><p>Drewno w&nbsp;głębokim, ciepłym tonie z&nbsp;wyraźnym usłojeniem. Wybrane, bo ociepla kamień i&nbsp;nadaje wnętrzom kameralny, domowy klimat.</p>
+        <h4>Orzech</h4><p class="material__where caps">Sufity kasetonowe · drzwi · okładziny</p><p>Głęboka barwa i&nbsp;naturalne usłojenie drewna wprowadzają ciepło, równoważąc mineralny charakter kamiennych powierzchni.</p>
       </div>
       <div class="material reveal">
         <div class="material__img"><img src="assets/img/material-marmur.webp" alt="Bordowy marmur przy windzie, zbliżenie" loading="lazy"></div>
-        <h4>Marmur Rosso</h4><p class="material__where caps">Portale wind · klatki schodowe</p><p>Polerowany kamień w&nbsp;głębokiej czerwieni. Wybrany jako wyrazisty akcent w&nbsp;miejscach, które mija się codziennie – w&nbsp;duchu przedwojennych reprezentacyjnych klatek.</p>
+        <h4>Marmur Rosso</h4><p class="material__where caps">Portale wind · klatki schodowe</p><p>Wyrazisty, szlachetny akcent w&nbsp;starannie wybranych detalach. Materiał, który nadaje wnętrzom indywidualność bez nadmiaru dekoracji.</p>
       </div>
     </div>
   </div>
@@ -707,12 +712,12 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-<script src="assets/js/intro.js?v=1794337331"></script>
-<script src="assets/js/extras.js?v=1794337331"></script>
-<script src="assets/js/units.js?v=1794337331"></script>
-<script src="assets/js/dziennik.js?v=1794337331"></script>
-<script src="assets/js/plan.js?v=1794337331"></script>
-<script src="assets/js/dollhouse.js?v=1794337331" defer></script>
-<script src="assets/js/main.js?v=1794337331"></script>
+<script src="assets/js/intro.js?v=1794337475"></script>
+<script src="assets/js/extras.js?v=1794337475"></script>
+<script src="assets/js/units.js?v=1794337475"></script>
+<script src="assets/js/dziennik.js?v=1794337475"></script>
+<script src="assets/js/plan.js?v=1794337475"></script>
+<script src="assets/js/dollhouse.js?v=1794337475" defer></script>
+<script src="assets/js/main.js?v=1794337475"></script>
 </body>
 </html>
