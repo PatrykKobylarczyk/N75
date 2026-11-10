@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="format-detection" content="telephone=no, address=no">
   <title>N75 · Narutowicza 75, Łódź · Przestrzeń w dobrym kierunku</title>
+  <link rel="canonical" href="https://n75.vercel.app/">
   <meta name="description" content="N75 to kameralny budynek apartamentowy przy ul. Narutowicza 75 w Łodzi: kamienna elewacja, zielone tarasy, strefa wellness z basenem, siłownia, patio i concierge.">
   <meta name="theme-color" content="#f7f3ec">
   <meta property="og:title" content="N75 · Narutowicza 75, Łódź">
@@ -18,7 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..600;1,300..500&family=Nunito+Sans:ital,opsz,wght@0,6..12,300..700;1,6..12,300..500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/img/okolica-lotnicze.webp" imagesrcset="assets/img/okolica-lotnicze-1600.webp 1600w, assets/img/okolica-lotnicze.webp 3200w" imagesizes="100vw">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="assets/css/style.css?v=1794336503">
+  <link rel="stylesheet" href="assets/css/style.css?v=1794337259">
   <script>document.documentElement.classList.add('js');
   // Futura / Avenir Next tylko na Apple: gdy ich brak, dostrajamy darmowe zamienniki (Jost, Nunito Sans)
   (function(){try{var c=document.createElement('canvas').getContext('2d'),t='MWNmwqr075 Łódź';function w(f){c.font='72px '+f;return c.measureText(t).width}
@@ -33,6 +34,7 @@
     var top0=function(){window.scrollTo(0,0)};top0();addEventListener('DOMContentLoaded',top0);addEventListener('load',function(){top0();setTimeout(top0,80);setTimeout(top0,350)});}
   if(keep||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-done');
   addEventListener('pageshow',function(e){if(e.persisted&&!keep)window.scrollTo(0,0)})}catch(e){}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "ApartmentComplex", "name": "N75", "url": "https://n75.vercel.app/", "description": "Modernistyczny budynek z 50 apartamentami i 3 lokalami usługowymi przy ul. Narutowicza 75A w Łodzi, naprzeciwko parku im. Staszica.", "address": {"@type": "PostalAddress", "streetAddress": "ul. Narutowicza 75A", "postalCode": "90-132", "addressLocality": "Łódź", "addressCountry": "PL"}, "geo": {"@type": "GeoCoordinates", "latitude": 51.77222, "longitude": 19.47703}, "numberOfAccommodationUnits": 50, "amenityFeature": [{"@type": "LocationFeatureSpecification", "name": "Basen", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Sauna", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Jacuzzi", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Siłownia", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Recepcja", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Garaż podziemny", "value": true}]}, {"@type": "Organization", "name": "UNIQUM 5 sp. z o.o.", "url": "https://n75.vercel.app/", "telephone": "+48 799 278 344", "email": "sprzedaz@n75.pl", "address": {"@type": "PostalAddress", "streetAddress": "ul. Gdańska 130", "postalCode": "90-520", "addressLocality": "Łódź", "addressCountry": "PL"}}]}</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="n75-logo" viewBox="36 38 1000 518"><rect x="40" y="42" width="12" height="508"/>
@@ -103,6 +105,8 @@
       <h1 class="hero__logo"><span class="sr-only">N75</span><svg class="logo-svg" viewBox="36 38 1000 518" aria-hidden="true" focusable="false"><use href="#n75-logo"/></svg></h1>
       <span class="hero__rule" aria-hidden="true"></span>
       <p class="hero__claim">Nowoczesna klasyka</p>
+      <p class="hero__lead">Architektura inspirowana najlepszymi tradycjami modernizmu. Szlachetne materiały, przemyślane, wysokie przestrzenie i&nbsp;wyjątkowy standard codzienności. W&nbsp;samym sercu Łodzi, naprzeciwko parku Staszica.</p>
+      <div class="hero__cta"><a class="btn btn--solid caps" href="#mieszkania">Poznaj apartamenty <span class="arrow"></span></a><a class="btn btn--ghost caps" href="#inwestycja">Odkryj N75</a></div>
     </div>
     <div class="hero__foot" aria-hidden="true"></div>
   </div>
@@ -132,35 +136,40 @@
 </section>
 
 <!-- ============ CZTERY WARTOŚCI N75: przewijana sekwencja – słowa wypełniają się tuszem, kadry odsłaniają się kurtyną ============ -->
-<section class="values" id="wartosci" aria-label="Dlaczego N75? 4 powody">
+<section class="values" id="wartosci" aria-label="Dlaczego N75? 5 powodów">
   <div class="values__track" id="values-track">
     <div class="values__pin">
-      <div class="values__ghost" aria-hidden="true"><span>I</span><span>II</span><span>III</span><span>IV</span></div>
+      <div class="values__ghost" aria-hidden="true"><span>I</span><span>II</span><span>III</span><span>IV</span><span>V</span></div>
       <div class="wrap values__in">
-        <div class="values__head caps"><span>Dlaczego N75? 4&nbsp;powody</span><span class="values__count"><b id="values-n">01</b> / 04</span></div>
+        <div class="values__head caps"><span>Dlaczego N75? 5&nbsp;powodów</span><span class="values__count"><b id="values-n">01</b> / 05</span></div>
         <div class="values__stage">
-          <a class="vw" data-i="0" href="#architektura" aria-label="Klasyka – Architektura">
+          <a class="vw" data-i="0" href="#architektura" aria-label="Modernizm – Modernizm i klasyka">
             <span class="vw__n caps">I</span>
-            <span class="vw__word" aria-hidden="true"><span class="vl"><span>K</span></span><span class="vl"><span>L</span></span><span class="vl"><span>A</span></span><span class="vl"><span>S</span></span><span class="vl"><span>Y</span></span><span class="vl"><span>K</span></span><span class="vl"><span>A</span></span></span>
-            <span class="vw__desc"><span>300&nbsp;cm wysokości, wielkie okna i&nbsp;szlachetne materiały – kanon, który za 10 lat wciąż będzie na czasie.</span><span class="vw__to caps">Architektura <span class="arrow" aria-hidden="true"></span></span></span>
-          </a>
-          <a class="vw" data-i="1" href="#lokalizacja" aria-label="Adres – Lokalizacja">
-            <span class="vw__n caps">II</span>
-            <span class="vw__word" aria-hidden="true"><span class="vl"><span>A</span></span><span class="vl"><span>D</span></span><span class="vl"><span>R</span></span><span class="vl"><span>E</span></span><span class="vl"><span>S</span></span></span>
-            <span class="vw__desc"><span>Park Staszica naprzeciwko, a&nbsp;szpitale, uczelnie i&nbsp;biurowce w&nbsp;zasięgu spaceru.</span><span class="vw__to caps">Lokalizacja <span class="arrow" aria-hidden="true"></span></span></span>
-          </a>
-          <a class="vw" data-i="2" href="#udogodnienia" aria-label="Luksus – Udogodnienia">
-            <span class="vw__n caps">III</span>
-            <span class="vw__word" aria-hidden="true"><span class="vl"><span>L</span></span><span class="vl"><span>U</span></span><span class="vl"><span>K</span></span><span class="vl"><span>S</span></span><span class="vl"><span>U</span></span><span class="vl"><span>S</span></span></span>
-            <span class="vw__desc"><span>Basen, sauna i&nbsp;siłownia w&nbsp;budynku, foyer jak w&nbsp;butikowym hotelu i&nbsp;detal dopracowany do końca.</span><span class="vw__to caps">Udogodnienia <span class="arrow" aria-hidden="true"></span></span></span>
-          </a>
-          <a class="vw" data-i="3" href="#wstep" aria-label="Modernizm – Od szkicu do budynku">
-            <span class="vw__n caps">IV</span>
             <span class="vw__word" aria-hidden="true"><span class="vl"><span>M</span></span><span class="vl"><span>O</span></span><span class="vl"><span>D</span></span><span class="vl"><span>E</span></span><span class="vl"><span>R</span></span><span class="vl"><span>N</span></span><span class="vl"><span>I</span></span><span class="vl"><span>Z</span></span><span class="vl"><span>M</span></span></span>
-            <span class="vw__desc"><span>Kontynuacja najlepszej architektury Łodzi: proporcje, światło i&nbsp;tarasy – uniwersalne na pokolenia.</span><span class="vw__to caps">Od szkicu do budynku <span class="arrow" aria-hidden="true"></span></span></span>
+            <span class="vw__desc"><span class="vw__sub caps">Modernizm i&nbsp;klasyka</span><span>Nie moda, lecz proporcje, światło i&nbsp;ponadczasowa forma – modernizm w&nbsp;najlepszym, łódzkim wydaniu.</span><span class="vw__to caps">Architektura <span class="arrow" aria-hidden="true"></span></span></span>
+          </a>
+          <a class="vw" data-i="1" href="#architektura" aria-label="Luksus – Luksus i materiały">
+            <span class="vw__n caps">II</span>
+            <span class="vw__word" aria-hidden="true"><span class="vl"><span>L</span></span><span class="vl"><span>U</span></span><span class="vl"><span>K</span></span><span class="vl"><span>S</span></span><span class="vl"><span>U</span></span><span class="vl"><span>S</span></span></span>
+            <span class="vw__desc"><span class="vw__sub caps">Luksus i&nbsp;materiały</span><span>Trawertyn, orzech, lastryko i&nbsp;marmur. Jakość, którą widać, ale przede wszystkim czuć w&nbsp;codziennym użytkowaniu.</span><span class="vw__to caps">Materiały <span class="arrow" aria-hidden="true"></span></span></span>
+          </a>
+          <a class="vw" data-i="2" href="#udogodnienia" aria-label="Wellness – Wellness w budynku">
+            <span class="vw__n caps">III</span>
+            <span class="vw__word" aria-hidden="true"><span class="vl"><span>W</span></span><span class="vl"><span>E</span></span><span class="vl"><span>L</span></span><span class="vl"><span>L</span></span><span class="vl"><span>N</span></span><span class="vl"><span>E</span></span><span class="vl"><span>S</span></span><span class="vl"><span>S</span></span></span>
+            <span class="vw__desc"><span class="vw__sub caps">Wellness w&nbsp;budynku</span><span>Basen, sauna i&nbsp;siłownia. Czas dla siebie bez konieczności opuszczania budynku.</span><span class="vw__to caps">Udogodnienia <span class="arrow" aria-hidden="true"></span></span></span>
+          </a>
+          <a class="vw" data-i="3" href="#lokalizacja" aria-label="Adres – Centrum miasta, park naprzeciwko">
+            <span class="vw__n caps">IV</span>
+            <span class="vw__word" aria-hidden="true"><span class="vl"><span>A</span></span><span class="vl"><span>D</span></span><span class="vl"><span>R</span></span><span class="vl"><span>E</span></span><span class="vl"><span>S</span></span></span>
+            <span class="vw__desc"><span class="vw__sub caps">Centrum miasta, park naprzeciwko</span><span>Miasto w&nbsp;zasięgu ręki, a&nbsp;za oknem własna przestrzeń wytchnienia – park im. Staszica.</span><span class="vw__to caps">Lokalizacja <span class="arrow" aria-hidden="true"></span></span></span>
+          </a>
+          <a class="vw" data-i="4" href="#mieszkania" aria-label="Światło – Apartamenty pełne światła">
+            <span class="vw__n caps">V</span>
+            <span class="vw__word" aria-hidden="true"><span class="vl"><span>Ś</span></span><span class="vl"><span>W</span></span><span class="vl"><span>I</span></span><span class="vl"><span>A</span></span><span class="vl"><span>T</span></span><span class="vl"><span>Ł</span></span><span class="vl"><span>O</span></span></span>
+            <span class="vw__desc"><span class="vw__sub caps">Apartamenty pełne światła</span><span>300&nbsp;cm wysokości, duże przeszklenia, widoki na park lub zielone patio. Nie metry kwadratowe, lecz przestrzeń dopasowana do sposobu życia.</span><span class="vw__to caps">Apartamenty <span class="arrow" aria-hidden="true"></span></span></span>
           </a>
         </div>
-        <nav class="values__nav caps" aria-hidden="true"><span>Klasyka</span><span>Adres</span><span>Luksus</span><span>Modernizm</span></nav>
+        <nav class="values__nav caps" aria-hidden="true"><span>Modernizm</span><span>Luksus</span><span>Wellness</span><span>Adres</span><span>Światło</span></nav>
       </div>
     </div>
   </div>
@@ -647,6 +656,7 @@
       </div>
       <div class="reveal">
         <form class="form" id="form" novalidate>
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
           <div class="field"><label class="caps" for="c-name">Imię</label><input id="c-name" name="name" autocomplete="given-name" required></div>
           <div class="field"><label class="caps" for="c-contact">Telefon lub e-mail</label><input id="c-contact" name="contact" autocomplete="email" inputmode="email" required></div>
           <div class="field field--full"><label class="caps" for="c-unit">Preferowany lokal <span class="opt">(opcjonalnie)</span></label><select id="c-unit" name="unit"><option value="">Nie mam jeszcze preferencji</option></select></div>
@@ -690,12 +700,12 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-<script src="assets/js/intro.js?v=1794336503"></script>
-<script src="assets/js/extras.js?v=1794336503"></script>
-<script src="assets/js/units.js?v=1794336503"></script>
-<script src="assets/js/dziennik.js?v=1794336503"></script>
-<script src="assets/js/plan.js?v=1794336503"></script>
-<script src="assets/js/dollhouse.js?v=1794336503" defer></script>
-<script src="assets/js/main.js?v=1794336503"></script>
+<script src="assets/js/intro.js?v=1794337259"></script>
+<script src="assets/js/extras.js?v=1794337259"></script>
+<script src="assets/js/units.js?v=1794337259"></script>
+<script src="assets/js/dziennik.js?v=1794337259"></script>
+<script src="assets/js/plan.js?v=1794337259"></script>
+<script src="assets/js/dollhouse.js?v=1794337259" defer></script>
+<script src="assets/js/main.js?v=1794337259"></script>
 </body>
 </html>

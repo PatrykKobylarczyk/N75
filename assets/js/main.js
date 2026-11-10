@@ -516,7 +516,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794336503" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794337259" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -761,7 +761,7 @@
       }
       var zones = (window.N75_STREFY || []).filter(function (z) { return z.floor === f; });
       plan = window.N75Plan.create($('#mk-plan'), {
-        floor: f, units: list.concat(zones), frame: g0 ? [70, 100, 1424, 1720] : FRAME_UP, href: function (u) { return u.kind ? '#' + u.id.toLowerCase() : g0 ? '?lokal=' + encodeURIComponent(u.id) + '#kontakt' : cardUrl(u.id); },
+        floor: f, units: list.concat(zones), frame: g0 ? [70, 100, 1424, 1720] : FRAME_UP, href: function (u) { return u.kind ? ({ foyer: '#wnetrza', wellness: '#udogodnienia' }[u.kind] || '#' + u.id.toLowerCase()) : g0 ? '?lokal=' + encodeURIComponent(u.id) + '#kontakt' : cardUrl(u.id); },
         onPick: function (u, ev) { if (ev.metaKey || ev.ctrlKey || ev.shiftKey) return; ev.preventDefault(); showUnit(u); }
       });
       if (user && window.matchMedia('(max-width: 900px)').matches) mkPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -912,9 +912,14 @@
     var okMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact), okTel = contact.replace(/[^\d]/g, '').length >= 9 && /^[+\d\s()-]+$/.test(contact);
     if (!name || !(okMail || okTel)) { msg.textContent = 'Podaj imię oraz numer telefonu lub adres e-mail.'; return; }
     if (!$('#c-consent').checked) { msg.textContent = 'Zaznacz zgodę na przetwarzanie danych.'; return; }
-    // TODO: wysyłka do CRM / API sprzedaży
-    msg.textContent = 'Dziękujemy! Twój osobisty doradca skontaktuje się w ciągu jednego dnia roboczego, by ustalić termin prywatnej prezentacji.';
-    form.reset();
+    if (form.elements._honey && form.elements._honey.value) return;
+    var btn = form.querySelector('button[type=submit]'); btn.disabled = true; msg.textContent = 'Wysyłanie…';
+    window.N75Send({ 'Imię': name, 'Kontakt': contact, 'Lokal': cUnit.value || '', 'Wiadomość': $('#c-msg').value.trim(), 'Formularz': 'Strona główna – Porozmawiajmy' }).then(function () {
+      msg.textContent = 'Dziękujemy! Twój osobisty doradca skontaktuje się w ciągu jednego dnia roboczego, by ustalić termin prywatnej prezentacji.';
+      form.reset();
+    }).catch(function () {
+      msg.innerHTML = 'Nie udało się wysłać formularza. Zadzwoń: <a href="tel:+48799278344">+48 799 278 344</a> lub napisz: <a href="mailto:sprzedaz@n75.pl">sprzedaz@n75.pl</a>.';
+    }).then(function () { btn.disabled = false; });
   });
 
 
@@ -923,13 +928,13 @@
     var tr = document.getElementById('values-track'); if (!tr) return;
     var ws = $$('.vw', tr), nav = $$('.values__nav span', tr), gh = $$('.values__ghost span', tr), num = document.getElementById('values-n');
     var ease = function (t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }, cl = function (v) { return Math.min(1, Math.max(0, v)); };
-    var L = ws.map(function (w) { return $$('.vl > span', w); }), cur = -1;
+    var L = ws.map(function (w) { return $$('.vl > span', w); }), cur = -1, N = ws.length;
     // przy „ograniczonym ruchu” (często domyślnie w Windows) słowa tylko przenikają się, bez wjazdu liter
     var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var PER = 4200, x = -.35, last = 0, on = false;
     function draw() {
       ws.forEach(function (w, k) {
-        var t = ((x - k + .5) % 4 + 4) % 4 - .5, n = L[k].length;
+        var t = ((x - k + .5) % N + N) % N - .5, n = L[k].length;
         L[k].forEach(function (s, i) {
           var d = i / Math.max(1, n - 1) * .22;
           var inn = ease(cl((t + .32 - d) / .38)), out = ease(cl((t - .72 - d * .6) / .3));
@@ -939,8 +944,8 @@
         w.style.setProperty('--o', o.toFixed(3)); w.classList.toggle('is-on', o > .5);
         if (RM) w.firstElementChild.nextElementSibling.style.opacity = o.toFixed(3);
       });
-      var xm = ((x % 4) + 4) % 4, i = Math.floor(xm + .2) % 4;
-      nav.forEach(function (s, k) { s.style.setProperty('--b', k === i ? cl(xm - k + .2 > 3 ? xm - 4 - k + .2 : xm - k + .2).toFixed(3) : (k < i ? 1 : 0)); });
+      var xm = ((x % N) + N) % N, i = Math.floor(xm + .2) % N;
+      nav.forEach(function (s, k) { s.style.setProperty('--b', k === i ? cl(xm - k + .2 > N - 1 ? xm - N - k + .2 : xm - k + .2).toFixed(3) : (k < i ? 1 : 0)); });
       if (i !== cur) { cur = i; if (num) num.textContent = '0' + (i + 1); nav.forEach(function (s, k) { s.classList.toggle('is-on', k === i); }); gh.forEach(function (g, k) { g.classList.toggle('is-on', k === i); }); }
     }
     function tick(ts) {
@@ -950,7 +955,7 @@
       draw(); requestAnimationFrame(tick);
     }
     new IntersectionObserver(function (e) { var v = e[0].isIntersecting; if (v && !on) { on = true; last = 0; requestAnimationFrame(tick); } else if (!v) on = false; }, { threshold: .35 }).observe(tr);
-    nav.forEach(function (s, k) { s.addEventListener('click', function () { x = Math.floor(x / 4) * 4 + k - .3; if (x < 0) x += 4; draw(); }); });
+    nav.forEach(function (s, k) { s.addEventListener('click', function () { x = Math.floor(x / N) * N + k - .3; if (x < 0) x += N; draw(); }); });
     draw();
   })();
 
