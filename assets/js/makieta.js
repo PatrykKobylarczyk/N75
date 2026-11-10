@@ -485,7 +485,7 @@
   function prog(vs, fs) { var p = gl.createProgram(); [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]].forEach(function (s) { var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh)); gl.attachShader(p, sh); }); gl.linkProgram(p); return p; }
   var P = prog(VS, FS), SP = prog(SVS, SFS), QP = prog(QVS, QFS), SS = 4096;
   var STYLE = /[?&]styl=rysunek/.test(location.search) ? 1 : 0, VIEW = null;
-  var CITY = /[?&]miasto=1/.test(location.search); try { if (CITY) sessionStorage.setItem('n75miasto', '1'); else CITY = sessionStorage.getItem('n75miasto') === '1'; } catch (e) {}
+  var CITY = true;   // przełącznik stylu: model → rysunek → miasto
   var qb = gl.createBuffer(), qv = gl.createVertexArray(); gl.bindVertexArray(qv); gl.bindBuffer(gl.ARRAY_BUFFER, qb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW); gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
   var PF = { w: 0, h: 0, fb: null, c: null, d: null };
   function postFB(W, H) {
