@@ -1728,8 +1728,9 @@ body.dh-open { overflow: hidden; }
   .mk3d__hint, .mk3d__legal { display: none; }
   .mk3d__card { left: 16px; right: 16px; top: auto; bottom: 150px; width: auto; padding: 18px; }
   .mk3d__card h3 { font-size: 28px; margin-bottom: 10px; }
-  .mk3d__ca { flex-direction: row; }
-  .mk3d__ca .btn { flex: 1; }
+  .mk3d__ca { flex-direction: row; flex-wrap: wrap; }
+  .mk3d__ca .btn { flex: 1 1 40%; min-width: 0; padding-left: 10px; padding-right: 10px; white-space: nowrap; }
+  .mk3d__ca .btn:first-child { flex-basis: 100%; }
 }
 .mk3d-cta { margin-top: 22px; }
 @media (max-width: 760px) { .mk3d__floors .chip { flex: 0 0 auto; } }
