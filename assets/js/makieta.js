@@ -755,6 +755,7 @@
     buildPanel();
     root.classList.add('is-ready');
     var m = /[?&]p=(\d)/.exec(location.search); if (m) select(+m[1]);
+    var ok = /[?&]okno=([^&]+)/.exec(location.search); if (ok) { var oid = decodeURIComponent(ok[1]); var ou = UNITS[oid]; if (ou) { select(ou.floor); windowView(oid, 0); } }
     draw();
   });
   window.N75Mk = { select: function (f) { select(f); }, cam: cam, draw: draw, sun: function (t) { sunT = t; draw(); }, style: function (v) { STYLE = v ? 1 : 0; var st = root.querySelector('[data-style]'); if (st) st.textContent = STYLE ? 'Styl: rysunek' : 'Styl: model'; draw(); }, win: function (id, k) { windowView(id, k); }, wins: function (id) { return windows(id); }, card: function (id) { showCard(id); }, mesh: function (f, cut) { var b = cut ? buildCut(f) : buildFloor(D.floors[f]), o = function (m) { return { p: m.p, n: m.n, c: m.c, m: m.m }; }; return { M: o(b.M), G: o(b.G) }; } };

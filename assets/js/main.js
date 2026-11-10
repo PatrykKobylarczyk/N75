@@ -516,7 +516,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794323237" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794336503" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -526,7 +526,8 @@
 
   function render() {
     var full = filtered();
-    $('#f-count').textContent = full.length + ' z ' + all.length + ' lokali';
+    var nA = full.filter(function (u) { return !isShop(u); }).length, nS = full.length - nA;
+    $('#f-count').textContent = nA + ' z ' + units.length + ' mieszkań' + (uslugi.length ? ' · ' + nS + ' z ' + uslugi.length + ' lokali usługowych' : '');
     var list = state.all ? full : full.slice(0, PAGE);
     moreBtn.hidden = full.length <= list.length;
     moreBtn.textContent = 'Pokaż wszystkie lokale (' + full.length + ')';
@@ -907,11 +908,12 @@
   var form = $('#form'), msg = $('#form-msg');
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var name = $('#c-name').value.trim(), email = $('#c-email').value.trim();
-    if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = 'Podaj imię i poprawny adres e-mail.'; return; }
+    var name = $('#c-name').value.trim(), contact = $('#c-contact').value.trim();
+    var okMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact), okTel = contact.replace(/[^\d]/g, '').length >= 9 && /^[+\d\s()-]+$/.test(contact);
+    if (!name || !(okMail || okTel)) { msg.textContent = 'Podaj imię oraz numer telefonu lub adres e-mail.'; return; }
     if (!$('#c-consent').checked) { msg.textContent = 'Zaznacz zgodę na przetwarzanie danych.'; return; }
     // TODO: wysyłka do CRM / API sprzedaży
-    msg.textContent = 'Dziękujemy! Twój osobisty doradca zadzwoni w ciągu jednego dnia roboczego, by ustalić termin prywatnej prezentacji.';
+    msg.textContent = 'Dziękujemy! Twój osobisty doradca skontaktuje się w ciągu jednego dnia roboczego, by ustalić termin prywatnej prezentacji.';
     form.reset();
   });
 

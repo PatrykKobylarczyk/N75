@@ -273,7 +273,7 @@ p { margin: 0 0 1em; }
 .split__media img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
 .split__media figcaption { margin-top: 14px; color: var(--muted); }
 .facts {
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(3, 1fr);
   border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
   margin-top: clamp(64px, 8vw, 120px);
 }
@@ -1778,3 +1778,49 @@ body.dh-open { overflow: hidden; }
 .mk3d__msg { position: absolute; z-index: 5; left: 50%; top: 90px; transform: translateX(-50%); max-width: 90%; background: rgba(247, 243, 236, .95); border: 1px solid var(--line); padding: 10px 16px; font-size: 13px; }
 .page-mk .mk3d--city .mk3d__top { pointer-events: none; }
 .page-mk .mk3d--city .mk3d__top a { pointer-events: auto; }
+
+.material .material__where { font-size: 10.5px; letter-spacing: .14em; color: var(--bronze); margin: 0 0 6px; }
+.form label .opt { text-transform: none; letter-spacing: 0; opacity: .6; font-size: .95em; }
+
+/* karta mieszkania jako indywidualna prezentacja apartamentu */
+.u-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px 48px; flex-wrap: wrap; margin-bottom: clamp(24px, 3vw, 40px); }
+.u-head .u-title { margin-bottom: 10px; }
+.u-lead { margin: 0; }
+.u-price { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; }
+.u-price strong { font-family: var(--head); font-weight: 400; font-size: clamp(30px, 3.4vw, 46px); letter-spacing: .02em; color: var(--graphite); line-height: 1.05; }
+.u-main { display: grid; grid-template-columns: minmax(0, 7fr) minmax(300px, 4fr); gap: clamp(28px, 4vw, 64px); align-items: start; }
+.u-plan--big { min-height: clamp(360px, 52vw, 720px); }
+.u-spec--3 { grid-template-columns: repeat(3, 1fr); margin: 28px 0; }
+.u-spec--3 div { padding: 14px 16px 14px 0; }
+.u-spec--3 div:nth-child(odd) { padding-right: 16px; }
+.u-spec .u-spec__txt dd { font-size: 16px; line-height: 1.4; letter-spacing: .01em; }
+.u-spec .u-spec__wide { grid-column: span 2; }
+.u-link { display: inline-block; margin-left: 6px; font-size: 11px; letter-spacing: .12em; color: var(--bronze); border-bottom: 1px solid currentColor; white-space: nowrap; }
+.u-contact { position: sticky; top: 96px; padding: clamp(22px, 2.4vw, 32px); background: var(--paper-2, #f1ece3); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 14px; }
+.u-contact__t { font-size: clamp(26px, 2.4vw, 34px); margin: 0; line-height: 1.1; }
+.u-contact p { margin: 0; font-size: 14.5px; }
+.u-contact__direct { display: grid; gap: 8px; }
+.u-contact__direct .btn { justify-content: center; text-align: center; }
+.u-form { display: grid; gap: 12px; margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--line); }
+.u-form label { display: grid; gap: 4px; }
+.u-form label > .caps, .u-form legend { font-size: 10.5px; letter-spacing: .14em; color: #8c8478; }
+.u-form input:not([type=checkbox]), .u-form textarea { width: 100%; border: 0; border-bottom: 1px solid var(--line); background: transparent; padding: 8px 0; font: inherit; color: var(--graphite); }
+.u-form input:focus, .u-form textarea:focus { outline: none; border-bottom-color: var(--bronze); }
+.u-form__opts { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.u-form__opts legend { margin-bottom: 6px; padding: 0; }
+.u-form .opt { text-transform: none; letter-spacing: 0; opacity: .7; }
+.u-chk { display: flex !important; grid-template-columns: none; align-items: flex-start; gap: 8px; font-size: 14px; }
+.u-chk input { margin-top: 3px; accent-color: var(--bronze); }
+.u-consent { font-size: 12px; color: #8c8478; }
+.u-form .form__msg { margin: 0; font-size: 13px; color: var(--bronze); min-height: 1em; }
+@media (max-width: 1000px) {
+  .u-main { grid-template-columns: 1fr; }
+  .u-contact { position: static; }
+  .u-spec--3 { grid-template-columns: 1fr 1fr; }
+  .u-spec .u-spec__wide { grid-column: span 2; }
+}
+@media (max-width: 700px) {
+  .u-price { align-items: flex-start; text-align: left; }
+  .u-plan--big { min-height: 340px; }
+}
+@media print { .u-contact, .u-link { display: none !important; } .u-main { grid-template-columns: 1fr; } }
