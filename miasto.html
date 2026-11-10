@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no, address=no">
+  <title>Makieta 3D · miasto · N75 · Narutowicza 75A, Łódź</title>
+  <meta name="description" content="Interaktywna makieta 3D budynku N75 przy ul. Narutowicza 75A w Łodzi: wybierz piętro i mieszkanie, sprawdź światło o różnych porach dnia.">
+  <meta name="theme-color" content="#f7f3ec">
+  <meta property="og:title" content="N75 · Narutowicza 75, Łódź">
+  <meta property="og:description" content="Przestrzeń w dobrym kierunku. Apartamenty w centrum Łodzi.">
+  <meta property="og:image" content="assets/img/naroznik.webp">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Docelowo: Futura PT i Avenir Next z licencji (np. Adobe Fonts). Jost i Nunito Sans to darmowe zamienniki na urządzeniach bez tych krojów. -->
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..600;1,300..500&family=Nunito+Sans:ital,opsz,wght@0,6..12,300..700;1,6..12,300..500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.123.0/Build/Cesium/Widgets/widgets.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=1794317556">
+  <meta name="robots" content="noindex">
+  <script>document.documentElement.classList.add('js');
+  // Futura / Avenir Next tylko na Apple: gdy ich brak, dostrajamy darmowe zamienniki (Jost, Nunito Sans)
+  (function(){try{var c=document.createElement('canvas').getContext('2d'),t='MWNmwqr075 Łódź';function w(f){c.font='72px '+f;return c.measureText(t).width}
+  var m=w('monospace'),s=w('serif'),h=function(n){return w('"'+n+'",monospace')!==m||w('"'+n+'",serif')!==s},d=document.documentElement;
+  if(!h('Futura')&&!h('Futura PT'))d.classList.add('no-futura');if(!h('Avenir Next')&&!h('Avenir'))d.classList.add('no-avenir')}catch(e){}})();</script>
+</head>
+<body class="page-mk">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="n75-logo" viewBox="36 38 1000 518"><rect x="40" y="42" width="12" height="508"/>
+  <polygon points="40,42 102,42 385,468 385,550 372,550"/>
+  <rect x="373" y="42" width="12" height="508"/>
+  <rect x="425" y="42" width="327" height="13"/>
+  <polygon points="692,42 752,42 484,550 432,550"/>
+  <rect x="785" y="42" width="211" height="13"/>
+  <polygon points="785,42 797,42 770,250 758,248"/>
+  <path d="M758 245 C800 200 850 190 880 190 C966 190 1031 262 1031 365 C1031 470 958 552 850 552 C780 552 720 520 688 470 L702 462 C735 515 790 541 850 541 C935 541 992 465 992 365 C992 272 945 201 878 201 C840 201 795 216 768 252 Z"/></symbol></svg>
+<main class="mk3d mk3d--city" id="mk3d" data-src="assets/data/makieta.json?v=1794317556">
+  <div class="mk3d__cz" aria-label="Makieta 3D budynku N75 w prawdziwym otoczeniu. Przeciągnij, aby obrócić; kółko lub dwa palce, aby przybliżyć."></div>
+  <div class="mk3d__credits"></div>
+  <p class="mk3d__msg" hidden></p>
+  <div class="mk3d__labels" aria-hidden="true"></div>
+  <div class="mk3d__tip caps" hidden></div>
+  <header class="mk3d__top">
+    <a href="index.html#mieszkania" class="logo" aria-label="N75, powrót na stronę główną"><svg class="logo-svg" viewBox="36 38 1000 518" aria-hidden="true" focusable="false"><use href="#n75-logo"/></svg></a>
+    <div><span class="caps bronze">Makieta 3D</span><h1 class="display">Wybierz piętro i&nbsp;mieszkanie</h1></div>
+    <a href="index.html#mieszkania" class="btn btn--ghost caps mk3d__back">Wróć</a>
+  </header>
+  <nav class="mk3d__floors" aria-label="Kondygnacje"></nav>
+  <div class="mk3d__bottom">
+    <label class="mk3d__sun"><span class="caps">Słońce (równonoc)</span><input type="range" min="7" max="18.5" step="0.5" value="15.5" aria-label="Godzina"><output class="caps">15:30</output></label>
+    <button type="button" class="mk3d__home caps" data-home>Widok ogólny</button>
+    <a href="makieta.html" class="mk3d__home caps" data-style-link>Styl: miasto</a>
+    <a href="miasto.html" target="_top" class="mk3d__home caps mk3d__full">Pełny ekran</a>
+    <div class="mk3d__compass" aria-hidden="true"><span>N</span></div>
+  </div>
+  <aside class="mk3d__card" hidden></aside>
+  <p class="mk3d__legal">Bryła N75 na podstawie projektu budowlanego, otoczenie: Google Photorealistic 3D Tiles (stan obecny).</p>
+</main>
+<script src="assets/js/units.js?v=1794317556"></script>
+<script src="assets/js/dollhouse.js?v=1794317556" defer></script>
+<script>window.CESIUM_BASE_URL="https://cdn.jsdelivr.net/npm/cesium@1.123.0/Build/Cesium/";</script>
+<script src="https://cdn.jsdelivr.net/npm/cesium@1.123.0/Build/Cesium/Cesium.js"></script>
+<script src="assets/js/miasto.js?v=1794317556" defer></script>
+</body>
+</html>
