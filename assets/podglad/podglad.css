@@ -241,30 +241,25 @@ html[data-styl="kamien"] .fact { background: var(--stone-2) url(../img/material-
 }
 
 /* =====================================================================
-   KONCEPCJA 03 – układ, kształty, kroje i logo Koncepcji 02 w kolorach Koncepcji 01
-   (html[data-kierunek="k2"][data-paleta="k1"])
+   KONCEPCJA 03 – kolory obecnej strony + kroje, kształty i logo Koncepcji 01
+   (html[data-kierunek="k1"][data-paleta="obecna"])
    ===================================================================== */
-html[data-kierunek="k2"][data-paleta="k1"] {
-  --paper: #f2ece4; --paper-2: #ecdcd6; --line: #dcc6be; --muted: #6e5d58; --text: #3b2a2a; --ink: #2a1418; --graphite: #2a1418;
-  --bronze: #7a1f2b; --bronze-soft: #c98f86;
-  --dark: #4a0a1c; --dark-2: #5e1428;
-  --k-sky: #e9c3c1; --k-brown: #b9735a; --k-black: #2a1418; --k-violet: #6e62d0;
+html[data-kierunek="k1"][data-paleta="obecna"] {
+  --paper: #f7f3ec; --paper-2: #efe9df; --line: #d9cfc1; --muted: #726a60; --text: #44423f; --ink: #242321; --graphite: #242321;
+  --bronze: #9c7149; --bronze-soft: #c4a27f;
+  --dark: #221d18; --dark-2: #2d2721;
+  --k-violet: #9c7149; --k-pink: #e6d6c2; --k-clay: #7b4f2e; --k-walnut: #5a3a2a;
 }
-html[data-kierunek="k2"][data-paleta="k1"] .k-bars { background: repeating-linear-gradient(90deg, var(--k-violet) 0 10px, transparent 10px 24px); }
-html[data-kierunek="k2"][data-paleta="k1"] .hero__rule { background: var(--k-sky); }
-html[data-kierunek="k2"][data-paleta="k1"] .values { background-color: var(--k-brown) !important; }
-html[data-kierunek="k2"][data-paleta="k1"] .values__ghost { color: var(--dark); opacity: .3; }
-html[data-kierunek="k2"][data-paleta="k1"] .modern { background-color: var(--k-black); }
-html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(1) { background: var(--k-sky); }
-html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(2) { background: var(--k-violet); }
-html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(2) :is(h3, p, .ideas__n) { color: var(--paper); }
-html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(3) { background: var(--k-brown); }
-html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(4) { background: var(--dark); }
-html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(n+3) .ideas__n { color: var(--k-sky); }
-html[data-kierunek="k2"][data-paleta="k1"] .fact { border-left-color: var(--k-violet); }
-html[data-kierunek="k2"][data-paleta="k1"] .fact:nth-child(even) { border-left-color: var(--k-brown); }
-html[data-kierunek="k2"][data-paleta="k1"] :is(.h2-kicker, .vw__sub, .material__where) { color: var(--k-violet) !important; }
-html[data-kierunek="k2"][data-paleta="k1"] .values .vw__sub { color: var(--dark) !important; }
-html[data-kierunek="k2"][data-paleta="k1"] .section:not(.section--dark) { background-image: repeating-linear-gradient(90deg, transparent 0 calc(12.5% - 1px), rgba(74, 10, 28, .06) calc(12.5% - 1px) 12.5%); }
-html[data-kierunek="k2"][data-paleta="k1"] .btn--solid:hover { background: var(--k-violet); border-color: var(--k-violet); }
-html[data-kierunek="k2"][data-paleta="k1"] .section--dark .btn--solid { background: var(--k-sky); border-color: var(--k-sky); color: var(--k-black); }
+html[data-kierunek="k1"][data-paleta="obecna"] .values__ghost { color: var(--bronze-soft); opacity: .45; }
+html[data-kierunek="k1"][data-paleta="obecna"] .ideas li:nth-child(1) .ideas__n { color: var(--bronze); }
+html[data-kierunek="k1"][data-paleta="obecna"] .ideas li:nth-child(2) .ideas__n { color: var(--k-clay); }
+html[data-kierunek="k1"][data-paleta="obecna"] .ideas li:nth-child(3) .ideas__n { color: var(--ink); }
+html[data-kierunek="k1"][data-paleta="obecna"] .ideas li:nth-child(4) .ideas__n { color: var(--bronze-soft); }
+html[data-kierunek="k1"][data-paleta="obecna"] :is(.h2-kicker, .vw__sub, .material__where) { color: var(--bronze) !important; }
+html[data-kierunek="k1"][data-paleta="obecna"] .section--dark :is(.caps.bronze, .wellness__sub) { color: var(--bronze-soft) !important; }
+html[data-kierunek="k1"][data-paleta="obecna"] .btn--solid { background: var(--bronze); border-color: var(--bronze); color: var(--paper); }
+html[data-kierunek="k1"][data-paleta="obecna"] .btn--solid:hover { background: var(--dark); border-color: var(--dark); }
+html[data-kierunek="k1"][data-paleta="obecna"] :is(.section--dark, .hero) .btn--solid { background: var(--bronze-soft); border-color: var(--bronze-soft); color: var(--dark); }
+html[data-kierunek="k1"][data-paleta="obecna"] .fact:nth-child(3n+1) .fact__val { color: var(--bronze); }
+html[data-kierunek="k1"][data-paleta="obecna"] .k-h1 { background: var(--bronze); }
+html[data-kierunek="k1"][data-paleta="obecna"] .k-h3 { background: var(--bronze-soft); }

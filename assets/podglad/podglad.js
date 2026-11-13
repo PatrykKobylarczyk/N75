@@ -6,7 +6,7 @@
     ['', 'Obecny', 'Kremowy papier, mosiądz, cienki geometryczny krój. Obecne logo liniowe.'],
     ['k1', 'Koncepcja 01', 'Geometria i konstrukcja: koła, półkola i łuki, polska awangarda. Bordo, glina, róż, fiolet. Logo z figur geometrycznych.'],
     ['k2', 'Koncepcja 02', 'Rytm i modularność: prostokąty, pionowe podziały, szachownica i efekt luksferów. Zieleń, brąz, błękit. Logo modułowe z pionowych pasów.'],
-    ['k3', 'Koncepcja 03', 'Kształty, kroje i logo Koncepcji 02 (rytm, moduł, luksfery, szachownica) w kolorach Koncepcji 01: bordo, glina, róż i fiolet na ciepłym papierze.']
+    ['k3', 'Koncepcja 03', 'Kolory obecnej strony (kremowy papier, mosiądz, ciepła czerń) z krojami, kształtami i logo Koncepcji 01: koła, półkola, łuki, zaokrąglone przyciski, logo geometryczne.']
   ];
   var STY = [['', 'Obecna'], ['kamien', 'Lata 30 · kamień'], ['mosiadz', 'Lata 30 · mosiężne litery'], ['szyld', 'Lata 30 · szyld']];
   var ACC = [['', 'Mosiądz', '#9c7149'], ['zielen', 'Zieleń', '#4f7262'], ['rosso', 'Rosso', '#9a3b32'], ['blekit', 'Błękit', '#4f7a8a']];
@@ -64,11 +64,11 @@
   function deco() {
     document.querySelectorAll('.k-geo, .k-strip, .k-bars').forEach(function (e) { e.remove(); });
     var put = function (sel, html, first) { var t = document.querySelector(sel); if (!t) return; var d = document.createElement('div'); d.innerHTML = html; while (d.firstChild) { if (first) t.insertBefore(d.lastChild, t.firstChild); else t.appendChild(d.firstChild); } };
-    if (st.kierunek === 'k1') {
+    if (st.kierunek === 'k1' || st.kierunek === 'k3') {
       put('.hero', '<i class="k-geo k-h1" aria-hidden="true"></i><i class="k-geo k-h2" aria-hidden="true"></i><i class="k-geo k-h3" aria-hidden="true"></i>');
       put('#inwestycja', '<i class="k-geo k-m1" aria-hidden="true"></i><i class="k-geo k-m2" aria-hidden="true"></i>', true);
     }
-    if (st.kierunek === 'k2' || st.kierunek === 'k3') {
+    if (st.kierunek === 'k2') {
       put('.hero', '<i class="k-bars" aria-hidden="true"></i><i class="k-strip" aria-hidden="true"></i>');
       ['#inwestycja', '#udogodnienia', '#mieszkania', '#kontakt'].forEach(function (s) { put(s, '<i class="k-strip" aria-hidden="true"></i>', true); });
     }
@@ -108,12 +108,12 @@
   }
 
   function apply() {
-    var kd = st.kierunek === 'k3' ? 'k2' : st.kierunek;
+    var kd = st.kierunek === 'k3' ? 'k1' : st.kierunek;
     if (kd) H.setAttribute('data-kierunek', kd); else H.removeAttribute('data-kierunek');
-    if (st.kierunek === 'k3') H.setAttribute('data-paleta', 'k1'); else H.removeAttribute('data-paleta');
+    if (st.kierunek === 'k3') H.setAttribute('data-paleta', 'obecna'); else H.removeAttribute('data-paleta');
     if (st.akcent && !st.kierunek) H.setAttribute('data-akcent', st.akcent); else H.removeAttribute('data-akcent');
     var kam = !st.kierunek && st.styl === 'kamien';
-    setLogo(st.kierunek === 'k1' ? L1 : (st.kierunek === 'k2' || st.kierunek === 'k3') ? L2 : st.styl === 'mosiadz' ? LM : st.styl === 'szyld' ? LS : kam ? LK : L0);
+    setLogo((st.kierunek === 'k1' || st.kierunek === 'k3') ? L1 : st.kierunek === 'k2' ? L2 : st.styl === 'mosiadz' ? LM : st.styl === 'szyld' ? LS : kam ? LK : L0);
     var narrow = matchMedia('(max-width: 700px)').matches;
     document.querySelectorAll('.header .logo use, .drawer .logo use, .footer .logo use').forEach(function (u) {
       var svg = u.ownerSVGElement, small = narrow && !u.closest('.footer'), w = kam && !small;
