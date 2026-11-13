@@ -1,0 +1,7 @@
+{
+  "redirects": [{ "source": "/nowa", "destination": "/nowa/", "permanent": false }],
+  "rewrites": [
+    { "source": "/nowa/", "destination": "/index.html" },
+    { "source": "/nowa/:path*", "destination": "/:path*" }
+  ]
+}
