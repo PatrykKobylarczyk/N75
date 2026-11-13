@@ -1,94 +1,181 @@
 /* PODGLĄD KONCEPCJI – tylko na gałęzi podglądu, nie na stronie produkcyjnej */
-.pg-panel { position: fixed; z-index: 9999; left: 16px; bottom: 16px; width: 270px; background: rgba(250, 247, 242, .97); color: #242321; border: 1px solid #d9cfc1; box-shadow: 0 10px 40px rgba(0,0,0,.18); font: 13px/1.4 "Nunito Sans", Arial, sans-serif; }
+.pg-panel { position: fixed; z-index: 9999; left: 16px; bottom: 16px; width: 280px; background: rgba(250, 247, 242, .97); color: #242321; border: 1px solid #d9cfc1; box-shadow: 0 10px 40px rgba(0,0,0,.18); font: 13px/1.4 "Nunito Sans", Arial, sans-serif; }
 .pg-panel__h { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #242321; color: #f7f3ec; cursor: pointer; letter-spacing: .14em; font-size: 10.5px; text-transform: uppercase; }
 .pg-panel__b { padding: 10px 12px 12px; display: grid; gap: 10px; }
 .pg-panel.is-min .pg-panel__b { display: none; }
 .pg-panel label { display: grid; gap: 4px; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: #726a60; }
 .pg-panel .pg-opts { display: flex; flex-wrap: wrap; gap: 4px; }
-.pg-panel button { font: inherit; font-size: 12px; letter-spacing: 0; text-transform: none; padding: 5px 8px; border: 1px solid #d9cfc1; background: #fff; color: #242321; cursor: pointer; }
+.pg-panel button { font: inherit; font-size: 12px; letter-spacing: 0; text-transform: none; padding: 6px 9px; border: 1px solid #d9cfc1; background: #fff; color: #242321; cursor: pointer; border-radius: 0 !important; }
 .pg-panel button[aria-pressed="true"] { background: #242321; color: #fff; border-color: #242321; }
+.pg-panel .pg-desc { margin: 0; font-size: 12px; color: #44423f; line-height: 1.45; }
 .pg-panel .pg-note { font-size: 11px; color: #8c8478; margin: 0; }
+.pg-panel [hidden] { display: none !important; }
 .pg-sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
 @media (max-width: 600px) { .pg-panel { left: 8px; right: 8px; bottom: 8px; width: auto; } }
 
-/* ---------- AKCENT (oszczędny, ~5%: przyciski, liczby, wybory, jedna ciemna sekcja) ---------- */
-html[data-akcent] { --acc: var(--bronze); }
-html[data-akcent="zielen"] { --acc: #2F4A3E; --acc-l: #6f8f7f; }
-html[data-akcent="rosso"] { --acc: #7E2E2A; --acc-l: #b0645c; }
-html[data-akcent="blekit"] { --acc: #5f7f8a; --acc-l: #9FB6BE; }
-html[data-akcent] .btn--solid { background: var(--acc); border-color: var(--acc); }
-html[data-akcent] .ideas__n, html[data-akcent] .vw__n, html[data-akcent] .vw__sub, html[data-akcent] .h2-kicker, html[data-akcent] .material__where { color: var(--acc); }
-html[data-akcent] #udogodnienia, html[data-akcent] .modern { background: var(--acc); }
-html[data-akcent="blekit"] #udogodnienia, html[data-akcent="blekit"] .modern { background: #3f5961; }
-html[data-akcent] .chip[aria-pressed="true"], html[data-akcent] .mk__floors button[aria-pressed="true"] { background: var(--acc) !important; border-color: var(--acc) !important; color: #fff !important; }
-html[data-akcent] .timeline li.done .dot { background: var(--acc); border-color: var(--acc); }
-html[data-akcent] a:not(.btn):hover { color: var(--acc); }
-html[data-akcent] .status--wolne::before { background: var(--acc-l); }
+/* wspólne dla koncepcji: bez animacji wejścia (rysuje kontur obecnego logo) */
+html[data-kierunek] .intro { display: none !important; }
+.k-geo, .k-strip { pointer-events: none; }
 
-/* ---------- KONCEPCJA 01: geometria, koła i łuki, polska awangarda ---------- */
+/* =====================================================================
+   OBECNY KIERUNEK + oszczędny akcent
+   ===================================================================== */
+html[data-akcent="zielen"] { --acc: #2F4A3E; }
+html[data-akcent="rosso"] { --acc: #7E2E2A; }
+html[data-akcent="blekit"] { --acc: #4f6f7a; }
+html[data-akcent]:not([data-kierunek]) .btn--solid { background: var(--acc); border-color: var(--acc); }
+html[data-akcent]:not([data-kierunek]) .ideas__n, html[data-akcent]:not([data-kierunek]) .vw__n, html[data-akcent]:not([data-kierunek]) .vw__sub, html[data-akcent]:not([data-kierunek]) .h2-kicker, html[data-akcent]:not([data-kierunek]) .material__where { color: var(--acc); }
+html[data-akcent]:not([data-kierunek]) #udogodnienia, html[data-akcent]:not([data-kierunek]) .modern { background: var(--acc); }
+html[data-akcent]:not([data-kierunek]) .chip[aria-pressed="true"] { background: var(--acc) !important; border-color: var(--acc) !important; color: #fff !important; }
+
+/* =====================================================================
+   KONCEPCJA 01 – współczesna interpretacja modernizmu: geometria, koła,
+   półkola i łuki, polska awangarda. Bordo, glina, róż, fiolet, orzech.
+   ===================================================================== */
 html[data-kierunek="k1"] {
-  --paper: #f3ede4; --paper-2: #eadfd2; --line: #dcc9bd;
+  --paper: #f2ece4; --paper-2: #ecdcd6; --line: #dcc6be; --muted: #6e5d58; --text: #3b2a2a; --ink: #2a1418; --graphite: #2a1418;
   --bronze: #7a1f2b; --bronze-soft: #c98f86;
-  --dark: #4a0a1c; --dark-2: #5c1426;
-  --head: "Outfit", "Jost", sans-serif;
-  --k-violet: #6b5fc7; --k-pink: #ebc9c5; --k-clay: #b9735a;
+  --dark: #4a0a1c; --dark-2: #5e1428;
+  --k-violet: #6e62d0; --k-pink: #e9c3c1; --k-clay: #b9735a; --k-walnut: #5a3a2a;
+  --head: "Syne", "Outfit", sans-serif; --body: "Outfit", "Nunito Sans", sans-serif; --serif: "Syne", sans-serif;
 }
-html[data-kierunek="k1"] .display, html[data-kierunek="k1"] h1, html[data-kierunek="k1"] h2, html[data-kierunek="k1"] h3 { font-family: "Outfit", sans-serif; font-weight: 400; letter-spacing: -.01em; }
-html[data-kierunek="k1"] .caps { font-family: "Outfit", sans-serif; }
-html[data-kierunek="k1"] .hero__claim, html[data-kierunek="k1"] .mission-sign, html[data-kierunek="k1"] .to-offer__t, html[data-kierunek="k1"] .h2-kicker, html[data-kierunek="k1"] .draw__sign, html[data-kierunek="k1"] .wellness__more { font-family: "Outfit", sans-serif !important; font-style: normal !important; font-weight: 300 !important; }
-html[data-kierunek="k1"] .section, html[data-kierunek="k1"] .values, html[data-kierunek="k1"] .hero { position: relative; }
-/* figury geometryczne: półkola, koła, ćwiartki */
-html[data-kierunek="k1"] .k-geo { position: absolute; pointer-events: none; z-index: 0; display: block; }
-html[data-kierunek="k1"] .section--dark .caps.bronze, html[data-kierunek="k1"] .section--dark .wellness__sub { color: var(--k-pink); }
-html[data-kierunek="k1"] .k-geo--a { width: 220px; height: 110px; border-radius: 0 0 110px 110px; background: var(--k-pink); right: 6%; top: 0; }
-html[data-kierunek="k1"] .k-geo--b { width: 90px; height: 90px; border-radius: 50%; background: var(--k-violet); right: calc(6% + 230px); top: 40px; }
-html[data-kierunek="k1"] .k-geo--c { width: 160px; height: 160px; border-radius: 160px 0 0 0; background: var(--k-clay); left: 0; bottom: 0; opacity: .9; }
-html[data-kierunek="k1"] .k-geo--d { width: 120px; height: 240px; border-radius: 0 120px 120px 0; background: var(--k-pink); left: 0; top: 30%; opacity: .55; }
-html[data-kierunek="k1"] .section > .wrap, html[data-kierunek="k1"] .values > * { position: relative; z-index: 1; }
-html[data-kierunek="k1"] .ideas__n { font-family: "Outfit"; font-weight: 600; font-size: 46px; color: var(--k-violet); }
-html[data-kierunek="k1"] .btn--solid { background: var(--dark); border-color: var(--dark); }
-html[data-kierunek="k1"] .btn--solid:hover { background: var(--k-violet); border-color: var(--k-violet); }
+html[data-kierunek="k1"] body { font-weight: 300; }
+html[data-kierunek="k1"] .display, html[data-kierunek="k1"] h1, html[data-kierunek="k1"] h2, html[data-kierunek="k1"] h3, html[data-kierunek="k1"] h4 { font-family: "Syne", sans-serif; font-weight: 600; letter-spacing: -.015em; text-transform: none; }
+html[data-kierunek="k1"] .h2 { font-size: clamp(38px, 5vw, 76px); line-height: .98; }
+html[data-kierunek="k1"] .caps { font-family: "Outfit", sans-serif; font-weight: 500; }
+html[data-kierunek="k1"] .hero__claim, html[data-kierunek="k1"] .mission-sign, html[data-kierunek="k1"] .to-offer__t, html[data-kierunek="k1"] .h2-kicker, html[data-kierunek="k1"] .draw__sign, html[data-kierunek="k1"] .wellness__more, html[data-kierunek="k1"] .lead { font-family: "Outfit", sans-serif !important; font-style: normal !important; font-weight: 300 !important; }
+html[data-kierunek="k1"] .h2-kicker, html[data-kierunek="k1"] .vw__sub, html[data-kierunek="k1"] .material__where { color: var(--k-violet) !important; }
+/* hero: bordowe pole, zdjęcie w łuku, kompozycja figur */
+html[data-kierunek="k1"] .hero { background: var(--dark); }
+html[data-kierunek="k1"] .hero::after { display: none; }
+html[data-kierunek="k1"] .hero__media { left: 46%; border-top-left-radius: 46vw 100%; overflow: hidden; background: var(--dark); }
+html[data-kierunek="k1"] .hero__seal { display: none; }
+html[data-kierunek="k1"] .hero__logo { color: var(--paper); }
+html[data-kierunek="k1"] .hero__logo .logo-svg { height: clamp(90px, 13vw, 190px); }
+html[data-kierunek="k1"] .hero__rule { background: var(--k-pink); }
+html[data-kierunek="k1"] .hero__claim { font-size: clamp(26px, 2.6vw, 38px) !important; }
+html[data-kierunek="k1"] .k-geo { position: absolute; z-index: 1; display: block; }
+html[data-kierunek="k1"] .k-h1 { width: 150px; height: 150px; border-radius: 50%; background: var(--k-violet); left: calc(46% - 75px); bottom: 14%; z-index: 3; }
+html[data-kierunek="k1"] .k-h2 { width: 220px; height: 110px; border-radius: 110px 110px 0 0; background: var(--k-pink); right: 5%; bottom: 0; z-index: 3; }
+html[data-kierunek="k1"] .k-h3 { width: 110px; height: 110px; border-radius: 0 0 110px 0; background: var(--k-clay); left: 46%; top: 0; z-index: 3; }
+/* sekcje: blokowe pola koloru */
+html[data-kierunek="k1"] #inwestycja { background: var(--paper); position: relative; overflow: hidden; }
+html[data-kierunek="k1"] .k-m1 { width: 340px; height: 170px; border-radius: 0 0 170px 170px; background: var(--k-pink); right: 4%; top: 0; z-index: 0; }
+html[data-kierunek="k1"] .k-m2 { width: 90px; height: 90px; border-radius: 50%; background: var(--k-clay); right: calc(4% + 360px); top: 50px; z-index: 0; }
+html[data-kierunek="k1"] #inwestycja > .wrap { position: relative; z-index: 1; }
+html[data-kierunek="k1"] .values { background: var(--dark) !important; color: var(--paper); }
+html[data-kierunek="k1"] .values .vw__word, html[data-kierunek="k1"] .values .vw__desc, html[data-kierunek="k1"] .values__nav { color: var(--paper); }
+html[data-kierunek="k1"] .values .vw__word { font-family: "Syne", sans-serif; font-weight: 700; }
+html[data-kierunek="k1"] .values__ghost { color: var(--k-violet); opacity: .5; }
+html[data-kierunek="k1"] .ideas__n { font-family: "Syne"; font-weight: 700; font-size: 56px; color: var(--k-violet); }
+html[data-kierunek="k1"] .ideas li:nth-child(2) .ideas__n { color: var(--k-clay); }
+html[data-kierunek="k1"] .ideas li:nth-child(3) .ideas__n { color: var(--dark); }
+html[data-kierunek="k1"] .ideas li:nth-child(4) .ideas__n { color: #c46f7e; }
+html[data-kierunek="k1"] .material__img { border-radius: 999px 999px 0 0; overflow: hidden; }
+html[data-kierunek="k1"] .materials .material:nth-child(even) .material__img { border-radius: 0 0 999px 999px; }
+html[data-kierunek="k1"] .split__media img, html[data-kierunek="k1"] .arch-slide img { border-radius: 0; }
+html[data-kierunek="k1"] .wellness__item .arch-slider__track { border-radius: 320px 320px 0 0; overflow: hidden; }
+html[data-kierunek="k1"] .wellness__item:nth-child(even) .arch-slider__track { border-radius: 0 0 320px 320px; }
+html[data-kierunek="k1"] #udogodnienia, html[data-kierunek="k1"] .modern, html[data-kierunek="k1"] #kontakt, html[data-kierunek="k1"] .footer { background: var(--dark); }
+html[data-kierunek="k1"] #lokalizacja { background: var(--paper-2); }
+html[data-kierunek="k1"] .section--dark .caps.bronze, html[data-kierunek="k1"] .section--dark .wellness__sub { color: var(--k-pink) !important; }
 html[data-kierunek="k1"] .btn { border-radius: 999px; }
-html[data-kierunek="k1"] .hero__media::after { content: ""; position: absolute; right: 7%; bottom: 12%; width: 180px; height: 90px; border-radius: 90px 90px 0 0; background: var(--k-pink); opacity: .85; z-index: 2; }
-html[data-kierunek="k1"] .material__img { border-radius: 0 0 999px 999px; overflow: hidden; } html[data-kierunek="k1"] .wellness__item .arch-slider { border-radius: 260px 260px 0 0; overflow: hidden; }
-html[data-kierunek="k1"] .vw__word { color: var(--dark); }
+html[data-kierunek="k1"] .btn--solid { background: var(--dark); border-color: var(--dark); color: var(--paper); }
+html[data-kierunek="k1"] .btn--solid:hover { background: var(--k-violet); border-color: var(--k-violet); }
+html[data-kierunek="k1"] .section--dark .btn--solid, html[data-kierunek="k1"] .hero .btn--solid { background: var(--k-pink); border-color: var(--k-pink); color: var(--dark); }
+html[data-kierunek="k1"] .chip[aria-pressed="true"] { background: var(--dark) !important; border-color: var(--dark) !important; color: #fff !important; }
+html[data-kierunek="k1"] .fact__val { font-family: "Syne"; font-weight: 600; color: var(--dark); }
+html[data-kierunek="k1"] .fact:nth-child(3n+1) .fact__val { color: var(--k-violet); }
+html[data-kierunek="k1"] .header.is-solid { background: var(--paper); }
+html[data-kierunek="k1"] .header.is-solid .logo { color: var(--dark); }
+@media (max-width: 900px) {
+  html[data-kierunek="k1"] .hero__media { left: 0; top: 0; bottom: 50%; border-top-left-radius: 0; border-bottom-right-radius: 100vw 70%; }
+  html[data-kierunek="k1"] .hero__media img { object-position: 60% 40%; }
+  html[data-kierunek="k1"] .k-h1 { left: auto; right: 6%; bottom: auto; top: calc(50% - 60px); width: 90px; height: 90px; }
+  html[data-kierunek="k1"] .k-h3 { display: none; }
+  html[data-kierunek="k1"] .k-h2 { width: 120px; height: 60px; right: 6%; }
+  html[data-kierunek="k1"] .k-m1 { width: 180px; height: 90px; } html[data-kierunek="k1"] .k-m2 { display: none; }
+}
 
-/* ---------- KONCEPCJA 02: rytm, moduł, luksfery ---------- */
+/* =====================================================================
+   KONCEPCJA 02 – geometria prostokąta, rytm i modularność, efekt luksferów,
+   konstruktywistyczna typografia. Zieleń, brąz, błękit, beż, trawertyn.
+   ===================================================================== */
 html[data-kierunek="k2"] {
-  --paper: #efe6d6; --paper-2: #e6dac6; --line: #d3c3aa;
-  --bronze: #6b4a35; --bronze-soft: #b08d6c;
-  --dark: #2f4a44; --dark-2: #3a5852;
-  --head: "Archivo", "Jost", sans-serif; --body: "Instrument Sans", "Nunito Sans", Arial, sans-serif;
-  --k-sky: #a9bfd8; --k-brown: #4a2e22;
+  --paper: #ede2cf; --paper-2: #e3d5bd; --line: #cbb99c; --muted: #6a5d4c; --text: #2f2a24; --ink: #1d1d1b; --graphite: #1d1d1b;
+  --bronze: #4a2e22; --bronze-soft: #a98a6c;
+  --dark: #2e4a45; --dark-2: #3a5852;
+  --k-sky: #a9bfd8; --k-brown: #4a2e22; --k-black: #1d1d1b;
+  --head: "Archivo", sans-serif; --body: "Instrument Sans", "Nunito Sans", sans-serif; --serif: "Archivo", sans-serif;
 }
-html[data-kierunek="k2"] .display, html[data-kierunek="k2"] h1, html[data-kierunek="k2"] h2, html[data-kierunek="k2"] h3 { font-family: "Archivo", sans-serif; font-weight: 300; font-stretch: 112%; letter-spacing: .01em; }
-html[data-kierunek="k2"] .hero__claim, html[data-kierunek="k2"] .mission-sign, html[data-kierunek="k2"] .to-offer__t, html[data-kierunek="k2"] .h2-kicker, html[data-kierunek="k2"] .draw__sign, html[data-kierunek="k2"] .wellness__more { font-family: "Archivo", sans-serif !important; font-style: normal !important; font-weight: 300 !important; font-stretch: 112%; }
-/* rytm pionowych podziałów w ciemnych sekcjach */
-html[data-kierunek="k2"] .section--dark, html[data-kierunek="k2"] .modern { background-image: repeating-linear-gradient(90deg, transparent 0 calc(12.5% - 1px), rgba(255,255,255,.07) calc(12.5% - 1px) 12.5%); }
-/* szachownica jako pasek między sekcjami */
-html[data-kierunek="k2"] .values::before { content: ""; display: block; height: 28px; background: conic-gradient(var(--dark) 25%, var(--paper) 0 50%, var(--dark) 0 75%, var(--paper) 0) 0 0 / 28px 28px; }
-/* efekt luksferów na zdjęciach: siatka szklanych pustaków rozpraszających obraz */
-html[data-kierunek="k2"] .hero__media::after, html[data-kierunek="k2"] .wellness__item .arch-slider__track::after, html[data-kierunek="k2"] .split__media::after {
-  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+html[data-kierunek="k2"] .display, html[data-kierunek="k2"] h1, html[data-kierunek="k2"] h2, html[data-kierunek="k2"] h3, html[data-kierunek="k2"] h4 { font-family: "Archivo", sans-serif; font-stretch: 125%; font-weight: 500; letter-spacing: -.01em; text-transform: uppercase; }
+html[data-kierunek="k2"] .h2 { font-size: clamp(34px, 4.4vw, 68px); line-height: .95; }
+html[data-kierunek="k2"] .caps { font-family: "Major Mono Display", monospace; letter-spacing: .04em; text-transform: lowercase; }
+html[data-kierunek="k2"] .hero__claim, html[data-kierunek="k2"] .mission-sign, html[data-kierunek="k2"] .to-offer__t, html[data-kierunek="k2"] .h2-kicker, html[data-kierunek="k2"] .draw__sign, html[data-kierunek="k2"] .wellness__more, html[data-kierunek="k2"] .lead { font-family: "Archivo", sans-serif !important; font-style: normal !important; font-weight: 300 !important; font-stretch: 110%; }
+/* hero: zielony moduł z logo, zdjęcie za szkłem luksferów, szachownica */
+html[data-kierunek="k2"] .hero { background: var(--dark); }
+html[data-kierunek="k2"] .hero::after { display: none; }
+html[data-kierunek="k2"] .hero__media { left: 42%; }
+html[data-kierunek="k2"] .hero__media::after {
+  content: ""; position: absolute; inset: 0; z-index: 2;
   background:
-    radial-gradient(circle at 35% 30%, rgba(255,255,255,.22), rgba(255,255,255,0) 55%) 0 0 / 56px 56px,
-    linear-gradient(rgba(255,255,255,.28) 2px, transparent 2px) 0 0 / 56px 56px,
-    linear-gradient(90deg, rgba(255,255,255,.28) 2px, transparent 2px) 0 0 / 56px 56px;
-  -webkit-backdrop-filter: blur(2.5px) saturate(1.1); backdrop-filter: blur(2.5px) saturate(1.1);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0 55%, #000 75%); mask-image: linear-gradient(90deg, transparent 0 55%, #000 75%);
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,.26), rgba(255,255,255,0) 58%) 0 0 / 64px 64px,
+    linear-gradient(rgba(238,242,240,.55) 3px, transparent 3px) 0 0 / 64px 64px,
+    linear-gradient(90deg, rgba(238,242,240,.55) 3px, transparent 3px) 0 0 / 64px 64px;
+  -webkit-backdrop-filter: blur(4px) saturate(1.15); backdrop-filter: blur(4px) saturate(1.15);
+  -webkit-mask-image: linear-gradient(90deg, #000 0 30%, rgba(0,0,0,.0) 62%); mask-image: linear-gradient(90deg, #000 0 30%, rgba(0,0,0,0) 62%);
 }
-html[data-kierunek="k2"] .wellness__item .arch-slider__track, html[data-kierunek="k2"] .split__media { position: relative; }
-html[data-kierunek="k2"] .section--dark .wellness__sub, html[data-kierunek="k2"] .section--dark .caps.bronze { color: var(--k-sky); }
-html[data-kierunek="k2"] .btn--solid { background: var(--dark); border-color: var(--dark); }
-html[data-kierunek="k2"] .btn--solid:hover { background: var(--k-brown); border-color: var(--k-brown); }
-html[data-kierunek="k2"] .ideas { gap: 0; }
-html[data-kierunek="k2"] .ideas li { padding: 22px 22px 26px; border-left: 1px solid var(--line); }
+html[data-kierunek="k2"] .hero__seal { display: none; }
+html[data-kierunek="k2"] .hero__logo .logo-svg { height: clamp(80px, 11vw, 160px); }
+html[data-kierunek="k2"] .hero__rule { background: var(--k-sky); height: 6px; }
+html[data-kierunek="k2"] .hero__claim { font-size: clamp(24px, 2.4vw, 34px) !important; text-transform: uppercase; }
+html[data-kierunek="k2"] .k-strip { display: block; height: 32px; background: conic-gradient(var(--k-black) 25%, var(--paper) 0 50%, var(--k-black) 0 75%, var(--paper) 0) 0 0 / 32px 32px; }
+html[data-kierunek="k2"] .hero .k-strip { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; }
+html[data-kierunek="k2"] .k-bars { position: absolute; z-index: 3; left: 42%; top: 0; bottom: 32px; width: 96px; background: repeating-linear-gradient(90deg, var(--k-sky) 0 10px, transparent 10px 24px); }
+/* rytm pionowych podziałów */
+html[data-kierunek="k2"] .section--dark, html[data-kierunek="k2"] .modern, html[data-kierunek="k2"] .values { background-image: repeating-linear-gradient(90deg, transparent 0 calc(12.5% - 1px), rgba(255,255,255,.08) calc(12.5% - 1px) 12.5%); }
+html[data-kierunek="k2"] .section:not(.section--dark) { background-image: repeating-linear-gradient(90deg, transparent 0 calc(12.5% - 1px), rgba(74,46,34,.07) calc(12.5% - 1px) 12.5%); }
+html[data-kierunek="k2"] .values { background-color: var(--k-brown) !important; color: var(--paper); }
+html[data-kierunek="k2"] .values .vw__word, html[data-kierunek="k2"] .values .vw__desc, html[data-kierunek="k2"] .values__nav { color: var(--paper); }
+html[data-kierunek="k2"] .values .vw__word { font-family: "Archivo"; font-stretch: 125%; font-weight: 700; }
+html[data-kierunek="k2"] .values__ghost { color: var(--k-sky); opacity: .35; }
+html[data-kierunek="k2"] #udogodnienia, html[data-kierunek="k2"] #kontakt, html[data-kierunek="k2"] .footer { background-color: var(--dark); }
+html[data-kierunek="k2"] .modern { background-color: var(--k-black); }
+html[data-kierunek="k2"] #lokalizacja { background-color: var(--paper-2); }
+/* moduły idei w kolorach koncepcji */
+html[data-kierunek="k2"] .ideas { gap: 0; border: 1px solid var(--line); }
+html[data-kierunek="k2"] .ideas li { padding: 26px 24px 30px; min-height: 260px; }
+html[data-kierunek="k2"] .ideas li:nth-child(1) { background: var(--paper-2); }
 html[data-kierunek="k2"] .ideas li:nth-child(2) { background: var(--k-sky); }
-html[data-kierunek="k2"] .ideas li:nth-child(4) { background: var(--dark); color: var(--paper); }
-html[data-kierunek="k2"] .ideas li:nth-child(4) p, html[data-kierunek="k2"] .ideas li:nth-child(4) h3 { color: var(--paper); }
-html[data-kierunek="k2"] .ideas__n { font-family: "Archivo"; font-stretch: 125%; font-weight: 600; color: var(--bronze); }
-html[data-kierunek="k2"] .fact { border-left: 6px solid var(--k-sky); padding-left: 14px; }
-
-/* ---------- LOGO GEOMETRYCZNE ---------- */
-html[data-logo="geo"] .intro { display: none !important; }
-html[data-logo="geo"] .hero__logo .logo-svg { height: clamp(80px, 12vw, 170px); }
+html[data-kierunek="k2"] .ideas li:nth-child(3) { background: var(--k-brown); }
+html[data-kierunek="k2"] .ideas li:nth-child(4) { background: var(--dark); }
+html[data-kierunek="k2"] .ideas li:nth-child(n+3) h3, html[data-kierunek="k2"] .ideas li:nth-child(n+3) p { color: var(--paper); }
+html[data-kierunek="k2"] .ideas__n { font-family: "Major Mono Display", monospace; font-size: 52px; color: inherit; }
+html[data-kierunek="k2"] .ideas li:nth-child(n+3) .ideas__n { color: var(--k-sky); }
+/* zdjęcia za szkłem luksferów */
+html[data-kierunek="k2"] .wellness__item .arch-slider__track, html[data-kierunek="k2"] .split__media { position: relative; }
+html[data-kierunek="k2"] .wellness__item .arch-slider__track::after, html[data-kierunek="k2"] .split__media::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.22), rgba(255,255,255,0) 58%) 0 0 / 48px 48px, linear-gradient(rgba(238,242,240,.45) 2px, transparent 2px) 0 0 / 48px 48px, linear-gradient(90deg, rgba(238,242,240,.45) 2px, transparent 2px) 0 0 / 48px 48px;
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0 55%, #000 80%); mask-image: linear-gradient(90deg, transparent 0 55%, #000 80%);
+}
+html[data-kierunek="k2"] .material__img { border: 10px solid var(--paper-2); outline: 1px solid var(--line); }
+html[data-kierunek="k2"] .section--dark .caps.bronze, html[data-kierunek="k2"] .section--dark .wellness__sub { color: var(--k-sky) !important; }
+html[data-kierunek="k2"] .h2-kicker, html[data-kierunek="k2"] .vw__sub, html[data-kierunek="k2"] .material__where { color: var(--k-brown) !important; }
+html[data-kierunek="k2"] .values .vw__sub { color: var(--k-sky) !important; }
+html[data-kierunek="k2"] .btn { border-radius: 0; }
+html[data-kierunek="k2"] .btn--solid { background: var(--k-black); border-color: var(--k-black); color: var(--paper); }
+html[data-kierunek="k2"] .btn--solid:hover { background: var(--dark); border-color: var(--dark); }
+html[data-kierunek="k2"] .section--dark .btn--solid { background: var(--k-sky); border-color: var(--k-sky); color: var(--k-black); }
+html[data-kierunek="k2"] .chip { border-radius: 0 !important; }
+html[data-kierunek="k2"] .chip[aria-pressed="true"] { background: var(--dark) !important; border-color: var(--dark) !important; color: #fff !important; }
+html[data-kierunek="k2"] .fact { border-left: 8px solid var(--k-sky); padding-left: 16px; }
+html[data-kierunek="k2"] .fact__val { font-family: "Archivo"; font-stretch: 125%; font-weight: 500; color: var(--dark); }
+html[data-kierunek="k2"] .header.is-solid { background: var(--paper); }
+html[data-kierunek="k2"] .header.is-solid .logo { color: var(--dark); }
+@media (max-width: 900px) {
+  html[data-kierunek="k2"] .hero__media { left: 0; top: 0; bottom: 52%; }
+  html[data-kierunek="k2"] .hero__media::after { -webkit-mask-image: linear-gradient(180deg, transparent 0 35%, #000 80%); mask-image: linear-gradient(180deg, transparent 0 35%, #000 80%); }
+  html[data-kierunek="k2"] .k-bars { left: 0; right: 0; top: 48%; bottom: auto; width: auto; height: 30px; background: repeating-linear-gradient(90deg, var(--k-sky) 0 10px, transparent 10px 24px); }
+}
