@@ -7,7 +7,7 @@
     ['k1', 'Koncepcja 01', 'Geometria i konstrukcja: koła, półkola i łuki, polska awangarda. Bordo, glina, róż, fiolet. Logo z figur geometrycznych.'],
     ['k2', 'Koncepcja 02', 'Rytm i modularność: prostokąty, pionowe podziały, szachownica i efekt luksferów. Zieleń, brąz, błękit. Logo modułowe z pionowych pasów.'],
     ['k3', 'Koncepcja 03', 'Kolory obecnej strony (kremowy papier, mosiądz, ciepła czerń) z krojami, kształtami i logo Koncepcji 01: koła, półkola, łuki, zaokrąglone przyciski, logo geometryczne.'],
-    ['k3b', 'Koncepcja 03b', 'Koncepcja 03 delikatnie poprawiona: lżejsze nagłówki, jedno koło w hero, wszystkie łuki do góry, numery w mosiądzu, ażurowy napis pod logo, jaśniejsza sekcja 5 powodów, cieńsze przyciski.']
+    ['k3b', 'Koncepcja 03b', 'Koncepcja 03 delikatnie poprawiona (hero jak w 03): lżejsze nagłówki, wszystkie łuki do góry, numery w mosiądzu, jaśniejsza sekcja 5 powodów, cieńsze przyciski.']
   ];
   var STY = [['', 'Obecna'], ['kamien', 'Lata 30 · kamień'], ['mosiadz', 'Lata 30 · mosiężne litery'], ['szyld', 'Lata 30 · szyld']];
   var ACC = [['', 'Mosiądz', '#9c7149'], ['zielen', 'Zieleń', '#4f7262'], ['rosso', 'Rosso', '#9a3b32'], ['blekit', 'Błękit', '#4f7a8a']];
@@ -127,7 +127,7 @@
       if (w) svg.setAttribute('viewBox', '0 0 ' + WORD.vb.split(' ')[2] + ' 88');
     });
     var hw = document.querySelector('.k-word'); if (hw) hw.remove();
-    if (kam || st.kierunek === 'k3b') { var h1 = document.querySelector('.hero__logo'); if (h1) { var d = document.createElement('div'); d.className = 'k-word'; d.setAttribute('aria-hidden', 'true'); d.innerHTML = '<svg viewBox="0 0 ' + WORD.vb.split(' ')[2] + ' 88"><use href="#n75-word"/></svg>'; h1.after(d); } }
+    if (kam) { var h1 = document.querySelector('.hero__logo'); if (h1) { var d = document.createElement('div'); d.className = 'k-word'; d.setAttribute('aria-hidden', 'true'); d.innerHTML = '<svg viewBox="0 0 ' + WORD.vb.split(' ')[2] + ' 88"><use href="#n75-word"/></svg>'; h1.after(d); } }
     if (styl) H.setAttribute('data-styl', styl); else H.removeAttribute('data-styl');
     recolor(st.kierunek ? '' : st.akcent);
     if (document.body) deco();
