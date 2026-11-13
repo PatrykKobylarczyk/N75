@@ -292,3 +292,5 @@ html[data-k3b] #wstep .draw__sign { font-family: var(--serif) !important; font-s
 /* 03b: materiały jako pionowe prostokąty z zaokrąglonymi rogami */
 html[data-k3b] .materials .material .material__img, html[data-k3b] .materials .material:nth-child(even) .material__img { border-radius: 22px !important; overflow: hidden; aspect-ratio: 3 / 4; }
 html[data-k3b] .materials .material__img img { width: 100%; height: 100%; object-fit: cover; }
+/* 03b: zdjęcia wellness w kształcie z obecnej wersji (prostokąt) */
+html[data-k3b] .wellness__item .arch-slider__track, html[data-k3b] .wellness__item:nth-child(even) .arch-slider__track { border-radius: 0 !important; }
