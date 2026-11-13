@@ -269,17 +269,13 @@ html[data-kierunek="k1"][data-paleta="obecna"] .k-h3 { background: var(--bronze-
    ===================================================================== */
 html[data-k3b] :is(.display, h1, h2, h3, h4) { font-weight: 500; letter-spacing: .005em; }
 html[data-k3b] .h2 { font-weight: 500; }
-html[data-k3b] .values .vw__word { font-weight: 600; }
 /* wszystkie łuki do góry, jak portal */
 html[data-k3b] .materials .material:nth-child(even) .material__img { border-radius: 999px 999px 0 0; }
 html[data-k3b] .wellness__item:nth-child(even) .arch-slider__track { border-radius: 320px 320px 0 0; }
 /* numery w mosiądzu */
 html[data-k3b] .ideas li .ideas__n { color: var(--bronze) !important; }
 html[data-k3b] .fact .fact__val { color: var(--ink) !important; }
-/* jaśniejsza sekcja 5 powodów */
-html[data-k3b] .values { background: #e6d6c2 !important; color: var(--ink); }
-html[data-k3b] .values :is(.vw__word, .vw__desc, .values__nav) { color: var(--ink); }
-html[data-k3b] .values .vw__sub { color: var(--k-clay) !important; }
-html[data-k3b] .values__ghost { color: var(--bronze); opacity: .25; }
+/* 5 powodów jak w 03, bez numeru rzymskiego i linku pod opisem */
+html[data-k3b] .values :is(.vw__n, .vw__to) { display: none !important; }
 /* cieńsze, lżejsze przyciski */
 html[data-k3b] .btn { border-width: 1px; font-size: 11px; letter-spacing: .16em; padding-top: 13px; padding-bottom: 13px; }
