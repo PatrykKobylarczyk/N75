@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var NS = 'http://www.w3.org/2000/svg';
-  var W = 1504, H = 1925, V = '?v=1794339137';
+  var W = 1504, H = 1925, V = '?v=1794570421';
 
   function el(tag, attrs, parent) {
     var n = document.createElementNS(NS, tag);
