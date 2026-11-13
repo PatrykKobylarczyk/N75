@@ -20,16 +20,15 @@
 
   /* ---------- logo ---------- */
   // Koncepcja 01: logo z figur geometrycznych (wg przesłanego wzoru)
-  var L1 = { vb: '0 0 773 312', svg:
-    '<g transform="translate(-637 -185)">' +
-    '<path d="M637 497V185h18a115 115 0 0 1 115 115v197z"/>' +
-    '<path d="M787 297V185h18a125 115 0 0 1 125 115v197h-12z"/>' +
-    '<path d="M939 185h236v91H939z"/>' +
-    '<path d="M995 497c18-105 85-200 177-210-30 64-72 140-80 210z"/>' +
-    '<path d="M1198 185h100v100a100 100 0 0 1-100 100z"/>' +
-    '<path d="M1308 185h102v93a102 93 0 0 1-102-93z"/>' +
-    '<circle cx="1248" cy="445" r="50"/>' +
-    '<path d="M1308 287a105 105 0 0 1 0 210z"/></g>' };
+  var L1 = { vb: '0 0 925 435', svg:
+    '<path d="M0 433V0h27a105 115 0 0 1 105 115v318z"/>' +
+    '<path d="M152 0h132v433h-32a100 115 0 0 1-100-115z"/>' +
+    '<path d="M320 0h282v127H320z"/>' +
+    '<path d="M437 433V240a131 95 0 0 1 131-95v148a91 140 0 0 1-91 140z"/>' +
+    '<path d="M640 0h128v160a96 117 0 0 1-96 117h-32z"/>' +
+    '<circle cx="704" cy="367" r="68"/>' +
+    '<path d="M790 0h132v127h-30A102 127 0 0 1 790 0z"/>' +
+    '<path d="M790 145h10a125 140 0 0 1 125 140v8a125 140 0 0 1-125 140h-10z"/>' };
   // Koncepcja 02: logo modułowe – litery z prostokątów, wypełnione rytmem pionowych pasów
   var shapes = '<path d="M0 0h60v300H0zM180 0h60v300h-60zM60 0h30v80H60zM90 70h30v80H90zM120 150h30v80h-30zM150 220h30v80h-30z' +
     'M280 0h220v60H280zM440 60h60v60h-60zM410 120h60v60h-60zM380 180h60v60h-60zM350 240h60v60h-60z' +
