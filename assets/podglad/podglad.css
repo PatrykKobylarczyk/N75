@@ -279,3 +279,7 @@ html[data-k3b] .fact .fact__val { color: var(--ink) !important; }
 html[data-k3b] .values :is(.vw__n, .vw__to) { display: none !important; }
 /* cieńsze, lżejsze przyciski */
 html[data-k3b] .btn { border-width: 1px; font-size: 11px; letter-spacing: .16em; padding-top: 13px; padding-bottom: 13px; }
+
+/* 03b: liczby o budynku jak w obecnej wersji (krój, grubość, mosiądz) */
+html[data-k3b] .fact .fact__val, html[data-k3b] .fact:nth-child(3n+1) .fact__val { font-family: "Jost", sans-serif !important; font-weight: 300 !important; color: var(--bronze) !important; letter-spacing: 0; }
+html[data-k3b] .fact .caps { font-family: "Jost", sans-serif; font-weight: 400; }
