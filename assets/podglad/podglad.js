@@ -6,7 +6,8 @@
     ['', 'Obecny', 'Kremowy papier, mosiądz, cienki geometryczny krój. Obecne logo liniowe.'],
     ['k1', 'Koncepcja 01', 'Geometria i konstrukcja: koła, półkola i łuki, polska awangarda. Bordo, glina, róż, fiolet. Logo z figur geometrycznych.'],
     ['k2', 'Koncepcja 02', 'Rytm i modularność: prostokąty, pionowe podziały, szachownica i efekt luksferów. Zieleń, brąz, błękit. Logo modułowe z pionowych pasów.'],
-    ['k3', 'Koncepcja 03', 'Kolory obecnej strony (kremowy papier, mosiądz, ciepła czerń) z krojami, kształtami i logo Koncepcji 01: koła, półkola, łuki, zaokrąglone przyciski, logo geometryczne.']
+    ['k3', 'Koncepcja 03', 'Kolory obecnej strony (kremowy papier, mosiądz, ciepła czerń) z krojami, kształtami i logo Koncepcji 01: koła, półkola, łuki, zaokrąglone przyciski, logo geometryczne.'],
+    ['k3b', 'Koncepcja 03b', 'Koncepcja 03 delikatnie poprawiona: lżejsze nagłówki, jedno koło w hero, wszystkie łuki do góry, numery w mosiądzu, ażurowy napis pod logo, jaśniejsza sekcja 5 powodów, cieńsze przyciski.']
   ];
   var STY = [['', 'Obecna'], ['kamien', 'Lata 30 · kamień'], ['mosiadz', 'Lata 30 · mosiężne litery'], ['szyld', 'Lata 30 · szyld']];
   var ACC = [['', 'Mosiądz', '#9c7149'], ['zielen', 'Zieleń', '#4f7262'], ['rosso', 'Rosso', '#9a3b32'], ['blekit', 'Błękit', '#4f7a8a']];
@@ -64,7 +65,7 @@
   function deco() {
     document.querySelectorAll('.k-geo, .k-strip, .k-bars').forEach(function (e) { e.remove(); });
     var put = function (sel, html, first) { var t = document.querySelector(sel); if (!t) return; var d = document.createElement('div'); d.innerHTML = html; while (d.firstChild) { if (first) t.insertBefore(d.lastChild, t.firstChild); else t.appendChild(d.firstChild); } };
-    if (st.kierunek === 'k1' || st.kierunek === 'k3') {
+    if (st.kierunek === 'k1' || st.kierunek === 'k3' || st.kierunek === 'k3b') {
       put('.hero', '<i class="k-geo k-h1" aria-hidden="true"></i><i class="k-geo k-h2" aria-hidden="true"></i><i class="k-geo k-h3" aria-hidden="true"></i>');
       put('#inwestycja', '<i class="k-geo k-m1" aria-hidden="true"></i><i class="k-geo k-m2" aria-hidden="true"></i>', true);
     }
@@ -109,14 +110,16 @@
 
   function apply() {
     var k4 = false;
-    var kd = st.kierunek === 'k3' ? 'k1' : k4 ? '' : st.kierunek;
+    var k3 = st.kierunek === 'k3' || st.kierunek === 'k3b';
+    var kd = k3 ? 'k1' : k4 ? '' : st.kierunek;
+    if (st.kierunek === 'k3b') H.setAttribute('data-k3b', ''); else H.removeAttribute('data-k3b');
     if (k4) H.setAttribute('data-k4', ''); else H.removeAttribute('data-k4');
     if (kd) H.setAttribute('data-kierunek', kd); else H.removeAttribute('data-kierunek');
-    if (st.kierunek === 'k3') H.setAttribute('data-paleta', 'obecna'); else H.removeAttribute('data-paleta');
+    if (k3) H.setAttribute('data-paleta', 'obecna'); else H.removeAttribute('data-paleta');
     if (st.akcent && !st.kierunek) H.setAttribute('data-akcent', st.akcent); else H.removeAttribute('data-akcent');
     var styl = k4 ? 'kamien' : (!st.kierunek ? st.styl : '');
     var kam = styl === 'kamien';
-    setLogo((st.kierunek === 'k1' || st.kierunek === 'k3') ? L1 : st.kierunek === 'k2' ? L2 : styl === 'mosiadz' ? LM : styl === 'szyld' ? LS : kam ? LK : L0);
+    setLogo((st.kierunek === 'k1' || k3) ? L1 : st.kierunek === 'k2' ? L2 : styl === 'mosiadz' ? LM : styl === 'szyld' ? LS : kam ? LK : L0);
     var narrow = matchMedia('(max-width: 700px)').matches;
     document.querySelectorAll('.header .logo use, .drawer .logo use, .footer .logo use').forEach(function (u) {
       var svg = u.ownerSVGElement, small = narrow && !u.closest('.footer'), w = kam && !small;
@@ -124,7 +127,7 @@
       if (w) svg.setAttribute('viewBox', '0 0 ' + WORD.vb.split(' ')[2] + ' 88');
     });
     var hw = document.querySelector('.k-word'); if (hw) hw.remove();
-    if (kam) { var h1 = document.querySelector('.hero__logo'); if (h1) { var d = document.createElement('div'); d.className = 'k-word'; d.setAttribute('aria-hidden', 'true'); d.innerHTML = '<svg viewBox="0 0 ' + WORD.vb.split(' ')[2] + ' 88"><use href="#n75-word"/></svg>'; h1.after(d); } }
+    if (kam || st.kierunek === 'k3b') { var h1 = document.querySelector('.hero__logo'); if (h1) { var d = document.createElement('div'); d.className = 'k-word'; d.setAttribute('aria-hidden', 'true'); d.innerHTML = '<svg viewBox="0 0 ' + WORD.vb.split(' ')[2] + ' 88"><use href="#n75-word"/></svg>'; h1.after(d); } }
     if (styl) H.setAttribute('data-styl', styl); else H.removeAttribute('data-styl');
     recolor(st.kierunek ? '' : st.akcent);
     if (document.body) deco();
