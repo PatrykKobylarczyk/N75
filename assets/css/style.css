@@ -1878,3 +1878,4 @@ body.dh-open { overflow: hidden; }
 @media (max-width: 560px) { .trust { grid-template-columns: 1fr; } .to-offer__b .btn { flex: 1 1 100%; justify-content: center; } }
 .timeline__note { margin: 6px 0 0; font-size: 13px; }
 .mission-txt p.lead { color: var(--graphite); font-size: clamp(18px, 1.5vw, 21px); line-height: 1.5; margin-bottom: 18px; }
+.footer__note { display: inline-block; margin-top: 10px; opacity: .75; font-size: .92em; }
