@@ -6,7 +6,6 @@
     ['', 'Obecny', 'Kremowy papier, mosiądz, cienki geometryczny krój. Obecne logo liniowe.'],
     ['k1', 'Koncepcja 01', 'Geometria i konstrukcja: koła, półkola i łuki, polska awangarda. Bordo, glina, róż, fiolet. Logo z figur geometrycznych.'],
     ['k2', 'Koncepcja 02', 'Rytm i modularność: prostokąty, pionowe podziały, szachownica i efekt luksferów. Zieleń, brąz, błękit. Logo modułowe z pionowych pasów.'],
-    ['k4', 'Koncepcja 04 · synteza', 'Jedna zasada: strona pokazuje tylko to, z czego jest zbudowany N75. Trawertyn, mosiądz, orzech i jeden akcent z marmuru Rosso. Jedna geometria – portal z łukiem. Wersaliki lat 30. i logo kute w kamieniu.'],
     ['k3', 'Koncepcja 03', 'Kolory obecnej strony (kremowy papier, mosiądz, ciepła czerń) z krojami, kształtami i logo Koncepcji 01: koła, półkola, łuki, zaokrąglone przyciski, logo geometryczne.']
   ];
   var STY = [['', 'Obecna'], ['kamien', 'Lata 30 · kamień'], ['mosiadz', 'Lata 30 · mosiężne litery'], ['szyld', 'Lata 30 · szyld']];
@@ -109,7 +108,7 @@
   }
 
   function apply() {
-    var k4 = st.kierunek === 'k4';
+    var k4 = false;
     var kd = st.kierunek === 'k3' ? 'k1' : k4 ? '' : st.kierunek;
     if (k4) H.setAttribute('data-k4', ''); else H.removeAttribute('data-k4');
     if (kd) H.setAttribute('data-kierunek', kd); else H.removeAttribute('data-kierunek');
