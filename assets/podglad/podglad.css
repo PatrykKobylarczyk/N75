@@ -239,3 +239,32 @@ html[data-styl="kamien"] .fact { background: var(--stone-2) url(../img/material-
   html[data-styl="kamien"] .hero__media { left: 0; top: 0; bottom: 56%; }
   html[data-styl="kamien"] .header .logo .logo-svg, html[data-styl="kamien"] .drawer__top .logo .logo-svg { height: 24px; }
 }
+
+/* =====================================================================
+   KONCEPCJA 03 – układ, kształty, kroje i logo Koncepcji 02 w kolorach Koncepcji 01
+   (html[data-kierunek="k2"][data-paleta="k1"])
+   ===================================================================== */
+html[data-kierunek="k2"][data-paleta="k1"] {
+  --paper: #f2ece4; --paper-2: #ecdcd6; --line: #dcc6be; --muted: #6e5d58; --text: #3b2a2a; --ink: #2a1418; --graphite: #2a1418;
+  --bronze: #7a1f2b; --bronze-soft: #c98f86;
+  --dark: #4a0a1c; --dark-2: #5e1428;
+  --k-sky: #e9c3c1; --k-brown: #b9735a; --k-black: #2a1418; --k-violet: #6e62d0;
+}
+html[data-kierunek="k2"][data-paleta="k1"] .k-bars { background: repeating-linear-gradient(90deg, var(--k-violet) 0 10px, transparent 10px 24px); }
+html[data-kierunek="k2"][data-paleta="k1"] .hero__rule { background: var(--k-sky); }
+html[data-kierunek="k2"][data-paleta="k1"] .values { background-color: var(--k-brown) !important; }
+html[data-kierunek="k2"][data-paleta="k1"] .values__ghost { color: var(--dark); opacity: .3; }
+html[data-kierunek="k2"][data-paleta="k1"] .modern { background-color: var(--k-black); }
+html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(1) { background: var(--k-sky); }
+html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(2) { background: var(--k-violet); }
+html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(2) :is(h3, p, .ideas__n) { color: var(--paper); }
+html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(3) { background: var(--k-brown); }
+html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(4) { background: var(--dark); }
+html[data-kierunek="k2"][data-paleta="k1"] .ideas li:nth-child(n+3) .ideas__n { color: var(--k-sky); }
+html[data-kierunek="k2"][data-paleta="k1"] .fact { border-left-color: var(--k-violet); }
+html[data-kierunek="k2"][data-paleta="k1"] .fact:nth-child(even) { border-left-color: var(--k-brown); }
+html[data-kierunek="k2"][data-paleta="k1"] :is(.h2-kicker, .vw__sub, .material__where) { color: var(--k-violet) !important; }
+html[data-kierunek="k2"][data-paleta="k1"] .values .vw__sub { color: var(--dark) !important; }
+html[data-kierunek="k2"][data-paleta="k1"] .section:not(.section--dark) { background-image: repeating-linear-gradient(90deg, transparent 0 calc(12.5% - 1px), rgba(74, 10, 28, .06) calc(12.5% - 1px) 12.5%); }
+html[data-kierunek="k2"][data-paleta="k1"] .btn--solid:hover { background: var(--k-violet); border-color: var(--k-violet); }
+html[data-kierunek="k2"][data-paleta="k1"] .section--dark .btn--solid { background: var(--k-sky); border-color: var(--k-sky); color: var(--k-black); }
