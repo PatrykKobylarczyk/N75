@@ -124,7 +124,7 @@
         var solid = function (s0, s1) {
           if (s1 - s0 <= 0.005) return;
           M.quad(V(s0, 0, z0), V(s1, 0, z0), V(s1, 0, z1), V(s0, 0, z1), wallCol, wallM);
-          // pilaster: lekko wysunięty pas muru między oknami (rytm elewacji)
+          // półkolumna: półokrągły słup między oknami (rytm elewacji); w wąskim filarze na całą szerokość, w szerszym – wyśrodkowana, ⌀ maks. 0,6 m (chowa się pod gzymsem)
           // parter od Narutowicza: pełne pola to bramy garażowe z bulajami
           if (f === 0 && n[1] < -0.6 && s1 - s0 >= 2.4) {
             var gw = Math.min(5.4, s1 - s0 - 0.16), gm = (s0 + s1) / 2, ga = gm - gw / 2, gb = gm + gw / 2, gh = fl.z0 + 3.55;
@@ -133,8 +133,9 @@
             bf(ga, ga + 0.06, fl.z0, gh); bf(gb - 0.06, gb, fl.z0, gh); bf(ga, gb, gh - 0.06, gh); bf(gm - 0.02, gm + 0.02, fl.z0, gh);
           }
           if (f >= 1 && f <= 6 && s1 - s0 > 0.25 && s1 - s0 < 2.4 && g.length) {
-            var pa = s0 + 0.04, pb = s1 - 0.04, A = at(pa, 0), B = at(pb, 0), A2 = at(pa, 0.1), B2 = at(pb, 0.1);
-            M.prism([A, B, B2, A2], fl.z0, z1 - 0.02, C.cornice, C.cornice, 1, 1, true);
+            var pr = Math.min((s1 - s0) / 2 - 0.04, 0.3), pm = (s0 + s1) / 2, HC = [], SEG = 14;
+            for (var k = 0; k <= SEG; k++) { var t = Math.PI * k / SEG; HC.push(at(pm - Math.cos(t) * pr, Math.sin(t) * pr)); }
+            M.prism(HC, fl.z0, z1 - 0.02, C.cornice, C.cornice, 1, 1, true);
           }
         };
         g.forEach(function (iv) {
