@@ -1,0 +1,307 @@
+/* PODGLĄD KONCEPCJI – tylko na gałęzi podglądu, nie na stronie produkcyjnej */
+.pg-panel { position: fixed; z-index: 9999; left: 16px; bottom: 16px; width: 280px; background: rgba(250, 247, 242, .97); color: #242321; border: 1px solid #d9cfc1; box-shadow: 0 10px 40px rgba(0,0,0,.18); font: 13px/1.4 "Nunito Sans", Arial, sans-serif; }
+.pg-panel__h { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #242321; color: #f7f3ec; cursor: pointer; letter-spacing: .14em; font-size: 10.5px; text-transform: uppercase; }
+.pg-panel__b { padding: 10px 12px 12px; display: grid; gap: 10px; }
+.pg-panel.is-min .pg-panel__b { display: none; }
+.pg-panel label { display: grid; gap: 4px; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: #726a60; }
+.pg-panel .pg-opts { display: flex; flex-wrap: wrap; gap: 4px; }
+.pg-panel button { font: inherit; font-size: 12px; letter-spacing: 0; text-transform: none; padding: 6px 9px; border: 1px solid #d9cfc1; background: #fff; color: #242321; cursor: pointer; border-radius: 0 !important; }
+.pg-panel button[aria-pressed="true"] { background: #242321; color: #fff; border-color: #242321; }
+.pg-panel .pg-desc { margin: 0; font-size: 12px; color: #44423f; line-height: 1.45; }
+.pg-panel .pg-note { font-size: 11px; color: #8c8478; margin: 0; }
+.pg-panel [hidden] { display: none !important; }
+.pg-sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+@media (max-width: 600px) { .pg-panel { left: 8px; right: 8px; bottom: 8px; width: auto; } }
+
+/* wspólne dla koncepcji: bez animacji wejścia (rysuje kontur obecnego logo) */
+html[data-kierunek] .intro { display: none !important; }
+.k-geo, .k-strip { pointer-events: none; }
+
+/* OBECNY KIERUNEK: kolor akcentu przebarwia cały arkusz stylów (podglad.js → recolor) */
+
+/* =====================================================================
+   KONCEPCJA 01 – współczesna interpretacja modernizmu: geometria, koła,
+   półkola i łuki, polska awangarda. Bordo, glina, róż, fiolet, orzech.
+   ===================================================================== */
+html[data-kierunek="k1"] {
+  --paper: #f2ece4; --paper-2: #ecdcd6; --line: #dcc6be; --muted: #6e5d58; --text: #3b2a2a; --ink: #2a1418; --graphite: #2a1418;
+  --bronze: #7a1f2b; --bronze-soft: #c98f86;
+  --dark: #4a0a1c; --dark-2: #5e1428;
+  --k-violet: #6e62d0; --k-pink: #e9c3c1; --k-clay: #b9735a; --k-walnut: #5a3a2a;
+  --head: "Syne", "Outfit", sans-serif; --body: "Outfit", "Nunito Sans", sans-serif; --serif: "Syne", sans-serif;
+}
+html[data-kierunek="k1"] body { font-weight: 300; }
+html[data-kierunek="k1"] .display, html[data-kierunek="k1"] h1, html[data-kierunek="k1"] h2, html[data-kierunek="k1"] h3, html[data-kierunek="k1"] h4 { font-family: "Syne", sans-serif; font-weight: 600; letter-spacing: -.015em; text-transform: none; }
+html[data-kierunek="k1"] .h2 { font-size: clamp(38px, 5vw, 76px); line-height: .98; }
+html[data-kierunek="k1"] .caps { font-family: "Outfit", sans-serif; font-weight: 500; }
+html[data-kierunek="k1"] .hero__claim, html[data-kierunek="k1"] .mission-sign, html[data-kierunek="k1"] .to-offer__t, html[data-kierunek="k1"] .h2-kicker, html[data-kierunek="k1"] .draw__sign, html[data-kierunek="k1"] .wellness__more, html[data-kierunek="k1"] .lead { font-family: "Outfit", sans-serif !important; font-style: normal !important; font-weight: 300 !important; }
+html[data-kierunek="k1"] .h2-kicker, html[data-kierunek="k1"] .vw__sub, html[data-kierunek="k1"] .material__where { color: var(--k-violet) !important; }
+/* hero: bordowe pole, zdjęcie w łuku, kompozycja figur */
+html[data-kierunek="k1"] .hero { background: var(--dark); }
+html[data-kierunek="k1"] .hero::after { display: none; }
+html[data-kierunek="k1"] .hero__media { left: 46%; border-top-left-radius: 46vw 100%; overflow: hidden; background: var(--dark); }
+html[data-kierunek="k1"] .hero__seal { display: none; }
+html[data-kierunek="k1"] .hero__logo { color: var(--paper); }
+html[data-kierunek="k1"] .hero__logo .logo-svg { height: clamp(90px, 13vw, 190px); }
+html[data-kierunek="k1"] .hero__rule { background: var(--k-pink); }
+html[data-kierunek="k1"] .hero__claim { font-size: clamp(26px, 2.6vw, 38px) !important; }
+html[data-kierunek="k1"] .k-geo { position: absolute; z-index: 1; display: block; }
+html[data-kierunek="k1"] .k-h1 { width: 150px; height: 150px; border-radius: 50%; background: var(--k-violet); left: calc(46% - 75px); bottom: 14%; z-index: 3; }
+html[data-kierunek="k1"] .k-h2 { width: 220px; height: 110px; border-radius: 110px 110px 0 0; background: var(--k-pink); right: 5%; bottom: 0; z-index: 3; }
+html[data-kierunek="k1"] .k-h3 { width: 110px; height: 110px; border-radius: 0 0 110px 0; background: var(--k-clay); left: 46%; top: 0; z-index: 3; }
+/* sekcje: blokowe pola koloru */
+html[data-kierunek="k1"] #inwestycja { background: var(--paper); position: relative; overflow: hidden; }
+html[data-kierunek="k1"] .k-m1 { width: 220px; height: 110px; border-radius: 0 0 110px 110px; background: var(--k-pink); right: 5%; top: 0; z-index: 0; }
+html[data-kierunek="k1"] .k-m2 { width: 90px; height: 90px; border-radius: 50%; background: var(--k-clay); right: calc(4% + 360px); top: 50px; z-index: 0; }
+html[data-kierunek="k1"] #inwestycja > .wrap { position: relative; z-index: 1; }
+html[data-kierunek="k1"] .values { background: var(--dark) !important; color: var(--paper); }
+html[data-kierunek="k1"] .values .vw__word, html[data-kierunek="k1"] .values .vw__desc, html[data-kierunek="k1"] .values__nav { color: var(--paper); }
+html[data-kierunek="k1"] .values .vw__word { font-family: "Syne", sans-serif; font-weight: 700; }
+html[data-kierunek="k1"] .values__ghost { color: var(--k-violet); opacity: .5; }
+html[data-kierunek="k1"] .ideas__n { font-family: "Syne"; font-weight: 700; font-size: 56px; color: var(--k-violet); }
+html[data-kierunek="k1"] .ideas li:nth-child(2) .ideas__n { color: var(--k-clay); }
+html[data-kierunek="k1"] .ideas li:nth-child(3) .ideas__n { color: var(--dark); }
+html[data-kierunek="k1"] .ideas li:nth-child(4) .ideas__n { color: #c46f7e; }
+html[data-kierunek="k1"] .material__img { border-radius: 999px 999px 0 0; overflow: hidden; }
+html[data-kierunek="k1"] .materials .material:nth-child(even) .material__img { border-radius: 0 0 999px 999px; }
+html[data-kierunek="k1"] .split__media img, html[data-kierunek="k1"] .arch-slide img { border-radius: 0; }
+html[data-kierunek="k1"] .wellness__item .arch-slider__track { border-radius: 320px 320px 0 0; overflow: hidden; }
+html[data-kierunek="k1"] .wellness__item:nth-child(even) .arch-slider__track { border-radius: 0 0 320px 320px; }
+html[data-kierunek="k1"] #udogodnienia, html[data-kierunek="k1"] .modern, html[data-kierunek="k1"] #kontakt, html[data-kierunek="k1"] .footer { background: var(--dark); }
+html[data-kierunek="k1"] #lokalizacja { background: var(--paper-2); }
+html[data-kierunek="k1"] .section--dark .caps.bronze, html[data-kierunek="k1"] .section--dark .wellness__sub { color: var(--k-pink) !important; }
+html[data-kierunek="k1"] .btn { border-radius: 999px; }
+html[data-kierunek="k1"] .btn--solid { background: var(--dark); border-color: var(--dark); color: var(--paper); }
+html[data-kierunek="k1"] .btn--solid:hover { background: var(--k-violet); border-color: var(--k-violet); }
+html[data-kierunek="k1"] .section--dark .btn--solid, html[data-kierunek="k1"] .hero .btn--solid { background: var(--k-pink); border-color: var(--k-pink); color: var(--dark); }
+html[data-kierunek="k1"] .chip[aria-pressed="true"] { background: var(--dark) !important; border-color: var(--dark) !important; color: #fff !important; }
+html[data-kierunek="k1"] .fact__val { font-family: "Syne"; font-weight: 600; color: var(--dark); }
+html[data-kierunek="k1"] .fact:nth-child(3n+1) .fact__val { color: var(--k-violet); }
+html[data-kierunek="k1"] .header.is-solid { background: var(--paper); }
+html[data-kierunek="k1"] .header.is-solid .logo { color: var(--dark); }
+@media (max-width: 900px) {
+  html[data-kierunek="k1"] .hero__media { left: 0; top: 0; bottom: 50%; border-top-left-radius: 0; border-bottom-right-radius: 100vw 70%; }
+  html[data-kierunek="k1"] .hero__media img { object-position: 60% 40%; }
+  html[data-kierunek="k1"] .k-h1 { left: auto; right: 6%; bottom: auto; top: calc(50% - 60px); width: 90px; height: 90px; }
+  html[data-kierunek="k1"] .k-h3 { display: none; }
+  html[data-kierunek="k1"] .k-h2 { width: 160px; height: 80px; border-radius: 80px 80px 0 0; right: 6%; }
+  html[data-kierunek="k1"] .k-m1 { width: 160px; height: 80px; border-radius: 0 0 80px 80px; right: 6%; } html[data-kierunek="k1"] .k-m2 { display: none; }
+}
+
+/* =====================================================================
+   KONCEPCJA 02 – geometria prostokąta, rytm i modularność, efekt luksferów,
+   konstruktywistyczna typografia. Zieleń, brąz, błękit, beż, trawertyn.
+   ===================================================================== */
+html[data-kierunek="k2"] {
+  --paper: #ede2cf; --paper-2: #e3d5bd; --line: #cbb99c; --muted: #6a5d4c; --text: #2f2a24; --ink: #1d1d1b; --graphite: #1d1d1b;
+  --bronze: #4a2e22; --bronze-soft: #a98a6c;
+  --dark: #2e4a45; --dark-2: #3a5852;
+  --k-sky: #a9bfd8; --k-brown: #4a2e22; --k-black: #1d1d1b;
+  --head: "Archivo", sans-serif; --body: "Instrument Sans", "Nunito Sans", sans-serif; --serif: "Archivo", sans-serif;
+}
+html[data-kierunek="k2"] .display, html[data-kierunek="k2"] h1, html[data-kierunek="k2"] h2, html[data-kierunek="k2"] h3, html[data-kierunek="k2"] h4 { font-family: "Archivo", sans-serif; font-stretch: 125%; font-weight: 500; letter-spacing: -.01em; text-transform: uppercase; }
+html[data-kierunek="k2"] .h2 { font-size: clamp(34px, 4.4vw, 68px); line-height: .95; }
+html[data-kierunek="k2"] .caps { font-family: "Major Mono Display", monospace; letter-spacing: .04em; text-transform: lowercase; }
+html[data-kierunek="k2"] .hero__claim, html[data-kierunek="k2"] .mission-sign, html[data-kierunek="k2"] .to-offer__t, html[data-kierunek="k2"] .h2-kicker, html[data-kierunek="k2"] .draw__sign, html[data-kierunek="k2"] .wellness__more, html[data-kierunek="k2"] .lead { font-family: "Archivo", sans-serif !important; font-style: normal !important; font-weight: 300 !important; font-stretch: 110%; }
+/* hero: zielony moduł z logo, zdjęcie za szkłem luksferów, szachownica */
+html[data-kierunek="k2"] .hero { background: var(--dark); }
+html[data-kierunek="k2"] .hero::after { display: none; }
+html[data-kierunek="k2"] .hero__media { left: 42%; }
+html[data-kierunek="k2"] .hero__media::after {
+  content: ""; position: absolute; inset: 0; z-index: 2;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,.26), rgba(255,255,255,0) 58%) 0 0 / 64px 64px,
+    linear-gradient(rgba(238,242,240,.55) 3px, transparent 3px) 0 0 / 64px 64px,
+    linear-gradient(90deg, rgba(238,242,240,.55) 3px, transparent 3px) 0 0 / 64px 64px;
+  -webkit-backdrop-filter: blur(4px) saturate(1.15); backdrop-filter: blur(4px) saturate(1.15);
+  -webkit-mask-image: linear-gradient(90deg, #000 0 30%, rgba(0,0,0,.0) 62%); mask-image: linear-gradient(90deg, #000 0 30%, rgba(0,0,0,0) 62%);
+}
+html[data-kierunek="k2"] .hero__seal { display: none; }
+html[data-kierunek="k2"] .hero__logo .logo-svg { height: clamp(80px, 11vw, 160px); }
+html[data-kierunek="k2"] .hero__rule { background: var(--k-sky); height: 6px; }
+html[data-kierunek="k2"] .hero__claim { font-size: clamp(24px, 2.4vw, 34px) !important; text-transform: uppercase; }
+html[data-kierunek="k2"] .k-strip { display: block; height: 32px; background: conic-gradient(var(--k-black) 25%, var(--paper) 0 50%, var(--k-black) 0 75%, var(--paper) 0) 0 0 / 32px 32px; }
+html[data-kierunek="k2"] .hero .k-strip { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; }
+html[data-kierunek="k2"] .k-bars { position: absolute; z-index: 3; left: 42%; top: 0; bottom: 32px; width: 96px; background: repeating-linear-gradient(90deg, var(--k-sky) 0 10px, transparent 10px 24px); }
+/* rytm pionowych podziałów */
+html[data-kierunek="k2"] .section--dark, html[data-kierunek="k2"] .modern, html[data-kierunek="k2"] .values { background-image: repeating-linear-gradient(90deg, transparent 0 calc(12.5% - 1px), rgba(255,255,255,.08) calc(12.5% - 1px) 12.5%); }
+html[data-kierunek="k2"] .section:not(.section--dark) { background-image: repeating-linear-gradient(90deg, transparent 0 calc(12.5% - 1px), rgba(74,46,34,.07) calc(12.5% - 1px) 12.5%); }
+html[data-kierunek="k2"] .values { background-color: var(--k-brown) !important; color: var(--paper); }
+html[data-kierunek="k2"] .values .vw__word, html[data-kierunek="k2"] .values .vw__desc, html[data-kierunek="k2"] .values__nav { color: var(--paper); }
+html[data-kierunek="k2"] .values .vw__word { font-family: "Archivo"; font-stretch: 125%; font-weight: 700; }
+html[data-kierunek="k2"] .values__ghost { color: var(--k-sky); opacity: .35; }
+html[data-kierunek="k2"] #udogodnienia, html[data-kierunek="k2"] #kontakt, html[data-kierunek="k2"] .footer { background-color: var(--dark); }
+html[data-kierunek="k2"] .modern { background-color: var(--k-black); }
+html[data-kierunek="k2"] #lokalizacja { background-color: var(--paper-2); }
+/* moduły idei w kolorach koncepcji */
+html[data-kierunek="k2"] .ideas { gap: 0; border: 1px solid var(--line); }
+html[data-kierunek="k2"] .ideas li { padding: 26px 24px 30px; min-height: 260px; }
+html[data-kierunek="k2"] .ideas li:nth-child(1) { background: var(--paper-2); }
+html[data-kierunek="k2"] .ideas li:nth-child(2) { background: var(--k-sky); }
+html[data-kierunek="k2"] .ideas li:nth-child(3) { background: var(--k-brown); }
+html[data-kierunek="k2"] .ideas li:nth-child(4) { background: var(--dark); }
+html[data-kierunek="k2"] .ideas li:nth-child(n+3) h3, html[data-kierunek="k2"] .ideas li:nth-child(n+3) p { color: var(--paper); }
+html[data-kierunek="k2"] .ideas__n { font-family: "Major Mono Display", monospace; font-size: 52px; color: inherit; }
+html[data-kierunek="k2"] .ideas li:nth-child(n+3) .ideas__n { color: var(--k-sky); }
+/* zdjęcia za szkłem luksferów */
+html[data-kierunek="k2"] .wellness__item .arch-slider__track, html[data-kierunek="k2"] .split__media { position: relative; }
+html[data-kierunek="k2"] .wellness__item .arch-slider__track::after, html[data-kierunek="k2"] .split__media::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.22), rgba(255,255,255,0) 58%) 0 0 / 48px 48px, linear-gradient(rgba(238,242,240,.45) 2px, transparent 2px) 0 0 / 48px 48px, linear-gradient(90deg, rgba(238,242,240,.45) 2px, transparent 2px) 0 0 / 48px 48px;
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0 55%, #000 80%); mask-image: linear-gradient(90deg, transparent 0 55%, #000 80%);
+}
+html[data-kierunek="k2"] .material__img { border: 10px solid var(--paper-2); outline: 1px solid var(--line); }
+html[data-kierunek="k2"] .section--dark .caps.bronze, html[data-kierunek="k2"] .section--dark .wellness__sub { color: var(--k-sky) !important; }
+html[data-kierunek="k2"] .h2-kicker, html[data-kierunek="k2"] .vw__sub, html[data-kierunek="k2"] .material__where { color: var(--k-brown) !important; }
+html[data-kierunek="k2"] .values .vw__sub { color: var(--k-sky) !important; }
+html[data-kierunek="k2"] .btn { border-radius: 0; }
+html[data-kierunek="k2"] .btn--solid { background: var(--k-black); border-color: var(--k-black); color: var(--paper); }
+html[data-kierunek="k2"] .btn--solid:hover { background: var(--dark); border-color: var(--dark); }
+html[data-kierunek="k2"] .section--dark .btn--solid { background: var(--k-sky); border-color: var(--k-sky); color: var(--k-black); }
+html[data-kierunek="k2"] .chip { border-radius: 0 !important; }
+html[data-kierunek="k2"] .chip[aria-pressed="true"] { background: var(--dark) !important; border-color: var(--dark) !important; color: #fff !important; }
+html[data-kierunek="k2"] .fact { border-left: 8px solid var(--k-sky); padding-left: 16px; }
+html[data-kierunek="k2"] .fact__val { font-family: "Archivo"; font-stretch: 125%; font-weight: 500; color: var(--dark); }
+html[data-kierunek="k2"] .header.is-solid { background: var(--paper); }
+html[data-kierunek="k2"] .header.is-solid .logo { color: var(--dark); }
+@media (max-width: 900px) {
+  html[data-kierunek="k2"] .hero__media { left: 0; top: 0; bottom: 52%; }
+  html[data-kierunek="k2"] .hero__media::after { -webkit-mask-image: linear-gradient(180deg, transparent 0 35%, #000 80%); mask-image: linear-gradient(180deg, transparent 0 35%, #000 80%); }
+  html[data-kierunek="k2"] .k-bars { left: 0; right: 0; top: 48%; bottom: auto; width: auto; height: 30px; background: repeating-linear-gradient(90deg, var(--k-sky) 0 10px, transparent 10px 24px); }
+}
+
+/* czytelność podpisów w kolorze akcentu na ciemnych sekcjach */
+html[data-akcent="zielen"]:not([data-kierunek]) :is(.section--dark, .modern, .footer) :is(.bronze, .wellness__sub, [data-num], .caps.bronze) { color: #93b0a0 !important; }
+html[data-akcent="rosso"]:not([data-kierunek]) :is(.section--dark, .modern, .footer) :is(.bronze, .wellness__sub, [data-num], .caps.bronze) { color: #d99c92 !important; }
+html[data-akcent="blekit"]:not([data-kierunek]) :is(.section--dark, .modern, .footer) :is(.bronze, .wellness__sub, [data-num], .caps.bronze) { color: #a9c1c9 !important; }
+
+/* =====================================================================
+   OBECNY KIERUNEK · PODWERSJE TYPOGRAFICZNE LAT 30.
+   ===================================================================== */
+/* mosiężne litery: geometryczna monolinia jak dawne mosiężne napisy na drzwiach */
+html[data-styl="mosiadz"] { --head: "Josefin Sans", "Jost", sans-serif; }
+html[data-styl="mosiadz"] :is(.display, h1, h2, h3, h4) { font-family: "Josefin Sans", sans-serif; font-weight: 300; letter-spacing: .08em; }
+html[data-styl="mosiadz"] .h2 { font-weight: 300; letter-spacing: .1em; }
+html[data-styl="mosiadz"] .caps { font-family: "Josefin Sans", sans-serif; font-weight: 400; letter-spacing: .2em; }
+html[data-styl="mosiadz"] :is(.hero__claim, .mission-sign, .to-offer__t, .h2-kicker, .draw__sign, .wellness__more) { font-family: "Josefin Sans", sans-serif !important; font-style: italic !important; font-weight: 300 !important; letter-spacing: .02em; }
+html[data-styl="mosiadz"] :is(.vw__word, .fact__val, .ideas__n, .modern__word) { font-family: "Josefin Sans", sans-serif !important; font-weight: 200; }
+html[data-styl="mosiadz"] .hero__logo { color: #d2b27a; filter: drop-shadow(0 1px 0 rgba(0,0,0,.25)); }
+html[data-styl="mosiadz"] .hero__logo .logo-svg { height: clamp(90px, 13vw, 190px); }
+html[data-styl="mosiadz"] .footer .logo { color: #c9a56a; }
+/* szyld: cienkie wersaliki art déco + kaligrafia jednym pociągnięciem, linie jak w neonowym szyldzie */
+html[data-styl="szyld"] { --head: "Poiret One", "Jost", sans-serif; }
+html[data-styl="szyld"] :is(.display, h1, h2, h3, h4) { font-family: "Poiret One", sans-serif; font-weight: 400; letter-spacing: .06em; }
+html[data-styl="szyld"] .caps { font-family: "Josefin Sans", sans-serif; font-weight: 400; letter-spacing: .22em; }
+html[data-styl="szyld"] :is(.hero__claim, .mission-sign, .to-offer__t, .h2-kicker, .draw__sign, .wellness__more) { font-family: "Sacramento", cursive !important; font-style: normal !important; font-weight: 400 !important; font-size: 1.6em; line-height: 1.15; letter-spacing: 0; }
+html[data-styl="szyld"] .hero__claim { font-size: clamp(44px, 4.6vw, 66px) !important; }
+html[data-styl="szyld"] :is(.vw__word, .fact__val, .ideas__n, .modern__word) { font-family: "Poiret One", sans-serif !important; }
+html[data-styl="szyld"] .h2 { padding-bottom: 20px; background: linear-gradient(currentColor, currentColor) 0 calc(100% - 6px) / 120px 1px no-repeat, linear-gradient(currentColor, currentColor) 0 100% / 120px 1px no-repeat; }
+html[data-styl="szyld"] .hero__logo .logo-svg { height: clamp(120px, 16vw, 230px); }
+html[data-styl="szyld"] .header .logo .logo-svg { height: 40px; }
+
+/* =====================================================================
+   OBECNY · LATA 30 · KAMIEŃ – monogram kuty w trawertynie, ażurowy napis,
+   rozstrzelone geometryczne wersaliki, ryflowany kamień
+   ===================================================================== */
+html[data-styl="kamien"] { --head: "Josefin Sans", "Jost", sans-serif; --stone: #d9cdb9; --stone-2: #e6ddcd; --carve: #5d5043; }
+html[data-styl="kamien"] :is(.display, h1, h2, h3, h4) { font-family: "Josefin Sans", sans-serif; font-weight: 300; letter-spacing: .16em; text-transform: uppercase; }
+html[data-styl="kamien"] .h2 { letter-spacing: .14em; font-weight: 300; }
+html[data-styl="kamien"] .caps { font-family: "Josefin Sans", sans-serif; font-weight: 400; letter-spacing: .26em; }
+html[data-styl="kamien"] :is(.hero__claim, .mission-sign, .to-offer__t, .h2-kicker, .draw__sign, .wellness__more) { font-family: "Josefin Sans", sans-serif !important; font-style: normal !important; font-weight: 300 !important; text-transform: uppercase; letter-spacing: .14em; font-size: .92em; }
+html[data-styl="kamien"] :is(.vw__word, .modern__word) { font-family: "Josefin Sans", sans-serif !important; font-weight: 200; }
+/* efekt liter wykutych w kamieniu */
+html[data-styl="kamien"] :is(.hero__logo, .fact__val, .ideas__n) { color: var(--carve); filter: drop-shadow(1px 1px 0 rgba(255,255,255,.6)) drop-shadow(-1px -1px 0 rgba(0,0,0,.28)); }
+html[data-styl="kamien"] :is(.fact__val, .ideas__n) { font-family: "Josefin Sans", sans-serif; font-weight: 600; }
+/* hero: płyta trawertynu z wykutym monogramem, zdjęcie obok */
+html[data-styl="kamien"] .hero { background: var(--stone) url(../img/material-trawertyn.webp) center / cover; color: #2f261d; }
+html[data-styl="kamien"] .hero::before { content: ""; position: absolute; inset: 0; background: rgba(236, 228, 214, .58); z-index: 0; }
+html[data-styl="kamien"] .hero::after { display: none; }
+html[data-styl="kamien"] .hero__media { left: 48%; z-index: 1; }
+html[data-styl="kamien"] .hero__content { position: relative; z-index: 2; }
+html[data-styl="kamien"] .hero__seal { display: none; }
+html[data-styl="kamien"] .hero .caps--wide { display: none; }
+html[data-styl="kamien"] .hero__logo { margin-bottom: 22px; }
+html[data-styl="kamien"] .hero__logo .logo-svg { height: clamp(90px, 12vw, 170px); }
+html[data-styl="kamien"] .k-word { width: min(440px, 80%); color: #3a2f24; margin: 0 0 34px; }
+html[data-styl="kamien"] .k-word svg { display: block; width: 100%; height: auto; }
+html[data-styl="kamien"] .hero__rule { background: rgba(58, 46, 34, .35); }
+html[data-styl="kamien"] :is(.hero__claim, .hero__lead) { color: #2f261d !important; text-shadow: none; }
+html[data-styl="kamien"] .header:not(.is-solid) { color: var(--paper); }
+html[data-styl="kamien"] .header .logo .logo-svg, html[data-styl="kamien"] .drawer__top .logo .logo-svg { height: 15px; }
+html[data-styl="kamien"] .footer .logo .logo-svg { height: 18px; }
+/* ryflowany kamień i płyty z wykutymi numerami */
+html[data-styl="kamien"] .values { background: repeating-linear-gradient(90deg, #ddd2c0 0 5px, #e9e1d3 5px 11px) !important; }
+html[data-styl="kamien"] .ideas li { padding: 26px 22px 30px; background: var(--stone-2) url(../img/material-trawertyn.webp) center / 220% auto; background-blend-mode: soft-light; }
+html[data-styl="kamien"] .ideas__n { font-size: 54px; }
+html[data-styl="kamien"] .fact { background: var(--stone-2) url(../img/material-trawertyn.webp) center / 300% auto; background-blend-mode: soft-light; padding: 18px 16px; }
+@media (max-width: 900px) {
+  html[data-styl="kamien"] .hero__media { left: 0; top: 0; bottom: 56%; }
+  html[data-styl="kamien"] .header .logo .logo-svg, html[data-styl="kamien"] .drawer__top .logo .logo-svg { height: 24px; }
+}
+
+/* =====================================================================
+   KONCEPCJA 03 – kolory obecnej strony + kroje, kształty i logo Koncepcji 01
+   (html[data-kierunek="k1"][data-paleta="obecna"])
+   ===================================================================== */
+html[data-kierunek="k1"][data-paleta="obecna"] {
+  --paper: #f7f3ec; --paper-2: #efe9df; --line: #d9cfc1; --muted: #726a60; --text: #44423f; --ink: #242321; --graphite: #242321;
+  --bronze: #9c7149; --bronze-soft: #c4a27f;
+  --dark: #221d18; --dark-2: #2d2721;
+  --k-violet: #9c7149; --k-pink: #e6d6c2; --k-clay: #7b4f2e; --k-walnut: #5a3a2a;
+}
+html[data-kierunek="k1"][data-paleta="obecna"] .values__ghost { color: var(--bronze-soft); opacity: .45; }
+html[data-kierunek="k1"][data-paleta="obecna"] .ideas li:nth-child(1) .ideas__n { color: var(--bronze); }
+html[data-kierunek="k1"][data-paleta="obecna"] .ideas li:nth-child(2) .ideas__n { color: var(--k-clay); }
+html[data-kierunek="k1"][data-paleta="obecna"] .ideas li:nth-child(3) .ideas__n { color: var(--ink); }
+html[data-kierunek="k1"][data-paleta="obecna"] .ideas li:nth-child(4) .ideas__n { color: var(--bronze-soft); }
+html[data-kierunek="k1"][data-paleta="obecna"] :is(.h2-kicker, .vw__sub, .material__where) { color: var(--bronze) !important; }
+html[data-kierunek="k1"][data-paleta="obecna"] .section--dark :is(.caps.bronze, .wellness__sub) { color: var(--bronze-soft) !important; }
+html[data-kierunek="k1"][data-paleta="obecna"] .btn--solid { background: var(--bronze); border-color: var(--bronze); color: var(--paper); }
+html[data-kierunek="k1"][data-paleta="obecna"] .btn--solid:hover { background: var(--dark); border-color: var(--dark); }
+html[data-kierunek="k1"][data-paleta="obecna"] :is(.section--dark, .hero) .btn--solid { background: var(--bronze-soft); border-color: var(--bronze-soft); color: var(--dark); }
+html[data-kierunek="k1"][data-paleta="obecna"] .fact:nth-child(3n+1) .fact__val { color: var(--bronze); }
+html[data-kierunek="k1"][data-paleta="obecna"] .k-h1 { background: var(--bronze); }
+html[data-kierunek="k1"][data-paleta="obecna"] .k-h3 { background: var(--bronze-soft); }
+
+/* =====================================================================
+   KONCEPCJA 03b – 03 delikatnie poprawiona (hero bez zmian, jak w 03)
+   ===================================================================== */
+html[data-k3b] :is(.display, h1, h2, h3, h4) { font-weight: 500; letter-spacing: .005em; }
+html[data-k3b] .h2 { font-weight: 500; }
+/* wszystkie łuki do góry, jak portal */
+html[data-k3b] .materials .material:nth-child(even) .material__img { border-radius: 999px 999px 0 0; }
+html[data-k3b] .wellness__item:nth-child(even) .arch-slider__track { border-radius: 320px 320px 0 0; }
+/* numery w mosiądzu */
+html[data-k3b] .ideas li .ideas__n { color: var(--bronze) !important; }
+html[data-k3b] .fact .fact__val { color: var(--ink) !important; }
+/* 5 powodów jak w 03, bez numeru rzymskiego i linku pod opisem */
+html[data-k3b] .values :is(.vw__n, .vw__to) { display: none !important; }
+/* cieńsze, lżejsze przyciski */
+html[data-k3b] .btn:not(.header__cta) { border-width: 1px; font-size: 11px; letter-spacing: .16em; padding-top: 13px; padding-bottom: 13px; }
+
+/* 03b: liczby o budynku jak w obecnej wersji (krój, grubość, mosiądz) */
+html[data-k3b] .fact .fact__val, html[data-k3b] .fact:nth-child(3n+1) .fact__val { font-family: "Jost", sans-serif !important; font-weight: 300 !important; color: var(--bronze) !important; letter-spacing: 0; }
+html[data-k3b] .fact .caps { font-family: "Jost", sans-serif; font-weight: 400; }
+/* 03b: sekcja „Modernizm to…” jak w obecnej wersji (Futura/Jost, wersaliki, mosiężne słowo kursywą) */
+html[data-k3b] #wstep { --head: "Futura PT", "futura-pt", "Futura", "Jost", "Century Gothic", sans-serif; --body: "Avenir Next", "avenir-next", "Avenir", "Nunito Sans", "Helvetica Neue", Arial, sans-serif; --serif: var(--head); background: var(--paper); font-family: var(--body); font-weight: 400; }
+html[data-k3b] #wstep .display { font-family: var(--head); font-weight: 400; text-transform: uppercase; letter-spacing: .04em; line-height: 1.14; }
+html[data-k3b] #wstep .modern__rot { font-style: italic; }
+html[data-k3b] #wstep :is(.lead, .muted, p) { font-family: var(--body) !important; font-weight: 400 !important; }
+html[data-k3b] #wstep .draw__sign { font-family: var(--serif) !important; font-style: italic !important; font-weight: 300 !important; }
+/* 03b: materiały jako pionowe prostokąty z zaokrąglonymi rogami */
+html[data-k3b] .materials .material .material__img, html[data-k3b] .materials .material:nth-child(even) .material__img { border-radius: 22px !important; overflow: hidden; aspect-ratio: 3 / 4; }
+html[data-k3b] .materials .material__img img { width: 100%; height: 100%; object-fit: cover; }
+/* 03b: zdjęcia wellness w kształcie z obecnej wersji (prostokąt) */
+html[data-k3b] .wellness__item .arch-slider__track, html[data-k3b] .wellness__item:nth-child(even) .arch-slider__track { border-radius: 0 !important; }
+
+/* 3b – hero: zamiast dwóch kół kompozycja „streamline” lat 30.: ćwiartka koła w narożniku + trzy linie biegnące do niej */
+html[data-k3b] .k-h1, html[data-k3b] .k-m1, html[data-k3b] .k-m2 { display: none !important; }
+html[data-k3b][data-kierunek] .k-geo.k-h2 { display: block !important; width: clamp(150px, 22vw, 300px); height: clamp(150px, 22vw, 300px); border-radius: 100% 0 0 0; background: var(--bronze-soft); right: 0; bottom: 0; left: auto; top: auto; z-index: 2; }
+html[data-k3b][data-kierunek] .k-geo.k-h3 { display: block !important; left: 0; top: auto; bottom: clamp(28px, 4vw, 56px); right: calc(clamp(150px, 22vw, 300px) - 2px); width: auto; height: 22px; border-radius: 0; z-index: 2;
+  background: linear-gradient(var(--bronze) 0 0) 0 0 / 100% 2px no-repeat, linear-gradient(var(--bronze) 0 0) 0 10px / 100% 2px no-repeat, linear-gradient(var(--bronze) 0 0) 0 20px / 100% 2px no-repeat !important; opacity: .85; }
+@media (max-width: 900px) {
+  html[data-k3b][data-kierunek] .k-geo.k-h2 { width: 110px; height: 110px; }
+  html[data-k3b][data-kierunek] .k-geo.k-h3 { right: 108px; bottom: 22px; }
+  html[data-k3b] .hero__content { padding-bottom: 96px; }
+}
