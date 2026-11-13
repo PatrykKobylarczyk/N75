@@ -1640,8 +1640,18 @@ body.dh-open { overflow: hidden; }
 @media (max-width: 560px) { .mission-proof { grid-template-columns: 1fr; } .mission-proof li + li { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); } .mission-proof li { padding: 14px 0; } }
 
 /* Fakty: pięć kolumn */
-.facts { grid-template-columns: repeat(5, 1fr); }
-@media (max-width: 900px) { .facts { grid-template-columns: 1fr 1fr; } .facts .fact:last-child { grid-column: 1 / -1; } }
+/* liczby o budynku: 6 pozycji – 3 kolumny na komputerze, 2 na telefonie */
+.facts { grid-template-columns: repeat(3, 1fr); }
+@media (min-width: 901px) {
+  .facts .fact:nth-child(3n+1) { border-left: 0; padding-left: 0; }
+  .facts .fact:nth-child(n+4) { border-top: 1px solid var(--line); }
+}
+@media (max-width: 900px) {
+  .facts { grid-template-columns: 1fr 1fr; }
+  .facts .fact { border-left: 1px solid var(--line); padding-left: 18px; border-top: 0; }
+  .facts .fact:nth-child(odd) { border-left: 0; padding-left: 0; }
+  .facts .fact:nth-child(n+3) { border-top: 1px solid var(--line); }
+}
 
 /* Rzut piętra mieści się w wysokości ekranu (np. laptopy 1366×768 / 1280×720) */
 @media (min-width: 901px) {
