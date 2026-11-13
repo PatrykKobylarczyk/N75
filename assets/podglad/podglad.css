@@ -1,0 +1,94 @@
+/* PODGLĄD KONCEPCJI – tylko na gałęzi podglądu, nie na stronie produkcyjnej */
+.pg-panel { position: fixed; z-index: 9999; left: 16px; bottom: 16px; width: 270px; background: rgba(250, 247, 242, .97); color: #242321; border: 1px solid #d9cfc1; box-shadow: 0 10px 40px rgba(0,0,0,.18); font: 13px/1.4 "Nunito Sans", Arial, sans-serif; }
+.pg-panel__h { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #242321; color: #f7f3ec; cursor: pointer; letter-spacing: .14em; font-size: 10.5px; text-transform: uppercase; }
+.pg-panel__b { padding: 10px 12px 12px; display: grid; gap: 10px; }
+.pg-panel.is-min .pg-panel__b { display: none; }
+.pg-panel label { display: grid; gap: 4px; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: #726a60; }
+.pg-panel .pg-opts { display: flex; flex-wrap: wrap; gap: 4px; }
+.pg-panel button { font: inherit; font-size: 12px; letter-spacing: 0; text-transform: none; padding: 5px 8px; border: 1px solid #d9cfc1; background: #fff; color: #242321; cursor: pointer; }
+.pg-panel button[aria-pressed="true"] { background: #242321; color: #fff; border-color: #242321; }
+.pg-panel .pg-note { font-size: 11px; color: #8c8478; margin: 0; }
+.pg-sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+@media (max-width: 600px) { .pg-panel { left: 8px; right: 8px; bottom: 8px; width: auto; } }
+
+/* ---------- AKCENT (oszczędny, ~5%: przyciski, liczby, wybory, jedna ciemna sekcja) ---------- */
+html[data-akcent] { --acc: var(--bronze); }
+html[data-akcent="zielen"] { --acc: #2F4A3E; --acc-l: #6f8f7f; }
+html[data-akcent="rosso"] { --acc: #7E2E2A; --acc-l: #b0645c; }
+html[data-akcent="blekit"] { --acc: #5f7f8a; --acc-l: #9FB6BE; }
+html[data-akcent] .btn--solid { background: var(--acc); border-color: var(--acc); }
+html[data-akcent] .ideas__n, html[data-akcent] .vw__n, html[data-akcent] .vw__sub, html[data-akcent] .h2-kicker, html[data-akcent] .material__where { color: var(--acc); }
+html[data-akcent] #udogodnienia, html[data-akcent] .modern { background: var(--acc); }
+html[data-akcent="blekit"] #udogodnienia, html[data-akcent="blekit"] .modern { background: #3f5961; }
+html[data-akcent] .chip[aria-pressed="true"], html[data-akcent] .mk__floors button[aria-pressed="true"] { background: var(--acc) !important; border-color: var(--acc) !important; color: #fff !important; }
+html[data-akcent] .timeline li.done .dot { background: var(--acc); border-color: var(--acc); }
+html[data-akcent] a:not(.btn):hover { color: var(--acc); }
+html[data-akcent] .status--wolne::before { background: var(--acc-l); }
+
+/* ---------- KONCEPCJA 01: geometria, koła i łuki, polska awangarda ---------- */
+html[data-kierunek="k1"] {
+  --paper: #f3ede4; --paper-2: #eadfd2; --line: #dcc9bd;
+  --bronze: #7a1f2b; --bronze-soft: #c98f86;
+  --dark: #4a0a1c; --dark-2: #5c1426;
+  --head: "Outfit", "Jost", sans-serif;
+  --k-violet: #6b5fc7; --k-pink: #ebc9c5; --k-clay: #b9735a;
+}
+html[data-kierunek="k1"] .display, html[data-kierunek="k1"] h1, html[data-kierunek="k1"] h2, html[data-kierunek="k1"] h3 { font-family: "Outfit", sans-serif; font-weight: 400; letter-spacing: -.01em; }
+html[data-kierunek="k1"] .caps { font-family: "Outfit", sans-serif; }
+html[data-kierunek="k1"] .hero__claim, html[data-kierunek="k1"] .mission-sign, html[data-kierunek="k1"] .to-offer__t, html[data-kierunek="k1"] .h2-kicker, html[data-kierunek="k1"] .draw__sign, html[data-kierunek="k1"] .wellness__more { font-family: "Outfit", sans-serif !important; font-style: normal !important; font-weight: 300 !important; }
+html[data-kierunek="k1"] .section, html[data-kierunek="k1"] .values, html[data-kierunek="k1"] .hero { position: relative; }
+/* figury geometryczne: półkola, koła, ćwiartki */
+html[data-kierunek="k1"] .k-geo { position: absolute; pointer-events: none; z-index: 0; display: block; }
+html[data-kierunek="k1"] .section--dark .caps.bronze, html[data-kierunek="k1"] .section--dark .wellness__sub { color: var(--k-pink); }
+html[data-kierunek="k1"] .k-geo--a { width: 220px; height: 110px; border-radius: 0 0 110px 110px; background: var(--k-pink); right: 6%; top: 0; }
+html[data-kierunek="k1"] .k-geo--b { width: 90px; height: 90px; border-radius: 50%; background: var(--k-violet); right: calc(6% + 230px); top: 40px; }
+html[data-kierunek="k1"] .k-geo--c { width: 160px; height: 160px; border-radius: 160px 0 0 0; background: var(--k-clay); left: 0; bottom: 0; opacity: .9; }
+html[data-kierunek="k1"] .k-geo--d { width: 120px; height: 240px; border-radius: 0 120px 120px 0; background: var(--k-pink); left: 0; top: 30%; opacity: .55; }
+html[data-kierunek="k1"] .section > .wrap, html[data-kierunek="k1"] .values > * { position: relative; z-index: 1; }
+html[data-kierunek="k1"] .ideas__n { font-family: "Outfit"; font-weight: 600; font-size: 46px; color: var(--k-violet); }
+html[data-kierunek="k1"] .btn--solid { background: var(--dark); border-color: var(--dark); }
+html[data-kierunek="k1"] .btn--solid:hover { background: var(--k-violet); border-color: var(--k-violet); }
+html[data-kierunek="k1"] .btn { border-radius: 999px; }
+html[data-kierunek="k1"] .hero__media::after { content: ""; position: absolute; right: 7%; bottom: 12%; width: 180px; height: 90px; border-radius: 90px 90px 0 0; background: var(--k-pink); opacity: .85; z-index: 2; }
+html[data-kierunek="k1"] .material__img { border-radius: 0 0 999px 999px; overflow: hidden; } html[data-kierunek="k1"] .wellness__item .arch-slider { border-radius: 260px 260px 0 0; overflow: hidden; }
+html[data-kierunek="k1"] .vw__word { color: var(--dark); }
+
+/* ---------- KONCEPCJA 02: rytm, moduł, luksfery ---------- */
+html[data-kierunek="k2"] {
+  --paper: #efe6d6; --paper-2: #e6dac6; --line: #d3c3aa;
+  --bronze: #6b4a35; --bronze-soft: #b08d6c;
+  --dark: #2f4a44; --dark-2: #3a5852;
+  --head: "Archivo", "Jost", sans-serif; --body: "Instrument Sans", "Nunito Sans", Arial, sans-serif;
+  --k-sky: #a9bfd8; --k-brown: #4a2e22;
+}
+html[data-kierunek="k2"] .display, html[data-kierunek="k2"] h1, html[data-kierunek="k2"] h2, html[data-kierunek="k2"] h3 { font-family: "Archivo", sans-serif; font-weight: 300; font-stretch: 112%; letter-spacing: .01em; }
+html[data-kierunek="k2"] .hero__claim, html[data-kierunek="k2"] .mission-sign, html[data-kierunek="k2"] .to-offer__t, html[data-kierunek="k2"] .h2-kicker, html[data-kierunek="k2"] .draw__sign, html[data-kierunek="k2"] .wellness__more { font-family: "Archivo", sans-serif !important; font-style: normal !important; font-weight: 300 !important; font-stretch: 112%; }
+/* rytm pionowych podziałów w ciemnych sekcjach */
+html[data-kierunek="k2"] .section--dark, html[data-kierunek="k2"] .modern { background-image: repeating-linear-gradient(90deg, transparent 0 calc(12.5% - 1px), rgba(255,255,255,.07) calc(12.5% - 1px) 12.5%); }
+/* szachownica jako pasek między sekcjami */
+html[data-kierunek="k2"] .values::before { content: ""; display: block; height: 28px; background: conic-gradient(var(--dark) 25%, var(--paper) 0 50%, var(--dark) 0 75%, var(--paper) 0) 0 0 / 28px 28px; }
+/* efekt luksferów na zdjęciach: siatka szklanych pustaków rozpraszających obraz */
+html[data-kierunek="k2"] .hero__media::after, html[data-kierunek="k2"] .wellness__item .arch-slider__track::after, html[data-kierunek="k2"] .split__media::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255,255,255,.22), rgba(255,255,255,0) 55%) 0 0 / 56px 56px,
+    linear-gradient(rgba(255,255,255,.28) 2px, transparent 2px) 0 0 / 56px 56px,
+    linear-gradient(90deg, rgba(255,255,255,.28) 2px, transparent 2px) 0 0 / 56px 56px;
+  -webkit-backdrop-filter: blur(2.5px) saturate(1.1); backdrop-filter: blur(2.5px) saturate(1.1);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0 55%, #000 75%); mask-image: linear-gradient(90deg, transparent 0 55%, #000 75%);
+}
+html[data-kierunek="k2"] .wellness__item .arch-slider__track, html[data-kierunek="k2"] .split__media { position: relative; }
+html[data-kierunek="k2"] .section--dark .wellness__sub, html[data-kierunek="k2"] .section--dark .caps.bronze { color: var(--k-sky); }
+html[data-kierunek="k2"] .btn--solid { background: var(--dark); border-color: var(--dark); }
+html[data-kierunek="k2"] .btn--solid:hover { background: var(--k-brown); border-color: var(--k-brown); }
+html[data-kierunek="k2"] .ideas { gap: 0; }
+html[data-kierunek="k2"] .ideas li { padding: 22px 22px 26px; border-left: 1px solid var(--line); }
+html[data-kierunek="k2"] .ideas li:nth-child(2) { background: var(--k-sky); }
+html[data-kierunek="k2"] .ideas li:nth-child(4) { background: var(--dark); color: var(--paper); }
+html[data-kierunek="k2"] .ideas li:nth-child(4) p, html[data-kierunek="k2"] .ideas li:nth-child(4) h3 { color: var(--paper); }
+html[data-kierunek="k2"] .ideas__n { font-family: "Archivo"; font-stretch: 125%; font-weight: 600; color: var(--bronze); }
+html[data-kierunek="k2"] .fact { border-left: 6px solid var(--k-sky); padding-left: 14px; }
+
+/* ---------- LOGO GEOMETRYCZNE ---------- */
+html[data-logo="geo"] .intro { display: none !important; }
+html[data-logo="geo"] .hero__logo .logo-svg { height: clamp(80px, 12vw, 170px); }
