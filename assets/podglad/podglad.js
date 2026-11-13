@@ -7,7 +7,7 @@
     ['k1', 'Koncepcja 01', 'Geometria i konstrukcja: koła, półkola i łuki, polska awangarda. Bordo, glina, róż, fiolet. Logo z figur geometrycznych.'],
     ['k2', 'Koncepcja 02', 'Rytm i modularność: prostokąty, pionowe podziały, szachownica i efekt luksferów. Zieleń, brąz, błękit. Logo modułowe z pionowych pasów.'],
     ['k3', 'Koncepcja 03', 'Kolory obecnej strony (kremowy papier, mosiądz, ciepła czerń) z krojami, kształtami i logo Koncepcji 01: koła, półkola, łuki, zaokrąglone przyciski, logo geometryczne.'],
-    ['k3b', 'Koncepcja 03b', 'Koncepcja 03 delikatnie poprawiona (hero jak w 03): lżejsze nagłówki, wszystkie łuki do góry, numery w mosiądzu, 5 powodów bez numerów i linków, cieńsze przyciski.']
+    ['k3b', 'Koncepcja 03b', 'Koncepcja 03 delikatnie poprawiona: hero z ćwiartką koła i trzema liniami w stylu streamline lat 30., lżejsze nagłówki, wszystkie łuki do góry, numery w mosiądzu, 5 powodów bez numerów i linków, cieńsze przyciski.']
   ];
   var STY = [['', 'Obecna'], ['kamien', 'Lata 30 · kamień'], ['mosiadz', 'Lata 30 · mosiężne litery'], ['szyld', 'Lata 30 · szyld']];
   var ACC = [['', 'Mosiądz', '#9c7149'], ['zielen', 'Zieleń', '#4f7262'], ['rosso', 'Rosso', '#9a3b32'], ['blekit', 'Błękit', '#4f7a8a']];
