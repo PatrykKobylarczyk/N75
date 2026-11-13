@@ -6,6 +6,7 @@
     ['', 'Obecny', 'Kremowy papier, mosiądz, cienki geometryczny krój. Obecne logo liniowe.'],
     ['k1', 'Koncepcja 01', 'Geometria i konstrukcja: koła, półkola i łuki, polska awangarda. Bordo, glina, róż, fiolet. Logo z figur geometrycznych.'],
     ['k2', 'Koncepcja 02', 'Rytm i modularność: prostokąty, pionowe podziały, szachownica i efekt luksferów. Zieleń, brąz, błękit. Logo modułowe z pionowych pasów.'],
+    ['k4', 'Koncepcja 04 · synteza', 'Jedna zasada: strona pokazuje tylko to, z czego jest zbudowany N75. Trawertyn, mosiądz, orzech i jeden akcent z marmuru Rosso. Jedna geometria – portal z łukiem. Wersaliki lat 30. i logo kute w kamieniu.'],
     ['k3', 'Koncepcja 03', 'Kolory obecnej strony (kremowy papier, mosiądz, ciepła czerń) z krojami, kształtami i logo Koncepcji 01: koła, półkola, łuki, zaokrąglone przyciski, logo geometryczne.']
   ];
   var STY = [['', 'Obecna'], ['kamien', 'Lata 30 · kamień'], ['mosiadz', 'Lata 30 · mosiężne litery'], ['szyld', 'Lata 30 · szyld']];
@@ -108,12 +109,15 @@
   }
 
   function apply() {
-    var kd = st.kierunek === 'k3' ? 'k1' : st.kierunek;
+    var k4 = st.kierunek === 'k4';
+    var kd = st.kierunek === 'k3' ? 'k1' : k4 ? '' : st.kierunek;
+    if (k4) H.setAttribute('data-k4', ''); else H.removeAttribute('data-k4');
     if (kd) H.setAttribute('data-kierunek', kd); else H.removeAttribute('data-kierunek');
     if (st.kierunek === 'k3') H.setAttribute('data-paleta', 'obecna'); else H.removeAttribute('data-paleta');
     if (st.akcent && !st.kierunek) H.setAttribute('data-akcent', st.akcent); else H.removeAttribute('data-akcent');
-    var kam = !st.kierunek && st.styl === 'kamien';
-    setLogo((st.kierunek === 'k1' || st.kierunek === 'k3') ? L1 : st.kierunek === 'k2' ? L2 : st.styl === 'mosiadz' ? LM : st.styl === 'szyld' ? LS : kam ? LK : L0);
+    var styl = k4 ? 'kamien' : (!st.kierunek ? st.styl : '');
+    var kam = styl === 'kamien';
+    setLogo((st.kierunek === 'k1' || st.kierunek === 'k3') ? L1 : st.kierunek === 'k2' ? L2 : styl === 'mosiadz' ? LM : styl === 'szyld' ? LS : kam ? LK : L0);
     var narrow = matchMedia('(max-width: 700px)').matches;
     document.querySelectorAll('.header .logo use, .drawer .logo use, .footer .logo use').forEach(function (u) {
       var svg = u.ownerSVGElement, small = narrow && !u.closest('.footer'), w = kam && !small;
@@ -122,7 +126,7 @@
     });
     var hw = document.querySelector('.k-word'); if (hw) hw.remove();
     if (kam) { var h1 = document.querySelector('.hero__logo'); if (h1) { var d = document.createElement('div'); d.className = 'k-word'; d.setAttribute('aria-hidden', 'true'); d.innerHTML = '<svg viewBox="0 0 ' + WORD.vb.split(' ')[2] + ' 88"><use href="#n75-word"/></svg>'; h1.after(d); } }
-    if (st.styl && !st.kierunek) H.setAttribute('data-styl', st.styl); else H.removeAttribute('data-styl');
+    if (styl) H.setAttribute('data-styl', styl); else H.removeAttribute('data-styl');
     recolor(st.kierunek ? '' : st.akcent);
     if (document.body) deco();
     try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}

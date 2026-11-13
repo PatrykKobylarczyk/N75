@@ -263,3 +263,29 @@ html[data-kierunek="k1"][data-paleta="obecna"] :is(.section--dark, .hero) .btn--
 html[data-kierunek="k1"][data-paleta="obecna"] .fact:nth-child(3n+1) .fact__val { color: var(--bronze); }
 html[data-kierunek="k1"][data-paleta="obecna"] .k-h1 { background: var(--bronze); }
 html[data-kierunek="k1"][data-paleta="obecna"] .k-h3 { background: var(--bronze-soft); }
+
+/* =====================================================================
+   KONCEPCJA 04 · SYNTEZA – „pokazujemy tylko to, z czego jest zbudowany N75”
+   baza: obecne kolory + typografia i logo „Lata 30 · kamień”
+   dodatki: jedna geometria (portal z łukiem), jeden akcent (marmur Rosso)
+   ===================================================================== */
+html[data-k4] { --rosso: #8a332b; --rosso-dark: #2b1411; }
+/* portal: każde duże zdjęcie z tym samym łukiem u góry */
+html[data-k4] .hero__media { left: 52%; right: 4%; top: 96px; border-radius: 50% 50% 0 0 / 30% 30% 0 0; overflow: hidden; }
+html[data-k4] :is(.split__media, .wellness__item .arch-slider__track, .material__img) { border-radius: 50% 50% 0 0 / 22% 22% 0 0; overflow: hidden; }
+html[data-k4] .material__img { border-radius: 50% 50% 0 0 / 32% 32% 0 0; }
+html[data-k4] .arch-slider--pano .arch-slider__track { border-radius: 50% 50% 0 0 / 14% 14% 0 0; overflow: hidden; }
+/* marmur Rosso: jedyny akcent poza mosiądzem */
+html[data-k4] .btn--solid { background: var(--rosso); border-color: var(--rosso); color: #f7f3ec; }
+html[data-k4] .btn--solid:hover { background: var(--dark); border-color: var(--dark); }
+html[data-k4] #kontakt { background: var(--rosso-dark); }
+html[data-k4] #kontakt .btn--solid { background: #c4a27f; border-color: #c4a27f; color: var(--rosso-dark); }
+html[data-k4] .fav.is-on svg, html[data-k4] .status--wolne::before { color: var(--rosso); }
+/* ciemne sekcje w tonie orzecha */
+html[data-k4] :is(#udogodnienia, .modern) { background: #2a211a; }
+/* ryflowanie (mosiężne lamele) tylko w pasie 5 powodów – już w stylu kamień */
+@media (max-width: 900px) {
+  html[data-k4] .hero__media { left: 6%; right: 6%; top: 76px; bottom: 54%; border-radius: 50% 50% 0 0 / 34% 34% 0 0; }
+}
+html[data-k4] .header:not(.is-solid) { color: #2f261d !important; }
+html[data-k4] .header:not(.is-solid) .btn--ghost { border-color: rgba(47, 38, 29, .45); color: #2f261d; }
