@@ -175,3 +175,27 @@ html[data-kierunek="k2"] .header.is-solid .logo { color: var(--dark); }
 html[data-akcent="zielen"]:not([data-kierunek]) :is(.section--dark, .modern, .footer) :is(.bronze, .wellness__sub, [data-num], .caps.bronze) { color: #93b0a0 !important; }
 html[data-akcent="rosso"]:not([data-kierunek]) :is(.section--dark, .modern, .footer) :is(.bronze, .wellness__sub, [data-num], .caps.bronze) { color: #d99c92 !important; }
 html[data-akcent="blekit"]:not([data-kierunek]) :is(.section--dark, .modern, .footer) :is(.bronze, .wellness__sub, [data-num], .caps.bronze) { color: #a9c1c9 !important; }
+
+/* =====================================================================
+   OBECNY KIERUNEK · PODWERSJE TYPOGRAFICZNE LAT 30.
+   ===================================================================== */
+/* mosiężne litery: geometryczna monolinia jak dawne mosiężne napisy na drzwiach */
+html[data-styl="mosiadz"] { --head: "Josefin Sans", "Jost", sans-serif; }
+html[data-styl="mosiadz"] :is(.display, h1, h2, h3, h4) { font-family: "Josefin Sans", sans-serif; font-weight: 300; letter-spacing: .08em; }
+html[data-styl="mosiadz"] .h2 { font-weight: 300; letter-spacing: .1em; }
+html[data-styl="mosiadz"] .caps { font-family: "Josefin Sans", sans-serif; font-weight: 400; letter-spacing: .2em; }
+html[data-styl="mosiadz"] :is(.hero__claim, .mission-sign, .to-offer__t, .h2-kicker, .draw__sign, .wellness__more) { font-family: "Josefin Sans", sans-serif !important; font-style: italic !important; font-weight: 300 !important; letter-spacing: .02em; }
+html[data-styl="mosiadz"] :is(.vw__word, .fact__val, .ideas__n, .modern__word) { font-family: "Josefin Sans", sans-serif !important; font-weight: 200; }
+html[data-styl="mosiadz"] .hero__logo { color: #d2b27a; filter: drop-shadow(0 1px 0 rgba(0,0,0,.25)); }
+html[data-styl="mosiadz"] .hero__logo .logo-svg { height: clamp(90px, 13vw, 190px); }
+html[data-styl="mosiadz"] .footer .logo { color: #c9a56a; }
+/* szyld: cienkie wersaliki art déco + kaligrafia jednym pociągnięciem, linie jak w neonowym szyldzie */
+html[data-styl="szyld"] { --head: "Poiret One", "Jost", sans-serif; }
+html[data-styl="szyld"] :is(.display, h1, h2, h3, h4) { font-family: "Poiret One", sans-serif; font-weight: 400; letter-spacing: .06em; }
+html[data-styl="szyld"] .caps { font-family: "Josefin Sans", sans-serif; font-weight: 400; letter-spacing: .22em; }
+html[data-styl="szyld"] :is(.hero__claim, .mission-sign, .to-offer__t, .h2-kicker, .draw__sign, .wellness__more) { font-family: "Sacramento", cursive !important; font-style: normal !important; font-weight: 400 !important; font-size: 1.6em; line-height: 1.15; letter-spacing: 0; }
+html[data-styl="szyld"] .hero__claim { font-size: clamp(44px, 4.6vw, 66px) !important; }
+html[data-styl="szyld"] :is(.vw__word, .fact__val, .ideas__n, .modern__word) { font-family: "Poiret One", sans-serif !important; }
+html[data-styl="szyld"] .h2 { padding-bottom: 20px; background: linear-gradient(currentColor, currentColor) 0 calc(100% - 6px) / 120px 1px no-repeat, linear-gradient(currentColor, currentColor) 0 100% / 120px 1px no-repeat; }
+html[data-styl="szyld"] .hero__logo .logo-svg { height: clamp(120px, 16vw, 230px); }
+html[data-styl="szyld"] .header .logo .logo-svg { height: 40px; }

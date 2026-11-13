@@ -7,12 +7,13 @@
     ['k1', 'Koncepcja 01', 'Geometria i konstrukcja: koła, półkola i łuki, polska awangarda. Bordo, glina, róż, fiolet. Logo z figur geometrycznych.'],
     ['k2', 'Koncepcja 02', 'Rytm i modularność: prostokąty, pionowe podziały, szachownica i efekt luksferów. Zieleń, brąz, błękit. Logo modułowe z pionowych pasów.']
   ];
+  var STY = [['', 'Obecna'], ['mosiadz', 'Lata 30 · mosiężne litery'], ['szyld', 'Lata 30 · szyld']];
   var ACC = [['', 'Mosiądz', '#9c7149'], ['zielen', 'Zieleń', '#4f7262'], ['rosso', 'Rosso', '#9a3b32'], ['blekit', 'Błękit', '#4f7a8a']];
   var st = {}; try { st = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
-  var q = new URLSearchParams(location.search); ['akcent', 'kierunek'].forEach(function (k) { if (q.has(k)) st[k] = q.get(k); });
+  var q = new URLSearchParams(location.search); ['akcent', 'kierunek', 'styl'].forEach(function (k) { if (q.has(k)) st[k] = q.get(k); });
 
   var fl = document.createElement('link'); fl.rel = 'stylesheet';
-  fl.href = 'https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700&family=Outfit:wght@300;400;500;600&family=Archivo:wdth,wght@100..125,300..700&family=Instrument+Sans:wght@400;500&family=Major+Mono+Display&display=swap';
+  fl.href = 'https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700&family=Outfit:wght@300;400;500;600&family=Archivo:wdth,wght@100..125,300..700&family=Instrument+Sans:wght@400;500&family=Major+Mono+Display&family=Josefin+Sans:ital,wght@0,200..600;1,200..500&family=Poiret+One&family=Sacramento&display=swap';
   document.head.appendChild(fl);
 
   /* ---------- logo ---------- */
@@ -34,6 +35,17 @@
   var bars = ''; for (var x = 0; x < 760; x += 30) bars += '<rect x="' + x + '" y="0" width="21" height="300"/>';
   var L2 = { vb: '0 0 760 300', svg: '<defs><clipPath id="k2-clip">' + shapes + '</clipPath></defs><g clip-path="url(#k2-clip)">' + bars + '</g>' };
 
+  // Lata 30 · mosiężne litery: geometryczna monolinia z zaokrąglonymi końcami
+  var LM = { vb: '0 0 500 230', svg: '<g fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M30 200V30l120 170V30"/><path d="M200 30h120L250 200"/><path d="M262 120h52"/>' +
+    '<path d="M470 30h-100v100"/><path d="M370 130a52 52 0 1 1 1 36"/></g>' };
+  // Lata 30 · szyld: cienkie wersaliki art déco w ramie z linii, z tabliczką
+  var LS = { vb: '0 0 600 300', svg: '<g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M40 64h155M405 64h155M40 250h520M40 262h520M40 64v186M560 64v186"/>' +
+    '<rect x="195" y="46" width="210" height="36" rx="4"/>' +
+    '<path d="M110 228V96l100 132V96"/><path d="M258 96h104l-70 132"/><path d="M285 166h56"/>' +
+    '<path d="M490 96h-78l-6 60c12-10 26-14 40-14a44 44 0 1 1-38 66"/></g>' +
+    '<text x="300" y="70" text-anchor="middle" font-family="Josefin Sans, Jost, sans-serif" font-size="16" textLength="176" lengthAdjust="spacingAndGlyphs" fill="currentColor">NARUTOWICZA 75</text>' };
   var sym = document.getElementById('n75-logo'), L0 = sym ? { vb: sym.getAttribute('viewBox'), svg: sym.innerHTML } : null;
   function setLogo(L) {
     if (!sym || !L) return;
@@ -92,14 +104,15 @@
   function apply() {
     if (st.kierunek) H.setAttribute('data-kierunek', st.kierunek); else H.removeAttribute('data-kierunek');
     if (st.akcent && !st.kierunek) H.setAttribute('data-akcent', st.akcent); else H.removeAttribute('data-akcent');
-    setLogo(st.kierunek === 'k1' ? L1 : st.kierunek === 'k2' ? L2 : L0);
+    setLogo(st.kierunek === 'k1' ? L1 : st.kierunek === 'k2' ? L2 : st.styl === 'mosiadz' ? LM : st.styl === 'szyld' ? LS : L0);
+    if (st.styl && !st.kierunek) H.setAttribute('data-styl', st.styl); else H.removeAttribute('data-styl');
     recolor(st.kierunek ? '' : st.akcent);
     if (document.body) deco();
     try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
     if (panel) {
       panel.querySelectorAll('button[data-k]').forEach(function (b) { b.setAttribute('aria-pressed', String((st[b.dataset.k] || '') === b.dataset.v)); });
       var d = DIR.filter(function (x) { return x[0] === (st.kierunek || ''); })[0]; panel.querySelector('.pg-desc').textContent = d[2];
-      panel.querySelector('.pg-acc').hidden = !!st.kierunek;
+      panel.querySelectorAll('.pg-acc').forEach(function (e) { e.hidden = !!st.kierunek; });
     }
   }
   var panel = null;
@@ -108,6 +121,7 @@
     panel.innerHTML = '<div class="pg-panel__h"><span>Podgląd koncepcji</span><span>zwiń / rozwiń</span></div><div class="pg-panel__b">' +
       '<label>Kierunek graficzny i logo<span class="pg-opts">' + DIR.map(function (o) { return '<button type="button" data-k="kierunek" data-v="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</span></label>' +
       '<p class="pg-desc"></p>' +
+      '<label class="pg-acc pg-sty">Typografia i logo (obecny kierunek)<span class="pg-opts">' + STY.map(function (o) { return '<button type="button" data-k="styl" data-v="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</span></label>' +
       '<label class="pg-acc">Kolor zamiast mosiądzu (obecny kierunek)<span class="pg-opts">' + ACC.map(function (o) { return '<button type="button" data-k="akcent" data-v="' + o[0] + '"><span class="pg-sw" style="background:' + o[2] + '"></span>' + o[1] + '</button>'; }).join('') + '</span></label>' +
       '<p class="pg-note">Wersja robocza do porównania – nie jest na stronie n75.vercel.app. Kroje zastępcze zamiast płatnych z prezentacji.</p></div>';
     document.body.appendChild(panel);
