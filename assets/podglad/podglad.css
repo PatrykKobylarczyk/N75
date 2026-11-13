@@ -278,8 +278,17 @@ html[data-k3b] .fact .fact__val { color: var(--ink) !important; }
 /* 5 powodów jak w 03, bez numeru rzymskiego i linku pod opisem */
 html[data-k3b] .values :is(.vw__n, .vw__to) { display: none !important; }
 /* cieńsze, lżejsze przyciski */
-html[data-k3b] .btn { border-width: 1px; font-size: 11px; letter-spacing: .16em; padding-top: 13px; padding-bottom: 13px; }
+html[data-k3b] .btn:not(.header__cta) { border-width: 1px; font-size: 11px; letter-spacing: .16em; padding-top: 13px; padding-bottom: 13px; }
 
 /* 03b: liczby o budynku jak w obecnej wersji (krój, grubość, mosiądz) */
 html[data-k3b] .fact .fact__val, html[data-k3b] .fact:nth-child(3n+1) .fact__val { font-family: "Jost", sans-serif !important; font-weight: 300 !important; color: var(--bronze) !important; letter-spacing: 0; }
 html[data-k3b] .fact .caps { font-family: "Jost", sans-serif; font-weight: 400; }
+/* 03b: sekcja „Modernizm to…” jak w obecnej wersji (Futura/Jost, wersaliki, mosiężne słowo kursywą) */
+html[data-k3b] #wstep { --head: "Futura PT", "futura-pt", "Futura", "Jost", "Century Gothic", sans-serif; --body: "Avenir Next", "avenir-next", "Avenir", "Nunito Sans", "Helvetica Neue", Arial, sans-serif; --serif: var(--head); background: var(--paper); font-family: var(--body); font-weight: 400; }
+html[data-k3b] #wstep .display { font-family: var(--head); font-weight: 400; text-transform: uppercase; letter-spacing: .04em; line-height: 1.14; }
+html[data-k3b] #wstep .modern__rot { font-style: italic; }
+html[data-k3b] #wstep :is(.lead, .muted, p) { font-family: var(--body) !important; font-weight: 400 !important; }
+html[data-k3b] #wstep .draw__sign { font-family: var(--serif) !important; font-style: italic !important; font-weight: 300 !important; }
+/* 03b: materiały jako pionowe prostokąty z zaokrąglonymi rogami */
+html[data-k3b] .materials .material .material__img, html[data-k3b] .materials .material:nth-child(even) .material__img { border-radius: 22px !important; overflow: hidden; aspect-ratio: 3 / 4; }
+html[data-k3b] .materials .material__img img { width: 100%; height: 100%; object-fit: cover; }
