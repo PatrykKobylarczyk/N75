@@ -7,7 +7,7 @@
     ['k1', 'Koncepcja 01', 'Geometria i konstrukcja: koła, półkola i łuki, polska awangarda. Bordo, glina, róż, fiolet. Logo z figur geometrycznych.'],
     ['k2', 'Koncepcja 02', 'Rytm i modularność: prostokąty, pionowe podziały, szachownica i efekt luksferów. Zieleń, brąz, błękit. Logo modułowe z pionowych pasów.']
   ];
-  var ACC = [['', 'Mosiądz', '#9c7149'], ['zielen', 'Zieleń', '#2F4A3E'], ['rosso', 'Rosso', '#7E2E2A'], ['blekit', 'Błękit', '#4f6f7a']];
+  var ACC = [['', 'Mosiądz', '#9c7149'], ['zielen', 'Zieleń', '#4f7262'], ['rosso', 'Rosso', '#9a3b32'], ['blekit', 'Błękit', '#4f7a8a']];
   var st = {}; try { st = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
   var q = new URLSearchParams(location.search); ['akcent', 'kierunek'].forEach(function (k) { if (q.has(k)) st[k] = q.get(k); });
 
@@ -56,10 +56,44 @@
     }
   }
 
+  /* ---------- pełne przebarwienie obecnej strony na wybrany akcent ---------- */
+  var PAL = {
+    zielen: { '#9c7149': '#4f7262', '#c4a27f': '#93b0a0', '#b88c62': '#5f8673', '#b0946c': '#7c9a8a', '#7b4f2e': '#2f4a3e', '#d99a5b': '#7fa48f',
+      '156, 113, 73': '79, 114, 98', '196, 162, 127': '147, 176, 160',
+      '#f7f3ec': '#f4f4ee', '#efe9df': '#e9ede4', '#d9cfc1': '#cdd5c9', '#d8cfc2': '#ccd4c8', '#726a60': '#5f6a62', '#8c8478': '#7a857c',
+      '#221d18': '#16221c', '#2d2721': '#1e2d26', '#342a21': '#21332b', '#f4ede2': '#eef1e9', '#e6d6c2': '#d6e0d6', '#efe6d8': '#e5ece4' },
+    rosso: { '#9c7149': '#9a3b32', '#c4a27f': '#cf948b', '#b88c62': '#a8493f', '#b0946c': '#b56c63', '#7b4f2e': '#6e2420', '#d99a5b': '#c7675b',
+      '156, 113, 73': '154, 59, 50', '196, 162, 127': '207, 148, 139',
+      '#f7f3ec': '#f8f2ee', '#efe9df': '#f1e5df', '#d9cfc1': '#e0cbc4', '#d8cfc2': '#dfcac3', '#726a60': '#76625e', '#8c8478': '#907c77',
+      '#221d18': '#26120f', '#2d2721': '#341915', '#342a21': '#3d1e19', '#f4ede2': '#f5e9e4', '#e6d6c2': '#e9d0c9', '#efe6d8': '#f0e1db' },
+    blekit: { '#9c7149': '#4f7a8a', '#c4a27f': '#9fb6be', '#b88c62': '#5f8a9a', '#b0946c': '#7f9ea8', '#7b4f2e': '#34525c', '#d99a5b': '#7fa6b4',
+      '156, 113, 73': '79, 122, 138', '196, 162, 127': '159, 182, 190',
+      '#f7f3ec': '#f3f5f4', '#efe9df': '#e7ecec', '#d9cfc1': '#ccd6d7', '#d8cfc2': '#cbd5d6', '#726a60': '#5e6a6e', '#8c8478': '#7b878b',
+      '#221d18': '#131b1f', '#2d2721': '#1c272c', '#342a21': '#22313a', '#f4ede2': '#edf1f1', '#e6d6c2': '#d4dfe2', '#efe6d8': '#e4ebec' }
+  };
+  var cssText = null, recol = null;
+  function recolor(name) {
+    if (!recol) { recol = document.createElement('style'); recol.id = 'pg-recolor'; document.head.appendChild(recol); }
+    if (!name || !PAL[name]) { recol.textContent = ''; return; }
+    var link = document.querySelector('link[href*="assets/css/style.css"]');
+    var go = function (t) {
+      var m = PAL[name];
+      Object.keys(m).forEach(function (k) {
+        var re = k.charAt(0) === '#' ? new RegExp(k, 'gi') : new RegExp('rgba\\(\\s*' + k.replace(/, /g, ',\\s*'), 'g');
+        t = t.replace(re, k.charAt(0) === '#' ? m[k] : 'rgba(' + m[k]);
+        if (k.charAt(0) === '#') t = t.replace(new RegExp('%23' + k.slice(1), 'gi'), '%23' + m[k].slice(1));
+      });
+      t = t.replace(/url\((['"]?)\.\.\//g, 'url($1assets/');
+      recol.textContent = t;
+    };
+    if (cssText) go(cssText); else if (link) fetch(link.href).then(function (r) { return r.text(); }).then(function (t) { cssText = t; if ((st.akcent || '') === name && !st.kierunek) go(t); });
+  }
+
   function apply() {
     if (st.kierunek) H.setAttribute('data-kierunek', st.kierunek); else H.removeAttribute('data-kierunek');
     if (st.akcent && !st.kierunek) H.setAttribute('data-akcent', st.akcent); else H.removeAttribute('data-akcent');
     setLogo(st.kierunek === 'k1' ? L1 : st.kierunek === 'k2' ? L2 : L0);
+    recolor(st.kierunek ? '' : st.akcent);
     if (document.body) deco();
     try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
     if (panel) {
@@ -74,7 +108,7 @@
     panel.innerHTML = '<div class="pg-panel__h"><span>Podgląd koncepcji</span><span>zwiń / rozwiń</span></div><div class="pg-panel__b">' +
       '<label>Kierunek graficzny i logo<span class="pg-opts">' + DIR.map(function (o) { return '<button type="button" data-k="kierunek" data-v="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</span></label>' +
       '<p class="pg-desc"></p>' +
-      '<label class="pg-acc">Akcent kolorystyczny (obecny kierunek)<span class="pg-opts">' + ACC.map(function (o) { return '<button type="button" data-k="akcent" data-v="' + o[0] + '"><span class="pg-sw" style="background:' + o[2] + '"></span>' + o[1] + '</button>'; }).join('') + '</span></label>' +
+      '<label class="pg-acc">Kolor zamiast mosiądzu (obecny kierunek)<span class="pg-opts">' + ACC.map(function (o) { return '<button type="button" data-k="akcent" data-v="' + o[0] + '"><span class="pg-sw" style="background:' + o[2] + '"></span>' + o[1] + '</button>'; }).join('') + '</span></label>' +
       '<p class="pg-note">Wersja robocza do porównania – nie jest na stronie n75.vercel.app. Kroje zastępcze zamiast płatnych z prezentacji.</p></div>';
     document.body.appendChild(panel);
     panel.querySelector('.pg-panel__h').onclick = function () { panel.classList.toggle('is-min'); };

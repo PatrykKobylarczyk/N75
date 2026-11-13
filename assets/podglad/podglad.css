@@ -17,16 +17,7 @@
 html[data-kierunek] .intro { display: none !important; }
 .k-geo, .k-strip { pointer-events: none; }
 
-/* =====================================================================
-   OBECNY KIERUNEK + oszczędny akcent
-   ===================================================================== */
-html[data-akcent="zielen"] { --acc: #2F4A3E; }
-html[data-akcent="rosso"] { --acc: #7E2E2A; }
-html[data-akcent="blekit"] { --acc: #4f6f7a; }
-html[data-akcent]:not([data-kierunek]) .btn--solid { background: var(--acc); border-color: var(--acc); }
-html[data-akcent]:not([data-kierunek]) .ideas__n, html[data-akcent]:not([data-kierunek]) .vw__n, html[data-akcent]:not([data-kierunek]) .vw__sub, html[data-akcent]:not([data-kierunek]) .h2-kicker, html[data-akcent]:not([data-kierunek]) .material__where { color: var(--acc); }
-html[data-akcent]:not([data-kierunek]) #udogodnienia, html[data-akcent]:not([data-kierunek]) .modern { background: var(--acc); }
-html[data-akcent]:not([data-kierunek]) .chip[aria-pressed="true"] { background: var(--acc) !important; border-color: var(--acc) !important; color: #fff !important; }
+/* OBECNY KIERUNEK: kolor akcentu przebarwia cały arkusz stylów (podglad.js → recolor) */
 
 /* =====================================================================
    KONCEPCJA 01 – współczesna interpretacja modernizmu: geometria, koła,
@@ -179,3 +170,8 @@ html[data-kierunek="k2"] .header.is-solid .logo { color: var(--dark); }
   html[data-kierunek="k2"] .hero__media::after { -webkit-mask-image: linear-gradient(180deg, transparent 0 35%, #000 80%); mask-image: linear-gradient(180deg, transparent 0 35%, #000 80%); }
   html[data-kierunek="k2"] .k-bars { left: 0; right: 0; top: 48%; bottom: auto; width: auto; height: 30px; background: repeating-linear-gradient(90deg, var(--k-sky) 0 10px, transparent 10px 24px); }
 }
+
+/* czytelność podpisów w kolorze akcentu na ciemnych sekcjach */
+html[data-akcent="zielen"]:not([data-kierunek]) :is(.section--dark, .modern, .footer) :is(.bronze, .wellness__sub, [data-num], .caps.bronze) { color: #93b0a0 !important; }
+html[data-akcent="rosso"]:not([data-kierunek]) :is(.section--dark, .modern, .footer) :is(.bronze, .wellness__sub, [data-num], .caps.bronze) { color: #d99c92 !important; }
+html[data-akcent="blekit"]:not([data-kierunek]) :is(.section--dark, .modern, .footer) :is(.bronze, .wellness__sub, [data-num], .caps.bronze) { color: #a9c1c9 !important; }
