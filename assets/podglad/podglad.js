@@ -7,7 +7,7 @@
     ['k1', 'Koncepcja 01', 'Geometria i konstrukcja: koła, półkola i łuki, polska awangarda. Bordo, glina, róż, fiolet. Logo z figur geometrycznych.'],
     ['k2', 'Koncepcja 02', 'Rytm i modularność: prostokąty, pionowe podziały, szachownica i efekt luksferów. Zieleń, brąz, błękit. Logo modułowe z pionowych pasów.']
   ];
-  var STY = [['', 'Obecna'], ['mosiadz', 'Lata 30 · mosiężne litery'], ['szyld', 'Lata 30 · szyld']];
+  var STY = [['', 'Obecna'], ['kamien', 'Lata 30 · kamień'], ['mosiadz', 'Lata 30 · mosiężne litery'], ['szyld', 'Lata 30 · szyld']];
   var ACC = [['', 'Mosiądz', '#9c7149'], ['zielen', 'Zieleń', '#4f7262'], ['rosso', 'Rosso', '#9a3b32'], ['blekit', 'Błękit', '#4f7a8a']];
   var st = {}; try { st = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
   var q = new URLSearchParams(location.search); ['akcent', 'kierunek', 'styl'].forEach(function (k) { if (q.has(k)) st[k] = q.get(k); });
@@ -46,6 +46,11 @@
     '<path d="M110 228V96l100 132V96"/><path d="M258 96h104l-70 132"/><path d="M285 166h56"/>' +
     '<path d="M490 96h-78l-6 60c12-10 26-14 40-14a44 44 0 1 1-38 66"/></g>' +
     '<text x="300" y="70" text-anchor="middle" font-family="Josefin Sans, Jost, sans-serif" font-size="16" textLength="176" lengthAdjust="spacingAndGlyphs" fill="currentColor">NARUTOWICZA 75</text>' };
+  // Lata 30 · kamień: monogram z grubych cyfr z przerwami (jak kute „1930”) + ażurowy napis NARUTOWICZA 75
+  var LK = { vb: '0 0 584 202', svg: '<path d="M0 0h38v200H0z"/><path d="M50 0h40l68 200h-40z"/><path d="M170 0h38v200h-38z"/><path d="M250 0h156v38H250z"/><path d="M366 50h42L330 200h-42z"/><path d="M448 0h134v38H448z"/><path d="M448 48h38v58h-38z"/><path d="M501.6 80.9A60 60 0 1 1 460.0 170.0L491.2 152.0A24 24 0 1 0 507.8 116.4Z"/><circle cx="475.6" cy="161.0" r="22"/>' };
+  var WORD = { vb: '-4 -4 1296 88', svg: '<g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="butt" stroke-linejoin="miter"><path transform="translate(0 0)" d="M0 80V0L56 80V0"/><path transform="translate(96 0)" d="M0 80L32 0L64 80M22 54H48"/><path transform="translate(200 0)" d="M0 80V0H30a20 20 0 0 1 0 40H0M28 40L52 80"/><path transform="translate(292 0)" d="M0 0V52a26 26 0 0 0 23 26M33 78A26 26 0 0 0 56 52V0"/><path transform="translate(388 0)" d="M0 0H56M28 0V80"/><path transform="translate(484 0)" d="M0.3 35.1A40 40 0 0 1 79.7 35.1M79.7 44.9A40 40 0 0 1 0.3 44.9"/><path transform="translate(604 0)" d="M0 0L19 80L42 14L65 80L84 0"/><path transform="translate(728 0)" d="M0 0V34M0 46V80"/><path transform="translate(768 0)" d="M72.6 65.7A40 40 0 1 1 72.6 14.3"/><path transform="translate(878 0)" d="M0 0H54L0 80H54"/><path transform="translate(972 0)" d="M0 80L32 0L64 80M22 54H48"/><path transform="translate(1146 0)" d="M0 0H38M48 0L20 80"/><path transform="translate(1236 0)" d="M50 0H6L3 34C12 29 20 27 26 27a26 26 0 1 1-24 36"/></g>' };
+  (function () { var defs = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); defs.setAttribute('width', '0'); defs.setAttribute('height', '0'); defs.style.position = 'absolute';
+    defs.innerHTML = '<symbol id="n75-word" viewBox="' + WORD.vb + '">' + WORD.svg + '</symbol>'; (document.body || document.documentElement).appendChild(defs); })();
   var sym = document.getElementById('n75-logo'), L0 = sym ? { vb: sym.getAttribute('viewBox'), svg: sym.innerHTML } : null;
   function setLogo(L) {
     if (!sym || !L) return;
@@ -104,7 +109,16 @@
   function apply() {
     if (st.kierunek) H.setAttribute('data-kierunek', st.kierunek); else H.removeAttribute('data-kierunek');
     if (st.akcent && !st.kierunek) H.setAttribute('data-akcent', st.akcent); else H.removeAttribute('data-akcent');
-    setLogo(st.kierunek === 'k1' ? L1 : st.kierunek === 'k2' ? L2 : st.styl === 'mosiadz' ? LM : st.styl === 'szyld' ? LS : L0);
+    var kam = !st.kierunek && st.styl === 'kamien';
+    setLogo(st.kierunek === 'k1' ? L1 : st.kierunek === 'k2' ? L2 : st.styl === 'mosiadz' ? LM : st.styl === 'szyld' ? LS : kam ? LK : L0);
+    var narrow = matchMedia('(max-width: 700px)').matches;
+    document.querySelectorAll('.header .logo use, .drawer .logo use, .footer .logo use').forEach(function (u) {
+      var svg = u.ownerSVGElement, small = narrow && !u.closest('.footer'), w = kam && !small;
+      u.setAttribute('href', w ? '#n75-word' : '#n75-logo');
+      if (w) svg.setAttribute('viewBox', '0 0 ' + WORD.vb.split(' ')[2] + ' 88');
+    });
+    var hw = document.querySelector('.k-word'); if (hw) hw.remove();
+    if (kam) { var h1 = document.querySelector('.hero__logo'); if (h1) { var d = document.createElement('div'); d.className = 'k-word'; d.setAttribute('aria-hidden', 'true'); d.innerHTML = '<svg viewBox="0 0 ' + WORD.vb.split(' ')[2] + ' 88"><use href="#n75-word"/></svg>'; h1.after(d); } }
     if (st.styl && !st.kierunek) H.setAttribute('data-styl', st.styl); else H.removeAttribute('data-styl');
     recolor(st.kierunek ? '' : st.akcent);
     if (document.body) deco();

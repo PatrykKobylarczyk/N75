@@ -199,3 +199,43 @@ html[data-styl="szyld"] :is(.vw__word, .fact__val, .ideas__n, .modern__word) { f
 html[data-styl="szyld"] .h2 { padding-bottom: 20px; background: linear-gradient(currentColor, currentColor) 0 calc(100% - 6px) / 120px 1px no-repeat, linear-gradient(currentColor, currentColor) 0 100% / 120px 1px no-repeat; }
 html[data-styl="szyld"] .hero__logo .logo-svg { height: clamp(120px, 16vw, 230px); }
 html[data-styl="szyld"] .header .logo .logo-svg { height: 40px; }
+
+/* =====================================================================
+   OBECNY · LATA 30 · KAMIEŃ – monogram kuty w trawertynie, ażurowy napis,
+   rozstrzelone geometryczne wersaliki, ryflowany kamień
+   ===================================================================== */
+html[data-styl="kamien"] { --head: "Josefin Sans", "Jost", sans-serif; --stone: #d9cdb9; --stone-2: #e6ddcd; --carve: #5d5043; }
+html[data-styl="kamien"] :is(.display, h1, h2, h3, h4) { font-family: "Josefin Sans", sans-serif; font-weight: 300; letter-spacing: .16em; text-transform: uppercase; }
+html[data-styl="kamien"] .h2 { letter-spacing: .14em; font-weight: 300; }
+html[data-styl="kamien"] .caps { font-family: "Josefin Sans", sans-serif; font-weight: 400; letter-spacing: .26em; }
+html[data-styl="kamien"] :is(.hero__claim, .mission-sign, .to-offer__t, .h2-kicker, .draw__sign, .wellness__more) { font-family: "Josefin Sans", sans-serif !important; font-style: normal !important; font-weight: 300 !important; text-transform: uppercase; letter-spacing: .14em; font-size: .92em; }
+html[data-styl="kamien"] :is(.vw__word, .modern__word) { font-family: "Josefin Sans", sans-serif !important; font-weight: 200; }
+/* efekt liter wykutych w kamieniu */
+html[data-styl="kamien"] :is(.hero__logo, .fact__val, .ideas__n) { color: var(--carve); filter: drop-shadow(1px 1px 0 rgba(255,255,255,.6)) drop-shadow(-1px -1px 0 rgba(0,0,0,.28)); }
+html[data-styl="kamien"] :is(.fact__val, .ideas__n) { font-family: "Josefin Sans", sans-serif; font-weight: 600; }
+/* hero: płyta trawertynu z wykutym monogramem, zdjęcie obok */
+html[data-styl="kamien"] .hero { background: var(--stone) url(../img/material-trawertyn.webp) center / cover; color: #2f261d; }
+html[data-styl="kamien"] .hero::before { content: ""; position: absolute; inset: 0; background: rgba(236, 228, 214, .58); z-index: 0; }
+html[data-styl="kamien"] .hero::after { display: none; }
+html[data-styl="kamien"] .hero__media { left: 48%; z-index: 1; }
+html[data-styl="kamien"] .hero__content { position: relative; z-index: 2; }
+html[data-styl="kamien"] .hero__seal { display: none; }
+html[data-styl="kamien"] .hero .caps--wide { display: none; }
+html[data-styl="kamien"] .hero__logo { margin-bottom: 22px; }
+html[data-styl="kamien"] .hero__logo .logo-svg { height: clamp(90px, 12vw, 170px); }
+html[data-styl="kamien"] .k-word { width: min(440px, 80%); color: #3a2f24; margin: 0 0 34px; }
+html[data-styl="kamien"] .k-word svg { display: block; width: 100%; height: auto; }
+html[data-styl="kamien"] .hero__rule { background: rgba(58, 46, 34, .35); }
+html[data-styl="kamien"] :is(.hero__claim, .hero__lead) { color: #2f261d !important; text-shadow: none; }
+html[data-styl="kamien"] .header:not(.is-solid) { color: var(--paper); }
+html[data-styl="kamien"] .header .logo .logo-svg, html[data-styl="kamien"] .drawer__top .logo .logo-svg { height: 15px; }
+html[data-styl="kamien"] .footer .logo .logo-svg { height: 18px; }
+/* ryflowany kamień i płyty z wykutymi numerami */
+html[data-styl="kamien"] .values { background: repeating-linear-gradient(90deg, #ddd2c0 0 5px, #e9e1d3 5px 11px) !important; }
+html[data-styl="kamien"] .ideas li { padding: 26px 22px 30px; background: var(--stone-2) url(../img/material-trawertyn.webp) center / 220% auto; background-blend-mode: soft-light; }
+html[data-styl="kamien"] .ideas__n { font-size: 54px; }
+html[data-styl="kamien"] .fact { background: var(--stone-2) url(../img/material-trawertyn.webp) center / 300% auto; background-blend-mode: soft-light; padding: 18px 16px; }
+@media (max-width: 900px) {
+  html[data-styl="kamien"] .hero__media { left: 0; top: 0; bottom: 56%; }
+  html[data-styl="kamien"] .header .logo .logo-svg, html[data-styl="kamien"] .drawer__top .logo .logo-svg { height: 24px; }
+}
