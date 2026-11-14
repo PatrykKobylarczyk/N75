@@ -977,18 +977,21 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { inView = e[0].isIntersecting; if (inView) play(); else v.pause(); }).observe(v);
     // Wąski ekran (telefon w pionie): kadr przesuwa się za postaciami. Zmiana kadru wypada w środku wygaszenia, więc jej nie widać.
     // [czas w filmie (s), środek kadru jako część szerokości filmu]
-    var FOCUS = [[0, .5], [7.78, .54], [10.56, .64], [14.91, .33]];
-    var lastX = -1;
+    var FOCUS = [[0, .5], [7.78, .5], [10.53, .62], [13.28, .36]];
+    // Kadr liczony tylko przy zmianie sceny albo szerokości ekranu – nie przy chowaniu się paska adresu
+    // (zmiana samej wysokości przesuwała obraz w trakcie sceny).
+    var lastKey = '';
     (function frame() {
       requestAnimationFrame(frame);
       if (v.paused) return;
       var W = v.clientWidth, H = v.clientHeight; if (!W || !H) return;
-      var vis = Math.min(1, (W / H) / (16 / 9));
-      if (vis > .8) { if (lastX !== -1) { v.style.objectPosition = ''; lastX = -1; } return; }
       var t = v.currentTime, f = FOCUS[0][1];
       for (var i = 0; i < FOCUS.length; i++) if (t >= FOCUS[i][0]) f = FOCUS[i][1];
+      var key = f + '|' + W; if (key === lastKey) return; lastKey = key;
+      var vis = Math.min(1, (W / H) / (16 / 9));
+      if (vis > .8) { v.style.objectPosition = ''; return; }
       var x = Math.max(0, Math.min(100, (f - vis / 2) / (1 - vis) * 100));
-      if (Math.abs(x - lastX) > .1) { v.style.objectPosition = x.toFixed(1) + '% 50%'; lastX = x; }
+      v.style.objectPosition = x.toFixed(1) + '% 50%';
     })();
   })();
 
