@@ -309,3 +309,4 @@ html[data-k3b][data-kierunek] .k-geo.k-h3 { display: block !important; left: 0; 
 /* 03b: film w hero na całą szerokość (zamiast zdjęcia w łuku), z przyciemnieniem pod napisami */
 html[data-k3b][data-kierunek] .hero__media { left: 0; right: 0; top: 0; bottom: 0; border-radius: 0; }
 html[data-k3b][data-kierunek] .hero::after { display: block; }
+@media (max-width: 700px) { html[data-k3b] .hero__content { padding-bottom: 64px; } }
