@@ -960,12 +960,19 @@
   })();
 
 
-  /* ---------- Hero: film – przy „ogranicz ruch” stoi na kadrze startowym, poza ekranem się wstrzymuje ---------- */
+  /* ---------- Hero: film startuje sam (wyciszony), gdy przeglądarka wstrzyma autoodtwarzanie – rusza przy pierwszym dotyku/przewinięciu; poza ekranem pauza ---------- */
   (function () {
     var v = $('.hero__video'); if (!v) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); return; }
-    var play = function () { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { if (e[0].isIntersecting) play(); else v.pause(); }).observe(v);
+    v.muted = true; v.defaultMuted = true; v.setAttribute('muted', ''); v.playsInline = true;
+    var inView = true;
+    var play = function () { if (!inView) return; var p = v.play(); if (p && p.catch) p.catch(function () {}); };
+    play();
+    v.addEventListener('loadeddata', play); v.addEventListener('canplay', play);
+    ['touchstart', 'pointerdown', 'click', 'scroll', 'keydown'].forEach(function (ev) {
+      window.addEventListener(ev, function once() { if (v.paused) play(); }, { passive: true, once: true });
+    });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) play(); });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { inView = e[0].isIntersecting; if (inView) play(); else v.pause(); }).observe(v);
   })();
 
   /* ---------- Hero: żywa wizualizacja – przelatujące ptaki, auto na Narutowicza, światła w oknach N75 ---------- */
