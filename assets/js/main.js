@@ -968,7 +968,7 @@
     var play = function () { if (!inView) return; var p = v.play(); if (p && p.catch) p.catch(function () {}); };
     play();
     v.addEventListener('loadeddata', play); v.addEventListener('canplay', play);
-    ['touchstart', 'pointerdown', 'click', 'scroll', 'keydown'].forEach(function (ev) {
+    ['touchstart', 'touchend', 'pointerdown', 'pointerup', 'click', 'scroll', 'keydown'].forEach(function (ev) {
       window.addEventListener(ev, function once() { if (v.paused) play(); }, { passive: true, once: true });
     });
     document.addEventListener('visibilitychange', function () { if (!document.hidden) play(); });
