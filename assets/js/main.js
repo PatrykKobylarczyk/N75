@@ -965,6 +965,8 @@
     var v = $('.hero__video'); if (!v) return;
     v.muted = true; v.defaultMuted = true; v.setAttribute('muted', ''); v.playsInline = true;
     var inView = true;
+    v.addEventListener('playing', function () { v.classList.add('is-playing'); });
+    if (!v.paused && v.currentTime > 0) v.classList.add('is-playing');
     var play = function () { if (!inView) return; var p = v.play(); if (p && p.catch) p.catch(function () {}); };
     play();
     v.addEventListener('loadeddata', play); v.addEventListener('canplay', play);
