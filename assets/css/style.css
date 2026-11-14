@@ -944,6 +944,11 @@ a.tile { display: block; color: inherit; }
 /* iOS: bez systemowego przycisku „play” na filmie w tle (gdy autoodtwarzanie wstrzymane, widać plakat) */
 .hero__media video::-webkit-media-controls, .hero__media video::-webkit-media-controls-start-playback-button, .hero__media video::-webkit-media-controls-overlay-play-button { display: none !important; -webkit-appearance: none; opacity: 0; }
 .hero__media video { pointer-events: none; }
+/* Plakat pod filmem; sam film pokazuje się dopiero, gdy naprawdę gra – dzięki temu iOS (np. w trybie oszczędzania energii) nie pokazuje przycisku play */
+.hero__poster { position: absolute; inset: 0; background: url("../img/hero-film-poster.webp") 50% 50% / cover no-repeat; }
+.hero__media video { position: absolute; inset: 0; }
+.js .hero__media video { opacity: 0; transition: opacity .9s ease; }
+.js .hero__media video.is-playing { opacity: 1; }
 
 /* ---------- Logo w nagłówku: ukryte nad hero, widoczne po przewinięciu ---------- */
 .header__logo { opacity: 0; transform: translateY(-6px); pointer-events: none; transition: opacity .45s var(--ease), transform .45s var(--ease), color .3s; }
