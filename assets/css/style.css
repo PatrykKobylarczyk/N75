@@ -1880,3 +1880,18 @@ body.dh-open { overflow: hidden; }
 .timeline__note { margin: 6px 0 0; font-size: 13px; }
 .mission-txt p.lead { color: var(--graphite); font-size: clamp(18px, 1.5vw, 21px); line-height: 1.5; margin-bottom: 18px; }
 .footer__note { display: inline-block; margin-top: 10px; opacity: .75; font-size: .92em; }
+
+/* ---------- Hero z filmem na telefonie: napisy nisko i drobniej, żeby nie zasłaniały filmu (obie wersje strony) ---------- */
+@media (max-width: 700px) {
+  .hero::after {
+    background:
+      linear-gradient(180deg, rgba(20, 16, 12, .4) 0%, rgba(20, 16, 12, 0) 14%),
+      linear-gradient(0deg, rgba(20, 16, 12, .8) 0%, rgba(20, 16, 12, .45) 26%, rgba(20, 16, 12, 0) 44%) !important;
+  }
+  .hero .hero__main { align-self: end; padding-bottom: 0; }
+  .hero .hero__logo { margin: 10px 0 12px !important; }
+  .hero .hero__logo .logo-svg { height: 52px !important; }
+  .hero .hero__claim { font-size: 17px !important; margin-bottom: 0 !important; }
+  .hero .hero__lead { display: none; }
+  .hero .hero__rule { margin: 0 0 10px; }
+}
