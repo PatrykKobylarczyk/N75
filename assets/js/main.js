@@ -960,6 +960,14 @@
   })();
 
 
+  /* ---------- Hero: film – przy „ogranicz ruch” stoi na kadrze startowym, poza ekranem się wstrzymuje ---------- */
+  (function () {
+    var v = $('.hero__video'); if (!v) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); return; }
+    var play = function () { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { if (e[0].isIntersecting) play(); else v.pause(); }).observe(v);
+  })();
+
   /* ---------- Hero: żywa wizualizacja – przelatujące ptaki, auto na Narutowicza, światła w oknach N75 ---------- */
   (function () {
     var media = $('.hero__media'), img = media && $('img', media); if (!img) return;
