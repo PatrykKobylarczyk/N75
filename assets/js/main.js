@@ -977,7 +977,7 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { inView = e[0].isIntersecting; if (inView) play(); else v.pause(); }).observe(v);
     // Wąski ekran (telefon w pionie): kadr przesuwa się za postaciami. Zmiana kadru wypada w środku wygaszenia, więc jej nie widać.
     // [czas w filmie (s), środek kadru jako część szerokości filmu]
-    var FOCUS = [[0, .5], [7.9, .54], [10.9, .64], [15.46, .33]];
+    var FOCUS = [[0, .5], [7.78, .54], [10.56, .64], [14.91, .33]];
     var lastX = -1;
     (function frame() {
       requestAnimationFrame(frame);
