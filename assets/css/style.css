@@ -560,7 +560,8 @@ tr.is-sold td.unit-id { color: #b9ab98; }
   .timeline li { display: grid; grid-template-columns: 46px 1fr; column-gap: 22px; }
   .timeline .when { margin: 0; grid-column: 2; grid-row: 1; align-self: start; }
   .timeline h4 { grid-column: 2; }
-  .timeline .dot { grid-row: 1 / span 2; }
+  .timeline .dot { grid-row: 1 / span 3; }
+  .timeline .timeline__note { grid-column: 2; }
   .amenities { grid-template-columns: 1fr; }
   .amenity, .amenity:first-child { padding: 36px 0 10px; border-left: 0; border-top: 1px solid rgba(247,243,236,.16); }
   .mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: auto; height: auto; }

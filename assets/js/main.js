@@ -516,7 +516,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794606851" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794731632" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -977,7 +977,7 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { inView = e[0].isIntersecting; if (inView) play(); else v.pause(); }).observe(v);
     // Wąski ekran (telefon w pionie): kadr przesuwa się za postaciami. Zmiana kadru wypada w środku wygaszenia, więc jej nie widać.
     // [czas w filmie (s), środek kadru jako część szerokości filmu]
-    var FOCUS = [[0, .5], [7.78, .5], [10.53, .62], [13.28, .36]];
+    var FOCUS = [[0, .5], [7.06, .5], [9.81, .62], [12.58, .36]]; // środki wygaszeń w n75-hero-film-hq3.mp4
     // Kadr liczony tylko przy zmianie sceny albo szerokości ekranu – nie przy chowaniu się paska adresu
     // (zmiana samej wysokości przesuwała obraz w trakcie sceny).
     var lastKey = '';

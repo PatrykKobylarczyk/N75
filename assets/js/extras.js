@@ -77,13 +77,15 @@
       '<a class="mbar__call" href="tel:' + PHONE + '" aria-label="Zadzwoń: ' + PHONE_TXT + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5l2.6 3.3-1.7 2.4a11.5 11.5 0 0 0 7.3 7.3l2.4-1.7 3.3 2.6-1.6 3a3 3 0 0 1-3 1.3C9.6 20.5 3.5 14.4 2.3 8a3 3 0 0 1 1.3-3z"/></svg><span>Zadzwoń</span></a>' +
       '<a class="mbar__ask" href="' + base + '#kontakt"><span>Zapytaj o lokal</span><span class="arrow" aria-hidden="true"></span></a>';
     document.body.appendChild(bar);
-    document.body.classList.add('has-mbar');
-    // ukryj nad hero i przy formularzu (nie zasłania przycisku „Wyślij”)
-    var hero = $('.hero'), contact = document.getElementById('kontakt');
+    // strona główna: pasek tylko w sekcji „Odkryj apartamenty”; karta lokalu: cały czas poza hero i formularzem; inne podstrony: bez paska
+    var hero = $('.hero'), list = document.getElementById('mieszkania');
+    var isUnit = /mieszkanie\.html/.test(location.pathname) || !!document.getElementById('u-contact');
     var upd = function () {
-      var y = window.scrollY, vh = window.innerHeight, show = true;
-      if (hero && y < hero.offsetHeight * .6) show = false;
-      if (contact) { var r = contact.getBoundingClientRect(); if (r.top < vh * .85 && r.bottom > 0) show = false; }
+      var y = window.scrollY, vh = window.innerHeight, show;
+      if (list) { var m = list.getBoundingClientRect(); show = m.top < vh * .6 && m.bottom > vh * .4; }
+      else if (isUnit) { show = !(hero && y < hero.offsetHeight * .6); var contact = document.getElementById('u-contact'); if (contact) { var r = contact.getBoundingClientRect(); if (r.top < vh * .85 && r.bottom > 0) show = false; } }
+      else show = false;
+      document.body.classList.toggle('has-mbar', !!(list || isUnit));
       bar.classList.toggle('is-on', show);
     };
     window.addEventListener('scroll', upd, { passive: true }); window.addEventListener('resize', upd); upd();
