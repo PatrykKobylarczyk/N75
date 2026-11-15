@@ -977,7 +977,7 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { inView = e[0].isIntersecting; if (inView) play(); else v.pause(); }).observe(v);
     // Wąski ekran (telefon w pionie): kadr przesuwa się za postaciami. Zmiana kadru wypada w środku wygaszenia, więc jej nie widać.
     // [czas w filmie (s), środek kadru jako część szerokości filmu]
-    var FOCUS = [[0, .5], [7.06, .5], [9.81, .62], [12.58, .36]]; // środki wygaszeń w n75-hero-film-hq3.mp4
+    var FOCUS = [[0, .5], [7.06, .48], [9.46, .6], [11.86, .6], [15.26, .36]]; // najciemniejsze klatki wygaszeń w n75-hero-film-hq4.mp4
     // Kadr liczony tylko przy zmianie sceny albo szerokości ekranu – nie przy chowaniu się paska adresu
     // (zmiana samej wysokości przesuwała obraz w trakcie sceny).
     var lastKey = '';
