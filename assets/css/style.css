@@ -480,7 +480,7 @@ tr.is-sold td.unit-id { color: #b9ab98; }
 
 /* ---------- 06 Lokalizacja ---------- */
 .location { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(40px, 6vw, 100px); align-items: stretch; }
-.map { position: relative; min-height: 520px; border: 1px solid var(--line); overflow: hidden; background: var(--paper-2); }
+.map { position: relative; z-index: 0; isolation: isolate; min-height: 520px; border: 1px solid var(--line); overflow: hidden; background: var(--paper-2); }
 .map > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(1) sepia(.25) contrast(.95) brightness(1.03); }
 .map .leaflet-tile-pane { filter: grayscale(1) sepia(.25) contrast(.95) brightness(1.03); }
 .map.leaflet-container { font: inherit; background: var(--paper-2); }
