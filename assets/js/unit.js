@@ -25,7 +25,7 @@
   (function () {
     var d = 'Apartament ' + u.id + ' w N75, Narutowicza 75A, Łódź: ' + u.rooms + ' ' + (u.rooms === 1 ? 'pokój' : u.rooms < 5 ? 'pokoje' : 'pokoi') + ', ' + String(u.area).replace('.', ',') + ' m², piętro ' + u.floor + (u.orient ? ', ekspozycja ' + u.orient : '') + '. Rzut, cena i kontakt w sprawie lokalu.';
     var m = document.querySelector('meta[name=description]'); if (m) m.setAttribute('content', d);
-    var c = document.createElement('link'); c.rel = 'canonical'; c.href = 'https://n75.vercel.app/mieszkanie.html?id=' + encodeURIComponent(u.id); document.head.appendChild(c);
+    var c = document.createElement('link'); c.rel = 'canonical'; c.href = 'https://n75.vercel.app/stara/mieszkanie.html?id=' + encodeURIComponent(u.id); document.head.appendChild(c);
     var ld = document.createElement('script'); ld.type = 'application/ld+json';
     ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Apartment', name: 'Apartament ' + u.id + ' – N75', url: c.href, numberOfRooms: u.rooms, floorLevel: String(u.floor),
       floorSize: { '@type': 'QuantitativeValue', value: u.area, unitCode: 'MTK' }, address: { '@type': 'PostalAddress', streetAddress: 'ul. Narutowicza 75A', postalCode: '90-132', addressLocality: 'Łódź', addressCountry: 'PL' },
