@@ -27,7 +27,7 @@ assets/js/dziennik.js   Wpisy dziennika budowy (sekcja ukryta, gdy pusto)
 assets/js/units.js      Dane lokali (PRZYKŁADOWE, do podmiany)
 assets/img/plany/       Oczyszczone rzuty pięter (bez osi, wymiarów i opisów); pietro-0.webp to parter
 zrodla/rzuty/           Rzuty źródłowe (PDF) i skrypt czyszczący rzut parteru (oczysc_rzut.py)
-assets/video/           Film w hero: n75-hero-film-hq3.mp4 (1080p, jeden plik dla wszystkich ekranów); n75-hero.mp4 to dawny, nieużywany film
+assets/video/           Film w hero: n75-hero-film-hq4.mp4 (1080p, jeden plik dla wszystkich ekranów); n75-hero.mp4 to dawny, nieużywany film
 assets/img/logo-n75.svg Logo N75 (wektor; na stronie jako <symbol>, kolor przez currentColor)
 assets/img/             Wizualizacje w WebP (pełne i *-sm do miniatur) + zbliżenia materiałów
 PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
@@ -44,7 +44,7 @@ PLACEHOLDERS.md         Lista treści i danych do uzupełnienia
 
 | Nr | Sekcja | Zawartość |
 |---|---|---|
-| | Hero | Film w pętli, bez dźwięku (ok. 18 s, slow motion): przelot nad parkiem od zmierzchu do dnia → spacer w atrium → basen → sauna, przejścia przez wygaszenie; plakat assets/img/hero-film-poster.webp; przy „ogranicz ruch” stoi na plakacie |
+| | Hero | Film w pętli, bez dźwięku (ok. 19 s, slow motion): przelot nad parkiem od zmierzchu do dnia → spacer w atrium → basen → jacuzzi → sauna, przejścia przez wygaszenie; plakat assets/img/hero-film-poster.webp; przy „ogranicz ruch” stoi na plakacie |
 | | Modernizm to… | szkic ołówkiem: po wejściu na ekran kreski bryły rysują się jedna po drugiej (assets/img/szkic-modernizm.svg) |
 | | Menu | Wysuwany panel z prawej (hamburger) na wszystkich ekranach |
 | 01 | Inwestycja | Misja, zdjęcie budynku i sąsiedztwa, liczby |
