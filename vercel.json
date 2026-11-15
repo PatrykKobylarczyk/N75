@@ -1,7 +1,22 @@
 {
-  "redirects": [{ "source": "/nowa", "destination": "/nowa/", "permanent": false }],
+  "redirects": [
+    { "source": "/stara", "destination": "/stara/", "permanent": false },
+    { "source": "/nowa", "destination": "/nowa/", "permanent": false },
+    { "source": "/start.html", "destination": "/stara/", "permanent": false },
+    { "source": "/budynek.html", "destination": "/stara/budynek.html", "permanent": false },
+    { "source": "/makieta.html", "destination": "/stara/makieta.html", "permanent": false },
+    { "source": "/manifest.html", "destination": "/stara/manifest.html", "permanent": false },
+    { "source": "/miasto.html", "destination": "/stara/miasto.html", "permanent": false },
+    { "source": "/mieszkanie.html", "destination": "/stara/mieszkanie.html", "permanent": false },
+    { "source": "/polityka-prywatnosci.html", "destination": "/stara/polityka-prywatnosci.html", "permanent": false },
+    { "source": "/porownaj.html", "destination": "/stara/porownaj.html", "permanent": false }
+  ],
   "rewrites": [
-    { "source": "/nowa/", "destination": "/index.html" },
+    { "source": "/stara/", "destination": "/start.html" },
+    { "source": "/stara/index.html", "destination": "/start.html" },
+    { "source": "/nowa/", "destination": "/start.html" },
+    { "source": "/nowa/index.html", "destination": "/start.html" },
+    { "source": "/stara/:path*", "destination": "/:path*" },
     { "source": "/nowa/:path*", "destination": "/:path*" }
   ]
 }

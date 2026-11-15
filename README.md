@@ -15,7 +15,8 @@ python3 -m http.server 8000
 ## Struktura
 
 ```
-index.html              Cała strona (sekcje 01–07)
+index.html              Pusta strona pod adresem głównym
+start.html              Cała strona (sekcje 01–07) – adres /stara/ (wygląd obecny) i /nowa/ (koncepcja 03b), patrz vercel.json
 manifest.html           Podstrona „Manifest” (pozycja 00 w menu)
 assets/js/page.js       Skrypt podstron: menu, animacje, galeria
 assets/css/style.css    Style: tokeny kolorów, typografia, układ, responsywność
