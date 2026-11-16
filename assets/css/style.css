@@ -1910,7 +1910,7 @@ body.dh-open { overflow: hidden; }
 .partners__in { display: grid; grid-template-columns: 1fr 3fr; gap: clamp(40px, 6vw, 100px); align-items: start; }
 .partners .caps { display: block; color: var(--muted); margin-bottom: 26px; }
 .plogo { display: block; background: var(--ink); -webkit-mask: var(--m) left center / contain no-repeat; mask: var(--m) left center / contain no-repeat; }
-.plogo--uniqum { --m: url(../img/partnerzy/uniqum.png); width: 230px; aspect-ratio: 278 / 86; }
+.plogo--uniqum { --m: url(../img/partnerzy/uniqum.png); width: 180px; aspect-ratio: 278 / 86; }
 .plogo--designlab { --m: url(../img/partnerzy/designlab.png); height: 62px; aspect-ratio: 336 / 151; }
 .plogo--2m { --m: url(../img/partnerzy/2m.png); height: 54px; aspect-ratio: 153 / 87; }
 .plogo--bank { --m: url(../img/partnerzy/bs-andrespol.png); height: 44px; aspect-ratio: 242 / 52; }
@@ -1925,5 +1925,5 @@ body.dh-open { overflow: hidden; }
   .partners__list { grid-template-columns: repeat(2, minmax(0, 1fr)); justify-content: stretch; gap: 40px 24px; }
   .plogo { max-width: 100%; }
   .partners__list small { line-height: 1.4; }
-  .plogo--uniqum { width: 190px; }
+  .plogo--uniqum { width: 160px; }
 }
