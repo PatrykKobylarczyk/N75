@@ -310,3 +310,41 @@ html[data-k3b][data-kierunek] .k-geo.k-h3 { display: block !important; left: 0; 
 html[data-k3b][data-kierunek] .hero__media { left: 0; right: 0; top: 0; bottom: 0; border-radius: 0; }
 html[data-k3b][data-kierunek] .hero::after { display: block; }
 @media (max-width: 700px) { html[data-k3b] .hero__content { padding-bottom: 64px; } }
+
+/* ---------- Koncepcja 04: 03b + krój N75 Szyld (neon księgarni S. Seipelta, Łódź, lata 30.) ---------- */
+@font-face { font-family: "N75 Szyld"; src: url("N75Szyld.woff") format("woff"); font-display: swap; }
+
+/* 5. barwy czarno-białej fotografii: grafit, kość słoniowa, srebrzysta szarość; mosiądz jedynym ciepłym akcentem */
+html[data-k4][data-kierunek="k1"][data-paleta="obecna"] {
+  --paper: #f3f1eb; --paper-2: #e8e6e0; --line: #cdcac3; --muted: #6c6a65; --text: #3a3936; --ink: #1d1d1c; --graphite: #1d1d1c;
+  --bronze: #9a7448; --bronze-soft: #c9b08c;
+  --dark: #1b1b1a; --dark-2: #262624;
+  --k-violet: #9a7448; --k-pink: #d6d3cc; --k-clay: #4a4946; --k-walnut: #2e2d2b;
+}
+
+/* krój nagłówków */
+html[data-k4] :is(.display, h1, h2, h3, h4, .vw__word, .modern__word, .drawer__nav a) { font-family: "N75 Szyld", var(--head), sans-serif !important; font-weight: 400 !important; font-style: normal; letter-spacing: .05em; text-transform: none; font-synthesis: none; line-height: 1.12; }
+
+/* 2. nagłówki sekcji w pasie dwóch linii – jak szyld nad witryną */
+html[data-k4] h2.display { display: inline-block; border-top: 2px solid currentColor; border-bottom: 2px solid currentColor; padding: .32em 0 .22em; }
+html[data-k4] h2.display .h2-kicker { font-family: "Josefin Sans", var(--body), sans-serif; letter-spacing: .2em; }
+html[data-k4] .section--dark h2.display { border-color: var(--bronze-soft); }
+
+/* 1. drobne napisy: wąskie, szeroko rozstawione wersaliki (jak plansze w witrynie) */
+html[data-k4] :is(.caps, .btn, .burger__label, .h2-kicker, .hero__kicker, .eyebrow) { font-family: "Josefin Sans", var(--body), sans-serif !important; font-weight: 400; letter-spacing: .22em; text-transform: uppercase; }
+html[data-k4] .btn { padding-top: calc(var(--pad-y, 14px) + 2px); }
+
+/* 6. liczby, metraże i ceny jak numeracja na tablicach */
+html[data-k4] :is(.fact__val, .num, .tile__id, .units td.unit-id, .price, .c-price, .c-area, .mk-unit__price, .u-price, .ideas__n, .timeline .dot) { font-family: "N75 Szyld", var(--head), sans-serif !important; font-weight: 400 !important; letter-spacing: .06em; font-variant-numeric: normal; }
+
+/* 4. światło neonu – tylko logo w hero i nagłówki na ciemnym tle, rozjaśnia się raz przy wejściu */
+@keyframes k4-neon { 0% { opacity: .15; filter: none; } 35% { opacity: .9; } 100% { opacity: 1; filter: drop-shadow(0 0 3px rgba(255, 226, 184, .55)) drop-shadow(0 0 16px rgba(255, 190, 120, .32)); } }
+html[data-k4] .hero__logo .logo-svg { height: clamp(110px, 17vw, 240px); animation: k4-neon 2.4s ease-out .3s both; }
+html[data-k4] .section--dark h2.display { text-shadow: 0 0 2px rgba(255, 230, 196, .45), 0 0 14px rgba(255, 190, 120, .25); }
+@media (prefers-reduced-motion: reduce) { html[data-k4] .hero__logo .logo-svg { animation: none; filter: drop-shadow(0 0 3px rgba(255, 226, 184, .55)); } }
+html[data-k4] .header .logo .logo-svg { height: 30px; }
+
+/* 8. separatory z trzech cienkich linii i tabliczka adresowa w stopce */
+html[data-k4] main > .section + .section::before { content: ""; position: absolute; left: 50%; top: 0; transform: translate(-50%, -50%); width: min(220px, 40vw); height: 11px; z-index: 3;
+  background: linear-gradient(var(--bronze) 0 0) 0 0 / 100% 1px no-repeat, linear-gradient(var(--bronze) 0 0) 0 5px / 100% 1px no-repeat, linear-gradient(var(--bronze) 0 0) 0 10px / 100% 1px no-repeat; }
+html[data-k4] .k4-plate { display: inline-block; font-family: "N75 Szyld", var(--head), sans-serif; font-size: 18px; letter-spacing: .14em; color: var(--bronze-soft); border: 1.5px solid currentColor; border-radius: 3px; padding: .55em 1.1em .45em; margin: 0 0 22px; }
