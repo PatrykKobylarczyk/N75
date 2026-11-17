@@ -646,15 +646,19 @@
   /* ---------- WebGL ---------- */
   var VS = '#version 300 es\nlayout(location=0) in vec3 p;layout(location=1) in vec3 n;layout(location=2) in vec3 c;layout(location=3) in float m;' +
     'uniform mat4 uVP,uL;out vec3 vP,vN,vC;out float vM;out vec4 vL;void main(){vP=p;vN=n;vC=c;vM=m;vL=uL*vec4(p,1.);gl_Position=uVP*vec4(p,1.);}';
-  var FS = '#version 300 es\nprecision highp float;in vec3 vP,vN,vC;in float vM;in vec4 vL;uniform sampler2D uS;uniform vec3 uSun,uEye;uniform float uA;out vec4 o;' +
+  var FS = '#version 300 es\nprecision highp float;in vec3 vP,vN,vC;in float vM;in vec4 vL;uniform sampler2D uS;uniform highp sampler2DArray uK;uniform mat4 uKM[8];uniform vec3 uKD[8];uniform vec3 uSun,uEye;uniform float uA;out vec4 o;' +
     'vec3 lin(vec3 c){return pow(c,vec3(2.2));}' +
     'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}' +
     'float sh(){vec3 q=vL.xyz/vL.w*.5+.5;if(q.x<0.||q.x>1.||q.y<0.||q.y>1.)return 1.;float s=0.;vec2 t=1./vec2(textureSize(uS,0));' +
-    'for(int x=-2;x<=2;x++)for(int y=-2;y<=2;y++){float d=texture(uS,q.xy+vec2(x,y)*t*3.).r;s+=q.z-.0012>d?0.:1.;}return smoothstep(0.,1.,s/25.);}' +
+    'for(int x=-2;x<=2;x++)for(int y=-2;y<=2;y++){float d=texture(uS,q.xy+vec2(x,y)*t*4.).r;s+=q.z-.0012>d?0.:1.;}return smoothstep(0.,1.,s/25.);}' +
+    // światło nieba: 8 map głębokości z różnych kierunków półsfery = miękka okluzja (pod meblami, w narożach, przy ścianach)
+    'float skyV(vec3 N){float a=0.,w=0.;vec2 t=1./vec2(textureSize(uK,0).xy);for(int k=0;k<8;k++){float c=dot(N,uKD[k]);if(c<=0.)continue;vec4 l=uKM[k]*vec4(vP+N*.03,1.);vec3 q=l.xyz/l.w*.5+.5;float s=0.;for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++){float d=texture(uK,vec3(q.xy+vec2(x,y)*t*2.,float(k))).r;s+=q.z-.002>d?0.:1.;}a+=c*s/9.;w+=c;}return w>0.?a/w:1.;}' +
     'void main(){vec3 N=normalize(vN);vec3 col=lin(vC);int M=int(vM+.5);' +
     'if(M==1&&N.y>.5){float cw=.42,bw=.12;float cx=vP.x/cw;float ci=floor(cx);float lx=fract(cx)*cw;float sg=mod(ci,2.)<1.?1.:-1.;' +
     'float u=(vP.z+sg*lx)*.7071;float ri=floor(u/bw);float fu=fract(u/bw);float v=h(vec2(ri,ci));' +
-    'col*=.84+.26*v;col*=1.-.06*sin((vP.z-sg*lx)*46.+v*11.);' +
+    // klepka: własny odcień każdej deski, słoje biegnące wzdłuż deski, lekkie przebarwienia
+    'float t=(vP.z-sg*lx)*.7071;float gr=h(vec2(floor(fu*22.),ri*3.1+ci*7.3));float gw=.5+.5*sin(t*2.6+gr*6.283+fu*3.);' +
+    'col*=.8+.34*v;col*=.93+.1*gr*(.55+.45*gw);col*=.97+.06*h(vec2(floor(t*9.),ri+ci));' +
     'float e=min(fu,1.-fu);float ec=min(fract(cx),1.-fract(cx))*cw;col*=mix(.8,1.,smoothstep(0.,.035,e))*mix(.78,1.,smoothstep(0.,.006,ec));}' +
     'if(M==2&&N.y>.5){vec2 g=fract(vP.xz/.6);float e=min(min(g.x,1.-g.x),min(g.y,1.-g.y));col*=mix(.9,1.,smoothstep(0.,.02,e));col*=.97+.05*h(floor(vP.xz/.6));}' +
     'if(M==3&&N.y>.5){float g=fract(vP.x*6.9);float bi=floor(vP.x*6.9);float v=h(vec2(bi,floor(vP.z*.45+h(vec2(bi,3.))*3.)));col*=.95+.06*v;col*=1.-.025*sin(vP.z*190.+bi*7.);col*=mix(.72,1.,smoothstep(0.,.06,min(g,1.-g)));}' +
@@ -664,10 +668,12 @@
     'if(M==6){vec2 q=vP.xz*1.7+vec2(vP.y*.7);float n=sin(q.x*2.1+sin(q.y*1.3+q.x*.7)*2.4+sin(q.y*3.7)*.6);float v=smoothstep(.93,1.,abs(n));float n2=sin(q.y*5.3+sin(q.x*4.1)*1.6);float v2=smoothstep(.97,1.,abs(n2));col=mix(col,col*vec3(.62,.6,.6),v*.55+v2*.3);col*=.97+.03*h(floor(vP.xz*40.));}' +
     'if(M==7){vec3 q=vP*140.;float b=h(floor(q.xz)+floor(q.y)*vec2(1.7,2.3));float b2=h(floor(q.xz*.5+q.y*.3));col*=.86+.12*b+.06*b2;}' +
     'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),3.);o=vec4(mix(vC,vec3(.9,.95,1.),fr*.15),uA+fr*.05);return;}' +
+    // ściany: listwa przypodłogowa z cieniem fugi i bardzo delikatna faktura tynku
+    'if(M==0&&abs(N.y)<.5&&distance(vC,vec3(.929,.906,.859))<.01){float yw=vP.y-floor(vP.y/3.05)*3.05;if(yw<.08){col*=.97;col*=mix(.78,1.,smoothstep(0.,.006,.08-yw));}col*=.985+.03*h(floor(vP.xz*60.+vP.y*37.));}' +
     'float ndl=max(dot(N,uSun),0.);float s=sh();vec3 V=normalize(uEye-vP);float yl=vP.y-floor(vP.y/3.05)*3.05+.02;' +
     // światło nieba (chłodniejsze) + odbicie od podłogi z orzecha (ciepłe), miękka okluzja przy podłodze i w narożach
-    'vec3 sky=vec3(.86,.9,1.),bounce=vec3(.76,.66,.56);vec3 amb=mix(bounce*.55,sky*.62,N.y*.5+.5);' +
-    'float ao=mix(.55,1.,smoothstep(0.,.9,yl))*mix(.82,1.,smoothstep(0.,.35,yl));if(N.y>.5)ao=1.;' +
+    'vec3 sky=vec3(.86,.9,1.),bounce=vec3(.76,.66,.56);float kv=skyV(N);float kv2=kv*kv*(3.-2.*kv);vec3 amb=mix(bounce*.5,sky*.7,N.y*.5+.5)*mix(.2,1.08,kv2);' +
+    'float ao=mix(.7,1.,smoothstep(0.,.6,yl))*mix(.88,1.,smoothstep(0.,.25,yl));if(N.y>.5)ao=1.;' +
     'vec3 sunC=vec3(1.,.9,.76)*1.15;vec3 shC=mix(vec3(.62,.68,.8),vec3(1.),s);' +
     'vec3 L=col*(amb*ao+sunC*ndl*shC*mix(.18,1.,s));' +
     // połysk zależny od materiału: lakierowany parkiet, polerowany marmur, satynowy fornir, reszta matowa
@@ -710,6 +716,13 @@
     this.fb = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.depth, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    // 8 map głębokości „z nieba” (tablica tekstur) – liczone raz po wczytaniu modelu
+    var K = 1024; this.KS = K;
+    this.kt = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.kt);
+    gl.texImage3D(gl.TEXTURE_2D_ARRAY, 0, gl.DEPTH_COMPONENT24, K, K, 8, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null);
+    [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER].forEach(function (k) { gl.texParameteri(gl.TEXTURE_2D_ARRAY, k, gl.NEAREST); });
+    gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    this.kfb = gl.createFramebuffer();
     this.az = -0.62; this.el = 1.0; this.zoom = 1; this.meshes = [];
   }
   Viewer.prototype.upload = function (M) {
@@ -726,7 +739,28 @@
     this.meshes.forEach(function (m) { gl.deleteVertexArray(m.vao); });
     this.op = this.upload(opaque); this.gl_ = this.upload(glass); this.meshes = [this.op, this.gl_];
     this.box = box;   // [x0, z0, x1, z1, yTop]
+    this.bakeSky();
     this.draw();
+  };
+  Viewer.prototype.bakeSky = function () {
+    var gl = this.gl, b = this.box; if (!b) return;
+    var cx = (b[0] + b[2]) / 2, cz = (b[1] + b[3]) / 2, R = Math.hypot(b[2] - b[0], b[3] - b[1]) / 2 + 0.8;
+    var M = new Float32Array(16 * 8), D = new Float32Array(24);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.kfb); gl.viewport(0, 0, this.KS, this.KS);
+    gl.enable(gl.DEPTH_TEST); gl.colorMask(false, false, false, false); gl.useProgram(this.SP);
+    for (var k = 0; k < 8; k++) {
+      var el = k < 6 ? 0.78 : 1.22, az = k < 6 ? k * Math.PI / 3 + 0.3 : (k - 6) * Math.PI + 1.1;   // 6 kierunków nisko + 2 prawie z zenitu
+      var d = [Math.cos(el) * Math.sin(az), Math.sin(el), Math.cos(el) * Math.cos(az)];
+      var e = [cx + d[0] * 30, b[4] * 0.5 + d[1] * 30, cz + d[2] * 30];
+      var L = mul(ortho(-R, R, -R, R, 1, 70), look(e, [cx, b[4] * 0.5, cz], Math.abs(d[1]) > 0.99 ? [0, 0, 1] : [0, 1, 0]));
+      M.set(L, k * 16); D.set(d, k * 3);
+      gl.framebufferTextureLayer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, this.kt, 0, k);
+      gl.clear(gl.DEPTH_BUFFER_BIT);
+      gl.uniformMatrix4fv(gl.getUniformLocation(this.SP, 'uL'), false, L);
+      gl.bindVertexArray(this.op.vao); gl.drawArrays(gl.TRIANGLES, 0, this.op.n);
+    }
+    gl.colorMask(true, true, true, true); gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    this.kM = M; this.kD = D;
   };
   Viewer.prototype.draw = function () {
     var gl = this.gl, cv = this.cv, b = this.box; if (!b) return;
@@ -753,6 +787,8 @@
     gl.uniformMatrix4fv(u('uVP'), false, VP); gl.uniformMatrix4fv(u('uL'), false, LM);
     gl.uniform3fv(u('uSun'), sun); gl.uniform3fv(u('uEye'), eye); gl.uniform1f(u('uA'), 1);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, this.depth); gl.uniform1i(u('uS'), 0);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.kt); gl.uniform1i(u('uK'), 1);
+    gl.uniformMatrix4fv(u('uKM'), false, this.kM); gl.uniform3fv(u('uKD'), this.kD);
     gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
     gl.bindVertexArray(this.op.vao); gl.drawArrays(gl.TRIANGLES, 0, this.op.n);
     gl.disable(gl.CULL_FACE);
@@ -858,7 +894,7 @@
     var load = dlg.querySelector('.dh__load'); load.hidden = false; load.textContent = 'Ładowanie modelu…';
     if (!viewer) { load.textContent = 'Ta przeglądarka nie obsługuje widoku 3D.'; return; }
     viewer.az = -0.62; viewer.el = 1.0; viewer.zoom = 1;
-    fetch(BASE + encodeURIComponent(id) + '.json?v=1794866697').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
+    fetch(BASE + encodeURIComponent(id) + '.json?v=1794905524').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (d) {
       data = d; setLevels(); show(0); load.hidden = true; intro();
     }).catch(function () { load.textContent = 'Model 3D tego lokalu jest w przygotowaniu.'; });
     setTimeout(function () { var x = dlg.querySelector('.dh__x'); if (x) x.focus({ preventScroll: true }); }, 50);
