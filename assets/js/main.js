@@ -516,7 +516,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1794905524" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795088062" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -934,8 +934,8 @@
     var PER = 4200, x = -.35, last = 0, on = false;
     function draw() {
       ws.forEach(function (w, k) {
-        var t = ((x - k + .5) % N + N) % N - .5, n = L[k].length;
-        L[k].forEach(function (s, i) {
+        var Lk = $$('.vl > span', w), t = ((x - k + .5) % N + N) % N - .5, n = Lk.length;   // litery czytane na bieżąco (wersja EN podmienia słowa)
+        Lk.forEach(function (s, i) {
           var d = i / Math.max(1, n - 1) * .22;
           var inn = ease(cl((t + .32 - d) / .38)), out = ease(cl((t - .72 - d * .6) / .3));
           s.style.setProperty('--y', RM ? '0%' : ((1 - inn) * 110 - out * 110).toFixed(2) + '%');
