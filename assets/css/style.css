@@ -1927,3 +1927,10 @@ body.dh-open { overflow: hidden; }
   .partners__list small { line-height: 1.4; }
   .plogo--uniqum { width: 160px; }
 }
+
+/* Przełącznik języka (flaga UK / PL) w nagłówku */
+.lang-switch { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 0; margin-right: 6px; background: none; border: 0; cursor: pointer; flex: none; }
+.lang-switch svg { width: 24px; height: 16px; display: block; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0, 0, 0, .18); transition: transform .2s, opacity .2s; }
+.lang-switch:hover svg, .lang-switch:focus-visible svg { transform: scale(1.12); }
+@media (max-width: 600px) { .lang-switch { width: 26px; margin-right: 0; } .lang-switch svg { width: 22px; height: 15px; } }
+@media (max-width: 430px) { .header .header__cta { padding: 8px 9px; font-size: 9px; letter-spacing: .07em; } .header__right { gap: 6px; } .fav-link { width: 30px; } }
