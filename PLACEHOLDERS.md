@@ -45,8 +45,8 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 - [x] Wizualizacje ujednolicone tonalnie (jasność, kontrast, nasycenie); oryginały w historii repozytorium
 - [ ] Hero: statyczna wieczorna panorama (`okolica-lotnicze.webp`, 1448 px); na duże ekrany przyda się wersja ok. 2400–2800 px
 - [x] Zdjęcie sąsiedztwa przy „Misja”: ujęcie z lotu ptaka o zmierzchu (`okolica-lotnicze.webp`) jako hero i panorama na całą szerokość w sekcji 01. Plik ma 1448 px szerokości; na bardzo dużych ekranach przyda się wersja ok. 2400 px
-- [ ] Dawny film `assets/video/n75-hero.mp4` nie jest już używany
-- [ ] Obraz OG do udostępniania (`og:image`) i favicon: tymczasowe
+- [x] Dawny film `assets/video/n75-hero.mp4` usunięty (jest w historii repozytorium)
+- [x] Obraz OG do udostępniania: `assets/img/og-n75.jpg` 1200×630 (kadr z `naroznik.webp`); favicony PNG/ICO/apple-touch z `favicon.svg` (do podmiany, jeśli projektant da docelowy znak)
 - [ ] Logo (`assets/img/logo-n75.svg`) jest odrysowane wektorowo z prezentacji strategii; jeśli istnieje oryginalny plik od projektanta, warto go podmienić
 
 ## Fonty
@@ -76,3 +76,14 @@ Wszystko poniżej zostało wpisane jako rozsądne założenie, żeby strona był
 - Rzuty pięter 1–7, wycinki lokali i modele 3D (`assets/data/3d/`) generowane z DWG. Parter (rzut 0) nadal ze skanu.
 - Do weryfikacji z architektem: układ **M1.08** i **M2.09** w DWG różni się od listy pomieszczeń z cennika (inne powierzchnie pokoi). Na rzutach tych lokali opisane są tylko pomieszczenia zgodne z cennikiem.
 - Wyposażenie w 3D jest przykładowe (bryły wg bloków mebli z rzutu, styl quiet luxury).
+
+## Start produkcyjny (audyt 19.11.2026)
+- [ ] ID kontenera Google Tag Manager w `assets/js/consent.js`; w GTM: GA4, Clarity, ewentualnie Google Ads i Meta Pixel
+- [ ] Domena n75.pl podpięta w Vercel, potem `python3 zrodla/narzedzia/ustaw_domene.py https://n75.pl/`
+- [ ] Strona pod `/` zamiast `/stara/` (decyzja: która wersja jest główna), stałe przekierowania 301
+- [ ] Plan Vercel Pro na koncie firmy (Hobby jest tylko do użytku niekomercyjnego)
+- [ ] Formularz: docelowe adresy leadów (teraz FormSubmit na jedną skrzynkę), CRM lub arkusz, autoodpowiedź, ochrona przed spamem
+- [ ] Polityka prywatności do przepisania pod faktyczne narzędzia (FormSubmit, Vercel, OpenStreetMap, Google 3D Tiles, GTM/GA4/Clarity, localStorage/sessionStorage) i zatwierdzenia przez prawnika
+- [ ] Jawność cen: ceny miejsc postojowych i komórek, codzienny raport do dane.gov.pl, prawdziwe statusy lokali
+- [ ] Google Search Console, Bing Webmaster Tools, Profil Firmy w Google
+- [ ] Monitoring dostępności (np. UptimeRobot)

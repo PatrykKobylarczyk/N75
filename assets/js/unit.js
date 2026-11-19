@@ -31,6 +31,7 @@
       floorSize: { '@type': 'QuantitativeValue', value: u.area, unitCode: 'MTK' }, address: { '@type': 'PostalAddress', streetAddress: 'ul. Narutowicza 75A', postalCode: '90-132', addressLocality: 'Łódź', addressCountry: 'PL' },
       offers: u.status === 'sprzedane' ? undefined : { '@type': 'Offer', price: u.price, priceCurrency: 'PLN', availability: u.status === 'wolne' ? 'https://schema.org/InStock' : 'https://schema.org/LimitedAvailability' } });
     document.head.appendChild(ld);
+    if (window.N75Track) window.N75Track('view_unit', { unit_id: u.id, rooms: u.rooms, area: u.area, floor: u.floor, price: u.status === 'sprzedane' ? null : u.price, status: u.status });
   })();
   var sold = u.status === 'sprzedane';
   var two = u.levels.length > 1;

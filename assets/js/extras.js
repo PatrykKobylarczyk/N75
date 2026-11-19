@@ -12,9 +12,16 @@
   window.N75Send = function (data) {
     var body = { _subject: 'N75 – zapytanie' + (data['Lokal'] ? ' o ' + data['Lokal'] : '') + ' (' + (data['Imię'] || '') + ')', _template: 'table', _captcha: 'false', 'Strona': location.href };
     Object.keys(data).forEach(function (k) { if (data[k]) body[k] = data[k]; });
+    // skąd przyszedł klient (kampania, wyszukiwarka, portal) – assets/js/consent.js
+    if (window.N75Source) { try { body['Źródło'] = window.N75Source(); } catch (e) {} }
     if (/@/.test(data['Kontakt'] || '')) body._replyto = data['Kontakt'];
     return fetch('https://formsubmit.co/ajax/' + LEAD_MAIL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(body) })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || j.success === 'false' || j.success === false) throw new Error(j.message || ('HTTP ' + r.status)); return j; }); });
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || j.success === 'false' || j.success === false) throw new Error(j.message || ('HTTP ' + r.status)); return j; }); })
+      .then(function (j) {
+        // konwersja do GA4 / Google Ads / Meta (przez GTM): tylko po udanej wysyłce
+        if (window.N75Track) window.N75Track('generate_lead', { form_name: data['Formularz'] || '', unit_id: data['Lokal'] || '' });
+        return j;
+      });
   };
   var onIndex = !!document.getElementById('kontakt');
   var base = onIndex ? '' : 'index.html';
