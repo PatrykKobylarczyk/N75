@@ -58,6 +58,10 @@
   ],
   "rewrites": [
     {
+      "source": "/dane-gov/:file",
+      "destination": "/api/dane-gov?file=:file"
+    },
+    {
       "source": "/stara/",
       "destination": "/start.html"
     },
@@ -92,6 +96,17 @@
     {
       "source": "/podglad/:path*",
       "destination": "/:path*"
+    }
+  ],
+  "functions": {
+    "api/dane-gov.js": {
+      "includeFiles": "assets/js/units.js"
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/dane-gov",
+      "schedule": "30 5 * * *"
     }
   ]
 }
