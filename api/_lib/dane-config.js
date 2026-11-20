@@ -1,6 +1,6 @@
 /* Dane dewelopera i inwestycji do raportu cen dla dane.gov.pl
    (art. 19b ustawy z 20 maja 2021 r. o ochronie praw nabywcy… oraz rozporządzenie MC z 10.11.2026, Dz.U. 2026 poz. 1489).
-   Pola oznaczone UZUPEŁNIJ trzeba potwierdzić przed zgłoszeniem adresu XML na dane.gov.pl. */
+   Biuro sprzedaży: ul. Gdańska 130, 90-520 Łódź (jak siedziba). */
 module.exports = {
   // A – deweloper
   firma: 'UNIQUM 5 SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ',
@@ -10,7 +10,7 @@ module.exports = {
   siedziba: { wojewodztwo: 'łódzkie', powiat: 'Łódź', gmina: 'Łódź', miejscowosc: 'Łódź', ulica: 'ul. Gdańska', nr: '130', lokal: 'X', kod: '90-520' },
 
   // C – miejsce prowadzenia sprzedaży (biuro sprzedaży) i kontakt
-  sprzedaz: { wojewodztwo: 'łódzkie', powiat: 'Łódź', gmina: 'Łódź', miejscowosc: 'Łódź', ulica: 'UZUPEŁNIJ (Dworzec Łódź Fabryczna – adres biura)', nr: 'UZUPEŁNIJ', lokal: 'X', kod: 'UZUPEŁNIJ' },
+  sprzedaz: { wojewodztwo: 'łódzkie', powiat: 'Łódź', gmina: 'Łódź', miejscowosc: 'Łódź', ulica: 'ul. Gdańska', nr: '130', lokal: 'X', kod: '90-520' },
   dodatkoweLokalizacje: 'X',
   kontakt: 'tel. +48 799 278 344, e-mail: sprzedaz@n75.pl, www: https://n75.vercel.app/stara/',
 
