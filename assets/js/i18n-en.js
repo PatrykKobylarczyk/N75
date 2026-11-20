@@ -314,7 +314,11 @@ window.N75_EN = Object.assign(window.N75_EN || {}, {
   "Prospekt informacyjny": "Information prospectus", "UNIQUM 5 sp. z o.o.": "UNIQUM 5 sp. z o.o.",
   "ul. Gdańska 130, 90-520 Łódź": "130 Gdańska St, 90-520 Łódź",
   "Wizualizacje mają charakter poglądowy i mogą różnić się od stanu faktycznego. Materiały na stronie nie stanowią oferty w rozumieniu art. 66 Kodeksu cywilnego.": "Visualisations are for illustrative purposes only and may differ from the final result. The materials on this website do not constitute an offer within the meaning of Article 66 of the Polish Civil Code.",
-  "Dokumenty": "Documents", "Historia cen (CSV)": "Price history (CSV)",
+  "Dokumenty": "Documents",
+  "Historia ceny lokalu": "Price history of the unit", "Obowiązuje od": "Valid from", "Zmiana": "Change", "cena początkowa": "initial price", "aktualna cena": "current price",
+  "Cena nie zmieniała się od wprowadzenia lokalu do oferty.": "The price has not changed since the unit was put on offer.",
+  "Ceny brutto. Historia zmian ceny publikowana zgodnie z art. 19b ustawy o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego.": "Gross prices. The price history is published in accordance with art. 19b of the Polish Act on the protection of the rights of buyers of residential units and single-family houses.",
+  "Historia cen wszystkich lokali (CSV)": "Price history of all units (CSV)", "Historia cen (CSV)": "Price history (CSV)",
 
   /* ---------- karta lokalu ---------- */
   "Apartament": "Apartment", "Karta mieszkania · N75 · Narutowicza 75A, Łódź": "Apartment details · N75 · Narutowicza 75A, Łódź",

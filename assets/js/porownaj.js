@@ -20,7 +20,7 @@
   var dimH = function (u) { return Math.max.apply(null, u.levels.map(function (l) { return cropH(u, l); })); };
   var K = 1;
   function thumb(u) {
-    return u.levels.map(function (l) { return '<img style="width:' + (cropW(u, l) * K).toFixed(2) + '%" src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795175523" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">'; }).join('');
+    return u.levels.map(function (l) { return '<img style="width:' + (cropW(u, l) * K).toFixed(2) + '%" src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795213598" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">'; }).join('');
   }
   function roomArea(u, re) { return u.roomsList.filter(function (r) { return re.test(r[1]); }).reduce(function (s, r) { return s + r[2]; }, 0); }
 
@@ -47,7 +47,7 @@
       ['Piętro', function (u) { return u.levels.join('–') + (u.levels.length > 1 ? ' (2 poziomy)' : ''); }],
       ['Pokoje', function (u) { return u.rooms; }, 'rooms'],
       ['Powierzchnia', function (u) { return fmtA.format(u.area) + ' m²'; }, 'area'],
-      ['Cena', function (u) { return u.status === 'sprzedane' ? '—' : fmt.format(u.price) + ' zł'; }, 'price'],
+      ['Cena', function (u) { return u.status === 'sprzedane' ? '—' : window.N75PH ? N75PH.wrap(u.id, fmt.format(u.price) + ' zł') : fmt.format(u.price) + ' zł'; }, 'price'],
       ['Cena za m²', function (u) { return u.status === 'sprzedane' ? '—' : fmt.format(Math.round(u.price / u.area)) + ' zł'; }, 'ppm'],
       ['Salon z aneksem', function (u) { var a = roomArea(u, /salon/i); return a ? fmtA.format(a) + ' m²' : '—'; }],
       ['Łazienki i WC', function (u) { return u.roomsList.filter(function (r) { return /łazienka|wc/i.test(r[1]); }).length; }],

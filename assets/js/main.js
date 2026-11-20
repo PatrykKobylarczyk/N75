@@ -487,6 +487,7 @@
 
   function ppm(u) { return u.price ? Math.round(u.price / u.area) : null; }
   function priceTxt(u) { return u.status === 'sprzedane' ? '—' : u.price ? fmt.format(u.price) + ' zł' : 'Na zapytanie'; }
+  function PH(u, h) { return window.N75PH && u.price && u.status !== 'sprzedane' ? window.N75PH.wrap(u.id, h) : h; }   // cena → historia ceny
   function ppmTxt(u) { return u.status === 'sprzedane' || !u.price ? '—' : fmt.format(ppm(u)) + ' zł'; }
   function roomsTxt(u) { return isShop(u) ? 'Usługi' : u.rooms; }
   function floorTxt(u) { return isShop(u) ? 'Parter' : u.levels.join('–'); }
@@ -516,7 +517,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795175523" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795213598" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -544,7 +545,7 @@
           return '<tr data-id="' + u.id + '" tabindex="0" class="' + (u.status === 'sprzedane' ? 'is-sold' : '') + '">' +
             '<td class="unit-id">' + u.id + '</td><td>' + (isShop(u) ? 'P' : u.floor) + '</td><td>' + roomsTxt(u) + '</td>' +
             '<td class="c-area">' + fmtA.format(u.area) + '<span class="l"> m²</span></td>' +
-            '<td class="price c-price"><span class="l">' + priceTxt(u) + '</span><span class="s">' + priceShort(u) + '</span></td><td class="c-ppm">' + ppmTxt(u) + '</td>' +
+            '<td class="price c-price">' + PH(u, '<span class="l">' + priceTxt(u) + '</span><span class="s">' + priceShort(u) + '</span>') + '</td><td class="c-ppm">' + ppmTxt(u) + '</td>' +
             '<td class="c-status"><span class="status status--' + u.status + '" title="' + STATUS[u.status] + '"><span class="l">' + STATUS[u.status] + '</span></span></td>' +
             '<td class="go caps c-go"><a href="' + unitUrl(u) + '" tabindex="-1">' + (isShop(u) ? 'Zapytaj' : 'Karta') + '</a></td>' +
             '<td class="c-fav">' + (window.N75Fav && !isShop(u) ? window.N75Fav.heart(u.id) : '') + '</td></tr>';
@@ -555,7 +556,7 @@
           '<div class="tile__top"><span class="tile__id">' + u.id + '</span><span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>' + (window.N75Fav && !isShop(u) ? window.N75Fav.heart(u.id) : '') + '</div>' +
           '<div class="tile__plan' + (u.levels.length > 1 ? ' tile__plan--two' : '') + '">' + planThumb(u) + '</div>' +
           '<dl><div><dt>Metraż</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div><div><dt>' + (isShop(u) ? 'Rodzaj' : 'Pokoje') + '</dt><dd>' + roomsTxt(u) + '</dd></div>' +
-          '<div><dt>Piętro</dt><dd>' + floorTxt(u) + '</dd></div><div><dt>Cena</dt><dd>' + priceTxt(u) + '</dd></div></dl></a>';
+          '<div><dt>Piętro</dt><dd>' + floorTxt(u) + '</dd></div><div><dt>Cena</dt><dd>' + PH(u, priceTxt(u)) + '</dd></div></dl></a>';
       }).join('') + '</div>';
     }
     out.innerHTML = html;
@@ -718,7 +719,7 @@
           '<span class="mk-unit__id">' + u.id + '</span>' +
           '<span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>' +
           '<span class="mk-unit__meta">' + u.rooms + ' pok. · ' + fmtA.format(u.area) + ' m²' + (u.levels.length > 1 ? ' · 2 poziomy' : '') + '</span>' +
-          '<span class="mk-unit__price">' + priceTxt(u) + '</span></a></li>';
+          '<span class="mk-unit__price">' + PH(u, priceTxt(u)) + '</span></a></li>';
       }).join('');
     }
     var FRAME_UP = null;
@@ -814,7 +815,7 @@
             '<div><dt>Rodzaj</dt><dd>' + u.name + '</dd></div>' +
             '<div><dt>Powierzchnia</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div>' +
             '<div><dt>Poziom</dt><dd>Parter</dd></div>' +
-            '<div><dt>Cena</dt><dd>' + shopPrice(u) + '</dd></div>' +
+            '<div><dt>Cena</dt><dd>' + PH(u, shopPrice(u)) + '</dd></div>' +
           '</dl>' +
           '<a class="btn btn--solid caps" href="?lokal=' + encodeURIComponent(u.id) + '#kontakt" data-ask="' + u.id + '">Zapytaj o lokal <span class="arrow"></span></a>' +
         '</div>' :
@@ -826,7 +827,7 @@
             '<div><dt>Powierzchnia</dt><dd>' + fmtA.format(u.area) + ' m²</dd></div>' +
             '<div><dt>Pokoje</dt><dd>' + u.rooms + '</dd></div>' +
             '<div><dt>Piętro</dt><dd>' + u.levels.join('–') + (two ? ' <small>(2 poziomy)</small>' : '') + '</dd></div>' +
-            '<div><dt>Cena</dt><dd>' + priceTxt(u) + '</dd></div>' +
+            '<div><dt>Cena</dt><dd>' + PH(u, priceTxt(u)) + '</dd></div>' +
             '<div><dt>Cena za m²</dt><dd>' + fmt.format(ppm(u)) + ' zł</dd></div>' +
           '</dl>' +
           '<button type="button" class="btn btn--line caps mk-3d" data-3d="' + u.id + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 7.5v9L12 21l9-4.5v-9L12 3Zm0 0v9m0 9v-9m9-4.5L12 12 3 7.5"/></svg><span>Wersja 3D</span></button>' +
