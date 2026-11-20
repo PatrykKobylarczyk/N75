@@ -22,6 +22,11 @@ assets/js/page.js       Skrypt podstron: menu, animacje, galeria
 assets/css/style.css    Style: tokeny kolorów, typografia, układ, responsywność
 assets/js/main.js       Menu, animacje, galeria, wyszukiwarka i makieta, formularz
 assets/js/plan.js       Interaktywny rzut piętra: obrysy lokali, podświetlenie, przybliżenie lokalu
+assets/js/consent.js    Baner cookies, Google Consent Mode v2, Google Tag Manager (ID na górze pliku), zdarzenia konwersji, źródło wejścia (UTM)
+assets/fonts/           Jost i Nunito Sans hostowane lokalnie (zamiast Google Fonts)
+assets/vendor/leaflet/  Leaflet 1.9.4 (mapa) hostowany lokalnie
+404.html                Strona błędu 404 (Vercel podaje ją dla nieistniejących adresów)
+zrodla/narzedzia/ustaw_domene.py  Przełącza adres strony (canonical, OG, sitemap, robots) np. na https://n75.pl/
 assets/js/extras.js     Ulubione, pasek kontaktu na telefonie, płynne przewijanie kółkiem, animacje numerów (wszystkie strony)
 assets/js/porownaj.js   Strona porównania lokali
 assets/js/dziennik.js   Wpisy dziennika budowy (sekcja ukryta, gdy pusto)
@@ -68,3 +73,17 @@ Powierzchnie i ceny brutto z cennika z 15.09.2026, pomieszczenia z rzutów proje
 Lokale usługowe z parteru są w osobnej tablicy `window.N75_USLUGI` (ten sam plik), bez pokoi. Są na liście wyszukiwarki (piętro „Parter”, kafel z wycinkiem rzutu `lokale/U.0.N-0-sm.webp`) i prowadzą do formularza kontaktowego; nie mają karty ani ulubionych.
 Statusy: `wolne`, `rezerwacja`, `sprzedane`. Ceny i powierzchnie aktualizuje się z cennika (xls/xlsx z arkuszem „cennik”):
 `python3 zrodla/cennik/aktualizuj_ceny.py cennik_DD.MM.RRRR.xls` (opcja `--sprawdz` pokazuje tylko różnice). Skrypt dopisuje zmiany cen do `history`. Samego cennika nie dodajemy do repo: zawiera rabaty, marże i ceny netto.
+
+## Start produkcyjny: pomiar, zgody, domena
+
+- **Google Tag Manager**: wpisz ID kontenera w `assets/js/consent.js` (`var GTM_ID = 'GTM-…'`). GTM ładuje się dopiero po zgodzie
+  na analitykę lub marketing (Consent Mode v2, tryb podstawowy). GA4, Microsoft Clarity, Google Ads i Meta Pixel ustawia się w GTM.
+- **Zdarzenia w `dataLayer`** (wyzwalacze w GTM): `generate_lead` (udana wysyłka formularza, `form_name`, `unit_id`), `click_tel`,
+  `click_email`, `download_katalog` (`link_location`), `view_unit` (`unit_id`, `rooms`, `area`, `floor`, `price`), `add_favorite`,
+  `n75_consent`. Konwersja główna: `generate_lead`; dodatkowe: `click_tel`, `click_email`.
+- **Źródło leada**: każde zgłoszenie z formularza ma pole „Źródło” (utm_source / medium / campaign, gclid, fbclid albo strona
+  odsyłająca, plus strona wejścia). Linki w kampaniach oznaczaj parametrami UTM.
+- **Ustawienia cookies**: link w stopce każdej strony (`data-cookie-settings`) otwiera baner ponownie.
+- **Domena**: `python3 zrodla/narzedzia/ustaw_domene.py https://n75.pl/` przepina canonical, OG, dane strukturalne, sitemap i robots.
+- **Nagłówki** (`vercel.json`): HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy; `noindex` dla `/nowa/`, `/podglad/`, `/zrodla/`.
+- **Film w hero**: na ekranach do 900 px `n75-hero-film-720.mp4` (4 MB), na większych `n75-hero-film-hq6.mp4` (16 MB).

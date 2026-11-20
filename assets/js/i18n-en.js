@@ -310,7 +310,7 @@ window.N75_EN = Object.assign(window.N75_EN || {}, {
   "Bank Spółdzielczy w Andrespolu": "Bank Spółdzielczy w Andrespolu (cooperative bank)", "Instytut Detalu": "Instytut Detalu (Detail Institute)",
   "Przestrzeń": "Space", "w dobrym": "in the right", "kierunku": "direction",
   "Adres inwestycji": "Development address", "ul. Narutowicza 75A": "75A Narutowicza St", "90-132 Łódź": "90-132 Łódź, Poland",
-  "Biuro sprzedaży": "Sales office", "Pobierz katalog": "Download the brochure", "Polityka prywatności": "Privacy policy",
+  "Biuro sprzedaży": "Sales office", "Pobierz katalog": "Download the brochure", "Polityka prywatności": "Privacy policy", "Ustawienia cookies": "Cookie settings", "Przejdź do treści": "Skip to content",
   "Prospekt informacyjny": "Information prospectus", "UNIQUM 5 sp. z o.o.": "UNIQUM 5 sp. z o.o.",
   "ul. Gdańska 130, 90-520 Łódź": "130 Gdańska St, 90-520 Łódź",
   "Wizualizacje mają charakter poglądowy i mogą różnić się od stanu faktycznego. Materiały na stronie nie stanowią oferty w rozumieniu art. 66 Kodeksu cywilnego.": "Visualisations are for illustrative purposes only and may differ from the final result. The materials on this website do not constitute an offer within the meaning of Article 66 of the Polish Civil Code.",
