@@ -678,7 +678,7 @@
   function showCard(id) {
     var u = UNITS[id]; if (!u) return;
     card.innerHTML = '<button class="mk3d__cx" type="button" aria-label="Zamknij">×</button><span class="caps bronze">' + NAMES[u.floor] + '</span><h3 class="display">' + id + '</h3>' +
-      '<dl><div><dt class="caps">Pokoje</dt><dd>' + u.rooms + '</dd></div><div><dt class="caps">Metraż</dt><dd>' + String(u.area).replace('.', ',') + '&nbsp;m²</dd></div><div><dt class="caps">Cena</dt><dd>' + FMT(u.price) + '&nbsp;zł</dd></div></dl>' +
+      '<dl><div><dt class="caps">Pokoje</dt><dd>' + u.rooms + '</dd></div><div><dt class="caps">Metraż</dt><dd>' + String(u.area).replace('.', ',') + '&nbsp;m²</dd></div><div><dt class="caps">Cena</dt><dd>' + (window.N75PH && u.status !== 'sprzedane' ? N75PH.wrap(u.id, FMT(u.price) + '&nbsp;zł') : FMT(u.price) + '&nbsp;zł') + '</dd></div></dl>' +
       '<p class="status status--' + u.status + '">' + u.status + '</p><div class="mk3d__ca"><a class="btn caps" target="_top" href="mieszkanie.html?id=' + encodeURIComponent(id) + '">Karta mieszkania</a>' +
       (window.N75Doll && D.units[id] ? '<button type="button" class="btn btn--ghost caps" data-doll="' + id + '">Wnętrze 3D</button>' : '') +
       (D.units[id] && windows(id).length ? '<button type="button" class="btn btn--ghost caps" data-win="' + id + '">Widok z okna</button>' : '') + '</div>';

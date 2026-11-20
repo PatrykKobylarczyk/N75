@@ -79,7 +79,7 @@
           '<p class="lead u-lead">' + u.rooms + ' ' + pokoje + ' · ' + fmtA.format(u.area) + ' m²' + (outA ? ' + ' + fmtA.format(outA) + ' m² ' + (outd.length > 1 ? 'na zewnątrz' : esc(outd[0][0].toLowerCase())) : '') + (two ? ' · dwa poziomy' : '') + '</p>' +
         '</div>' +
         '<div class="u-price">' + (sold ? '<span class="status status--sprzedane">Sprzedane</span>' :
-          '<span class="caps muted">Cena</span><strong>' + fmt.format(u.price) + ' zł</strong><span class="muted">' + fmt.format(ppm) + ' zł/m² · <span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></span>') + '</div>' +
+          '<span class="caps muted">Cena</span><strong>' + (window.N75PH ? N75PH.wrap(u.id, fmt.format(u.price) + ' zł') : fmt.format(u.price) + ' zł') + '</strong><span class="muted">' + fmt.format(ppm) + ' zł/m² · <span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></span>') + '</div>' +
       '</div>' +
       '<div class="u-main">' +
         '<div class="u-planbox">' + tabs +
@@ -88,7 +88,7 @@
           '<button type="button" class="u-whole caps" id="u-whole" aria-pressed="false">Pokaż całe piętro</button></div>' +
           '<dl class="u-spec u-spec--3">' +
             spec('Powierzchnia', fmtA.format(u.area) + ' m²') +
-            spec('Cena', sold ? '—' : fmt.format(u.price) + ' zł') +
+            spec('Cena', sold ? '—' : window.N75PH ? N75PH.wrap(u.id, fmt.format(u.price) + ' zł') : fmt.format(u.price) + ' zł') +
             spec('Cena za m²', sold ? '—' : fmt.format(ppm) + ' zł') +
             spec('Pokoje', u.rooms) +
             spec('Piętro', two ? u.levels.join(' i ') : u.floor) +
