@@ -7,27 +7,39 @@ const vm = require('vm');
 const crypto = require('crypto');
 const C = require('./dane-config');
 
-// Nagłówki 48 kolumn w kolejności grup A–H. Brzmienie nagłówków należy porównać ze wzorcowym plikiem ministerstwa na dane.gov.pl.
-const ADR = ['Województwo', 'Powiat', 'Gmina', 'Miejscowość', 'Ulica', 'Nr nieruchomości', 'Nr lokalu', 'Kod pocztowy'];
+// Nagłówki 48 kolumn = „Nazwa pola” z załącznika do rozporządzenia MC z 10.11.2026 (Dz.U. 2026 poz. 1489), grupy A–H, w tej kolejności.
+// Te same nazwy generuje zakładka „Ceny” w CRM (wspólny wzorzec).
+const SIEDZ = 'adresu siedziby albo głównego miejsca wykonywania działalności gospodarczej';
+const SPRZ = 'adresu lokalu, w którym jest prowadzona sprzedaż';
+const INW = 'lokalizacji przedsięwzięcia deweloperskiego lub zadania inwestycyjnego';
+const LOK = 'lokalu mieszkalnego albo domu jednorodzinnego';
+const OPP = 'o którym mowa w art. 2 ust. 4 ustawy z dnia 24 czerwca 1994 r. o własności lokali';
+const SW = 'innego świadczenia pieniężnego, które nabywca jest zobowiązany spełnić na rzecz podmiotu obowiązanego w wykonaniu umowy przenoszącej własność';
+const ADR = ['Województwo', 'Powiat', 'Gmina', 'Miejscowość', 'Ulica', 'Numer nieruchomości', 'Numer lokalu', 'Kod pocztowy'];
 const HEAD = [].concat(
-  ['Firma', 'NIP'],
-  ADR.map(a => a + ' siedziby lub głównego miejsca wykonywania działalności'),
-  ADR.map(a => a + ' miejsca prowadzenia sprzedaży'),
-  ['Dodatkowe lokalizacje, w których prowadzona jest sprzedaż', 'Sposób kontaktu nabywcy z deweloperem'],
-  ['Województwo', 'Powiat', 'Gmina', 'Miejscowość', 'Ulica', 'Nr nieruchomości', 'Kod pocztowy'].map(a => a + ' lokalizacji przedsięwzięcia deweloperskiego lub zadania inwestycyjnego'),
-  ['Długość geograficzna', 'Szerokość geograficzna'],
-  ['Rodzaj nieruchomości', 'Identyfikator lokalu mieszkalnego lub domu jednorodzinnego', 'Cena 1 m2 powierzchni użytkowej [zł]', 'Data i godzina, od której obowiązuje cena 1 m2',
-   'Cena lokalu mieszkalnego lub domu jednorodzinnego [zł]', 'Data i godzina, od której obowiązuje cena lokalu'],
-  ['Rodzaj pomieszczenia przynależnego', 'Oznaczenie pomieszczenia przynależnego', 'Cena pomieszczenia przynależnego [zł]', 'Data i godzina, od której obowiązuje cena pomieszczenia przynależnego', 'Identyfikator lokalu, do którego przynależy pomieszczenie'],
-  ['Rodzaj prawa niezbędnego do korzystania z lokalu', 'Cena prawa [zł]', 'Data i godzina, od której obowiązuje cena prawa', 'Identyfikator lokalu, którego dotyczy prawo'],
-  ['Rodzaj innego świadczenia pieniężnego', 'Wartość świadczenia [zł]', 'Data i godzina, od której obowiązuje wartość świadczenia', 'Identyfikator lokalu, którego dotyczy świadczenie']
+  ['Firma', 'Numer identyfikacji podatkowej (NIP)'],
+  ADR.map(a => a + ' ' + SIEDZ),
+  ADR.map(a => a + ' ' + SPRZ),
+  ['Dodatkowe lokalizacje, w których jest prowadzona sprzedaż', 'Sposób kontaktu nabywcy z podmiotem obowiązanym'],
+  ['Województwo', 'Powiat', 'Gmina', 'Miejscowość', 'Ulica', 'Numer nieruchomości', 'Kod pocztowy'].map(a => a + ' ' + INW),
+  ['Długość geograficzna punktu określającego lokalizację przestrzenną przedsięwzięcia deweloperskiego lub zadania inwestycyjnego',
+   'Szerokość geograficzna punktu określającego lokalizację przestrzenną przedsięwzięcia deweloperskiego lub zadania inwestycyjnego'],
+  ['Rodzaj nieruchomości', 'Identyfikator ' + LOK, 'Cena 1 m2 powierzchni użytkowej ' + LOK,
+   'Data i czas, od których obowiązuje cena 1 m2 powierzchni użytkowej ' + LOK,
+   'Cena ' + LOK + ' lub ich części będących przedmiotem umowy', 'Data i czas, od których obowiązuje cena ' + LOK + ' lub ich części'],
+  ['Rodzaj pomieszczenia przynależnego, ' + OPP, 'Identyfikator pomieszczenia przynależnego, ' + OPP, 'Cena pomieszczenia przynależnego, ' + OPP,
+   'Data i czas, od których obowiązuje cena pomieszczenia przynależnego, ' + OPP, 'Identyfikator ' + LOK],
+  ['Wyszczególnienie praw niezbędnych do korzystania z ' + LOK, 'Wartość praw niezbędnych do korzystania z ' + LOK,
+   'Data i czas, od których obowiązuje wartość praw niezbędnych do korzystania z ' + LOK, 'Identyfikator ' + LOK],
+  ['Wyszczególnienie rodzaju ' + SW, 'Wartość ' + SW, 'Data i czas, od których obowiązuje wartość ' + SW, 'Identyfikator ' + LOK]
 );
 if (HEAD.length !== 48) throw new Error('Struktura: ' + HEAD.length + ' kolumn zamiast 48');
 
 const X = 'X';
 const money = v => (Math.round(v * 100) / 100).toFixed(2).replace('.', ',');
 const coord = v => v.toFixed(6).replace('.', ',');
-const when = d => d + ' 00:00:00';
+// data i czas RRRR-MM-DD GG:MM:SS; historia z CRM niesie godzinę zmiany ceny, cennik ze strony – samą datę (00:00:00)
+const when = d => { d = String(d).replace('T', ' ').slice(0, 19); return d.length === 10 ? d + ' 00:00:00' : d.length === 16 ? d + ':00' : d; };
 const cell = v => { v = String(v == null || v === '' ? X : v); return /[;"\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
 
 function today() { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Warsaw' }).format(new Date()); }
@@ -48,10 +60,10 @@ async function units() {
   }
   return cache;
 }
-function norm(u) { return { id: u.id, area: +u.area, status: String(u.status || 'wolne').toLowerCase(), sold: u.sold ? String(u.sold).slice(0, 10) : null, history: (u.history || []).map(h => [String(h[0]).slice(0, 10), +h[1]]).sort((a, b) => a[0] < b[0] ? -1 : 1) }; }
+function norm(u) { return { id: u.id, area: +u.area, status: String(u.status || 'wolne').toLowerCase(), sold: u.sold ? String(u.sold).slice(0, 10) : null, history: (u.history || []).map(h => [String(h[0]).replace('T', ' ').slice(0, 19), +h[1]]).sort((a, b) => a[0] < b[0] ? -1 : 1) }; }
 
 // cena obowiązująca w danym dniu (ostatnia zmiana nie późniejsza niż dzień raportu)
-function priceAt(u, day) { let p = null; u.history.forEach(h => { if (h[0] <= day) p = h; }); return p; }
+function priceAt(u, day) { let p = null; u.history.forEach(h => { if (h[0].slice(0, 10) <= day) p = h; }); return p; }
 const residential = u => /^M/i.test(u.id);   // lokale usługowe (U…) nie są lokalami mieszkalnymi
 
 async function snapshot(day) {
@@ -74,11 +86,22 @@ const blank = n => Array(n).fill(X);
 
 async function csv(day) {
   const rows = [HEAD], base = baseCols(), snap = await snapshot(day);
-  snap.forEach(r => rows.push(base.concat(['lokal mieszkalny', r.id, money(r.perM2), when(r.since), money(r.price), when(r.since)], blank(13))));
-  const extra = (list, block) => list.filter(e => (e.od || '') <= day).forEach(e => rows.push(base.concat(blank(6), block(e))));
-  extra(C.pomieszczeniaPrzynalezne, e => [e.rodzaj, e.oznaczenie || X, money(e.cena), when(e.od), e.lokal || X].concat(blank(8)));
-  extra(C.prawa, e => blank(5).concat([e.rodzaj, money(e.cena), when(e.od), e.lokal || X], blank(4)));
-  extra(C.inneSwiadczenia, e => blank(9).concat([e.rodzaj, money(e.cena), when(e.od), e.lokal || X]));
+  // F/G/H w wierszu lokalu, do którego są przypisane (pola E są wymagane w każdym wierszu);
+  // kilka pomieszczeń przy jednym lokalu = kolejne wiersze z tymi samymi danymi lokalu.
+  const active = list => list.filter(e => String(e.od || '').slice(0, 10) <= day);
+  const F = active(C.pomieszczeniaPrzynalezne), G = active(C.prawa), H = active(C.inneSwiadczenia);
+  snap.forEach(r => {
+    const E = ['lokal mieszkalny', r.id, money(r.perM2), when(r.since), money(r.price), when(r.since)];
+    const f = F.filter(e => e.lokal === r.id).map(e => [e.rodzaj, e.oznaczenie || X, money(e.cena), when(e.od), r.id]);
+    const g = G.filter(e => e.lokal === r.id).map(e => [e.rodzaj, money(e.cena), when(e.od), r.id]);
+    const h = H.filter(e => e.lokal === r.id).map(e => [e.rodzaj, money(e.cena), when(e.od), r.id]);
+    for (let k = 0; k < Math.max(1, f.length, g.length, h.length); k++) rows.push(base.concat(E, f[k] || blank(5), g[k] || blank(4), h[k] || blank(4)));
+  });
+  // pozycje nieprzypisane do konkretnego lokalu (lokal: 'X') – osobne wiersze, jak dotąd
+  const loose = (list, block) => list.filter(e => !e.lokal || e.lokal === X).forEach(e => rows.push(base.concat(blank(6), block(e))));
+  loose(F, e => [e.rodzaj, e.oznaczenie || X, money(e.cena), when(e.od), X].concat(blank(8)));
+  loose(G, e => blank(5).concat([e.rodzaj, money(e.cena), when(e.od), X], blank(4)));
+  loose(H, e => blank(9).concat([e.rodzaj, money(e.cena), when(e.od), X]));
   return '﻿' + rows.map(r => r.map(cell).join(';')).join('\r\n') + '\r\n';
 }
 
