@@ -18,7 +18,7 @@ dane.gov.pl raz na dobę pobiera plik XML i wskazane w nim zestawienia – nie t
 
 ## Konfiguracja (`api/_lib/dane-config.js`)
 Dane dewelopera, adres biura sprzedaży (pola UZUPEŁNIJ), lokalizacja WGS-84, pomieszczenia przynależne / prawa / inne świadczenia (jeśli ich cena nie jest wliczona w cenę lokalu), statusy pomijane w raporcie, data startu.
-Nagłówki kolumn są w `api/_lib/dane.js` (tablica `HEAD`) – porównać z wzorcowym plikiem ministerstwa.
+Nagłówki kolumn w `api/_lib/dane.js` (tablica `HEAD`) to dokładne „Nazwy pól” z załącznika do rozporządzenia (Dz.U. 2026 poz. 1489) – te same, które generuje zakładka „Ceny” w CRM.
 
 ## Zmienne środowiskowe (Vercel → Settings → Environment Variables)
 | Zmienna | Opis |
@@ -33,9 +33,12 @@ Nagłówki kolumn są w `api/_lib/dane.js` (tablica `HEAD`) – porównać z wzo
 | `N75_PRICES_TOKEN` | opcjonalny token Bearer do `N75_PRICES_URL` |
 
 ## Połączenie z CRM
-CRM (Supabase) wystawia endpoint z listą lokali, np. `GET /api/public/n75/ceny`:
+CRM (Supabase) wystawia endpoint z listą lokali `GET /api/public/n75/ceny` (moduł „Ceny” w CRM, z historią cen zapisywaną automatycznie przy każdej zmianie). Ustaw `N75_PRICES_URL=https://<crm>/api/public/n75/ceny`:
 ```json
-[{ "id": "M2.03", "area": 80.93, "status": "wolne", "sold": null, "history": [["2026-08-25", 1052090], ["2026-12-01", 1072000]] }]
+[{ "id": "M2.03", "area": 80.93, "status": "wolne", "sold": null, "history": [["2026-08-25 00:00:00", 1052090], ["2026-12-01 09:30:00", 1072000]] }]
 ```
-`status`: `wolne` / `rezerwacja` / `sprzedane`; `sold`: data sprzedaży (od tego dnia lokal znika z raportu, a e-mail odnotuje wycofanie z oferty). `history`: każda zmiana ceny brutto z datą, od której obowiązuje.
+`status`: `wolne` / `rezerwacja` / `sprzedane`; `sold`: data sprzedaży (od tego dnia lokal znika z raportu, a e-mail odnotuje wycofanie z oferty). `history`: każda zmiana ceny brutto z datą (i godziną – z CRM), od której obowiązuje. Godzina trafia do pól E4/E6 („Data i czas…”).
 Po zmianie ceny w CRM można od razu wysłać raport: `GET /dane-gov/raport?force=1&key=<CRON_SECRET>`.
+
+## Jeden nadawca na dane.gov.pl
+N75 zgłasza do portalu pliki **tej strony** (`/dane-gov/n75.xml`). W CRM, w zakładce „Ceny” dla N75, „Pliki publikuje” jest ustawione na stronę inwestycji, więc CRM nie wystawia drugiego, równoległego zbioru dla N75.
