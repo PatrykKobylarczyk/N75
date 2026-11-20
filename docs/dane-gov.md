@@ -17,7 +17,7 @@ dane.gov.pl raz na dobę pobiera plik XML i wskazane w nim zestawienia – nie t
 3. Nie zmieniać `extDataset` / `extResource` w `api/_lib/dane-config.js` po pierwszym imporcie.
 
 ## Konfiguracja (`api/_lib/dane-config.js`)
-Dane dewelopera, adres biura sprzedaży (pola UZUPEŁNIJ), lokalizacja WGS-84, pomieszczenia przynależne / prawa / inne świadczenia (jeśli ich cena nie jest wliczona w cenę lokalu), statusy pomijane w raporcie, data startu.
+Dane dewelopera, adres biura sprzedaży (ul. Gdańska 130, 90-520 Łódź), lokalizacja WGS-84, pomieszczenia przynależne / prawa / inne świadczenia (jeśli ich cena nie jest wliczona w cenę lokalu), statusy pomijane w raporcie, data startu.
 Nagłówki kolumn w `api/_lib/dane.js` (tablica `HEAD`) to dokładne „Nazwy pól” z załącznika do rozporządzenia (Dz.U. 2026 poz. 1489) – te same, które generuje zakładka „Ceny” w CRM.
 
 ## Zmienne środowiskowe (Vercel → Settings → Environment Variables)
