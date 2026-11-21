@@ -326,7 +326,7 @@ window.N75_EN = Object.assign(window.N75_EN || {}, {
   "Nie znaleziono lokalu": "Unit not found",
   "Pokaż całe piętro": "Show the whole floor", "Pokaż tylko lokal": "Show this unit only",
   "Powierzchnia": "Floor area", "Ekspozycja": "Aspect", "Powierzchnia zewnętrzna": "Outdoor area",
-  "Miejsce postojowe": "Parking space", "opcjonalnie, w garażu podziemnym": "optional, in the underground garage", "opcjonalnie, w budynku": "optional, in the building",
+  "Miejsce postojowe": "Parking space", "opcjonalnie, w garażu podziemnym": "optional, in the underground garage", "opcjonalnie, w budynku": "optional, in the building", "opcjonalnie: 70 000 zł w hali na parterze, 35 000 zł na platformie w garażu podziemnym": "optional: 70 000 zł in the ground-floor car park, 35 000 zł on a platform in the underground garage", "opcjonalnie: 5 000 zł za m² komórki": "optional: 5 000 zł per m² of storage",
   "Widok z okien": "Views", "Zobacz widok z okna w 3D →": "See the view from the window in 3D →",
   "Wnętrze 3D": "3D interior", "Widok z okna": "View from the window", "Pobierz kartę PDF": "Download PDF sheet",
   "Prywatna prezentacja": "Private presentation",
