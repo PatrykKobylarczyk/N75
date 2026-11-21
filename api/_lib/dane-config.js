@@ -6,6 +6,7 @@ const CENNIK = '2026-11-21 00:00:00';
 const MIEJSCA = [];
 for (let i = 1; i <= 16; i++) MIEJSCA.push({ lokal: 'X', rodzaj: 'prawo do wyłącznego korzystania z miejsca postojowego P' + i + ' (hala garażowa, parter)', cena: 70000, od: CENNIK });
 for (let i = 15; i <= 58; i++) MIEJSCA.push({ lokal: 'X', rodzaj: 'prawo do wyłącznego korzystania z miejsca postojowego nr ' + i + ' na platformie parkingowej (garaż podziemny)', cena: 35000, od: CENNIK });
+for (let i = 1; i <= 2; i++) MIEJSCA.push({ lokal: 'X', rodzaj: 'prawo do wyłącznego korzystania z miejsca postojowego dla motocykla M' + i + ' (garaż podziemny)', cena: 10000, od: CENNIK });
 
 module.exports = {
   // A – deweloper
@@ -26,7 +27,7 @@ module.exports = {
   // F/G/H – pomieszczenia przynależne, prawa i inne świadczenia, jeżeli ich cena NIE jest wliczona w cenę lokalu.
   // Przykład: { lokal: 'M2.03', rodzaj: 'komórka lokatorska', oznaczenie: 'K05', cena: 25000, od: '2026-09-15' }
   // lokal: 'X' = oferowane do dowolnego lokalu (wtedy wiersz bez powiązania z konkretnym lokalem)
-  // Cennik od 21.11.2026: komórki 5 000 zł/m², miejsca postojowe w hali na parterze 70 000 zł, miejsca na platformach (garaż -1) 35 000 zł.
+  // Cennik od 21.11.2026: komórki 5 000 zł/m², miejsca postojowe w hali na parterze 70 000 zł, miejsca na platformach (garaż -1) 35 000 zł, miejsca dla motocykli M1–M2 10 000 zł.
   pomieszczeniaPrzynalezne: [
     { lokal: 'X', rodzaj: 'komórka lokatorska – cena 5 000 zł za m² powierzchni komórki (komórki 2–5 m²)', oznaczenie: 'X', cena: 5000, od: CENNIK },
     { lokal: 'X', rodzaj: 'komórka lokatorska 6,10 m² (5 000 zł/m²)', oznaczenie: 'X', cena: 30500, od: CENNIK }
