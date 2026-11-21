@@ -1,6 +1,12 @@
 /* Dane dewelopera i inwestycji do raportu cen dla dane.gov.pl
    (art. 19b ustawy z 20 maja 2021 r. o ochronie praw nabywcy… oraz rozporządzenie MC z 10.11.2026, Dz.U. 2026 poz. 1489).
    Biuro sprzedaży: ul. Gdańska 130, 90-520 Łódź (jak siedziba). */
+const CENNIK = '2026-11-21 00:00:00';
+// miejsca postojowe wg rzutów (assets/js/units.js → N75_PARKING): P1–P16 w hali na parterze, 15–58 na platformach Parklift w garażu podziemnym
+const MIEJSCA = [];
+for (let i = 1; i <= 16; i++) MIEJSCA.push({ lokal: 'X', rodzaj: 'prawo do wyłącznego korzystania z miejsca postojowego P' + i + ' (hala garażowa, parter)', cena: 70000, od: CENNIK });
+for (let i = 15; i <= 58; i++) MIEJSCA.push({ lokal: 'X', rodzaj: 'prawo do wyłącznego korzystania z miejsca postojowego nr ' + i + ' na platformie parkingowej (garaż podziemny)', cena: 35000, od: CENNIK });
+
 module.exports = {
   // A – deweloper
   firma: 'UNIQUM 5 SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ',
@@ -20,8 +26,12 @@ module.exports = {
   // F/G/H – pomieszczenia przynależne, prawa i inne świadczenia, jeżeli ich cena NIE jest wliczona w cenę lokalu.
   // Przykład: { lokal: 'M2.03', rodzaj: 'komórka lokatorska', oznaczenie: 'K05', cena: 25000, od: '2026-09-15' }
   // lokal: 'X' = oferowane do dowolnego lokalu (wtedy wiersz bez powiązania z konkretnym lokalem)
-  pomieszczeniaPrzynalezne: [],
-  prawa: [],          // { lokal, rodzaj: 'prawo do wyłącznego korzystania z miejsca postojowego', cena, od }
+  // Cennik od 21.11.2026: komórki 5 000 zł/m², miejsca postojowe w hali na parterze 70 000 zł, miejsca na platformach (garaż -1) 35 000 zł.
+  pomieszczeniaPrzynalezne: [
+    { lokal: 'X', rodzaj: 'komórka lokatorska – cena 5 000 zł za m² powierzchni komórki (komórki 2–5 m²)', oznaczenie: 'X', cena: 5000, od: CENNIK },
+    { lokal: 'X', rodzaj: 'komórka lokatorska 6,10 m² (5 000 zł/m²)', oznaczenie: 'X', cena: 30500, od: CENNIK }
+  ],
+  prawa: MIEJSCA,      // { lokal, rodzaj: 'prawo do wyłącznego korzystania z miejsca postojowego', cena, od }
   inneSwiadczenia: [], // { lokal, rodzaj, cena, od }
 
   // Statusy, które NIE trafiają do raportu (lokal nie jest już oferowany)

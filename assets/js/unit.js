@@ -95,8 +95,8 @@
             spec('Status', '<span class="status status--' + u.status + '">' + STATUS[u.status] + '</span>') +
             spec('Ekspozycja', esc(u.orient || '—'), 'u-spec__txt') +
             spec('Powierzchnia zewnętrzna', outTxt, 'u-spec__txt') +
-            spec('Miejsce postojowe', 'opcjonalnie, w garażu podziemnym', 'u-spec__txt') +
-            spec('Komórka lokatorska', 'opcjonalnie, w budynku', 'u-spec__txt') +
+            spec('Miejsce postojowe', 'opcjonalnie: 70 000 zł w hali na parterze, 35 000 zł na platformie w garażu podziemnym', 'u-spec__txt') +
+            spec('Komórka lokatorska', 'opcjonalnie: 5 000 zł za m² komórki', 'u-spec__txt') +
             spec('Widok z okien', (views.length ? esc(views.join(', ')) : '—') + ' <a class="u-link caps" href="makieta.html?okno=' + encodeURIComponent(u.id) + '">Zobacz widok z okna w 3D →</a>', 'u-spec__txt u-spec__wide') +
           '</dl>' +
           '<div class="u-cta">' +
