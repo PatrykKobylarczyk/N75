@@ -1515,7 +1515,7 @@ body.dh-open { overflow: hidden; }
 .map .leaflet-tile-pane { filter: saturate(.62) sepia(.2) hue-rotate(-6deg) contrast(.94) brightness(1.03); }
 .map::after { content: ""; position: absolute; inset: 0; z-index: 450; pointer-events: none;
   background: url(../img/papier-czerpany.webp) 0 0 / 512px 512px;
-  mix-blend-mode: multiply; opacity: .85;
+  mix-blend-mode: multiply; opacity: .5;
   box-shadow: inset 0 0 38px 6px rgba(150, 122, 88, .22), inset 0 0 4px 1px rgba(150, 122, 88, .25); }
 .map > iframe { filter: grayscale(1) sepia(.35) contrast(1.05) brightness(1.02); }
 .map .leaflet-control-zoom, .map .map__home { box-shadow: none; }
@@ -1568,13 +1568,13 @@ body.dh-open { overflow: hidden; }
 /* Ilustrowana mapa okolicy */
 .map.map--art .leaflet-tile-pane { filter: saturate(.35) sepia(.3) contrast(.85) brightness(1.08); opacity: .5; }
 .map__art { image-rendering: auto; }
-.map__labels .ml { font-family: var(--head); font-weight: 500; font-size: 19px; letter-spacing: .3em; fill: #8b8174; paint-order: stroke; stroke: #e6e0d6; stroke-width: 4.5px; stroke-linejoin: round; dominant-baseline: central; }
-.map__labels .ml--park { font-size: 26px; letter-spacing: .32em; fill: #4f6b40; stroke: #c3d5a3; stroke-width: 5px; font-weight: 400; }
+.map__labels .ml { font-family: var(--head); font-weight: 600; font-size: calc(10.5px * var(--k, 1)); letter-spacing: .14em; fill: #4a4239; paint-order: stroke; stroke: rgba(246, 241, 232, .92); stroke-width: calc(3.2px * var(--k, 1)); stroke-linejoin: round; dominant-baseline: central; }
+.map__labels .ml--park { font-size: calc(13px * var(--k, 1)); letter-spacing: .18em; fill: #2f4a24; stroke: rgba(238, 244, 226, .95); stroke-width: calc(3.6px * var(--k, 1)); font-weight: 600; }
 .map__compass { position: absolute; left: 18px; bottom: 22px; z-index: 460; width: 34px; pointer-events: none; }
 .map__compass svg { display: block; width: 100%; overflow: visible; }
 .map__compass text { font-family: var(--head); font-size: 11px; font-weight: 500; fill: #7b4f2e; }
 .map__compass circle, .map__compass path { fill: none; stroke: #7b4f2e; stroke-width: 1.6; }
-.map.map--art::after { opacity: .6; }
+.map.map--art::after { opacity: .32; }
 
 /* ============ Cztery wartości N75 – typograficzna sekwencja przewijana ============ */
 .values { background: var(--paper-2); position: relative; }
@@ -2011,3 +2011,43 @@ html.ph-lock { overflow: hidden; }
 .u-light__cta { display: flex; flex-wrap: wrap; gap: 12px; }
 @media (max-width: 700px) { .u-light__grid { grid-template-columns: 1fr; } .u-compass { max-width: 180px; } .u-light__list li { grid-template-columns: 84px 1fr; } }
 @media print { .u-light__cta { display: none; } }
+
+/* parallax zdjęć */
+.has-px { translate: 0 var(--px, 0); scale: 1.14; will-change: translate; }
+.arka__bg.has-px { scale: 1; }
+.arch-slide { overflow: hidden; }
+
+/* Modernizm to… → zatrzymuje się na „styl” */
+.modern__end { opacity: 0; transform: translateY(10px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.modern__end.is-on { opacity: 1; transform: none; font-weight: 600; color: var(--ink); }
+.modern__title.is-final .modern__word { font-weight: 700; }
+.draw__in { padding-top: clamp(40px, 9vh, 120px); }
+
+/* przyciski obok cytatu z manifestu */
+.arka__links { display: flex; flex-wrap: wrap; gap: 14px 34px; }
+.mf-ideas { margin-top: 28px; color: var(--bronze); font-size: 11px; line-height: 2; }
+.mf-misja .split__media img { width: 100%; display: block; }
+
+/* przekrój budynku pod makietą 3D */
+.przekroj { margin: clamp(40px, 5vw, 64px) 0 0; }
+.przekroj__svg { margin-top: 14px; border: 1px solid var(--line); background: var(--paper); padding: clamp(10px, 2vw, 24px); }
+.przekroj__img { width: 100%; height: auto; display: block; overflow: visible; }
+.przekroj figcaption { margin-top: 10px; font-size: 10px; }
+.pk-ground { stroke: var(--ink); stroke-width: 1.6; }
+.pk-tree { fill: none; stroke: #7c8a6a; stroke-width: 1.2; }
+.pk-line { stroke: #7c8a6a; stroke-width: 1.2; }
+.pk-note { font: 400 11px var(--body); fill: var(--muted); letter-spacing: .04em; }
+.pk-floor { cursor: pointer; outline: none; }
+.pk-slab { fill: var(--paper-2); stroke: var(--ink); stroke-width: 1.2; transition: fill .25s; }
+.pk-win { fill: none; stroke: var(--muted); stroke-width: .9; }
+.pk-door { fill: var(--muted); opacity: .35; }
+.pk-pool { fill: #8fb3bd; opacity: .8; }
+.pk-car { stroke: var(--muted); stroke-width: 1; }
+.pk-rail { stroke: var(--muted); stroke-width: .8; }
+.pk-lead { stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 3; }
+.pk-lab { font: 600 12.5px var(--body); fill: var(--ink); letter-spacing: .06em; text-transform: uppercase; }
+.pk-sub { font: 400 11.5px var(--body); fill: var(--muted); }
+.pk-floor:hover .pk-slab, .pk-floor:focus-visible .pk-slab { fill: color-mix(in srgb, var(--bronze) 22%, var(--paper)); }
+.pk-floor:hover .pk-lab, .pk-floor:focus-visible .pk-lab { fill: var(--bronze); }
+@media (max-width: 700px) { .przekroj__hint { display: none; } .pk-sub { font-size: 15px; } .pk-lab { font-size: 16px; } }
+@media (max-width: 700px) { .przekroj__svg { overflow-x: auto; -webkit-overflow-scrolling: touch; } .przekroj__img { min-width: 820px; } .pk-sub { font-size: 12px; } .pk-lab { font-size: 13px; } }
