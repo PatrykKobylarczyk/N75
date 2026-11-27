@@ -1,6 +1,11 @@
 {
   "redirects": [
     {
+      "source": "/:v(stara|nowa|podglad)/miasto.html",
+      "destination": "/:v/makieta.html",
+      "permanent": false
+    },
+    {
       "source": "/stara",
       "destination": "/stara/",
       "permanent": false
@@ -37,7 +42,7 @@
     },
     {
       "source": "/miasto.html",
-      "destination": "/stara/miasto.html",
+      "destination": "/stara/makieta.html",
       "permanent": false
     },
     {

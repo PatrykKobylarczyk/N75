@@ -14,7 +14,9 @@
     var ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2], vx = c[0] - a[0], vy = c[1] - a[1], vz = c[2] - a[2];
     var nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx, l = Math.hypot(nx, ny, nz) || 1;
     nx /= l; ny /= l; nz /= l;
-    for (var i = 0; i < 3; i++) { var v = i === 0 ? a : i === 1 ? b : c; this.p.push(v[0], v[1], v[2]); this.n.push(nx, ny, nz); if (uv) this.c.push(uv[i][0], uv[i][1], uv[i][2] || 0); else this.c.push(col[0] / 255, col[1] / 255, col[2] / 255); this.m.push(mat || 0); }
+    var SN = this._sn;   // gładkie normalne (korony drzew): normalna z położenia na elipsoidzie
+    for (var i = 0; i < 3; i++) { var v = i === 0 ? a : i === 1 ? b : c; this.p.push(v[0], v[1], v[2]);
+      if (SN) { var sx = (v[0] - SN[0]) / (SN[3] * SN[3]), sy = (v[1] - SN[1]) / (SN[4] * SN[4]), sz = (v[2] - SN[2]) / (SN[3] * SN[3]), sl = Math.hypot(sx, sy, sz) || 1; this.n.push(sx / sl, sy / sl, sz / sl); } else this.n.push(nx, ny, nz); if (uv) this.c.push(uv[i][0], uv[i][1], uv[i][2] || 0); else this.c.push(col[0] / 255, col[1] / 255, col[2] / 255); this.m.push(mat || 0); }
   };
   Mesh.prototype.quad = function (a, b, c, d, col, mat) { this.tri(a, b, c, col, mat); this.tri(a, c, d, col, mat); };
   function area2(P) { var s = 0; for (var i = 0; i < P.length; i++) { var a = P[i], b = P[(i + 1) % P.length]; s += a[0] * b[1] - b[0] * a[1]; } return s / 2; }
@@ -70,9 +72,10 @@
     this.prism([[a[0] + nx, a[1] + nz], [b[0] + nx, b[1] + nz], [b[0] - nx, b[1] - nz], [a[0] - nx, a[1] - nz]], y0, y1, col, col, mat, mat, true);
   };
   Mesh.prototype.sphere = function (cx, cy, cz, rx, ry, col, mat) {
-    var S = 9, R = 6, V = [];
+    var S = mat === 7 ? 14 : 9, R = mat === 7 ? 9 : 6, V = []; this._sn = mat === 7 ? [cx, cy, cz, rx, ry] : null;
     for (var j = 0; j <= R; j++) { var v = j / R * Math.PI, row = []; for (var i = 0; i < S; i++) { var u = i / S * Math.PI * 2; row.push([cx + Math.sin(v) * Math.cos(u) * rx, cy + Math.cos(v) * ry, cz + Math.sin(v) * Math.sin(u) * rx]); } V.push(row); }
     for (var j2 = 0; j2 < R; j2++) for (var i2 = 0; i2 < S; i2++) { var a = V[j2][i2], b = V[j2][(i2 + 1) % S], c = V[j2 + 1][(i2 + 1) % S], d = V[j2 + 1][i2]; if (j2 > 0) this.tri(a, b, c, col, mat); if (j2 < R - 1) this.tri(a, c, d, col, mat); }
+    this._sn = null;
   };
   function inside(p, P) { var c = false; for (var i = 0, j = P.length - 1; i < P.length; j = i++) { var a = P[i], b = P[j]; if ((a[1] > p[1]) !== (b[1] > p[1]) && p[0] < (b[0] - a[0]) * (p[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; }
   function cen(P) { var a = 0, x = 0, z = 0; for (var i = 0; i < P.length; i++) { var p = P[i], q = P[(i + 1) % P.length], k = p[0] * q[1] - q[0] * p[1]; a += k; x += (p[0] + q[0]) * k; z += (p[1] + q[1]) * k; } return Math.abs(a) < 1e-6 ? P[0] : [x / (3 * a), z / (3 * a)]; }
@@ -394,7 +397,7 @@
   /* ---------- WebGL ---------- */
   var VS = '#version 300 es\nlayout(location=0) in vec3 p;layout(location=1) in vec3 n;layout(location=2) in vec3 c;layout(location=3) in float m;' +
     'uniform mat4 uVP,uL;out vec3 vP,vN,vC;out float vM;out vec4 vL;void main(){vP=p;vN=n;vC=c;vM=m;vL=uL*vec4(p,1.);gl_Position=uVP*vec4(p,1.);}';
-  var FS = '#version 300 es\nprecision highp float;in vec3 vP,vN,vC;in float vM;in vec4 vL;uniform sampler2D uS,uF;uniform float uFT;uniform vec3 uSun,uEye;uniform float uA;out vec4 o;' +
+  var FS = '#version 300 es\nprecision highp float;in vec3 vP,vN,vC;in float vM;in vec4 vL;uniform sampler2D uS,uF;uniform float uFT;uniform vec3 uSun,uEye;uniform float uA,uPh;out vec4 o;' +
     'vec3 lin(vec3 c){return pow(c,vec3(2.2));}float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}' +
     'float LX(float d,float f,float w){return 1.-smoothstep(w,w+f,abs(d));}' +
     'float BX(float ds,float y,float hw,float a,float b,float fx,float fy,float w){float iy=smoothstep(a-fy,a,y)*(1.-smoothstep(b,b+fy,y));float ix=1.-smoothstep(hw,hw+fx,ds);return max(LX(ds-hw,fx,w)*iy,max(LX(y-a,fy,w),LX(y-b,fy,w))*ix);}' +
@@ -407,12 +410,21 @@
     'else if(k<2.5){float hw=sp*.38;float b1=min(H-.8,5.2);float gate=step(abs(mod(floor(c.x),5.)-2.),.1);if(gate>.5){ink=max(ink,BX(ds,y,min(1.8,sp*.4),0.,3.8,fx,fy,w*1.3));ink=max(ink,.4*LX(fract(y/.35)-.5,fy/.35,.06)*step(ds,min(1.8,sp*.4))*step(y,3.8));}else if(b1>2.6){ink=max(ink,BX(ds,y,hw,2.2,b1,fx,fy,w));ink=max(ink,.8*LX(ds-hw/3.,fx,w*.7)*step(2.2,y)*step(y,b1));ink=max(ink,.8*LX(ds,fx,w*.7)*step(2.2,y)*step(y,b1)*0.);}}' +
     'else{float hw=sp*.38;ink=max(ink,BX(ds,y,hw,0.,min(2.3,H-.4),fx,fy,w));ink=max(ink,.35*LX(fract(y/.3)-.5,fy/.3,.07)*step(ds,hw)*step(y,min(2.3,H-.4)));}' +
     'return clamp(ink,0.,1.)*.85;}' +
+    'float aaS(float e,float x){float w=fwidth(x)*.75+1e-4;return smoothstep(e-w,e+w,x);}' +
+    'float win(vec3 c){float q=floor(c.y/1000.);float sp=q/10.;float y=c.y-q*1000.-.5;float k=floor(c.z/1000.);float H=c.z-k*1000.;float ds=abs(fract(c.x)-.5)*sp;' +
+    'if(k<.5){float g=4.;if(y<g)return (1.-aaS(min(1.05,sp*.38),ds))*aaS(.6,y)*(1.-aaS(3.3,y));float j=floor((y-g)/3.4);float b0=g+j*3.4+.85,b1=b0+1.8;return b1<H-1.1?(1.-aaS(min(.62,sp*.3),ds))*aaS(b0,y)*(1.-aaS(b1,y)):0.;}' +
+    'if(k<1.5){float j=floor(y/2.85);float b0=j*2.85+.85,b1=b0+1.45;return b1<H-.5?(1.-aaS(min(.8,sp*.33),ds))*aaS(b0,y)*(1.-aaS(b1,y)):0.;}' +
+    'if(k<2.5){float hw=sp*.38;float b1=min(H-.8,5.2);return b1>2.6?(1.-aaS(hw,ds))*aaS(2.2,y)*(1.-aaS(b1,y)):0.;}' +
+    'return (1.-aaS(sp*.38,ds))*(1.-aaS(min(2.3,H-.4),y));}' +
     'float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}' +
     'float sh(){vec3 q=vL.xyz/vL.w*.5+.5;if(q.x<0.||q.x>1.||q.y<0.||q.y>1.||q.z>1.)return 1.;float s=0.;vec2 t=1./vec2(textureSize(uS,0));' +
-    'for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++){float d=texture(uS,q.xy+vec2(x,y)*t*1.5).r;s+=q.z-.0009>d?0.:1.;}return s/9.;}' +
+    'for(int x=-2;x<=2;x++)for(int y=-2;y<=2;y++){float d=texture(uS,q.xy+vec2(x,y)*t*1.1).r;s+=q.z-.0009>d?0.:1.;}return s/25.;}' +
     'void main(){vec3 N=normalize(vN);if(!gl_FrontFacing)N=-N;vec3 col=lin(vC);int M=int(vM+.5);vec2 hz=abs(N.x)>abs(N.z)?vP.zy:vP.xy;' +
-    'if(M==16){col=lin(mix(vec3(.86,.85,.83),vec3(.3,.27,.24),sketch(vC)));}' +
-    'if(M==15){float k=texture(uF,vC.xy).a*uFT;col=lin(mix(vec3(.86,.85,.83),vec3(.3,.27,.24),k));}' +
+    'if(M==16){if(uPh>.5){float hb=h(floor(vP.xz/16.)+3.7);vec3 pl=hb<.25?vec3(.86,.82,.74):hb<.5?vec3(.80,.79,.76):hb<.75?vec3(.85,.77,.65):vec3(.76,.73,.70);' +
+    'pl*=.94+.08*vn(vP.xz*.35+vP.y*.2)+.04*vn(vec2(vP.x+vP.z,vP.y)*4.);float wm=win(vC);vec3 V0=normalize(uEye-vP);float fr0=pow(1.-abs(dot(N,V0)),3.);' +
+    'vec3 gls=mix(vec3(.16,.19,.22),vec3(.55,.62,.70),.25+.6*fr0+.15*h(floor(vC.xy*vec2(1.,.3))));col=lin(mix(pl,gls,wm));}' +
+    'else col=lin(mix(vec3(.86,.85,.83),vec3(.3,.27,.24),sketch(vC)));}' +
+    'if(M==15){float k=texture(uF,vC.xy).a*uFT;col=uPh>.5?lin(mix(vec3(.84,.80,.73)*(.95+.06*vn(vP.xy*.4)),vec3(.24,.25,.27),k*.75)):lin(mix(vec3(.86,.85,.83),vec3(.3,.27,.24),k));}' +
     'if(M==1){vec2 q=N.y>.5?vP.xz:hz;col*=.95+.04*vn(q*3.)+.07*h(floor(q*180.))+.04*vn(q*45.);}' +
     'if(M==2){vec2 q=N.y>.5?vP.xz:hz;float jy=fract(q.y/.6),jx=fract((q.x+floor(q.y/.6)*.6)/1.2);col*=mix(.82,1.,smoothstep(0.,.03,min(jy,1.-jy)))*mix(.85,1.,smoothstep(0.,.015,min(jx,1.-jx)));' +
     'col*=.93+.1*vn(q*vec2(1.2,6.)+vn(q*2.)*2.);}' +
@@ -420,21 +432,22 @@
     'if(M==14){vec2 q=hz/.3;vec2 c=fract(q)-.5;float r=length(c);col*=mix(.42,1.,smoothstep(.27,.31,r))*mix(1.25,1.,smoothstep(.31,.36,r));}' +
     'if(M==4&&N.y>.5){float s=fract(vP.x*6.9),bi=floor(vP.x*6.9);float w=fwidth(vP.x*6.9)*1.5;col*=mix(.68,1.,smoothstep(.04,.04+w+.06,min(s,1.-s)));col*=.9+.16*h(vec2(bi,floor(vP.z*.45+h(vec2(bi,3.))*3.)));col*=1.-.04*sin(vP.z*60.+bi*5.);}' +
     'if(M==5){col*=.8+.35*vn(vP.xz*.9)+.1*h(floor(vP.xz*8.));}' +
-    'if(M==6){col*=.9+.12*vn(vP.xz*.7)+.05*h(floor(vP.xz*30.));}' +
-    'if(M==7){col*=.75+.45*vn(vP.xz*1.6+vP.y*1.3)+.08*h(floor(vP.xz*9.+vP.y*9.));}' +
+    'if(M==6){col*=.9+.12*vn(vP.xz*.7)+.05*h(floor(vP.xz*30.));col*=mix(1.,.62,uPh);}' +
+    'if(M==7&&uPh>.5){N=normalize(N+(vec3(vn(vP.xz*3.1+vP.y*2.),vn(vP.zy*3.1+4.),vn(vP.xy*3.1+9.))-.5)*.9);}if((M==8||M==16)&&N.y>.6&&uPh>.5){col*=.74+.1*vn(vP.xz*.6)+.05*h(floor(vP.xz*4.));}'+
+    'if(M==7){col*=.72+.42*vn(vP.xz*1.6+vP.y*1.3)+.12*vn(vP.xz*6.+vP.y*5.)+.06*h(floor(vP.xz*9.+vP.y*9.));col*=mix(vec3(1.),vec3(1.08,1.02,.82),h(floor(vP.xz/6.)));}' +
     'if(M==8&&N.y<.5){float fy=fract(vP.y/3.2);col*=mix(.9,1.,smoothstep(0.,.05,min(fy,1.-fy)));}' +
-    'if(M==10&&N.y>.5){vec2 g=fract(vP.xz/1.);col*=mix(.93,1.,smoothstep(0.,.03,min(min(g.x,1.-g.x),min(g.y,1.-g.y))));}' +
+    'if(M==10)col*=mix(1.,.9,uPh);if(M==10&&N.y>.5){vec2 g=fract(vP.xz/1.);col*=mix(.93,1.,smoothstep(0.,.03,min(min(g.x,1.-g.x),min(g.y,1.-g.y))));}' +
     'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),2.5);vec3 R=reflect(-V,N);float az=atan(R.z,R.x);' +
     'float hz=.07+.05*sin(az*7.)*sin(az*3.1+1.)+.03*sin(az*23.+2.);float lf=fract(sin(floor(az*40.)*91.7)*43758.5);' +
     'vec3 env=R.y>hz?mix(vec3(.80,.86,.92),vec3(.52,.66,.84),clamp((R.y-hz)*1.6,0.,1.)):R.y>-.4?mix(vec3(.40,.47,.50),vec3(.58,.64,.68),lf*.55+.25*smoothstep(hz-.08,hz,R.y)+.15*sin(R.y*40.+az*9.)):vec3(.55,.57,.6);' +
     'vec3 c=mix(col*.5,env,.55+fr*.3);o=vec4(pow(c,vec3(1./2.2)),min(1.,uA*1.65+fr*.15));return;}' +
-    'float ndl=max(dot(N,uSun),0.),s=sh();vec3 sky=vec3(.82,.88,1.),bnc=vec3(.78,.74,.68);vec3 amb=mix(bnc*.62,sky*.8,N.y*.5+.5);' +
+    'float ndl=max(dot(N,uSun),0.),s=sh();vec3 sky=vec3(.70,.80,.98),bnc=vec3(.80,.74,.66);vec3 amb=mix(bnc*.5,sky*.66,N.y*.5+.5);' +
     'float ao=M==8||M==15||M==16||M==1||M==2||M==3?mix(.78,1.,smoothstep(-.3,6.,vP.y)):1.;' +
-    'vec3 sunC=vec3(1.,.93,.8)*1.12;vec3 L=col*(amb*ao+sunC*ndl*mix(.16,1.,s));' +
+    'vec3 sunC=vec3(1.,.92,.78)*1.3;vec3 L=col*(amb*ao+sunC*ndl*mix(.16,1.,s));' +
     'if(M==12){vec3 V0=normalize(uEye-vP);L=col*(.78+.25*ndl)+vec3(1.,.9,.7)*pow(max(dot(N,normalize(uSun+V0)),0.),24.)*.35;}' +
     'vec3 V=normalize(uEye-vP);float gs=M==3?.35:M==2?.12:.03;L+=sunC*pow(max(dot(N,normalize(uSun+V)),0.),40.)*gs*s;' +
     'float d=length(uEye-vP);L=mix(L,vec3(.93,.92,.9),smoothstep(260.,700.,d)*.7);' +
-    'L=clamp((L*(2.51*L+.03))/(L*(2.43*L+.59)+.14),0.,1.);o=vec4(pow(L,vec3(1./2.2)),M==12?(N.y>.5?.42:.28):1.);}';
+    'L*=mix(1.,.8,uPh);L=clamp((L*(2.51*L+.03))/(L*(2.43*L+.59)+.14),0.,1.);o=vec4(pow(L,vec3(1./2.2)),M==12?(N.y>.5?.42:.28):1.);}';
   var SVS = '#version 300 es\nlayout(location=0) in vec3 p;uniform mat4 uL;void main(){gl_Position=uL*vec4(p,1.);}';
   var SFS = '#version 300 es\nprecision mediump float;out vec4 o;void main(){o=vec4(1.);}';
   // styl „rysunek architekta”: tusz + akwarela + papier (post-processing)
@@ -458,6 +471,26 @@
     'float sh=smoothstep(.42,.18,L);float hat=step(.62,fract((gl_FragCoord.x+gl_FragCoord.y)/5.));wash=mix(wash,wash*.82,sh*hat*.7);' +
     'vec3 res=mix(wash,vec3(.25,.21,.18),ink*.85);res=mix(res,paper,bg);' +
     'float vig=smoothstep(.95,.35,length(uv-.5));res*=.93+.07*vig;o=vec4(res,1.);}';
+  // Styl „model” – postprocessing fotorealistyczny: niebo z mgiełką przy horyzoncie, okluzja otoczenia (SSAO), korekcja barw, winieta
+  var RFS = '#version 300 es\nprecision highp float;in vec2 uv;uniform sampler2D uC,uD;uniform vec2 uR;uniform float uN,uF,uSunY;uniform mat4 uIVP;uniform vec3 uSunD;out vec4 o;' +
+    'float lz(vec2 q){float d=texture(uD,q).r*2.-1.;return 2.*uN*uF/(uF+uN-d*(uF-uN));}' +
+    'float ign(vec2 p){return fract(52.9829189*fract(dot(p,vec2(.06711056,.00583715))));}' +
+    'vec3 sky(vec3 d){float y=d.y;vec3 top=mix(vec3(.30,.47,.72),vec3(.38,.44,.58),smoothstep(.15,-.05,uSunY));vec3 hor=mix(vec3(.86,.87,.86),vec3(.96,.80,.62),smoothstep(.35,.0,uSunY));' +
+    'vec3 c=mix(hor,top,pow(clamp(y,0.,1.),.55));c=mix(c,vec3(.80,.79,.76),smoothstep(.0,-.25,y));float sd=max(dot(d,uSunD),0.);c+=vec3(1.,.86,.62)*(pow(sd,8.)*.18+pow(sd,300.)*1.2);return c;}' +
+    'void main(){vec2 px=1./uR;float d=texture(uD,uv).r;' +
+    'if(d>=.99999){vec4 w=uIVP*vec4(uv*2.-1.,1.,1.);vec4 n=uIVP*vec4(uv*2.-1.,-1.,1.);vec3 dir=normalize(w.xyz/w.w-n.xyz/n.w);vec3 c=sky(dir);float vg=smoothstep(1.1,.35,length(uv-.5));o=vec4(c*(.9+.1*vg),1.);return;}' +
+    'vec3 col=texture(uC,uv).rgb;float z=lz(uv);' +
+    'float zr=lz(uv+vec2(px.x,0.)),zl=lz(uv-vec2(px.x,0.)),zu=lz(uv+vec2(0.,px.y)),zd=lz(uv-vec2(0.,px.y));' +
+    'float gx=abs(zr-z)<abs(z-zl)?zr-z:z-zl;float gy=abs(zu-z)<abs(z-zd)?zu-z:z-zd;' +
+    'float rp=clamp(90./z,4.,40.);float a0=ign(floor(gl_FragCoord.xy/2.))*6.2832;float occ=0.,wsum=0.;' +
+    'for(int i=0;i<16;i++){float fi=float(i)+.5;float a=a0+fi*2.39996;float r=rp*sqrt(fi/16.);vec2 o2=vec2(cos(a),sin(a))*r;vec2 q=uv+o2*px;float zs=lz(q);' +
+    'float dz=(z+gx*o2.x+gy*o2.y)-zs;float tol=.04*z*.02+.12;' +
+    'float rng=1.-smoothstep(.8,4.,dz);occ+=smoothstep(tol,tol*2.5,dz)*rng;wsum+=1.;}' +
+    'float ao=1.-clamp(occ/wsum*1.25,0.,1.)*.62;' +
+    'col*=ao;' +
+    'float L=dot(col,vec3(.299,.587,.114));col=mix(vec3(L),col,1.08);col=mix(col,col*col*(3.-2.*col),.18);' +
+    'float fd=smoothstep(300.,900.,z);vec4 w=uIVP*vec4(uv*2.-1.,1.,1.);vec4 n=uIVP*vec4(uv*2.-1.,-1.,1.);vec3 dir=normalize(w.xyz/w.w-n.xyz/n.w);col=mix(col,sky(vec3(dir.x,.02,dir.z)),fd*.55);' +
+    'float vg=smoothstep(1.15,.3,length(uv-.5));col*=.86+.14*vg;o=vec4(col,1.);}';
   function mat4() { return new Float32Array(16); }
   function persp(f, a, n, fa) { var m = mat4(), t = 1 / Math.tan(f / 2); m[0] = t / a; m[5] = t; m[10] = (fa + n) / (n - fa); m[11] = -1; m[14] = 2 * fa * n / (n - fa); return m; }
   function ortho(l, r, b, t, n, f) { var m = mat4(); m[0] = 2 / (r - l); m[5] = 2 / (t - b); m[10] = -2 / (f - n); m[12] = -(r + l) / (r - l); m[13] = -(t + b) / (t - b); m[14] = -(f + n) / (f - n); m[15] = 1; return m; }
@@ -483,9 +516,8 @@
   var gl = cv.getContext('webgl2', { antialias: true, preserveDrawingBuffer: true });
   if (!gl) { root.classList.add('mk3d--nogl'); return; }
   function prog(vs, fs) { var p = gl.createProgram(); [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]].forEach(function (s) { var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh)); gl.attachShader(p, sh); }); gl.linkProgram(p); return p; }
-  var P = prog(VS, FS), SP = prog(SVS, SFS), QP = prog(QVS, QFS), SS = 4096;
+  var P = prog(VS, FS), SP = prog(SVS, SFS), QP = prog(QVS, QFS), RP = prog(QVS, RFS), SS = 4096;
   var STYLE = /[?&]styl=rysunek/.test(location.search) ? 1 : 0, VIEW = null;
-  var CITY = true;   // przełącznik stylu: model → rysunek → miasto
   var qb = gl.createBuffer(), qv = gl.createVertexArray(); gl.bindVertexArray(qv); gl.bindBuffer(gl.ARRAY_BUFFER, qb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW); gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
   var PF = { w: 0, h: 0, fb: null, c: null, d: null };
   function postFB(W, H) {
@@ -494,6 +526,13 @@
     PF.c = mk(gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE); PF.d = mk(gl.DEPTH_COMPONENT24, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT);
     PF.fb = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, PF.fb); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, PF.c, 0); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, PF.d, 0); gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     PF.w = W; PF.h = H;
+    // wielopróbkowy bufor (wygładzanie krawędzi), rozwiązywany do tekstur koloru i głębi dla postprocessingu
+    if (PF.ms) { gl.deleteFramebuffer(PF.ms); gl.deleteRenderbuffer(PF.mc); gl.deleteRenderbuffer(PF.md); }
+    var ns = Math.min(4, gl.getParameter(gl.MAX_SAMPLES) || 1);
+    PF.mc = gl.createRenderbuffer(); gl.bindRenderbuffer(gl.RENDERBUFFER, PF.mc); gl.renderbufferStorageMultisample(gl.RENDERBUFFER, ns, gl.RGBA8, W, H);
+    PF.md = gl.createRenderbuffer(); gl.bindRenderbuffer(gl.RENDERBUFFER, PF.md); gl.renderbufferStorageMultisample(gl.RENDERBUFFER, ns, gl.DEPTH_COMPONENT24, W, H);
+    PF.ms = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, PF.ms); gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, PF.mc); gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, PF.md);
+    PF.msOK = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE; gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
   var depth = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, depth);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT24, SS, SS, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null);
@@ -553,12 +592,13 @@
     list.forEach(function (o) { if (o) { gl.bindVertexArray(o.vao); gl.drawArrays(gl.TRIANGLES, 0, o.n); } });
     gl.colorMask(true, true, true, true); gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     // scena
-    if (STYLE) { postFB(W, H); gl.bindFramebuffer(gl.FRAMEBUFFER, PF.fb); }
+    var PHOTO = !STYLE;
+    postFB(W, H); gl.bindFramebuffer(gl.FRAMEBUFFER, PHOTO && PF.msOK ? PF.ms : PF.fb);
     gl.viewport(0, 0, W, H); gl.clearColor(STYLE ? 0.95 : 0, STYLE ? 0.935 : 0, STYLE ? 0.9 : 0, STYLE ? 1 : 0); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.useProgram(P);
     var u = function (n) { return gl.getUniformLocation(P, n); };
     gl.uniformMatrix4fv(u('uVP'), false, VP); gl.uniformMatrix4fv(u('uL'), false, LM);
-    gl.uniform3fv(u('uSun'), sun); gl.uniform3fv(u('uEye'), EYE); gl.uniform1f(u('uA'), 1);
+    gl.uniform3fv(u('uSun'), sun); gl.uniform3fv(u('uEye'), EYE); gl.uniform1f(u('uA'), 1); gl.uniform1f(u('uPh'), STYLE ? 0 : 1);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, depth); gl.uniform1i(u('uS'), 0);
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, ftex); gl.uniform1i(u('uF'), 1); gl.uniform1f(u('uFT'), ftexOK ? 1 : 0); gl.activeTexture(gl.TEXTURE0);
     gl.disable(gl.CULL_FACE);
@@ -566,6 +606,16 @@
     gl.enable(gl.BLEND); gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); gl.uniform1f(u('uA'), 0.5);
     glist.forEach(function (o) { if (o) { gl.bindVertexArray(o.vao); gl.drawArrays(gl.TRIANGLES, 0, o.n); } });
     gl.depthMask(true); gl.disable(gl.BLEND);
+    if (PHOTO) {
+      if (PF.msOK) { gl.bindFramebuffer(gl.READ_FRAMEBUFFER, PF.ms); gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, PF.fb); gl.blitFramebuffer(0, 0, W, H, 0, 0, W, H, gl.COLOR_BUFFER_BIT, gl.NEAREST); gl.blitFramebuffer(0, 0, W, H, 0, 0, W, H, gl.DEPTH_BUFFER_BIT, gl.NEAREST); }
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H); gl.disable(gl.DEPTH_TEST); gl.useProgram(RP);
+      var r = function (n) { return gl.getUniformLocation(RP, n); };
+      gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, PF.c); gl.uniform1i(r('uC'), 0);
+      gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, PF.d); gl.uniform1i(r('uD'), 1); gl.activeTexture(gl.TEXTURE0);
+      gl.uniform2f(r('uR'), W, H); gl.uniform1f(r('uN'), NEAR); gl.uniform1f(r('uF'), FAR); gl.uniform1f(r('uSunY'), sun[1]); gl.uniform3fv(r('uSunD'), sun);
+      gl.uniformMatrix4fv(r('uIVP'), false, inv(VP));
+      gl.bindVertexArray(qv); gl.drawArrays(gl.TRIANGLES, 0, 3); gl.enable(gl.DEPTH_TEST);
+    }
     if (STYLE) {
       gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H); gl.disable(gl.DEPTH_TEST); gl.useProgram(QP);
       var q = function (n) { return gl.getUniformLocation(QP, n); };
@@ -727,15 +777,6 @@
   }
   function avail(f) { return (window.N75_UNITS || []).filter(function (u) { return (u.levels || [u.floor])[0] === f && u.status === 'wolne'; }).length; }
 
-  // po przełączeniu na rysunek kolejny krok to miasto: wczytujemy w tle bibliotekę 3D i modele pięter
-  var pf = false;
-  function prefetchCity() {
-    if (pf) return; pf = true;
-    var v = (/\?v=\d+/.exec((document.querySelector('script[src*="makieta.js"]') || {}).src || '') || [''])[0];
-    ['https://cdn.jsdelivr.net/npm/cesium@1.123.0/Build/Cesium/Cesium.js', 'https://cdn.jsdelivr.net/npm/cesium@1.123.0/Build/Cesium/Widgets/widgets.css', 'miasto.html', 'assets/js/miasto.js' + v]
-      .concat([0, 1, 2, 3, 4, 5, 6, 7].map(function (f) { return 'assets/data/miasto/p' + f + '.glb' + v; }))
-      .forEach(function (u) { var l = document.createElement('link'); l.rel = 'prefetch'; l.href = u; document.head.appendChild(l); });
-  }
   function buildPanel() {
     var h = '<button type="button" class="chip" data-f="-1" aria-pressed="true">Cały budynek</button>';
     for (var f = 6; f >= 0; f--) { var a = avail(f); h += '<button type="button" class="chip" data-f="' + f + '" aria-pressed="false"><b>' + (f === 0 ? 'P' : f) + '</b><span>' + (f === 0 ? 'Parter · usługi' : a ? 'wolne: ' + a : '') + '</span></button>'; }
@@ -744,7 +785,7 @@
     var sl = root.querySelector('.mk3d__sun input'), out = root.querySelector('.mk3d__sun output');
     if (sl) { var upd = function () { sunT = +sl.value; out.textContent = (Math.floor(sunT) + ':' + (sunT % 1 ? '30' : '00')); req(); }; sl.addEventListener('input', upd); upd(); }
     var home = root.querySelector('[data-home]'); if (home) home.addEventListener('click', function () { select(-1); tween({ az: 3.75, el: 0.36, dist: 100, ty: 12 }); });
-    var st = root.querySelector('[data-style]'); if (st) { var sy = function () { st.textContent = STYLE ? 'Styl: rysunek' : 'Styl: model'; root.classList.toggle('is-sketch', !!STYLE); }; sy(); st.addEventListener('click', function () { if (!STYLE && CITY) prefetchCity(); if (STYLE && CITY) { location.href = 'miasto.html' + (/[?&]embed=1/.test(location.search) ? '?embed=1' : ''); return; } STYLE = STYLE ? 0 : 1; sy(); draw(); }); }
+    var st = root.querySelector('[data-style]'); if (st) { var sy = function () { st.textContent = STYLE ? 'Styl: rysunek' : 'Styl: model'; root.classList.toggle('is-sketch', !!STYLE); }; sy(); st.addEventListener('click', function () { STYLE = STYLE ? 0 : 1; sy(); draw(); }); }
   }
   window.addEventListener('resize', req);
 
