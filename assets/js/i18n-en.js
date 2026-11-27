@@ -3,6 +3,7 @@
 window.N75_EN = Object.assign(window.N75_EN || {}, {
   /* ---------- nagłówek, menu, wspólne ---------- */
   "N75 · Narutowicza 75, Łódź · Przestrzeń w dobrym kierunku": "N75 · Narutowicza 75, Łódź · Space in the right direction",
+  "Apartamenty premium w centrum Łodzi · N75 Narutowicza 75": "Premium apartments in central Łódź · N75 Narutowicza 75", "N75 – apartamenty premium w centrum Łodzi, ul. Narutowicza 75": "N75 – premium apartments in central Łódź, Narutowicza 75", "N75 · Łódź": "N75 · Łódź",
   "Odkryj apartamenty": "Discover apartments",
   "Menu": "Menu",
   "Zamknij": "Close",
@@ -251,7 +252,13 @@ window.N75_EN = Object.assign(window.N75_EN || {}, {
   "Kultura": "Culture", "Teatr Wielki": "Grand Theatre (Opera)", "EC1 – Miasto Kultury": "EC1 – City of Culture", "Filharmonia Łódzka": "Łódź Philharmonic",
   "Komunikacja": "Transport",
   "Przystanek tramwajowy Narutowicza – pl. Dąbrowskiego": "Tram stop Narutowicza – pl. Dąbrowskiego",
-  "Dworzec Łódź Fabryczna": "Łódź Fabryczna railway station",
+  "Widok i światło": "View and light", "Zobacz widok z okna w 3D": "See the window view in 3D", "Widok": "View", "Ekspozycja: 1 strona świata": "Aspect: 1 direction", "Ekspozycja: 2 strony świata": "Aspect: 2 directions", "Ekspozycja: 3 strony świata": "Aspect: 3 directions",
+  "równe, rozproszone światło przez cały dzień – dobre do pracy i czytania": "even, diffused light all day – good for work and reading", "poranne słońce na dzień dobry": "morning sun to start the day",
+  "najwięcej słońca w ciągu dnia": "the most sunshine during the day", "popołudniowe i wieczorne słońce, zachody słońca z okien": "afternoon and evening sun, sunsets from the windows",
+  "Park im. Staszica po drugiej stronie ulicy – zieleń w oknach przez cały rok.": "Staszic Park across the street – greenery in your windows all year round.",
+  "Widok z okien do potwierdzenia": "View to be confirmed", "Umów prezentację na miejscu": "Book an on-site viewing", "Z okien": "From the windows",
+  "północ": "north", "wschód": "east", "południe": "south", "zachód": "west",
+  "Dworzec Łódź Fabryczna": "Łódź Fabryczna railway station", "Ceny miejsc postojowych i komórek (CSV)": "Parking and storage prices (CSV)", "Ceny miejsc postojowych i komórek": "Parking and storage prices", "Miejsca postojowe: 70 000 zł w hali na parterze, 35 000 zł na platformie w garażu podziemnym, 10 000 zł dla motocykla. Komórki lokatorskie: 5 000 zł za m².": "Parking spaces: 70 000 zł in the ground-floor car park, 35 000 zł on a platform in the underground garage, 10 000 zł for a motorcycle. Storage rooms: 5 000 zł per m².",
   "Dworzec w przyszłości z obsługą Kolei Dużych Prędkości": "A station set to serve high-speed rail in the future",
   "Handel i usługi": "Shops and services", "Rossmann, Kopcińskiego 31": "Rossmann, Kopcińskiego 31",
   "Sklepy spożywcze, piekarnie, lokalny warzywniak w obrębie dwóch przecznic": "Grocery shops, bakeries and a local greengrocer within two blocks",

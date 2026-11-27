@@ -3,6 +3,7 @@
    /dane-gov/n75.md5                         suma kontrolna MD5 pliku XML
    /dane-gov/ceny-ofertowe-…-RRRR-MM-DD.csv  zestawienie cen z danego dnia (48 pól, CSV UTF-8, średnik)
    /dane-gov/historia-cen-n75.csv            pełna historia zmian cen lokali
+   /dane-gov/ceny-pomieszczen-n75.csv        ceny miejsc postojowych, komórek i innych świadczeń
    /dane-gov/raport                          codzienny e-mail (cron Vercel) – wysyła się przy zmianach cen
                                              lub zawsze, gdy REPORT_DAILY=1; ręcznie: ?force=1 (wymaga klucza) */
 const D = require('./_lib/dane');
@@ -63,6 +64,7 @@ module.exports = async (req, res) => {
     if (f === 'n75.xml') return send(res, 200, 'application/xml; charset=utf-8', D.xml(base(req), day));
     if (f === 'n75.md5') return send(res, 200, 'text/plain; charset=utf-8', D.md5(D.xml(base(req), day)));
     if (f === 'historia-cen-n75.csv') return send(res, 200, 'text/csv; charset=utf-8', await D.historyCsv(), { 'Content-Disposition': 'inline; filename="historia-cen-n75.csv"' });
+    if (f === 'ceny-pomieszczen-n75.csv') return send(res, 200, 'text/csv; charset=utf-8', D.extrasCsv(), { 'Content-Disposition': 'inline; filename="ceny-pomieszczen-n75.csv"' });
     if (f === 'raport' || (!f && /vercel-cron/i.test(req.headers['user-agent'] || ''))) return await report(req, res, q);
     const m = f.match(/^(.+)(\d{4}-\d{2}-\d{2})\.csv$/);
     if (m && m[1] === D.config.plik) {

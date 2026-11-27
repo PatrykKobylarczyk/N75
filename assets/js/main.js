@@ -76,7 +76,11 @@
     // ilustrowana mapa okolicy (akwarela z danych OSM) na wyciszonym podkładzie
     var ART = [[51.7632, 19.4625], [51.7812, 19.4915]];          // akwarela: ok. 1 km wokół N75
     mapEl.classList.add('map--art');
-    L.imageOverlay('assets/img/mapa-okolica' + (window.innerWidth < 700 ? '-1200' : '') + '.webp?v=3', ART, { className: 'map__art', interactive: false }).addTo(map);
+    // akwarela (duży plik) dociągana dopiero, gdy mapa zbliża się do ekranu – szybsze pierwsze wczytanie strony
+    var artDone = false, artOn = function () { if (artDone) return; artDone = true; L.imageOverlay('assets/img/mapa-okolica' + (window.innerWidth < 700 ? '-1200' : '') + '.webp?v=4', ART, { className: 'map__art', interactive: false }).addTo(map).bringToBack(); };
+    if ('IntersectionObserver' in window) { var artIO = new IntersectionObserver(function (en) { if (en.some(function (e) { return e.isIntersecting; })) { artIO.disconnect(); artOn(); } }, { rootMargin: '800px 0px' }); artIO.observe(mapEl); }
+    var artLater = function () { setTimeout(artOn, 2500); };
+    if (document.readyState === 'complete') artLater(); else window.addEventListener('load', artLater);
     fetch('assets/img/mapa-okolica-opisy.svg?v=3').then(function (r) { return r.text(); }).then(function (t) {
       var box = document.createElement('div'); box.innerHTML = t; var sv = box.querySelector('svg');
       L.svgOverlay(sv, ART, { className: 'map__labels', interactive: false }).addTo(map);
@@ -517,7 +521,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795232690" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795778477" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -978,7 +982,7 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { inView = e[0].isIntersecting; if (inView) play(); else v.pause(); }).observe(v);
     // Wąski ekran (telefon w pionie): kadr przesuwa się za postaciami. Zmiana kadru wypada w środku wygaszenia, więc jej nie widać.
     // [czas w filmie (s), środek kadru jako część szerokości filmu]
-    var FOCUS = [[0, .5], [7.0, .48], [11.5, .6], [15.7, .6], [19.9, .36]]; // granice scen (pełna czerń) w n75-hero-film-hq6.mp4
+    var FOCUS = [[0, .5], [7.0, .48], [11.5, .6], [15.7, .6], [19.9, .36]]; // granice scen (pełna czerń) w n75-hero-film-1080.mp4
     // Kadr liczony tylko przy zmianie sceny albo szerokości ekranu – nie przy chowaniu się paska adresu
     // (zmiana samej wysokości przesuwała obraz w trakcie sceny).
     var lastKey = '';

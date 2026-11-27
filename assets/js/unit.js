@@ -21,9 +21,9 @@
     return;
   }
 
-  document.title = 'Apartament ' + u.id + ' · N75 · Narutowicza 75A, Łódź';
+  document.title = 'Apartament ' + u.id + ' – ' + u.rooms + ' ' + (u.rooms === 1 ? 'pokój' : u.rooms < 5 ? 'pokoje' : 'pokoi') + ', ' + String(u.area).replace('.', ',') + ' m² · N75 Łódź';
   (function () {
-    var d = 'Apartament ' + u.id + ' w N75, Narutowicza 75A, Łódź: ' + u.rooms + ' ' + (u.rooms === 1 ? 'pokój' : u.rooms < 5 ? 'pokoje' : 'pokoi') + ', ' + String(u.area).replace('.', ',') + ' m², piętro ' + u.floor + (u.orient ? ', ekspozycja ' + u.orient : '') + '. Rzut, cena i kontakt w sprawie lokalu.';
+    var d = 'Apartament ' + u.id + ' w N75, ul. Narutowicza 75A, Łódź: ' + u.rooms + ' ' + (u.rooms === 1 ? 'pokój' : u.rooms < 5 ? 'pokoje' : 'pokoi') + ', ' + String(u.area).replace('.', ',') + ' m², piętro ' + u.floor + (VIEWS[u.id] && VIEWS[u.id].length ? ', widok: ' + VIEWS[u.id][0] : '') + '. Rzut, cena i historia ceny.';
     var m = document.querySelector('meta[name=description]'); if (m) m.setAttribute('content', d);
     var c = document.createElement('link'); c.rel = 'canonical'; c.href = 'https://n75.vercel.app/stara/mieszkanie.html?id=' + encodeURIComponent(u.id); document.head.appendChild(c);
     var ld = document.createElement('script'); ld.type = 'application/ld+json';
@@ -67,6 +67,30 @@
   var views = VIEWS[u.id] || [];
   var subj = encodeURIComponent('Apartament ' + u.id + ' – N75');
   var body = encodeURIComponent('Dzień dobry,\nproszę o kontakt w sprawie apartamentu ' + u.id + ' (' + fmtA.format(u.area) + ' m², piętro ' + u.floor + ').\n');
+  // widok i światło – argument sprzedażowy: kompas z ekspozycją, opis światła i widoki z okien
+  var DIRS = [['północ', 0, 'N', 'równe, rozproszone światło przez cały dzień – dobre do pracy i czytania'], ['wschód', 90, 'E', 'poranne słońce na dzień dobry'],
+    ['południe', 180, 'S', 'najwięcej słońca w ciągu dnia'], ['zachód', 270, 'W', 'popołudniowe i wieczorne słońce, zachody słońca z okien']];
+  var ori = String(u.orient || '').split(/,\s*/).filter(Boolean);
+  var arc = function (a) { var r = 46, f = function (d) { var t = (d - 90) * Math.PI / 180; return (60 + r * Math.cos(t)).toFixed(1) + ' ' + (60 + r * Math.sin(t)).toFixed(1); }; return '<path d="M' + f(a - 38) + 'A' + r + ' ' + r + ' 0 0 1 ' + f(a + 38) + '"/>'; };
+  var compass = '<svg class="u-compass" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="46" class="u-compass__ring"/><g class="u-compass__on">' +
+    DIRS.filter(function (d) { return ori.indexOf(d[0]) >= 0; }).map(function (d) { return arc(d[1]); }).join('') + '</g>' +
+    '<path d="M60 26L66 60L60 94L54 60Z" class="u-compass__needle"/><path d="M60 26L66 60H54Z" class="u-compass__n"/>' +
+    DIRS.map(function (d) { var t = (d[1] - 90) * Math.PI / 180; return '<text x="' + (60 + 57 * Math.cos(t)).toFixed(1) + '" y="' + (60 + 57 * Math.sin(t) + 3.5).toFixed(1) + '" text-anchor="middle">' + ({ N: 'N', E: 'E', S: 'S', W: 'W' })[d[2]] + '</text>'; }).join('') + '</svg>';
+  var park = views.some(function (v) { return /park/i.test(v); });
+  var light = DIRS.filter(function (d) { return ori.indexOf(d[0]) >= 0; }).map(function (d) { return '<li><span class="caps bronze">' + d[0] + '</span><span>' + d[3] + '</span></li>'; }).join('');
+  var vlTxt = ori.length + (ori.length === 1 ? ' strona świata' : ' strony świata');
+  var viewBlock = '<section class="u-section u-light"><div class="wrap">' +
+    '<div class="sec-head"><span class="num">01</span><span class="line"></span><span class="caps">Widok i światło</span></div>' +
+    '<div class="u-light__grid">' +
+      '<div class="u-light__compass">' + compass + '<p class="caps muted">Ekspozycja: ' + vlTxt + '</p></div>' +
+      '<div class="u-light__txt">' +
+        '<p class="u-light__view">' + (views.length ? 'Z okien: ' + esc(views.join(' · ')) : 'Widok z okien do potwierdzenia') + '</p>' +
+        (park ? '<p class="u-light__park">Park im. Staszica po drugiej stronie ulicy – zieleń w oknach przez cały rok.</p>' : '') +
+        '<ul class="u-light__list">' + light + '</ul>' +
+        '<div class="u-light__cta"><a class="btn btn--solid caps" href="makieta.html?okno=' + encodeURIComponent(u.id) + '">Zobacz widok z okna w 3D <span class="arrow"></span></a>' +
+        '<a class="btn btn--line caps" href="#u-form">Umów prezentację na miejscu</a></div>' +
+      '</div>' +
+    '</div></div></section>';
   var spec = function (dt, dd, cls) { return '<div' + (cls ? ' class="' + cls + '"' : '') + '><dt>' + dt + '</dt><dd>' + dd + '</dd></div>'; };
 
   root.innerHTML =
@@ -77,6 +101,7 @@
           '<div class="caps bronze">Apartament · piętro ' + floorTxt + '</div>' +
           '<div class="u-title-row"><h1 class="display u-title">' + u.id + '</h1>' + (window.N75Fav ? window.N75Fav.heart(u.id, 'fav--lg') : '') + '</div>' +
           '<p class="lead u-lead">' + u.rooms + ' ' + pokoje + ' · ' + fmtA.format(u.area) + ' m²' + (outA ? ' + ' + fmtA.format(outA) + ' m² ' + (outd.length > 1 ? 'na zewnątrz' : esc(outd[0][0].toLowerCase())) : '') + (two ? ' · dwa poziomy' : '') + '</p>' +
+        (views.length ? '<p class="u-vhl"><span class="caps bronze">Widok</span> ' + esc(views.join(' · ')) + ' <span class="muted">· ' + esc(ori.join(', ')) + '</span></p>' : '') +
         '</div>' +
         '<div class="u-price">' + (sold ? '<span class="status status--sprzedane">Sprzedane</span>' :
           '<span class="caps muted">Cena</span><strong>' + (window.N75PH ? N75PH.wrap(u.id, fmt.format(u.price) + ' zł') : fmt.format(u.price) + ' zł') + '</strong><span class="muted">' + fmt.format(ppm) + ' zł/m² · <span class="status status--' + u.status + '">' + STATUS[u.status] + '</span></span>') + '</div>' +
@@ -129,11 +154,12 @@
       '</div>' +
     '</div></section>' +
 
+    viewBlock +
     '<section class="u-section"><div class="wrap u-two">' +
-      '<div><div class="sec-head"><span class="num">01</span><span class="line"></span><span class="caps">Pomieszczenia</span></div>' +
+      '<div><div class="sec-head"><span class="num">02</span><span class="line"></span><span class="caps">Pomieszczenia</span></div>' +
         '<table class="u-table"><thead><tr><th>Pomieszczenie</th><th>Powierzchnia</th></tr></thead><tbody>' + rooms + '</tbody>' +
         '<tfoot><tr><td>Razem</td><td>' + fmtA.format(u.area) + ' m²</td></tr></tfoot></table></div>' +
-      '<div><div class="sec-head"><span class="num">02</span><span class="line"></span><span class="caps">Historia ceny</span></div>' +
+      '<div><div class="sec-head"><span class="num">03</span><span class="line"></span><span class="caps">Historia ceny</span></div>' +
         (sold ? '<p class="muted">Lokal sprzedany.</p>' :
         '<table class="u-table"><thead><tr><th>Data zmiany</th><th>Cena za m²</th><th>Cena</th></tr></thead><tbody>' + hist + '</tbody></table>') +
         '<p class="u-note">Ceny brutto. Ceny i&nbsp;statusy lokali mają charakter informacyjny i&nbsp;nie stanowią oferty w&nbsp;rozumieniu Kodeksu cywilnego. Powierzchnie i&nbsp;ceny według cennika z&nbsp;15.09.2026; powierzchnie pomieszczeń według projektu budowlanego.</p></div>' +
