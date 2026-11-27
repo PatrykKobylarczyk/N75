@@ -37,7 +37,8 @@
       '<div class="ph-scroll"><table class="ph-table"><thead><tr><th>Obowiązuje od</th><th class="r">Cena</th><th class="r">Cena za m²</th><th class="r">Zmiana</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       (h.length < 2 ? '<p class="ph-note">Cena nie zmieniała się od wprowadzenia lokalu do oferty.</p>' : '') +
       '<p class="ph-note">Ceny brutto. Historia zmian ceny publikowana zgodnie z art. 19b ustawy o ochronie praw nabywcy lokalu mieszkalnego lub domu jednorodzinnego. ' +
-      '<a href="/dane-gov/historia-cen-n75.csv">Historia cen wszystkich lokali (CSV)</a></p></div>';
+      '<a href="/dane-gov/historia-cen-n75.csv">Historia cen wszystkich lokali (CSV)</a></p>' +
+      '<p class="ph-note"><strong>Ceny miejsc postojowych i komórek</strong><br>Miejsca postojowe: 70 000 zł w hali na parterze, 35 000 zł na platformie w garażu podziemnym, 10 000 zł dla motocykla. Komórki lokatorskie: 5 000 zł za m².<br><a href="/dane-gov/ceny-pomieszczen-n75.csv">Ceny miejsc postojowych i komórek (CSV)</a></p></div>';
     box.hidden = false; document.documentElement.classList.add('ph-lock');
     requestAnimationFrame(function () { box.classList.add('is-open'); var c = box.querySelector('.ph-close'); if (c) c.focus(); });
     if (window.N75Track) window.N75Track('view_price_history', { unit_id: u.id });

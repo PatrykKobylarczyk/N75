@@ -192,4 +192,12 @@ async function changes(day) {
   return { day, offered: b.length, changes: out };
 }
 
-module.exports = { HEAD, today, addDays, units, snapshot, csv, historyCsv, xml, md5, changes, config: C };
+// ceny pomieszczeń przynależnych, praw i innych świadczeń (do publikacji na stronie, art. 19b)
+function extrasCsv() {
+  const out = [['Rodzaj', 'Oznaczenie', 'Cena [zł]', 'Data i godzina, od której obowiązuje cena', 'Przypisane do lokalu']];
+  const add = (list, kind) => list.forEach(e => out.push([e.rodzaj, e.oznaczenie || X, money(e.cena), when(e.od), e.lokal && e.lokal !== X ? e.lokal : 'do dowolnego lokalu']));
+  add(C.pomieszczeniaPrzynalezne); add(C.prawa); add(C.inneSwiadczenia);
+  return '\ufeff' + out.map(r => r.map(cell).join(';')).join('\r\n') + '\r\n';
+}
+
+module.exports = { HEAD, today, addDays, units, snapshot, csv, historyCsv, extrasCsv, xml, md5, changes, config: C };

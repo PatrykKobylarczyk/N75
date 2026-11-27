@@ -1991,3 +1991,23 @@ html.ph-lock { overflow: hidden; }
 .ph-table tr.is-now td { color: var(--ink); font-weight: 500; }
 .ph-note { margin: 16px 0 0; font-size: 12px; line-height: 1.55; color: var(--muted); }
 .ph-note a { color: var(--bronze); }
+
+/* karta lokalu: widok i światło */
+.u-vhl { margin: 12px 0 0; font-size: 15px; color: var(--ink); }
+.u-vhl .caps { margin-right: 8px; font-size: 11px; }
+.u-light__grid { display: grid; grid-template-columns: minmax(180px, 260px) 1fr; gap: clamp(32px, 6vw, 100px); align-items: center; margin-top: 34px; }
+.u-compass { width: 100%; max-width: 240px; display: block; overflow: visible; }
+.u-compass__ring { fill: none; stroke: var(--line); stroke-width: 1; }
+.u-compass__on path { fill: none; stroke: var(--bronze); stroke-width: 7; stroke-linecap: butt; }
+.u-compass__needle { fill: var(--line); }
+.u-compass__n { fill: var(--ink); }
+.u-compass text { font: 500 9px var(--head); letter-spacing: .08em; fill: var(--muted); }
+.u-light__compass p { margin: 18px 0 0; font-size: 11px; }
+.u-light__view { font-family: var(--head); font-size: clamp(22px, 2.4vw, 34px); line-height: 1.25; margin: 0 0 14px; color: var(--ink); }
+.u-light__park { margin: 0 0 22px; color: var(--bronze); font-size: 16px; }
+.u-light__list { list-style: none; padding: 0; margin: 0 0 28px; border-top: 1px solid var(--line); }
+.u-light__list li { display: grid; grid-template-columns: 110px 1fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.u-light__list .caps { font-size: 11px; padding-top: 3px; }
+.u-light__cta { display: flex; flex-wrap: wrap; gap: 12px; }
+@media (max-width: 700px) { .u-light__grid { grid-template-columns: 1fr; } .u-compass { max-width: 180px; } .u-light__list li { grid-template-columns: 84px 1fr; } }
+@media print { .u-light__cta { display: none; } }
