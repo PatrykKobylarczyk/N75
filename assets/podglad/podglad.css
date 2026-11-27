@@ -350,16 +350,15 @@ html[data-k4] main > .section + .section::before { content: ""; position: absolu
 html[data-k4] .k4-plate { display: inline-block; font-family: "N75 Szyld", var(--head), sans-serif; font-size: 18px; letter-spacing: .14em; color: var(--bronze-soft); border: 1.5px solid currentColor; border-radius: 3px; padding: .55em 1.1em .45em; margin: 0 0 22px; }
 
 /* ---------- Koncepcja 05: 03b + logo z liter lat 30. (szablon bramy, metalowe litery) + metaliczny brąz ---------- */
-@font-face { font-family: "N75 Exa"; src: url("LexendExa.woff") format("woff"); font-weight: 100 900; font-display: swap; }
-@font-face { font-family: "N75 Deco"; src: url("PoiretOne.woff") format("woff"); font-display: swap; }
+@font-face { font-family: "N75 Grotesk"; src: url("LeagueSpartan.woff") format("woff"); font-weight: 100 900; font-display: swap; }
 html[data-k5][data-kierunek="k1"][data-paleta="obecna"] {
   --paper: #f4f0e8; --paper-2: #ebe4d8; --line: #d6cbbb; --muted: #6f655a; --text: #3b352f; --ink: #1f1b17; --graphite: #1f1b17;
   --bronze: #94602f; --bronze-soft: #d3a16a;
   --dark: #1c1713; --dark-2: #29211b;
   --k-violet: #94602f; --k-pink: #dccfbd; --k-clay: #4b3a2c; --k-walnut: #2c231c;
   --k5-metal: linear-gradient(118deg, #5a3517 0%, #9a6533 18%, #d9a66b 34%, #f6d3a2 44%, #c08750 56%, #8a5527 72%, #c9925a 86%, #5e3819 100%);
-  --k5-head: "N75 Exa", "Josefin Sans", var(--head), sans-serif;
-  --k5-deco: "N75 Deco", "Josefin Sans", var(--body), sans-serif;
+  --k5-head: "N75 Grotesk", var(--head), sans-serif;
+  --k5-deco: var(--k5-head);
 }
 /* logo: metaliczny brąz z cieniem jak litery odlane z metalu na kamieniu */
 html[data-k5] .logo-svg { fill: url(#k5-brz); }
@@ -368,7 +367,7 @@ html[data-k5] .header .logo .logo-svg, html[data-k5] .drawer .logo .logo-svg { h
 html[data-k5] .footer .logo .logo-svg { height: 58px; }
 
 /* nagłówki: szerokie geometryczne wersaliki (Telefon Międzymiastowy), w metalicznym brązie */
-html[data-k5] :is(.display, h1, h2, h3, .vw__word, .modern__word, .drawer__nav a) { font-family: var(--k5-head) !important; font-weight: 400 !important; text-transform: uppercase; letter-spacing: .02em; line-height: 1.14; font-synthesis: none; }
+html[data-k5] :is(.display, h1, h2, h3, .vw__word, .modern__word, .drawer__nav a) { font-family: var(--k5-head) !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: .06em; line-height: 1.08; font-synthesis: none; }
 html[data-k5] h2.display { font-size: clamp(26px, 3.6vw, 52px); }
 html[data-k5] h3 { font-size: .92em; letter-spacing: .04em; }
 html[data-k5] h2.display, html[data-k5] .modern__word, html[data-k5] .vw__word { background: var(--k5-metal); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
@@ -376,19 +375,19 @@ html[data-k5] h2.display .h2-kicker { -webkit-text-fill-color: var(--muted); }
 html[data-k5] .section--dark h2.display .h2-kicker { -webkit-text-fill-color: #b3a898; }
 
 /* drobne napisy: cienki krój art déco (księgarnia S. Seipelta) */
-html[data-k5] :is(.caps, .burger__label, .eyebrow) { font-family: var(--k5-head) !important; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; }
-html[data-k5] :is(.h2-kicker, .hero__kicker) { font-family: var(--k5-deco) !important; font-weight: 400; letter-spacing: .2em; text-transform: uppercase; font-size: max(13px, 1em); }
-html[data-k5] .hero__claim { font-family: var(--k5-deco) !important; letter-spacing: .08em; }
-@media (max-width: 430px) { html[data-k5] .header .btn { font-size: 9px; letter-spacing: .04em; padding-left: 9px; padding-right: 9px; } }
+html[data-k5] :is(.caps, .burger__label, .eyebrow) { font-family: var(--k5-head) !important; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+html[data-k5] :is(.h2-kicker, .hero__kicker) { font-family: var(--k5-head) !important; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; }
+html[data-k5] .hero__claim { font-family: var(--k5-head) !important; font-weight: 500 !important; text-transform: uppercase; letter-spacing: .1em; }
+@media (max-width: 430px) { html[data-k5] .header .btn { font-size: 8.5px; letter-spacing: .03em; padding-left: 8px; padding-right: 8px; } }
 
 /* przyciski: pełny brąz z połyskiem, kanciaste jak tabliczki */
-html[data-k5] .btn { font-family: var(--k5-head) !important; font-weight: 500; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; border-radius: 0 !important; }
+html[data-k5] .btn { font-family: var(--k5-head) !important; font-weight: 600; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; border-radius: 0 !important; }
 html[data-k5] .btn--solid { background: var(--k5-metal); background-size: 160% 100%; background-position: 0 0; border-color: #7a4a20; color: #1c1209; text-shadow: 0 1px 0 rgba(255, 230, 190, .5); transition: background-position .6s var(--ease), color .2s; }
 html[data-k5] .btn--solid:hover { background: var(--k5-metal); background-size: 160% 100%; background-position: 100% 0; border-color: #7a4a20; color: #1c1209; }
 html[data-k5] .btn--line, html[data-k5] .btn--ghost { border-color: var(--bronze); }
 
 /* liczby, ceny i metraże: brąz */
-html[data-k5] :is(.fact__val, .num, .tile__id, .units td.unit-id, .price, .c-price, .mk-unit__price, .u-price, .ideas__n, .timeline .dot) { font-family: var(--k5-head) !important; font-weight: 400 !important; letter-spacing: .02em; color: var(--bronze); }
+html[data-k5] :is(.fact__val, .num, .tile__id, .units td.unit-id, .price, .c-price, .mk-unit__price, .u-price, .ideas__n, .timeline .dot) { font-family: var(--k5-head) !important; font-weight: 500 !important; letter-spacing: .02em; color: var(--bronze); }
 html[data-k5] .section--dark :is(.fact__val, .num, .ideas__n) { color: var(--bronze-soft); }
 
 /* hero: ćwiartka koła i linie z metalu, tabliczka z adresem */
@@ -396,7 +395,7 @@ html[data-k5][data-k3b][data-kierunek] .k-geo.k-h2 { background: var(--k5-metal)
 html[data-k5][data-k3b][data-kierunek] .k-geo.k-h3 { background: linear-gradient(90deg, transparent, #c9925a 30%, #f6d3a2 60%, #9a6533) 0 0 / 100% 2px no-repeat, linear-gradient(90deg, transparent, #c9925a 30%, #f6d3a2 60%, #9a6533) 0 10px / 100% 2px no-repeat, linear-gradient(90deg, transparent, #c9925a 30%, #f6d3a2 60%, #9a6533) 0 20px / 100% 2px no-repeat !important; opacity: 1; }
 html[data-k5] .hero__rule { background: var(--k5-metal) !important; height: 3px; }
 .k5-plate { display: none; }
-html[data-k5] .k5-plate { display: inline-block; font-family: var(--k5-head); font-weight: 500; text-transform: uppercase; letter-spacing: .18em; font-size: 13px; color: #1c1209;
+html[data-k5] .k5-plate { display: inline-block; font-family: var(--k5-head); font-weight: 600; text-transform: uppercase; letter-spacing: .16em; font-size: 14px; color: #1c1209;
   background: var(--k5-metal); padding: .7em 1.2em .62em; margin: 0 0 22px; box-shadow: inset 0 0 0 1px rgba(255, 228, 186, .35), inset 0 0 0 4px rgba(90, 53, 23, .35), 2px 3px 0 rgba(0, 0, 0, .35); }
 html[data-k5] .k5-plate b { font-weight: 600; }
 html[data-k5] .k5-plate--hero { font-size: clamp(10px, 1.1vw, 13px); margin: 14px 0 18px; }
