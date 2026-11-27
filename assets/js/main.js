@@ -81,9 +81,13 @@
     if ('IntersectionObserver' in window) { var artIO = new IntersectionObserver(function (en) { if (en.some(function (e) { return e.isIntersecting; })) { artIO.disconnect(); artOn(); } }, { rootMargin: '800px 0px' }); artIO.observe(mapEl); }
     var artLater = function () { setTimeout(artOn, 2500); };
     if (document.readyState === 'complete') artLater(); else window.addEventListener('load', artLater);
-    fetch('assets/img/mapa-okolica-opisy.svg?v=3').then(function (r) { return r.text(); }).then(function (t) {
+    fetch('assets/img/mapa-okolica-opisy.svg?v=4').then(function (r) { return r.text(); }).then(function (t) {
       var box = document.createElement('div'); box.innerHTML = t; var sv = box.querySelector('svg');
       L.svgOverlay(sv, ART, { className: 'map__labels', interactive: false }).addTo(map);
+      // opisy ulic w stałej, czytelnej wielkości na ekranie (niezależnie od powiększenia mapy)
+      var vbW = sv.viewBox && sv.viewBox.baseVal ? sv.viewBox.baseVal.width : 5000;
+      var fit = function () { var w = sv.getBoundingClientRect().width; if (w) sv.style.setProperty('--k', (vbW / w).toFixed(3)); };
+      map.on('zoomend resize viewreset', fit); setTimeout(fit, 0); setTimeout(fit, 600);
     }).catch(function () {});
     // kadr „cover”: ilustracja wypełnia całe okno mapy; mapy nie da się oddalić ani przesunąć poza akwarelę
     var artBounds = L.latLngBounds(ART);
@@ -328,7 +332,7 @@
       probe.className = 'modern__word'; probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap';
       rot.appendChild(probe);
       var widest = 0;
-      words.concat(['Modernizm to']).forEach(function (w) { probe.textContent = w; widest = Math.max(widest, probe.getBoundingClientRect().width); });
+      words.concat(['Modernizm to', 'styl']).forEach(function (w) { probe.textContent = w; widest = Math.max(widest, probe.getBoundingClientRect().width); });
       rot.removeChild(probe);
       var avail = title.getBoundingClientRect().width;
       if (widest > avail) title.style.fontSize = (parseFloat(getComputedStyle(title).fontSize) * avail / widest * .98) + 'px';
@@ -336,16 +340,20 @@
     fitTitle();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTitle);
     window.addEventListener('resize', fitTitle);
-    var wEl = $('.modern__word', rot), wi = 0;
-    wEl.textContent = words[0];
-    setInterval(function () {
+    // słowa przewijają się raz, a sekwencja zatrzymuje się na „styl” + pogrubione „…w którym lepiej się mieszka.”
+    var wEl = $('.modern__word', rot), wi = 0, endEl = $('.modern__end'), seq = words.concat(['styl']), timer = null;
+    wEl.textContent = seq[0];
+    var step = function () {
       wEl.classList.add('is-out');
       setTimeout(function () {
-        wi = (wi + 1) % words.length;
-        wEl.textContent = words[wi];
-        wEl.classList.remove('is-out');
+        wi++; wEl.textContent = seq[wi]; wEl.classList.remove('is-out');
+        if (wi === seq.length - 1) { clearInterval(timer); title.classList.add('is-final'); if (endEl) endEl.classList.add('is-on'); }
       }, 500);
-    }, 2400);
+    };
+    var startRot = function () { if (!timer && wi < seq.length - 1) timer = setInterval(step, 1500); };
+    if (reduced) { wi = seq.length - 1; wEl.textContent = seq[wi]; title.classList.add('is-final'); if (endEl) endEl.classList.add('is-on'); }
+    else if ('IntersectionObserver' in window) new IntersectionObserver(function (e, o) { if (e[0].isIntersecting) { o.disconnect(); startRot(); } }, { threshold: .4 }).observe(title);
+    else startRot();
   }
 
   /* ---------- Animacje wejścia ---------- */
@@ -521,7 +529,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795780730" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795796803" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -927,6 +935,77 @@
     }).then(function () { btn.disabled = false; });
   });
 
+
+  /* ---------- Przekrój budynku pod makietą 3D: kondygnacje z opisem, kliknięcie wybiera piętro na makiecie ---------- */
+  (function () {
+    var box = document.getElementById('przekroj-svg'); if (!box) return;
+    var U = window.N75_UNITS || [], cnt = function (f) { return U.filter(function (u) { return u.floor === f; }).length; };
+    var apt = function (n) { return n + (n === 1 ? ' apartament' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? ' apartamenty' : ' apartamentów'); };
+    var G = 430, H = 44, X0 = 300, W = 470, LX = 832;   // linia terenu, wysokość kondygnacji, lico ulicy, szerokość budynku
+    var L = [
+      { f: -1, y: G, h: 64, x1: X0 + W + 10, label: 'Garaż podziemny', sub: '44 miejsca na platformach · komórki lokatorskie' },
+      { f: 0, y: G - 54, h: 54, x1: X0 + W, label: 'Parter', sub: 'Foyer z recepcją · 3 lokale usługowe · hala na 16 aut' },
+      { f: 1, label: '1. piętro', sub: apt(cnt(1)) + ' · basen, jacuzzi, sauna, siłownia' },
+      { f: 2, label: '2. piętro', sub: apt(cnt(2)) },
+      { f: 3, label: '3. piętro', sub: apt(cnt(3)) },
+      { f: 4, label: '4. piętro', sub: apt(cnt(4)) },
+      { f: 5, label: '5. piętro', sub: apt(cnt(5)) + ' · tarasy', x1: X0 + W - 46 },
+      { f: 6, label: '6. piętro', sub: apt(cnt(6)) + ' · tarasy na dachu', x1: X0 + W - 110 }
+    ];
+    var top = G - 54;
+    L.forEach(function (l) { if (l.f > 0) { l.h = H; l.y = top - H; top = l.y; } if (!l.x1) l.x1 = X0 + W; });
+    var o = '<svg viewBox="0 0 1180 ' + (G + 92) + '" class="przekroj__img">';
+    // park po drugiej stronie ulicy
+    for (var t = 0; t < 4; t++) { var tx = 44 + t * 40, tr = 18 + (t % 2) * 6; o += '<circle class="pk-tree" cx="' + tx + '" cy="' + (G - 34 - tr) + '" r="' + tr + '"/><path class="pk-line" d="M' + tx + ' ' + (G - 34) + 'V' + G + '"/>'; }
+    o += '<text class="pk-note" x="104" y="' + (G + 22) + '" text-anchor="middle">park im. Staszica</text><text class="pk-note" x="' + (X0 - 56) + '" y="' + (G + 22) + '" text-anchor="middle">ul. Narutowicza</text>';
+    o += '<path class="pk-ground" d="M10 ' + G + 'H' + (LX - 20) + '"/>';
+    L.slice().reverse().forEach(function (l) {
+      var y = l.f < 0 ? G : l.y, h = l.h, x1 = l.x1;
+      o += '<g class="pk-floor" tabindex="0" role="button" data-floor="' + l.f + '" aria-label="' + l.label + ': ' + l.sub + '">' +
+        '<rect class="pk-slab" x="' + X0 + '" y="' + y + '" width="' + (x1 - X0) + '" height="' + h + '"/>';
+      if (l.f >= 1) for (var k = 1; k < 6; k++) { var wx = X0 + 16 + k * ((x1 - X0 - 32) / 6); if (wx < x1 - 20) o += '<rect class="pk-win" x="' + (wx - 14) + '" y="' + (y + 9) + '" width="28" height="' + (h - 16) + '"/>'; }
+      if (l.f === 1) o += '<rect class="pk-pool" x="' + (X0 + W / 2 - 70) + '" y="' + (y + h - 16) + '" width="140" height="11"/>';
+      if (l.f === 0) o += '<rect class="pk-door" x="' + (X0 + 40) + '" y="' + (y + 14) + '" width="36" height="' + (h - 14) + '"/><rect class="pk-win" x="' + (X0 + 120) + '" y="' + (y + 12) + '" width="120" height="' + (h - 22) + '"/><rect class="pk-win" x="' + (X0 + 270) + '" y="' + (y + 12) + '" width="80" height="' + (h - 22) + '"/>';
+      if (l.f === -1) for (var c = 0; c < 9; c++) { var cx = X0 + 26 + c * 50; o += '<path class="pk-car" d="M' + cx + ' ' + (y + 24) + 'h34M' + cx + ' ' + (y + 46) + 'h34"/>'; }
+      var rail = function (a, b, yy) { var r = '<path class="pk-rail" d="M' + a + ' ' + (yy - 10) + 'H' + b; for (var q = a; q <= b; q += 12) r += 'M' + q + ' ' + yy + 'v-10'; return r + '"/>'; };
+      if (l.f === 5) o += rail(x1 + 4, X0 + W - 4, y + h);
+      if (l.f === 6) o += rail(x1 + 4, L[6].x1 - 4, y + h) + rail(X0 + 4, x1 - 4, y);
+      var ly = y + h / 2;
+      o += '<path class="pk-lead" d="M' + (x1 + 6) + ' ' + ly + 'H' + (LX - 12) + '"/>' +
+        '<text class="pk-lab" x="' + LX + '" y="' + (ly - 3) + '">' + l.label + '</text><text class="pk-sub" x="' + LX + '" y="' + (ly + 12) + '">' + l.sub + '</text></g>';
+    });
+    o += '</svg>';
+    box.innerHTML = o;
+    var go = function (g) {
+      var f = g.getAttribute('data-floor'), t = document.querySelector('#mk-svg .mk-floor[data-floor="' + f + '"]');
+      var mk = document.getElementById('makieta'); if (mk) mk.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (t) setTimeout(function () { t.dispatchEvent(new MouseEvent('click', { bubbles: true })); }, 350);
+    };
+    $$('.pk-floor', box).forEach(function (g) {
+      g.addEventListener('click', function () { go(g); });
+      g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(g); } });
+    });
+  })();
+
+  /* ---------- Parallax: zdjęcia przesuwają się wolniej niż strona (tylko przy pełnym ruchu) ---------- */
+  (function () {
+    if (reduced || !('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var imgs = $$('.panorama img, .arch-slide img, .arka__bg, img.px');
+    if (!imgs.length) return;
+    var vis = new Set(), raf = 0;
+    var frameOf = function (e) { return e.closest('.arch-slide, .panorama, .px-box') || e; };
+    var run = function () {
+      raf = 0; var vh = window.innerHeight;
+      vis.forEach(function (e) {
+        var r = frameOf(e).getBoundingClientRect(), k = ((r.top + r.height / 2) - vh / 2) / (vh + r.height);   // -0.5 … 0.5
+        e.style.setProperty('--px', (k * -14).toFixed(2) + '%');
+      });
+    };
+    var ask = function () { if (!raf) raf = requestAnimationFrame(run); };
+    var io = new IntersectionObserver(function (en) { en.forEach(function (x) { var img = x.target._pxImg; if (x.isIntersecting) vis.add(img); else vis.delete(img); }); ask(); }, { rootMargin: '120px 0px' });
+    imgs.forEach(function (e) { e.classList.add('has-px'); var f = frameOf(e); f._pxImg = e; io.observe(f); });
+    window.addEventListener('scroll', ask, { passive: true }); window.addEventListener('resize', ask);
+  })();
 
   /* ---------- Cztery wartości: typograficzna sekwencja odtwarzana automatycznie (gdy sekcja jest na ekranie) ---------- */
   (function () {
