@@ -9,7 +9,34 @@
   /* Wysyłka zgłoszeń z formularzy na e-mail działu sprzedaży (FormSubmit, bez własnego serwera).
      Pierwsze zgłoszenie wysyła na adres prośbę o aktywację – trzeba w niej kliknąć „Activate Form”. */
   var LEAD_MAIL = 'fryderyk@uniqum.pl';
+
+  /* CRM sprzedaży (uniqum-crm): kopia każdego zgłoszenia trafia do CRM.
+     UKRYTE: dopóki ENABLED = false, strona działa jak dotąd (tylko e-mail przez FormSubmit).
+     Test bez publikacji: otwórz stronę z ?crm=test (zapamiętuje się w tej przeglądarce), wyłączenie: ?crm=off.
+     Publicznie: wpisz URL wdrożonego CRM i ustaw ENABLED = true. */
+  var CRM = { URL: '', ENABLED: false, PROJECT: 'N75' };
+  var crmTest = false;
+  try {
+    var cq = new URLSearchParams(location.search).get('crm');
+    if (cq === 'test') localStorage.setItem('n75-crm-test', '1');
+    if (cq === 'off') localStorage.removeItem('n75-crm-test');
+    crmTest = localStorage.getItem('n75-crm-test') === '1';
+  } catch (e) {}
+  function crmSend(data) {
+    if (!CRM.URL || !(CRM.ENABLED || crmTest)) return;
+    var src = {}; try { src = JSON.parse(sessionStorage.getItem('n75-zrodlo') || '{}'); } catch (e) {}
+    var c = data['Kontakt'] || '', isMail = /@/.test(c);
+    var msg = [data['Wiadomość'], data['Dodatkowo'] ? 'Dodatkowo: ' + data['Dodatkowo'] : '', data['Formularz'] ? 'Formularz: ' + data['Formularz'] : '',
+      window.N75Source ? 'Źródło: ' + window.N75Source() : ''].filter(Boolean).join('\n');
+    var body = { project: CRM.PROJECT, name: data['Imię'] || '', email: isMail ? c : '', phone: isMail ? '' : c, unit: data['Lokal'] || '', message: msg,
+      consent: true, consent_text: 'Zgoda na przetwarzanie danych w celu odpowiedzi na zapytanie (formularz na stronie N75)', page: location.href, test: crmTest && !CRM.ENABLED };
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'gclid', 'fbclid'].forEach(function (k) { if (src[k]) body[k] = src[k]; });
+    // osobno od e-maila: błąd CRM nigdy nie blokuje wysyłki formularza
+    try { fetch(CRM.URL.replace(/\/$/, '') + '/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), keepalive: true }).catch(function () {}); } catch (e) {}
+  }
+
   window.N75Send = function (data) {
+    crmSend(data);
     var body = { _subject: 'N75 – zapytanie' + (data['Lokal'] ? ' o ' + data['Lokal'] : '') + ' (' + (data['Imię'] || '') + ')', _template: 'table', _captcha: 'false', 'Strona': location.href };
     Object.keys(data).forEach(function (k) { if (data[k]) body[k] = data[k]; });
     // skąd przyszedł klient (kampania, wyszukiwarka, portal) – assets/js/consent.js
