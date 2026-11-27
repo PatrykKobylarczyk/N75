@@ -2051,3 +2051,12 @@ html.ph-lock { overflow: hidden; }
 .pk-floor:hover .pk-lab, .pk-floor:focus-visible .pk-lab { fill: var(--bronze); }
 @media (max-width: 700px) { .przekroj__hint { display: none; } .pk-sub { font-size: 15px; } .pk-lab { font-size: 16px; } }
 @media (max-width: 700px) { .przekroj__svg { overflow-x: auto; -webkit-overflow-scrolling: touch; } .przekroj__img { min-width: 820px; } .pk-sub { font-size: 12px; } .pk-lab { font-size: 13px; } }
+/* przyciski pod cytatem: małe, obok siebie, na dole grafiki */
+.arka__links { flex-wrap: nowrap; gap: 26px; margin-top: 34px; align-items: center; }
+.arka__links .arka__link { margin-top: 0; font-size: 11px; padding: 8px 0; gap: 10px; white-space: nowrap; }
+.arka__links .arka__link .arrow { width: 18px; }
+@media (max-width: 700px) {
+  .arka__links { gap: 18px; margin-top: 26px; position: relative; z-index: 1; }
+  .arka__links .arka__link { font-size: 10px; letter-spacing: .14em; padding: 6px 0; gap: 8px; }
+  .arka__links .arka__link .arrow { width: 14px; }
+}
