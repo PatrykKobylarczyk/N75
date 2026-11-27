@@ -2060,3 +2060,6 @@ html.ph-lock { overflow: hidden; }
   .arka__links .arka__link { font-size: 10px; letter-spacing: .14em; padding: 6px 0; gap: 8px; }
   .arka__links .arka__link .arrow { width: 14px; }
 }
+/* panorama z wnętrza apartamentu (zamiast zdjęcia lotniczego) */
+.panorama--wnetrze img { height: auto; aspect-ratio: 1890 / 832; max-height: none; object-position: 50% 55%; }
+@media (max-width: 700px) { .panorama--wnetrze img { aspect-ratio: auto; height: 62vh; min-height: 380px; object-position: 46% 50%; } }
