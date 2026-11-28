@@ -96,8 +96,8 @@
   /* ---------- kolory i materiały ---------- */
   var C = {
     cream: [238, 231, 211], cornice: [244, 239, 224], stone: [224, 214, 192], bronze: [176, 148, 108], rail: [176, 148, 108], gate: [118, 88, 66], glass: [196, 222, 236],
-    deck: [180, 152, 118], green: [128, 150, 96], ground: [222, 218, 210], road: [140, 140, 138], walk: [204, 200, 192], grass: [150, 172, 118],
-    nb: [208, 207, 204], nbTop: [194, 193, 190], trunk: [104, 86, 70], leaf: [122, 146, 94], leaf2: [104, 132, 84], water: [150, 182, 196],
+    deck: [180, 152, 118], green: [128, 150, 96], ground: [222, 218, 210], road: [140, 140, 138], walk: [204, 200, 192], grass: [128, 148, 96],
+    nb: [208, 207, 204], nbTop: [194, 193, 190], trunk: [86, 74, 62], leaf: [104, 126, 78], leaf2: [88, 112, 70], water: [150, 182, 196],
     wolne: [200, 164, 100], sky: [168, 180, 190], bike: [168, 163, 156], roof: [168, 167, 164], white: [242, 240, 236], ballast: [150, 145, 138], steel: [118, 118, 122], rezerwacja: [170, 112, 70], sprzedane: [150, 146, 138], pwall: [150, 140, 124], plate: [236, 230, 218], wall: [214, 206, 190]
   };
   // M: 1 elewacja, 2 trawertyn, 3 lamele mosiężne, 4 deski, 5 zieleń, 6 asfalt, 7 korony drzew, 8 sąsiednie budynki, 10 chodnik, 12 lokale (płaskie)
@@ -402,8 +402,14 @@
     e.t.forEach(function (t, i) {
       if (Math.hypot(t[0] + 56.7, t[1] + 74.6) < 7.5) return;   // plac przy pomniku bez drzew
       var h = 7 + ((i * 37) % 7), r = 2.6 + ((i * 13) % 5) * 0.35, x = t[0], z = t[1];
-      M.prism([[x - .18, z - .18], [x + .18, z - .18], [x + .18, z + .18], [x - .18, z + .18]], -0.36, h * 0.55, C.trunk, C.trunk, 0, 0, true);
-      M.sphere(x, h * 0.62, z, r, h * 0.38, i % 3 ? C.leaf : C.leaf2, 7);
+      var tw = 0.13 + (i % 3) * 0.03; M.prism([[x - tw, z - tw], [x + tw, z - tw], [x + tw, z + tw], [x - tw, z + tw]], -0.36, h * 0.62, C.trunk, C.trunk, 0, 0, true);
+      var g = function (k) { var v = Math.sin((i + 1) * 12.9898 + k * 78.233) * 43758.5453; return v - Math.floor(v); };
+      var lc = [C.leaf, C.leaf2, [106, 124, 76], [92, 116, 78], [114, 128, 80]][i % 5];
+      var shade = function (f) { return [lc[0] * f, lc[1] * f, lc[2] * f]; };
+      M.sphere(x, h * 0.64, z, r * 0.92, h * 0.32, lc, 7);                                    // trzon korony
+      for (var k = 0; k < 4; k++) { var a = k * 1.57 + g(k) * 1.2, rr = r * (0.5 + 0.18 * g(k + 5)), d = r * 0.55;
+        M.sphere(x + Math.cos(a) * d, h * (0.56 + 0.16 * g(k + 9)), z + Math.sin(a) * d, rr, rr * 0.85, shade(0.88 + 0.22 * g(k + 13)), 7); }
+      M.sphere(x + (g(20) - .5) * r * .4, h * 0.86, z + (g(21) - .5) * r * .4, r * 0.55, h * 0.16, shade(1.02), 7);   // jaśniejszy wierzchołek w słońcu
     });
     return M;
   }
@@ -445,12 +451,12 @@
     'if(M==3&&N.y<.5){float s=fract(hz.x/.11);col*=mix(.45,1.15,smoothstep(.1,.35,s)*smoothstep(.9,.65,s));}' +
     'if(M==14){vec2 q=hz/.3;vec2 c=fract(q)-.5;float r=length(c);col*=mix(.42,1.,smoothstep(.27,.31,r))*mix(1.25,1.,smoothstep(.31,.36,r));}' +
     'if(M==4&&N.y>.5){float s=fract(vP.x*6.9),bi=floor(vP.x*6.9);float w=fwidth(vP.x*6.9)*1.5;col*=mix(.68,1.,smoothstep(.04,.04+w+.06,min(s,1.-s)));col*=.9+.16*h(vec2(bi,floor(vP.z*.45+h(vec2(bi,3.))*3.)));col*=1.-.04*sin(vP.z*60.+bi*5.);}' +
-    'if(M==5){col*=.8+.35*vn(vP.xz*.9)+.1*h(floor(vP.xz*8.));}' +
-    'if(M==6){col*=.9+.12*vn(vP.xz*.7)+.05*h(floor(vP.xz*30.));col*=mix(1.,.62,uPh);}' +
+    'if(M==5){float n1=vn(vP.xz*.35),n2=vn(vP.xz*1.7),n3=h(floor(vP.xz*22.));col*=.78+.3*n1+.14*n2+.06*n3;col=mix(col,col*vec3(1.12,1.04,.78),smoothstep(.55,.8,vn(vP.xz*.12+7.))*.6);}' +
+    'if(M==6){col*=.88+.12*vn(vP.xz*.7)+.08*h(floor(vP.xz*40.))+.05*vn(vP.xz*.08);col*=mix(1.,.6,uPh);col*=1.-.06*smoothstep(.62,.7,vn(vP.xz*.25+3.));}' +
     'if(M==7&&uPh>.5){N=normalize(N+(vec3(vn(vP.xz*3.1+vP.y*2.),vn(vP.zy*3.1+4.),vn(vP.xy*3.1+9.))-.5)*.9);}if((M==8||M==16)&&N.y>.6&&uPh>.5){col*=.74+.1*vn(vP.xz*.6)+.05*h(floor(vP.xz*4.));}'+
-    'if(M==7){col*=.72+.42*vn(vP.xz*1.6+vP.y*1.3)+.12*vn(vP.xz*6.+vP.y*5.)+.06*h(floor(vP.xz*9.+vP.y*9.));col*=mix(vec3(1.),vec3(1.08,1.02,.82),h(floor(vP.xz/6.)));}' +
+    'if(M==7){col*=.68+.38*vn(vP.xz*1.6+vP.y*1.3)+.12*vn(vP.xz*6.+vP.y*5.)+.06*h(floor(vP.xz*9.+vP.y*9.));col*=mix(vec3(1.),vec3(1.08,1.02,.82),h(floor(vP.xz/6.)));}' +
     'if(M==8&&N.y<.5){float fy=fract(vP.y/3.2);col*=mix(.9,1.,smoothstep(0.,.05,min(fy,1.-fy)));}' +
-    'if(M==10)col*=mix(1.,.9,uPh);if(M==10&&N.y>.5){vec2 g=fract(vP.xz/1.);col*=mix(.93,1.,smoothstep(0.,.03,min(min(g.x,1.-g.x),min(g.y,1.-g.y))));}' +
+    'if(M==10)col*=mix(1.,.9,uPh);if(M==10&&N.y>.5){vec2 q=vP.xz/.5;vec2 g=fract(q);col*=mix(.88,1.,smoothstep(0.,.05,min(min(g.x,1.-g.x),min(g.y,1.-g.y))));col*=.95+.08*h(floor(q))+.05*vn(vP.xz*.5);}' +
     'if(M==9){vec3 V=normalize(uEye-vP);float fr=pow(1.-abs(dot(N,V)),2.5);vec3 R=reflect(-V,N);float az=atan(R.z,R.x);' +
     'float hz=.07+.05*sin(az*7.)*sin(az*3.1+1.)+.03*sin(az*23.+2.);float lf=fract(sin(floor(az*40.)*91.7)*43758.5);' +
     'vec3 env=R.y>hz?mix(vec3(.80,.86,.92),vec3(.52,.66,.84),clamp((R.y-hz)*1.6,0.,1.)):R.y>-.4?mix(vec3(.40,.47,.50),vec3(.58,.64,.68),lf*.55+.25*smoothstep(hz-.08,hz,R.y)+.15*sin(R.y*40.+az*9.)):vec3(.55,.57,.6);' +
@@ -502,6 +508,10 @@
     'float rng=1.-smoothstep(.8,4.,dz);occ+=smoothstep(tol,tol*2.5,dz)*rng;wsum+=1.;}' +
     'float ao=1.-clamp(occ/wsum*1.25,0.,1.)*.62;' +
     'col*=ao;' +
+    'vec3 bl=(texture(uC,uv+vec2(px.x,0.)).rgb+texture(uC,uv-vec2(px.x,0.)).rgb+texture(uC,uv+vec2(0.,px.y)).rgb+texture(uC,uv-vec2(0.,px.y)).rgb)*.25;col+=(texture(uC,uv).rgb-bl)*.35*ao;' +
+    'vec3 gl2=vec3(0.);for(int i=0;i<8;i++){float a=float(i)*.785+.3;vec2 q=uv+vec2(cos(a),sin(a))*px*9.;vec3 c2=texture(uC,q).rgb;gl2+=max(c2-.82,0.);}col+=gl2*.09*vec3(1.,.93,.8);' +
+    'float Ls=dot(col,vec3(.299,.587,.114));col*=mix(vec3(.96,.98,1.04),vec3(1.03,1.,.95),smoothstep(.15,.75,Ls));' +
+    'col+=(ign(gl_FragCoord.xy+17.)-.5)*.018;' +
     'float L=dot(col,vec3(.299,.587,.114));col=mix(vec3(L),col,1.08);col=mix(col,col*col*(3.-2.*col),.18);' +
     'float fd=smoothstep(300.,900.,z);vec4 w=uIVP*vec4(uv*2.-1.,1.,1.);vec4 n=uIVP*vec4(uv*2.-1.,-1.,1.);vec3 dir=normalize(w.xyz/w.w-n.xyz/n.w);col=mix(col,sky(vec3(dir.x,.02,dir.z)),fd*.55);' +
     'float vg=smoothstep(1.15,.3,length(uv-.5));col*=.86+.14*vg;o=vec4(col,1.);}';
