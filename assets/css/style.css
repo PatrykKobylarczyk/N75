@@ -2280,3 +2280,7 @@ html.ph-lock { overflow: hidden; }
 /* lokalizacja: oba akapity tym samym krojem */
 .loc-p { font-family: var(--body, inherit); font-size: clamp(15.5px, 1.2vw, 18px); line-height: 1.65; color: var(--text, #3b3833); margin: 0 0 18px; max-width: 560px; }
 .loc-p strong { font-weight: 600; color: var(--ink, #1f1d1b); }
+/* telefon: strona nie przesuwa się w bok (żadnego białego pasa) – elementy na pełną szerokość i zamknięte menu nie poszerzają strony */
+html, body { overflow-x: hidden; }
+@supports (overflow: clip) { html, body { overflow-x: clip; } }
+html, body { max-width: 100%; overscroll-behavior-x: none; }
