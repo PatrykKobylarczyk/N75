@@ -2182,3 +2182,9 @@ html.ph-lock { overflow: hidden; }
   .arka__txt { order: 1; }
   .arka__bg { order: 2; position: relative; right: auto; top: auto; transform: none; width: 112%; max-width: none; margin: 18px -6% 0; opacity: .82; translate: none !important; }
 }
+
+/* 5 filarów: kreski i nazwy pod nimi wyśrodkowane, kolumny równe */
+.values__nav { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; text-align: center; }
+.values__nav span { display: block; white-space: nowrap; }
+@media (max-width: 700px) { .values__nav { gap: 6px !important; font-size: 7px !important; letter-spacing: .03em !important; } }
+.vw__sub.caps-long { text-transform: uppercase !important; letter-spacing: .18em !important; font-size: inherit; }
