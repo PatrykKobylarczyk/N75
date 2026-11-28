@@ -1360,7 +1360,7 @@ a.tile { display: block; color: inherit; }
 .intro.is-skip { opacity: 0; transition: opacity .4s; }
 
 .drawer__nav .num--sub { font-size: .8em; opacity: .7; }
-.drawer__manifest + li:not(.drawer__manifest) { margin-top: clamp(4px, 1.2vh, 12px); }
+.drawer__manifest + li:not(.drawer__manifest) { margin-top: 0; }
 
 /* link do katalogu pod makietą */
 .mk__cat { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; padding: 12px 0; color: var(--ink); border-bottom: 1px solid var(--line); transition: color .3s, border-color .3s; }
@@ -2215,3 +2215,7 @@ html.ph-lock { overflow: hidden; }
 @media (max-width: 700px) { .arch-slider .arch-slider__track, .wellness .arch-slider__track, .okolica .arch-slider__track, .arch-slider--pano .arch-slider__track { aspect-ratio: 4 / 3 !important; } }
 .arch-slider .arch-slide--tall img { object-fit: cover; }
 #sl-wnetrza { margin-bottom: 0; }
+/* menu: równe odstępy między wszystkimi pozycjami */
+.drawer__nav li { margin: 0 !important; }
+.drawer__nav a { padding-top: clamp(6px, 1.2vh, 12px) !important; padding-bottom: clamp(6px, 1.2vh, 12px) !important; line-height: 1.1; }
+.drawer__nav .num { line-height: 1.1; }
