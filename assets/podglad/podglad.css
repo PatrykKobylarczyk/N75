@@ -419,3 +419,10 @@ html[data-k5][data-k3b][data-kierunek] .k-geo.k-h3 { background: linear-gradient
   html[data-k3b][data-kierunek] .k-geo.k-h3 { right: 68px; bottom: 26px; }
   html[data-k3b] .hero__content { padding-bottom: 72px; }
 }
+
+/* uwagi 28.11 (2): blok lokalizacja + logo + hasło ok. 36 px wyżej, dalej od roślin; ćwiartka koła jako cichy detal w ciepłym beżu */
+@media (max-width: 900px) { html[data-k3b] .hero__content { padding-bottom: 108px; } }
+html[data-k3b][data-kierunek] .k-geo.k-h2 { background: #d9c4a8 !important; opacity: .78; }
+html[data-k5][data-k3b][data-kierunek] .k-geo.k-h2 { background: var(--k5-metal) !important; opacity: .85; }
+
+@media (min-width: 901px) { html[data-k3b] .hero__content { top: -36px; } }
