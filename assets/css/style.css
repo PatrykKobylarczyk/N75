@@ -2191,7 +2191,6 @@ html.ph-lock { overflow: hidden; }
 .arka-head .modern__rot { color: var(--bronze); font-style: italic; }
 .arka-head .modern__end { margin: 0 0 22px; font-size: clamp(18px, 1.6vw, 24px); }
 .arka-head__txt { margin: 0; max-width: 560px; color: var(--muted); font-size: clamp(15px, 1.15vw, 17px); line-height: 1.65; }
-.arka .mark { display: none; }
 
 /* panorama wnętrza: cały kadr widoczny na każdym ekranie (bez kadrowania i bez parallaxu) */
 .panorama--wnetrze img, .panorama--wnetrze img.has-px { width: 100%; height: auto !important; max-height: none !important; aspect-ratio: 1890 / 832 !important; object-fit: contain !important; scale: 1 !important; translate: none !important; }

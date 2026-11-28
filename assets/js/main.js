@@ -346,13 +346,20 @@
     var step = function () {
       wEl.classList.add('is-out');
       setTimeout(function () {
-        wi++; wEl.textContent = seq[wi]; wEl.classList.remove('is-out');
+        if (!timer) return; wi++; wEl.textContent = seq[wi]; wEl.classList.remove("is-out");
         if (wi === seq.length - 1) { clearInterval(timer); title.classList.add('is-final'); if (endEl) endEl.classList.add('is-on'); }
       }, 500);
     };
-    var startRot = function () { if (!timer && wi < seq.length - 1) timer = setInterval(step, 1500); };
-    if (reduced) { wi = seq.length - 1; wEl.textContent = seq[wi]; title.classList.add('is-final'); if (endEl) endEl.classList.add('is-on'); }
-    else if ('IntersectionObserver' in window) new IntersectionObserver(function (e, o) { if (e[0].isIntersecting) { o.disconnect(); startRot(); } }, { threshold: .4 }).observe(title);
+    // start dopiero, gdy tytuł jest dobrze widoczny; po wyjściu z ekranu reset – przy każdym powrocie animacja od początku
+    var reset = function () { clearInterval(timer); timer = null; wi = 0; wEl.textContent = seq[0]; wEl.classList.remove('is-out'); title.classList.remove('is-final'); if (endEl) endEl.classList.remove('is-on'); };
+    var startRot = function () { if (!timer && wi < seq.length - 1) timer = setInterval(step, 1300); };
+    var startT = null;
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) {
+      var r = e[0];
+      if (r.isIntersecting && r.intersectionRatio >= .6) { if (!timer && !startT && wi < seq.length - 1) startT = setTimeout(function () { startT = null; startRot(); }, 350); }
+      else if (!r.isIntersecting) { clearTimeout(startT); startT = null; reset(); }
+      else { clearTimeout(startT); startT = null; }
+    }, { threshold: [0, .6], rootMargin: '-8% 0px -8% 0px' }).observe(title);
     else startRot();
   }
 
@@ -530,7 +537,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795878189" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795878368" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
