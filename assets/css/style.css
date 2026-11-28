@@ -2205,11 +2205,11 @@ html.ph-lock { overflow: hidden; }
 /* ołówek rysujący szkic przy cytacie z manifestu – cienki kontur, ledwo widoczny */
 .arka { position: relative; }
 .olowek-cv { position: absolute; pointer-events: none; z-index: 1; }
-.olowek { position: absolute; left: 0; top: 0; width: 96px; height: 11px; pointer-events: none; z-index: 3; transform-origin: 0 50%; color: #4a443d; opacity: 0; transition: opacity 1.2s; }
+.olowek { position: absolute; left: 0; top: 0; width: 78px; height: 15px; pointer-events: none; z-index: 3; transform-origin: 0 50%; color: #1e1c1a; opacity: 0; transition: opacity 1.2s; }
 .olowek svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.olowek.is-on { opacity: .42; }
+.olowek.is-on { opacity: .5; }
 .olowek.is-off { opacity: 0; transition: opacity 1.4s; }
-@media (max-width: 700px) { .olowek { width: 72px; height: 8.5px; } }
+@media (max-width: 700px) { .olowek { width: 58px; height: 11px; } }
 
 /* wszystkie slidery i galerie: ten sam układ (kadr 3:2, na telefonie 4:3), strzałki na zdjęciu, podpis, licznik, kreski i strzałki pod spodem */
 .arch-slider .arch-slider__track, .wellness .arch-slider__track, .okolica .arch-slider__track, .arch-slider--pano .arch-slider__track { aspect-ratio: 3 / 2 !important; }
@@ -2229,3 +2229,5 @@ html.ph-lock { overflow: hidden; }
 .wellness__item, .wellness__item--rev { grid-template-columns: 1fr !important; gap: clamp(20px, 3vw, 40px) !important; }
 .wellness__item--rev .arch-slider { order: 0 !important; }
 @media (min-width: 901px) { .wellness__txt { display: grid; grid-template-columns: 5fr 7fr; column-gap: clamp(32px, 6vw, 100px); } .wellness__txt > h3, .wellness__txt > .wellness__sub { grid-column: 1; } .wellness__txt > p:not(.wellness__sub) { grid-column: 2; grid-row: 1 / span 3; } .wellness__txt > p.wellness__more { grid-row: auto; } }
+/* szkic w charakterze węgla: głębsza, miękka czerń kreski */
+.arka__bg, .olowek-cv { filter: grayscale(1) contrast(1.45) brightness(.97); }
