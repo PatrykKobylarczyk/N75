@@ -386,7 +386,21 @@
         M.beam(a, b, 2.9, -0.36, -0.325, C.ballast, 0);
         [-0.72, 0.72].forEach(function (o) { M.beam([a[0] + n[0] * o, a[1] + n[1] * o], [b[0] + n[0] * o, b[1] + n[1] * o], 0.08, -0.33, -0.26, C.steel, 0); }); }
     });
+    // pomnik Stanisława Staszica w parku (północny koniec alejki, przodem do ul. Narutowicza): plac, cokół z kamienia, postać w płaszczu z brązu, rabaty róż
+    (function () {
+      var x = -56.7, z = -74.6, stone = [218, 214, 204], bronze = [70, 78, 70], pave = [198, 194, 186], rose = [168, 64, 66], hedge = [70, 100, 56];
+      M.box(x - 4.4, z - 3.4, x + 4.4, z + 6.0, -0.33, -0.31, pave, 10);
+      M.box(x - 4.4, z - 3.8, x + 4.4, z - 2.6, -0.33, 0.45, hedge, 7);                       // żywopłot za pomnikiem
+      for (var k = 0; k < 7; k++) { var zz = z - 2.2 + k * 0.85; [-3.9, 3.9].forEach(function (xx) { M.sphere(x + xx, 0.08, zz, 0.42, 0.3, k % 2 ? rose : hedge, 7); }); }   // rabaty róż
+      M.box(x - 1.7, z - 0.7, x + 1.7, z + 0.7, -0.31, 0.9, stone, 0);                         // cokół z podpisem
+      M.box(x - 0.48, z - 0.34, x + 0.48, z + 0.34, 0.9, 3.1, bronze, 0);                      // płaszcz
+      M.box(x - 0.40, z - 0.28, x + 0.40, z + 0.28, 3.1, 3.6, bronze, 0);                      // ramiona
+      M.box(x - 0.28, z - 0.10, x + 0.28, z + 0.36, 3.4, 3.78, bronze, 0);                     // postawiony kołnierz
+      M.sphere(x, 3.95, z + 0.05, 0.18, 0.23, bronze, 0);                                        // głowa, lekko pochylona
+      M.box(x - 0.34, z + 0.28, x - 0.12, z + 0.46, 0.9, 1.04, bronze, 0); M.box(x + 0.12, z + 0.28, x + 0.34, z + 0.46, 0.9, 1.04, bronze, 0); // buty
+    })();
     e.t.forEach(function (t, i) {
+      if (Math.hypot(t[0] + 56.7, t[1] + 74.6) < 7.5) return;   // plac przy pomniku bez drzew
       var h = 7 + ((i * 37) % 7), r = 2.6 + ((i * 13) % 5) * 0.35, x = t[0], z = t[1];
       M.prism([[x - .18, z - .18], [x + .18, z - .18], [x + .18, z + .18], [x - .18, z + .18]], -0.36, h * 0.55, C.trunk, C.trunk, 0, 0, true);
       M.sphere(x, h * 0.62, z, r, h * 0.38, i % 3 ? C.leaf : C.leaf2, 7);
