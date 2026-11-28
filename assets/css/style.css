@@ -2081,3 +2081,39 @@ html.ph-lock { overflow: hidden; }
   .person--draw { position: absolute; top: clamp(16px, 4vh, 60px); right: var(--gutter); width: min(430px, 34vw); margin: 0; padding: 0 0 0 20px; border-top: 0; border-left: 1px solid var(--line); z-index: 2; background: var(--paper); }
   .draw__stage:has(~ *), .draw__in:has(.person--draw) .draw__stage { max-height: calc(100vh - 340px); align-self: end; }
 }
+
+/* ---------- hero i nagłówek – dopracowanie (uwagi 28.11) ---------- */
+/* film: naturalniejsza, głębsza zieleń, mniej żółto-brązowego filtra, nieco jaśniej */
+.hero__media video, .hero__media img { filter: brightness(1.07) saturate(.86) hue-rotate(7deg) contrast(1.03); }
+/* równy, łagodny gradient od dołu zamiast mocnego przyciemnienia całego kadru */
+@media (max-width: 1000px) {
+  .hero::after { background:
+    linear-gradient(180deg, rgba(20, 16, 12, .38) 0%, rgba(20, 16, 12, 0) 16%),
+    linear-gradient(0deg, rgba(20, 16, 12, .74) 0%, rgba(20, 16, 12, .42) 30%, rgba(20, 16, 12, .1) 52%, rgba(20, 16, 12, 0) 64%) !important; }
+}
+/* logo ~10% mniejsze, więcej powietrza: lokalizacja → logo → linia → hasło */
+.hero__kicker { margin-bottom: 22px !important; }
+.hero__logo .logo-svg { height: clamp(81px, 11.7vw, 171px) !important; }
+.hero__rule { margin-top: 26px !important; margin-bottom: 26px !important; }
+.hero__claim { font-size: clamp(24px, 2.3vw, 34px) !important; letter-spacing: .015em !important; margin-left: 0 !important; }
+@media (max-width: 700px) { .hero__claim { font-size: 25px !important; } .hero__logo .logo-svg { height: 72px !important; } }
+
+/* nagłówek: mniej szumu – stonowana flaga, subtelne ulubione, niższy przycisk, więcej miejsca z prawej */
+.lang-switch svg { width: 18px !important; height: 12px !important; opacity: .55; filter: saturate(.35); box-shadow: none !important; border-radius: 1px; transition: opacity .2s, filter .2s, transform .2s; }
+.lang-switch:hover svg, .lang-switch:focus-visible svg { opacity: .95; filter: none; transform: none; }
+.fav-link svg { width: 17px; height: 17px; stroke-width: 1.1; }
+.fav-link.has-favs svg { fill: none !important; stroke: currentColor !important; }
+.fav-count { top: 7px; right: 1px; min-width: 0; height: auto; padding: 0; border-radius: 0; background: none !important; color: var(--bronze-soft); font: 500 9px/1 var(--head); letter-spacing: .04em; }
+.header.is-solid .fav-count, .page-sub .fav-count { color: var(--bronze); }
+.header .header__cta { padding-top: 9px !important; padding-bottom: 9px !important; border-width: 1px !important; }
+.header__in { padding-right: clamp(20px, 3vw, 40px); }
+@media (max-width: 700px) {
+  .header .header__cta { padding: 7px 11px !important; font-size: 9.5px !important; letter-spacing: .1em !important; }
+  .header__right { gap: 8px !important; }
+  .burger { margin-right: 4px; }
+}
+/* krótszy ciemny odstęp pod hero (5 filarów na telefonie) */
+@media (max-width: 700px) { .values__pin { height: min(66svh, 560px) !important; } }
+
+/* parallax hero: film przesuwa się wolniej niż strona, napisy delikatnie odpływają */
+.hero__media { will-change: transform; }
