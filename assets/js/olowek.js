@@ -6,7 +6,7 @@
   var host = img.parentElement;
   var view = document.createElement('canvas'); view.className = 'olowek-cv'; view.setAttribute('aria-hidden', 'true');
   var pencil = document.createElement('div'); pencil.className = 'olowek'; pencil.setAttribute('aria-hidden', 'true');
-  pencil.innerHTML = '<svg viewBox="0 0 120 14" fill="none" stroke="currentColor" stroke-width=".9" stroke-linejoin="round"><path d="M1 7 L14 2.5 V11.5 Z"/><path d="M1 7 L5 5.6 V8.4 Z" fill="currentColor"/><path d="M14 2.5 H104 V11.5 H14"/><path d="M14 7 H104" stroke-width=".5"/><path d="M104 2 H112 V12 H104 Z"/><path d="M112 2.4 H117 Q119 2.4 119 4.4 V9.6 Q119 11.6 117 11.6 H112"/></svg>';
+  pencil.innerHTML = '<svg viewBox="0 0 80 16" aria-hidden="true"><defs><filter id="wg-f" x="-5%" y="-30%" width="110%" height="160%"><feTurbulence type="fractalNoise" baseFrequency="1.3" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.4 1.25"/><feComposite in="SourceGraphic" operator="in"/></filter></defs><path filter="url(#wg-f)" fill="currentColor" d="M2 5.2 L5 3.4 Q8 2.6 12 2.9 L74 2.4 Q78 2.6 78.6 5 L78.8 11 Q78.2 13.4 74 13.5 L12 13.2 Q7.5 13.3 4.6 12.2 L1.6 10.4 Q.6 7.8 2 5.2 Z"/><path d="M14 4.3 L72 3.9" stroke="#fff" stroke-opacity=".12" stroke-width=".8"/></svg>';
   img.style.opacity = '0';
   host.appendChild(view); host.appendChild(pencil);
   var src = new Image(); src.src = img.currentSrc || img.src;
@@ -18,7 +18,7 @@
     mx.lineCap = 'round'; mx.lineJoin = 'round'; mx.strokeStyle = '#000'; mx.lineWidth = 15 / Q; mx.shadowColor = '#000'; mx.shadowBlur = 6 / Q;
     var segs = [];
     D.p.forEach(function (d) { var n = d.slice(1).trim().split(/\s+/).map(Number); for (var i = 2; i < n.length; i += 2) segs.push([n[i - 2], n[i - 1], n[i], n[i + 1], Math.hypot(n[i] - n[i - 2], n[i + 1] - n[i - 1])]); });
-    var total = segs.reduce(function (t, s) { return t + s[4]; }, 0), DUR = 13000, done = 0, si = 0, pos = 0, t0 = 0, ended = false;
+    var total = segs.reduce(function (t, s) { return t + s[4]; }, 0), DUR = 9000, done = 0, si = 0, pos = 0, t0 = 0, ended = false;
     var px = 0, py = 0, tx = 0, ty = 0;
     var cs = getComputedStyle(img);
     var sync = function () {   // płótno dokładnie w miejscu obrazka (ta sama przezroczystość, położenie i parallax)
@@ -48,7 +48,7 @@
       var r = sync(), k = r.width / W, h = host.getBoundingClientRect();
       view.style.opacity = baseOp;
       px += (tx - px) * .18; py += (ty - py) * .18;   // ołówek płynie za kreską, bez skoków
-      pencil.style.transform = 'translate(' + (r.left - h.left + px * k).toFixed(1) + 'px,' + (r.top - h.top + py * k).toFixed(1) + 'px) rotate(' + (-56 + Math.sin(now / 520) * 3).toFixed(1) + 'deg)';
+      pencil.style.transform = 'translate(' + (r.left - h.left + px * k).toFixed(1) + 'px,' + (r.top - h.top + py * k).toFixed(1) + 'px) rotate(' + (-38 + Math.sin(now / 420) * 4).toFixed(1) + 'deg)';
       if (done >= total - .5) { ended = true; pencil.classList.add('is-off'); img.style.transition = 'opacity 1.2s'; img.style.opacity = ''; view.style.transition = 'opacity 1.2s'; setTimeout(function () { view.style.opacity = '0'; }, 50); setTimeout(function () { view.remove(); pencil.remove(); }, 1400); return; }
       requestAnimationFrame(frame);
     };
