@@ -153,8 +153,11 @@
   });
 
   /* ---------- flaga w nagłówku ---------- */
-  var UK = '<svg viewBox="0 0 60 30" aria-hidden="true"><clipPath id="lsw-uk-t"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0h60v30H0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#lsw-uk-t)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg>';
-  var PL = '<svg viewBox="0 0 16 10" aria-hidden="true"><path d="M0 0h16v5H0z" fill="#fff"/><path d="M0 5h16v5H0z" fill="#DC143C"/></svg>';
+  // flagi w proporcjach 3:2 (jak przycisk), wszystko przycięte do prostokąta – bez wystających ukośnych pasów
+  var UK = '<svg viewBox="0 0 60 40" preserveAspectRatio="none" aria-hidden="true"><defs><clipPath id="lsw-uk-o"><rect width="60" height="40"/></clipPath><clipPath id="lsw-uk-t"><path d="M30 20h30v20zv20H0zH0V0zV0h30z"/></clipPath></defs>' +
+    '<g clip-path="url(#lsw-uk-o)"><rect width="60" height="40" fill="#012169"/><path d="M0 0l60 40m0-40L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0l60 40m0-40L0 40" clip-path="url(#lsw-uk-t)" stroke="#C8102E" stroke-width="5"/>' +
+    '<path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="13"/><path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="8"/></g></svg>';
+  var PL = '<svg viewBox="0 0 60 40" preserveAspectRatio="none" aria-hidden="true"><rect width="60" height="20" fill="#fff"/><rect y="20" width="60" height="20" fill="#DC143C"/></svg>';
   var btn = null;
   function paintBtn() {
     if (!btn) return;
