@@ -14,7 +14,25 @@
 @media (max-width: 600px) { .pg-panel { left: 8px; right: 8px; bottom: 8px; width: auto; } }
 
 /* wspólne dla koncepcji: bez animacji wejścia (rysuje kontur obecnego logo) */
-html[data-kierunek] .intro { display: none !important; }
+html[data-kierunek] .intro:not(.intro--k) { display: none !important; }
+.intro--k { background: #22201d; }
+.intro--k .intro__iris, .intro--k .intro__logo { display: none; }
+/* intro nowej strony: logo N75 składane z brył + brązowa kreska, kurtyna w górę */
+.intro--k { transition: clip-path 1s cubic-bezier(.76, 0, .24, 1); clip-path: inset(0 0 0 0); }
+.intro--k.is-open { clip-path: inset(0 0 100% 0); }
+.intro--k .ik { display: grid; justify-items: center; gap: clamp(18px, 2.4vw, 28px); transition: transform 1s cubic-bezier(.76, 0, .24, 1), opacity .6s; }
+.intro--k.is-open .ik { transform: translateY(-40px); opacity: 0; }
+.ik__logo { width: min(52vw, 300px); height: auto; overflow: visible; fill: #f7f3ec; }
+.ik__logo .pc { transform-box: fill-box; transform-origin: 50% 50%; opacity: 0; transform: translateY(38%); }
+.ik__logo .pc:nth-child(even) { transform: translateY(-38%); }
+.ik__logo circle { transform-box: fill-box; transform-origin: 50% 50%; }
+.intro--k.is-draw .pc { animation: ik-in .85s cubic-bezier(.22, 1, .36, 1) forwards; animation-delay: calc(var(--i) * .11s); }
+@keyframes ik-in { to { opacity: 1; transform: none; } }
+.ik__rule { display: block; height: 2px; width: clamp(64px, 8vw, 120px); background: var(--bronze-soft, #c9a27a); transform: scaleX(0); transform-origin: 0 50%; }
+.intro--k.is-draw .ik__rule { animation: ik-rule .8s 1.15s cubic-bezier(.65, 0, .35, 1) forwards; }
+@keyframes ik-rule { to { transform: none; } }
+.intro--k .intro__skip { color: rgba(247, 243, 236, .5); }
+.intro--k.is-skip { opacity: 0; transition: opacity .4s; }
 .k-geo, .k-strip { pointer-events: none; }
 
 /* OBECNY KIERUNEK: kolor akcentu przebarwia cały arkusz stylów (podglad.js → recolor) */
