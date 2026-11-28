@@ -1568,8 +1568,8 @@ body.dh-open { overflow: hidden; }
 /* Ilustrowana mapa okolicy */
 .map.map--art .leaflet-tile-pane { filter: saturate(.35) sepia(.3) contrast(.85) brightness(1.08); opacity: .5; }
 .map__art { image-rendering: auto; }
-.map__labels .ml { font-family: var(--head); font-weight: 600; font-size: calc(10.5px * var(--k, 1)); letter-spacing: .14em; fill: #4a4239; paint-order: stroke; stroke: rgba(246, 241, 232, .92); stroke-width: calc(3.2px * var(--k, 1)); stroke-linejoin: round; dominant-baseline: central; }
-.map__labels .ml--park { font-size: calc(13px * var(--k, 1)); letter-spacing: .18em; fill: #2f4a24; stroke: rgba(238, 244, 226, .95); stroke-width: calc(3.6px * var(--k, 1)); font-weight: 600; }
+.map__labels .ml { font-family: var(--head); font-weight: 600; font-size: calc(8.5px * var(--k, 1)); letter-spacing: .06em; text-rendering: geometricPrecision; fill: #4a4239; paint-order: stroke; stroke: rgba(246, 241, 232, .92); stroke-width: calc(2.6px * var(--k, 1)); stroke-linejoin: round; dominant-baseline: central; }
+.map__labels .ml--park { font-size: calc(10px * var(--k, 1)); letter-spacing: .12em; fill: #2f4a24; stroke: rgba(238, 244, 226, .95); stroke-width: calc(3.6px * var(--k, 1)); font-weight: 600; }
 .map__compass { position: absolute; left: 18px; bottom: 22px; z-index: 460; width: 34px; pointer-events: none; }
 .map__compass svg { display: block; width: 100%; overflow: visible; }
 .map__compass text { font-family: var(--head); font-size: 11px; font-weight: 500; fill: #7b4f2e; }
@@ -2209,3 +2209,9 @@ html.ph-lock { overflow: hidden; }
 .olowek.is-on { opacity: 1; }
 .olowek.is-off { opacity: 0; transition: opacity .8s; }
 @media (max-width: 700px) { .olowek { width: 110px; height: 16px; } }
+
+/* wszystkie slidery i galerie: ten sam układ (kadr 3:2, na telefonie 4:3), strzałki na zdjęciu, podpis, licznik, kreski i strzałki pod spodem */
+.arch-slider .arch-slider__track, .wellness .arch-slider__track, .okolica .arch-slider__track, .arch-slider--pano .arch-slider__track { aspect-ratio: 3 / 2 !important; }
+@media (max-width: 700px) { .arch-slider .arch-slider__track, .wellness .arch-slider__track, .okolica .arch-slider__track, .arch-slider--pano .arch-slider__track { aspect-ratio: 4 / 3 !important; } }
+.arch-slider .arch-slide--tall img { object-fit: cover; }
+#sl-wnetrza { margin-bottom: 0; }
