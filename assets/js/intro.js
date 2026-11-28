@@ -28,7 +28,7 @@
       var parts = Array.prototype.map.call(sym.children, function (c, i) { return '<g class="pc" style="--i:' + i + '">' + c.outerHTML + '</g>'; }).join('');
       intro.querySelector('.intro__logo').outerHTML = '<div class="ik"><svg class="ik__logo" viewBox="' + sym.getAttribute('viewBox') + '" aria-hidden="true">' + parts + '</svg><i class="ik__rule"></i></div>';
       requestAnimationFrame(function () { requestAnimationFrame(function () { intro.classList.add('is-draw'); }); });
-      timers.push(setTimeout(function () { finish(false); }, 2500));
+      timers.push(setTimeout(function () { finish(false); }, 4300));   // logo zostaje chwilę po złożeniu
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(go, 0); }); else setTimeout(go, 0);
   } else {
