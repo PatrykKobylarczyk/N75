@@ -2184,3 +2184,11 @@ html.ph-lock { overflow: hidden; }
 .vw__sub.caps-long { text-transform: uppercase !important; letter-spacing: .18em !important; font-size: inherit; }
 /* kuratorka pod szkicem przy cytacie z manifestu */
 .person--arka { max-width: 620px; margin: clamp(28px, 4vw, 48px) 0 0; }
+
+/* „Modernizm to…” na górze sekcji z cytatem, pod nim krótka esencja */
+.arka-head { max-width: 860px; margin: 0 0 clamp(40px, 5vw, 72px); }
+.arka-head .modern__title { color: var(--graphite); font-size: clamp(34px, 4vw, 62px); line-height: 1.04; margin: 0 0 18px; }
+.arka-head .modern__rot { color: var(--bronze); font-style: italic; }
+.arka-head .modern__end { margin: 0 0 22px; font-size: clamp(18px, 1.6vw, 24px); }
+.arka-head__txt { margin: 0; max-width: 560px; color: var(--muted); font-size: clamp(15px, 1.15vw, 17px); line-height: 1.65; }
+.arka .mark { display: none; }
