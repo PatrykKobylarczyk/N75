@@ -2259,3 +2259,24 @@ html.ph-lock { overflow: hidden; }
 .arka blockquote { margin-top: 0 !important; }
 .kurator__link { white-space: nowrap; }
 @media (max-width: 700px) { .arka { padding-bottom: 0 !important; } .kurator__in { padding-top: 44px; } .section--alt:has(+ .kurator) { padding-bottom: 36px; } }
+/* stojące auta na rzutach garażu i parteru – delikatnie */
+.pl-car path { fill: rgba(42, 38, 34, .05); stroke: rgba(42, 38, 34, .26); stroke-width: 1; }
+.pl-car .pl-car__gl { fill: rgba(42, 38, 34, .1); stroke: none; }
+/* slidery: bez strzałek na zdjęciu, strzałki pod spodem, przesuwanie palcem */
+.arch-slider__arrow { display: none !important; }
+.arch-slider__track { touch-action: pan-y; }
+/* architektura: od razu Design Lab */
+.arch-intro { max-width: 980px; margin-bottom: clamp(40px, 5vw, 72px); }
+.arch-intro .h2 { margin: 0 0 clamp(22px, 2.6vw, 34px); }
+.arch-intro .lead { max-width: 720px; margin: 0 0 16px; }
+.arch-intro__p { max-width: 620px; margin: 0 0 clamp(36px, 4vw, 56px); color: var(--muted); font-size: clamp(15px, 1.15vw, 17px); line-height: 1.65; }
+.arch-intro__studio .kurator__photo img { filter: grayscale(1) contrast(1.05); }
+/* udogodnienia: tytuł, podtytuł, jeden akapit – jednolicie */
+.wl-lead { color: #d9cfc1 !important; margin: 0 !important; max-width: 520px; }
+.wellness__txt .h3 { font-size: clamp(26px, 2.3vw, 36px) !important; line-height: 1.1; margin: 0 0 10px !important; }
+.wellness__txt p.wellness__sub { font-size: 10.5px !important; letter-spacing: .2em; margin: 0 0 16px !important; color: var(--bronze-soft); }
+.wellness__txt p:not(.wellness__sub) { font-size: clamp(15px, 1.1vw, 16.5px); line-height: 1.65; color: #cfc6b8; max-width: 440px; }
+@media (min-width: 901px) { .wellness__txt > p:not(.wellness__sub) { grid-row: 1 / span 2 !important; align-self: center; } }
+/* lokalizacja: oba akapity tym samym krojem */
+.loc-p { font-family: var(--body, inherit); font-size: clamp(15.5px, 1.2vw, 18px); line-height: 1.65; color: var(--text, #3b3833); margin: 0 0 18px; max-width: 560px; }
+.loc-p strong { font-weight: 600; color: var(--ink, #1f1d1b); }

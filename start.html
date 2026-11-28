@@ -28,11 +28,11 @@
   <meta name="apple-mobile-web-app-title" content="N75">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <!-- Docelowo: Futura PT i Avenir Next z licencji (np. Adobe Fonts). Jost i Nunito Sans to darmowe zamienniki na urządzeniach bez tych krojów, hostowane lokalnie (assets/fonts). -->
-  <link rel="stylesheet" href="assets/fonts/fonts.css?v=1795883473">
+  <link rel="stylesheet" href="assets/fonts/fonts.css?v=1795886022">
   <link rel="preload" as="image" href="assets/img/hero-film-poster.webp" imagesrcset="assets/img/hero-film-poster-1280.webp 1280w, assets/img/hero-film-poster.webp 1920w" imagesizes="100vw">
   <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css?v=1.9.4">
-  <link rel="stylesheet" href="assets/css/style.css?v=1795883473">
-  <script src="assets/js/consent.js?v=1795883473"></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=1795886022">
+  <script src="assets/js/consent.js?v=1795886022"></script>
   <script>document.documentElement.classList.add('js');
   // Futura / Avenir Next tylko na Apple: gdy ich brak, dostrajamy darmowe zamienniki (Jost, Nunito Sans)
   (function(){try{var c=document.createElement('canvas').getContext('2d'),t='MWNmwqr075 Łódź';function w(f){c.font='72px '+f;return c.measureText(t).width}
@@ -49,7 +49,7 @@
   if(keep||seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-done');
   addEventListener('pageshow',function(e){if(e.persisted&&!keep)window.scrollTo(0,0)})}catch(e){}</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "ApartmentComplex", "name": "N75", "url": "https://n75.vercel.app/stara/", "description": "Modernistyczny budynek z 50 apartamentami i 3 lokalami usługowymi przy ul. Narutowicza 75A w Łodzi, naprzeciwko parku im. Staszica.", "address": {"@type": "PostalAddress", "streetAddress": "ul. Narutowicza 75A", "postalCode": "90-132", "addressLocality": "Łódź", "addressCountry": "PL"}, "geo": {"@type": "GeoCoordinates", "latitude": 51.77222, "longitude": 19.47703}, "numberOfAccommodationUnits": 50, "amenityFeature": [{"@type": "LocationFeatureSpecification", "name": "Basen", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Sauna", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Jacuzzi", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Siłownia", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Recepcja", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Garaż podziemny", "value": true}]}, {"@type": "Organization", "name": "UNIQUM 5 sp. z o.o.", "url": "https://n75.vercel.app/stara/", "telephone": "+48 799 278 344", "email": "sprzedaz@n75.pl", "address": {"@type": "PostalAddress", "streetAddress": "ul. Gdańska 130", "postalCode": "90-520", "addressLocality": "Łódź", "addressCountry": "PL"}}]}</script>
-  <script>(function(){var p=location.pathname,e=/^\/en(\/|$)/.test(p),n=e||/^\/nowa(\/|$)/.test(p),g=/^\/podglad(\/|$)/.test(p);if(!n&&!g)return;var v='?v=1795883473',h=(e?'':'<meta name="robots" content="noindex">')+'<link rel="stylesheet" href="assets/podglad/podglad.css'+v+'">';if(g)['zielen','rosso','blekit'].forEach(function(k){h+='<link rel="stylesheet" href="assets/podglad/akcent-'+k+'.css'+v+'" media="not all" id="pg-ak-'+k+'">'});document.write(h+'<script src="assets/podglad/podglad.js'+v+'" defer><\/script>')})()</script>
+  <script>(function(){var p=location.pathname,e=/^\/en(\/|$)/.test(p),n=e||/^\/nowa(\/|$)/.test(p),g=/^\/podglad(\/|$)/.test(p);if(!n&&!g)return;var v='?v=1795886022',h=(e?'':'<meta name="robots" content="noindex">')+'<link rel="stylesheet" href="assets/podglad/podglad.css'+v+'">';if(g)['zielen','rosso','blekit'].forEach(function(k){h+='<link rel="stylesheet" href="assets/podglad/akcent-'+k+'.css'+v+'" media="not all" id="pg-ak-'+k+'">'});document.write(h+'<script src="assets/podglad/podglad.js'+v+'" defer><\/script>')})()</script>
 </head>
 <body>
 <a class="skip-link" href="#top">Przejdź do treści</a>
@@ -204,7 +204,7 @@
         <div class="kurator__txt">
           <span class="caps bronze">Kuratorka</span>
           <h3 class="person__name">Maria Nowakowska</h3>
-          <p>Badaczka i&nbsp;popularyzatorka architektury, związana z&nbsp;Instytutem Detalu. Jej perspektywa pozwala odczytać N75 w&nbsp;szerszym kontekście modernizmu, jakości przestrzeni i&nbsp;architektonicznej tożsamości Łodzi.</p>
+          <p>Historyk sztuki, badaczka i&nbsp;popularyzatorka architektury, związana z&nbsp;Instytutem Detalu. Jej perspektywa pozwala odczytać N75 w&nbsp;szerszym kontekście modernizmu, jakości przestrzeni i&nbsp;architektonicznej tożsamości Łodzi.</p>
           <a href="manifest.html" class="arka__link caps kurator__link">Perspektywa kuratorska <span class="arrow" aria-hidden="true"></span></a>
         </div>
       </div>
@@ -228,22 +228,6 @@
 </section>
 
 <!-- ============ MODERNIZM TO… od szkicu do budynku (rysunek kreśli się przy przewijaniu) ============ -->
-<section class="draw" id="wstep">
-  <div class="draw__track" id="draw-track">
-    <div class="draw__pin">
-      <div class="wrap draw__in">
-        <div class="draw__txt">
-          <div class="draw__more">
-            <p class="draw__sign">Łódzki modernizm. Nowy rozdział.</p>
-          </div>
-        </div>
-        <figure class="draw__stage" id="draw-stage">
-          <div class="draw__lines" id="draw-lines" data-src="assets/img/szkic-modernizm.svg" role="img" aria-label="Szkic ołówkiem: modernistyczna bryła N75 z poziomymi pasami stropów i tarasami"></div>
-        </figure>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ============ PIERZEJA NARUTOWICZA ============ -->
 <section class="pierzeja" aria-label="Pierzeja ulicy Narutowicza">
@@ -267,32 +251,36 @@
 <section class="section" id="architektura">
   <div class="wrap">
     <div class="sec-head reveal"><span class="num">02</span><span class="line"></span></div>
-    <div class="arch-text arch-text--first">
-      <h2 class="display h2 reveal">Przepis<br>na dobrą<br>architekturę</h2>
-      <div class="reveal">
-        <p class="lead" style="margin-bottom:28px">Czy istnieje przepis na dobrą architekturę? Modernizm – funkcjonalność, nowoczesność i&nbsp;szlachetne materiały – to od stu lat kanon dobrej architektury mieszkaniowej.</p>
-        <p class="muted">N75 sięga po ten sam kanon: proporcję bryły, rytm elewacji i&nbsp;geometrię detalu.</p>
-        <aside class="person reveal">
-          <figure class="person__photo"><img src="assets/img/zespol-design-lab.webp" alt="Zespół pracowni Design Lab" width="160" height="200" loading="lazy"></figure>
-          <div class="person__txt"><span class="caps bronze">Architekci</span><h3 class="person__name">Design Lab</h3><p>Łódzka pracownia, która ma w&nbsp;portfolio prace przy wybitnych obiektach lokalnego modernizmu, na czele z&nbsp;jego perłą – dawnym Domem Strzelca, późniejszym Łódzkim Domem Kultury.</p></div>
-        </aside>
+    <div class="arch-intro reveal">
+      <span class="caps bronze arka-kick">Architektura · Design Lab</span>
+      <h2 class="display h2">Przepis na dobrą architekturę</h2>
+      <p class="lead">N75 to projekt Design Lab – renomowanej łódzkiej pracowni, która zna modernizm od środka: pracowała przy jego najcenniejszych obiektach, na czele z&nbsp;dawnym Domem Strzelca.</p>
+      <p class="arch-intro__p">Przepis od stu lat ten sam: proporcja bryły, rytm elewacji, szlachetny materiał i&nbsp;detal, który się nie starzeje.</p>
+      <div class="kurator__grid arch-intro__studio">
+        <figure class="kurator__photo"><img src="assets/img/zespol-design-lab.webp" alt="Zespół pracowni Design Lab" width="160" height="200" loading="lazy"></figure>
+        <div class="kurator__txt">
+          <span class="caps bronze">Pracownia architektoniczna</span>
+          <h3 class="person__name">Design Lab</h3>
+          <p>Łódzka pracownia architektury i&nbsp;wnętrz. W&nbsp;portfolio m.in. prace przy dawnym Domu Strzelca – późniejszym Łódzkim Domu Kultury, perle łódzkiego modernizmu.</p>
+          <a href="manifest.html" class="arka__link caps kurator__link">Perspektywa architektów <span class="arrow" aria-hidden="true"></span></a>
+        </div>
       </div>
     </div>
 
     <div class="arch-slider reveal" data-slider id="arch-slider" role="region" aria-roledescription="karuzela" aria-label="Wizualizacje architektury">
       <div class="arch-slider__track">
-        <figure class="arch-slide is-on" role="group" aria-roledescription="slajd" aria-label="1 z 3: Narożnik">
-          <img src="assets/img/naroznik.webp" alt="Narożnik budynku od strony ulicy" loading="lazy" data-lightbox="Narożnik">
+        <figure class="arch-slide is-on" role="group" aria-roledescription="slajd" aria-label="1 z 3: Architektura · Narożnik">
+          <img src="assets/img/naroznik.webp" alt="Narożnik budynku od strony ulicy" loading="lazy" data-lightbox="Architektura · Narożnik">
         </figure>
-        <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="2 z 3: Wejście główne" aria-hidden="true">
-          <img src="assets/img/wejscie.webp" alt="Wejście główne z drewnianymi drzwiami" loading="lazy" data-lightbox="Wejście główne">
+        <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="2 z 3: Architektura · Wejście główne" aria-hidden="true">
+          <img src="assets/img/wejscie.webp" alt="Wejście główne z drewnianymi drzwiami" loading="lazy" data-lightbox="Architektura · Wejście główne">
         </figure>
-        <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="3 z 3: Elewacja wschodnia" aria-hidden="true">
-          <img src="assets/img/elewacja-wschod.webp" alt="Elewacja od strony wschodniej" loading="lazy" data-lightbox="Elewacja wschodnia">
+        <figure class="arch-slide" role="group" aria-roledescription="slajd" aria-label="3 z 3: Architektura · Elewacja wschodnia" aria-hidden="true">
+          <img src="assets/img/elewacja-wschod.webp" alt="Elewacja od strony wschodniej" loading="lazy" data-lightbox="Architektura · Elewacja wschodnia">
         </figure>
       </div>
       <div class="arch-slider__bar">
-        <div class="arch-slider__cap"><span class="caps" data-cap>Narożnik</span><span class="caps bronze" data-num>01 / 03</span></div>
+        <div class="arch-slider__cap"><span class="caps" data-cap>Architektura · Narożnik</span><span class="caps bronze" data-num>01 / 03</span></div>
         <div class="arch-slider__dots" role="tablist" aria-label="Wybierz wizualizację"><button type="button" role="tab" aria-label="Narożnik" aria-selected="true" data-i="0"><i></i></button><button type="button" role="tab" aria-label="Wejście główne" aria-selected="false" data-i="1"><i></i></button><button type="button" role="tab" aria-label="Elewacja wschodnia" aria-selected="false" data-i="2"><i></i></button></div>
         <div class="rail-nav">
           <button type="button" data-dir="prev" aria-label="Poprzednia wizualizacja"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -357,10 +345,9 @@
   <div class="wrap">
     <div class="sec-head reveal"><span class="num">04</span><span class="line"></span></div>
     <div class="split" style="margin-bottom:clamp(56px,7vw,100px); align-items:end">
-      <h2 class="display h2 reveal">Codzienność<br>w&nbsp;rytmie<br>wellness</h2>
+      <h2 class="display h2 reveal">Sanatorium<br>piętro niżej</h2>
       <div class="reveal">
-        <p class="lead" style="color:#d9cfc1;margin-bottom:18px">Więcej czasu na dobre życie. Basen, jacuzzi i&nbsp;strefa wellness z&nbsp;sauną, siłownia oraz zielone atrium tworzą w&nbsp;N75 codzienną przestrzeń dla ruchu, regeneracji i&nbsp;spokoju.</p>
-        <p class="muted" style="margin:0">Wszystko w&nbsp;budynku, bez dojazdów i&nbsp;karnetów. A&nbsp;tuż za progiem, po drugiej stronie ulicy, czeka zieleń parku im. Staszica – na poranny bieg i&nbsp;wieczorny spacer.</p>
+        <p class="lead wl-lead">Woda, ciepło, ruch i&nbsp;zieleń – regeneracja jak w&nbsp;dawnym uzdrowisku, na co dzień i&nbsp;bez wychodzenia z&nbsp;domu. A&nbsp;po drugiej stronie ulicy park im. Staszica.</p>
       </div>
     </div>
 
@@ -382,9 +369,8 @@
         </div>
         <div class="wellness__txt">
           <h3 class="display h3">Basen</h3>
-          <p class="wellness__sub caps">Własny rytm, własna przestrzeń</p>
-          <p>Basen w&nbsp;kameralnym otoczeniu naturalnego kamienia i&nbsp;miękkiego światła. Miejsce na poranne pływanie, spokojne zakończenie dnia i&nbsp;chwilę tylko dla siebie.</p>
-          <p class="wellness__more">Codzienny komfort, który nie wymaga wychodzenia z&nbsp;budynku.</p>
+          <p class="wellness__sub caps">Własny rytm</p>
+          <p>Kamień, woda i&nbsp;miękkie światło. Poranne pływanie albo spokojne zakończenie dnia – kilka kroków od mieszkania.</p>
         </div>
       </article>
       <article class="wellness__item wellness__item--rev reveal">
@@ -405,10 +391,9 @@
           </div>
         </div>
         <div class="wellness__txt">
-          <h3 class="display h3">Jacuzzi i&nbsp;wellness</h3>
-          <p class="wellness__sub caps">Sztuka odpoczynku</p>
-          <p>Ciepło wody, kojący hydromasaż i&nbsp;kameralna sauna tworzą przestrzeń, w&nbsp;której łatwiej oderwać się od tempa miasta.</p>
-          <p class="wellness__more">To miejsce na regenerację po aktywnym dniu i&nbsp;własne rytuały odpoczynku.</p>
+          <h3 class="display h3">Jacuzzi i&nbsp;sauna</h3>
+          <p class="wellness__sub caps">Ciepło, które regeneruje</p>
+          <p>Hydromasaż i&nbsp;kameralna sauna. Chwila, by zwolnić i&nbsp;oderwać się od tempa miasta.</p>
         </div>
       </article>
       <article class="wellness__item reveal">
@@ -428,9 +413,8 @@
         </div>
         <div class="wellness__txt">
           <h3 class="display h3">Siłownia</h3>
-          <p class="wellness__sub caps">Aktywność na własnych zasadach</p>
-          <p>Kameralna siłownia zaprojektowana jako integralna część strefy komfortu mieszkańców. Naturalne materiały, staranne oświetlenie i&nbsp;widok na zieleń tworzą otoczenie sprzyjające regularnej aktywności.</p>
-          <p class="wellness__more">Bez dodatkowych dojazdów. W&nbsp;rytmie dopasowanym do Ciebie.</p>
+          <p class="wellness__sub caps">Ruch na własnych zasadach</p>
+          <p>Naturalne materiały, dobre światło i&nbsp;widok na zieleń. Trening wtedy, kiedy pasuje Tobie.</p>
         </div>
       </article>
       <article class="wellness__item wellness__item--rev reveal">
@@ -453,8 +437,7 @@
         <div class="wellness__txt">
           <h3 class="display h3">Atrium</h3>
           <p class="wellness__sub caps">Zieleń w&nbsp;sercu budynku</p>
-          <p>Wewnętrzne atrium wnosi do architektury naturalną równowagę. Roślinność, organiczne formy i&nbsp;starannie dobrane materiały tworzą spokojny, zielony akcent w&nbsp;przestrzeni N75.</p>
-          <p class="wellness__more">Miejsce, które pozwala odetchnąć od miejskiego tempa, pozostając w&nbsp;samym centrum Łodzi.</p>
+          <p>Rośliny, kamień i&nbsp;cisza w&nbsp;samym centrum Łodzi. Miejsce, by odetchnąć.</p>
         </div>
       </article>
     </div>
@@ -577,8 +560,8 @@
       </div>
       <div class="reveal">
         <h2 class="display h2">Adres z&nbsp;historią.<br>Lokalizacja z&nbsp;przyszłością.</h2>
-        <p class="lead" style="margin:30px 0 18px"><strong>Historia.</strong> N75 nawiązuje do modernistycznych „luksów” – przedwojennych kamienic, które wyznaczały kanon miejskiego życia. Ta sama proporcja, materiał i&nbsp;dbałość o&nbsp;detal.</p>
-        <p class="muted" style="margin:0 0 18px"><strong>Przyszłość.</strong> Wokół rośnie miasto wiedzy i&nbsp;pracy: Szpital im. Barlickiego, kliniki Uniwersytetu Medycznego, uczelnie i&nbsp;biurowce centrum – kilka minut pieszo. Dla lekarzy, naukowców i&nbsp;osób pracujących w&nbsp;okolicy: do pracy spacerem, a&nbsp;po pracy park im. Staszica za oknem.</p>
+        <p class="loc-p" style="margin-top:30px"><strong>Historia.</strong> N75 nawiązuje do modernistycznych „luksów” – przedwojennych kamienic, które wyznaczały kanon miejskiego życia. Ta sama proporcja, materiał i&nbsp;dbałość o&nbsp;detal.</p>
+        <p class="loc-p"><strong>Przyszłość.</strong> Wokół rośnie miasto wiedzy i&nbsp;pracy: Szpital im. Barlickiego, kliniki Uniwersytetu Medycznego, uczelnie i&nbsp;biurowce centrum – kilka minut pieszo. Dla lekarzy, naukowców i&nbsp;osób pracujących w&nbsp;okolicy: do pracy spacerem, a&nbsp;po pracy park im. Staszica za oknem.</p>
         <div class="places-acc" id="places-acc">
           <details class="place-cat" data-cat="edu">
             <summary><span class="caps">Edukacja</span><span class="odkryj caps">Odkryj</span></summary>
@@ -758,17 +741,17 @@
 </div>
 
 <script src="assets/vendor/leaflet/leaflet.js?v=1.9.4"></script>
-<script src="assets/js/intro.js?v=1795883473"></script>
-<script src="assets/js/extras.js?v=1795883473"></script>
-<script src="assets/js/units.js?v=1795883473"></script>
-<script src="assets/js/price-history.js?v=1795883473"></script>
-<script src="assets/js/dziennik.js?v=1795883473"></script>
-<script src="assets/js/plan.js?v=1795883473"></script>
-<script src="assets/js/dollhouse.js?v=1795883473" defer></script>
-<script src="assets/js/main.js?v=1795883473"></script>
-<script src="assets/js/i18n-en.js?v=1795883473"></script>
-<script src="assets/js/i18n.js?v=1795883473"></script>
-<script src="assets/js/olowek.js?v=1795883473" defer></script>
-<script src="assets/js/premium.js?v=1795883473" defer></script>
+<script src="assets/js/intro.js?v=1795886022"></script>
+<script src="assets/js/extras.js?v=1795886022"></script>
+<script src="assets/js/units.js?v=1795886022"></script>
+<script src="assets/js/price-history.js?v=1795886022"></script>
+<script src="assets/js/dziennik.js?v=1795886022"></script>
+<script src="assets/js/plan.js?v=1795886022"></script>
+<script src="assets/js/dollhouse.js?v=1795886022" defer></script>
+<script src="assets/js/main.js?v=1795886022"></script>
+<script src="assets/js/i18n-en.js?v=1795886022"></script>
+<script src="assets/js/i18n.js?v=1795886022"></script>
+<script src="assets/js/olowek.js?v=1795886022" defer></script>
+<script src="assets/js/premium.js?v=1795886022" defer></script>
 </body>
 </html>

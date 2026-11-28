@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var NS = 'http://www.w3.org/2000/svg';
-  var W = 1504, H = 1925, V = '?v=1795883473';
+  var W = 1504, H = 1925, V = '?v=1795886022';
 
   function el(tag, attrs, parent) {
     var n = document.createElementNS(NS, tag);
@@ -56,8 +56,21 @@
     var pk = (window.N75_PARKING || {})[f];
     if (pk && pk.length) {
       var gp = el('g', { class: 'pl-parking', 'aria-hidden': 'true' }, svg);
+      // delikatnie zaznaczone stojące auta (widok z góry), ułożone wzdłuż stanowiska
+      var CAR = 'M-.5 -.3Q-.5 -.5-.34 -.5H.36Q.5 -.5 .5 -.32V.32Q.5 .5 .36 .5H-.34Q-.5 .5-.5 .3Z', GL = 'M.1 -.4L.24 -.36V.36L.1 .4ZM-.36 -.38L-.26 -.4V.4L-.36 .38Z';
+      var car = function (q, g) {
+        var e0 = [q[1][0] - q[0][0], q[1][1] - q[0][1]], e1 = [q[2][0] - q[1][0], q[2][1] - q[1][1]], l0 = Math.hypot(e0[0], e0[1]), l1 = Math.hypot(e1[0], e1[1]);
+        var L = Math.max(l0, l1), S = Math.min(l0, l1), d = l0 >= l1 ? e0 : e1, ang = Math.atan2(d[1], d[0]) * 180 / Math.PI;
+        var cx = (q[0][0] + q[1][0] + q[2][0] + q[3][0]) / 4, cy = (q[0][1] + q[1][1] + q[2][1] + q[3][1]) / 4;
+        if (L < 120 || S < 60) return;   // za małe na auto (motocykl)
+        var w = Math.min(S * .58, L * .38), l = Math.min(L * .8, w * 2.5);
+        var t = el('g', { class: 'pl-car', transform: 'translate(' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ') rotate(' + ang.toFixed(1) + ') scale(' + l.toFixed(1) + ' ' + w.toFixed(1) + ')' }, g);
+        el('path', { d: CAR, 'vector-effect': 'non-scaling-stroke' }, t); el('path', { d: GL, class: 'pl-car__gl', 'vector-effect': 'non-scaling-stroke' }, t);
+      };
+      var gc = el('g', { class: 'pl-cars' }, gp);
       pk.forEach(function (s) {
         el('path', { d: pathD(s.p), class: 'pl-park pl-park--' + s.k }, gp);
+        if (s.k !== 'moto') { if (s.pl === 2) { var m1x = [(s.p[0][0] + s.p[1][0]) / 2, (s.p[0][1] + s.p[1][1]) / 2], m2x = [(s.p[3][0] + s.p[2][0]) / 2, (s.p[3][1] + s.p[2][1]) / 2]; car([s.p[0], m1x, m2x, s.p[3]], gc); car([m1x, s.p[1], s.p[2], m2x], gc); } else if (s.p.length === 4) car(s.p, gc); }
         var cx = 0, cy = 0; s.p.forEach(function (q) { cx += q[0]; cy += q[1]; }); cx /= s.p.length; cy /= s.p.length;
         if (!s.pl) { el('text', { x: cx, y: cy + 5, class: 'pl-park-t' }, gp).textContent = s.n; return; }
         // podział stanowiska na platformy (każda platforma = 2 miejsca: dół / góra)
