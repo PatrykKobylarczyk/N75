@@ -529,7 +529,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795850103" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795854190" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -1005,6 +1005,24 @@
     var io = new IntersectionObserver(function (en) { en.forEach(function (x) { var img = x.target._pxImg; if (x.isIntersecting) vis.add(img); else vis.delete(img); }); ask(); }, { rootMargin: '120px 0px' });
     imgs.forEach(function (e) { e.classList.add('has-px'); var f = frameOf(e); f._pxImg = e; io.observe(f); });
     window.addEventListener('scroll', ask, { passive: true }); window.addEventListener('resize', ask);
+  })();
+
+  /* ---------- 5 filarów: długie słowa (np. LOKALIZACJA) zmniejszane tak, żeby zawsze mieściły się w szerokości ekranu ---------- */
+  (function () {
+    var words = $$('.values .vw__word'); if (!words.length) return;
+    var fit = function () {
+      words.forEach(function (w) {
+        w.style.fontSize = '';
+        var max = Math.min(document.documentElement.clientWidth * 0.9, 1500), cur = w.scrollWidth;
+        if (max > 0 && cur > max) w.style.fontSize = (parseFloat(getComputedStyle(w).fontSize) * max / cur).toFixed(1) + 'px';
+      });
+    };
+    var t; var later = function () { clearTimeout(t); t = setTimeout(fit, 60); };
+    fit(); window.addEventListener('resize', later); window.addEventListener('load', later);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(later);
+    // zmiana języka lub koncepcji (inne litery / krój) – dopasuj ponownie
+    var mo = new MutationObserver(later); words.forEach(function (w) { mo.observe(w, { childList: true, subtree: true, characterData: true }); });
+    new MutationObserver(later).observe(document.documentElement, { attributes: true, attributeFilter: ['data-kierunek', 'data-k3b', 'data-k4', 'data-k5', 'lang'] });
   })();
 
   /* ---------- Cztery wartości: typograficzna sekwencja odtwarzana automatycznie (gdy sekcja jest na ekranie) ---------- */
