@@ -2311,3 +2311,12 @@ html, body { touch-action: pan-x pan-y; }
 /* udogodnienia: pod zdjęciami tylko numeracja (bez tytułów – tytuł jest w tekście obok) */
 #udogodnienia .arch-slider__cap [data-cap] { display: none; }
 #udogodnienia .arch-slider__cap { display: flex; align-items: center; }
+/* podpis zdjęcia w sliderze – jedna linia */
+.arch-slider__cap [data-cap] { white-space: nowrap; display: block; max-width: 100%; }
+.arch-slider__cap { min-width: 0; }
+/* podpis i numer w jednej linii obok siebie */
+.arch-slider__cap { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: baseline; gap: 14px; min-width: 0; }
+.arch-slider__cap [data-cap] { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.arch-slider__cap [data-num] { flex: none; white-space: nowrap; }
+.arch-slider__cap .okolica__credit { display: none; }
+@media (max-width: 600px) { .arch-slider__bar .rail-nav button { width: 44px !important; height: 44px !important; } .arch-slider__bar .rail-nav { gap: 8px; } }

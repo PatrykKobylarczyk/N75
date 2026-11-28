@@ -189,12 +189,23 @@
     var offset = idx * 450;                       // kilka sliderów obok siebie: zmiany nie w tej samej chwili
     root.style.setProperty('--arch-dur', DUR + 'ms');
     var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    // podpis zdjęcia zawsze w jednej linii: przy długim opisie lekko mniejsze litery
+    function fitCap() {
+      if (!cap) return; cap.style.fontSize = ''; cap.style.letterSpacing = '';
+      var box = cap.parentElement, room = box.clientWidth - (num ? num.offsetWidth + 14 : 0);
+      if (room <= 0) return;
+      var fs = parseFloat(getComputedStyle(cap).fontSize), min = 8.5, ls = 0;
+      while (cap.scrollWidth > room + .5 && fs > min) { fs = Math.max(min, fs * .94); cap.style.fontSize = fs.toFixed(2) + 'px'; if (++ls === 2) cap.style.letterSpacing = '.12em'; }
+    }
+    window.addEventListener('resize', fitCap); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCap);
+    setTimeout(fitCap, 0);
     function go(k) {
       i = (k + slides.length) % slides.length;
       slides.forEach(function (sl, j) { sl.classList.toggle('is-on', j === i); sl.setAttribute('aria-hidden', String(j !== i)); });
       dots.forEach(function (d, j) { d.setAttribute('aria-selected', String(j === i)); });
       var bar = dots[i].querySelector('i'); bar.style.display = 'none'; void bar.offsetWidth; bar.style.display = '';
       cap.textContent = slides[i].querySelector('img').dataset.lightbox;
+      fitCap();
       num.textContent = pad(i + 1) + ' / ' + pad(slides.length);
       play(0);
     }
@@ -548,7 +559,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795891682" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795893946" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
