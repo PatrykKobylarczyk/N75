@@ -136,7 +136,7 @@
     while ((n = w.nextNode())) { if (n.nodeType === 3) txtNode(n); else attrEl(n); }
   }
   // słowa „5 powodów” są złożone z osobnych liter
-  var VW = { 'LOKALIZACJA': 'LOCATION', 'MODERNIZM': 'MODERNISM', 'KUNSZT': 'CRAFT', 'WELLNESS': 'WELLNESS', 'ADRES': 'ADDRESS', 'ŚWIATŁO': 'LIGHT' };
+  var VW = { 'ARCHITEKTURA': 'ARCHITECTURE', 'LOKALIZACJA': 'LOCATION', 'MODERNIZM': 'MODERNISM', 'KUNSZT': 'CRAFT', 'WELLNESS': 'WELLNESS', 'ADRES': 'ADDRESS', 'ŚWIATŁO': 'LIGHT' };
   function words(en) {
     document.querySelectorAll('.vw__word').forEach(function (w) {
       if (en) {
