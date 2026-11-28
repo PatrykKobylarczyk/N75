@@ -2195,3 +2195,10 @@ html.ph-lock { overflow: hidden; }
 
 /* panorama wnętrza: cały kadr widoczny na każdym ekranie (bez kadrowania i bez parallaxu) */
 .panorama--wnetrze img, .panorama--wnetrze img.has-px { width: 100%; height: auto !important; max-height: none !important; aspect-ratio: 1890 / 832 !important; object-fit: contain !important; scale: 1 !important; translate: none !important; }
+/* podpis pierzei na telefonie: krótszy, w jednej linii */
+@media (max-width: 700px) {
+  .pierzeja__cap { font-size: 0 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pierzeja__cap::after { content: none; }
+  .pierzeja__cap::before { content: "Pierzeja Narutowicza · rysunek · przesuń w bok →"; font-size: clamp(7.5px, 2.4vw, 9.5px); letter-spacing: .07em; }
+  html[lang="en"] .pierzeja__cap::before { content: "Narutowicza street frontage · drawing · swipe →"; }
+}
