@@ -386,21 +386,26 @@
         M.beam(a, b, 2.9, -0.36, -0.325, C.ballast, 0);
         [-0.72, 0.72].forEach(function (o) { M.beam([a[0] + n[0] * o, a[1] + n[1] * o], [b[0] + n[0] * o, b[1] + n[1] * o], 0.08, -0.33, -0.26, C.steel, 0); }); }
     });
-    // pomnik Stanisława Staszica w parku (północny koniec alejki, przodem do ul. Narutowicza): plac, cokół z kamienia, postać w płaszczu z brązu, rabaty róż
+    // pomnik Stanisława Staszica wg ortofotomapy: w owalu alejek trawnik, na nim od wejścia (od Narutowicza) długi wybrukowany plac
+    // obramowany w kształcie litery U rabatami róż; pomnik na końcu placu, przodem do wejścia
+    var LOOP = [[-74, -84], [-74, -77], [-72, -69], [-69, -63], [-66, -58], [-61, -54], [-56, -54], [-50, -55], [-47, -59], [-43, -65], [-40, -72], [-37, -84], [-40, -90], [-46, -96], [-51, -99], [-56, -101], [-61, -100], [-66, -97], [-70, -93], [-72, -89]];
     (function () {
-      var x = -56.7, z = -74.6, stone = [218, 214, 204], bronze = [70, 78, 70], pave = [198, 194, 186], rose = [168, 64, 66], hedge = [70, 100, 56];
-      M.box(x - 4.4, z - 3.4, x + 4.4, z + 6.0, -0.33, -0.31, pave, 10);
-      M.box(x - 4.4, z - 3.8, x + 4.4, z - 2.6, -0.33, 0.45, hedge, 7);                       // żywopłot za pomnikiem
-      for (var k = 0; k < 7; k++) { var zz = z - 2.2 + k * 0.85; [-3.9, 3.9].forEach(function (xx) { M.sphere(x + xx, 0.08, zz, 0.42, 0.3, k % 2 ? rose : hedge, 7); }); }   // rabaty róż
-      M.box(x - 1.7, z - 0.7, x + 1.7, z + 0.7, -0.31, 0.9, stone, 0);                         // cokół z podpisem
-      M.box(x - 0.48, z - 0.34, x + 0.48, z + 0.34, 0.9, 3.1, bronze, 0);                      // płaszcz
-      M.box(x - 0.40, z - 0.28, x + 0.40, z + 0.28, 3.1, 3.6, bronze, 0);                      // ramiona
-      M.box(x - 0.28, z - 0.10, x + 0.28, z + 0.36, 3.4, 3.78, bronze, 0);                     // postawiony kołnierz
-      M.sphere(x, 3.95, z + 0.05, 0.18, 0.23, bronze, 0);                                        // głowa, lekko pochylona
-      M.box(x - 0.34, z + 0.28, x - 0.12, z + 0.46, 0.9, 1.04, bronze, 0); M.box(x + 0.12, z + 0.28, x + 0.34, z + 0.46, 0.9, 1.04, bronze, 0); // buty
+      var x = -55.6, zf = -55.5, zb = -80.5, pw = 4.2, bw = 3.0, zm = -75.6, stone = [216, 212, 202], bronze = [66, 74, 66], pave = [190, 187, 180], soil = [112, 94, 74], leafR = [72, 98, 56], rose = [140, 66, 68];
+      M.cap(area2(LOOP) > 0 ? LOOP.slice().reverse() : LOOP, -0.325, C.grass, 5);                                                     // trawnik w owalu
+      M.box(x - pw, zb + bw, x + pw, zf, -0.325, -0.30, pave, 10);                                           // plac
+      M.box(x - pw - bw, zb + bw, x - pw, zf, -0.325, -0.18, soil, 0); M.box(x + pw, zb + bw, x + pw + bw, zf, -0.325, -0.18, soil, 0); M.box(x - pw - bw, zb, x + pw + bw, zb + bw, -0.325, -0.18, soil, 0);   // rabaty (U)
+      var k = 0, put = function (px, pz) { k++; var r = Math.sin(k * 12.9898) * 43758.5453; r -= Math.floor(r); var q = Math.sin(k * 4.1414) * 9631.17; q -= Math.floor(q); M.sphere(px + (q - .5) * 0.35, 0.02, pz + (r - .5) * 0.35, 0.36 + 0.14 * q, 0.26 + 0.1 * r, r < 0.28 ? rose : [leafR[0] * (0.85 + 0.3 * q), leafR[1] * (0.85 + 0.3 * q), leafR[2] * (0.85 + 0.3 * q)], 7); };
+      for (var zz = zb + bw + 0.5; zz < zf - 0.3; zz += 0.9) { put(x - pw - bw * 0.3, zz); put(x - pw - bw * 0.72, zz + 0.45); put(x + pw + bw * 0.3, zz); put(x + pw + bw * 0.72, zz + 0.45); }
+      for (var xx = x - pw - bw + 0.5; xx < x + pw + bw - 0.3; xx += 0.9) { put(xx, zb + bw * 0.3); put(xx + 0.45, zb + bw * 0.72); }
+      M.box(x - 1.7, zm - 0.7, x + 1.7, zm + 0.7, -0.30, 0.9, stone, 0);                                     // cokół z podpisem
+      M.box(x - 0.48, zm - 0.34, x + 0.48, zm + 0.34, 0.9, 3.1, bronze, 0);                                   // płaszcz
+      M.box(x - 0.40, zm - 0.28, x + 0.40, zm + 0.28, 3.1, 3.6, bronze, 0);                                   // ramiona
+      M.box(x - 0.28, zm - 0.10, x + 0.28, zm + 0.36, 3.4, 3.78, bronze, 0);                                  // postawiony kołnierz
+      M.sphere(x, 3.95, zm + 0.05, 0.18, 0.23, bronze, 0);                                                     // głowa, lekko pochylona
+      M.box(x - 0.34, zm + 0.28, x - 0.12, zm + 0.46, 0.9, 1.04, bronze, 0); M.box(x + 0.12, zm + 0.28, x + 0.34, zm + 0.46, 0.9, 1.04, bronze, 0); // buty
     })();
     e.t.forEach(function (t, i) {
-      if (Math.hypot(t[0] + 56.7, t[1] + 74.6) < 7.5) return;   // plac przy pomniku bez drzew
+      if (inPoly(LOOP, t[0], t[1])) return;   // w owalu przy pomniku tylko trawnik, bez drzew
       var h = 7 + ((i * 37) % 7), r = 2.6 + ((i * 13) % 5) * 0.35, x = t[0], z = t[1];
       var tw = 0.13 + (i % 3) * 0.03; M.prism([[x - tw, z - tw], [x + tw, z - tw], [x + tw, z + tw], [x - tw, z + tw]], -0.36, h * 0.62, C.trunk, C.trunk, 0, 0, true);
       var g = function (k) { var v = Math.sin((i + 1) * 12.9898 + k * 78.233) * 43758.5453; return v - Math.floor(v); };
