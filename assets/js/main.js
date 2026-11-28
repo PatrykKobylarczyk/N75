@@ -538,7 +538,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795879493" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795880079" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -1130,23 +1130,33 @@
     });
     document.addEventListener('visibilitychange', function () { if (!document.hidden) play(); });
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { inView = e[0].isIntersecting; if (inView) play(); else v.pause(); }).observe(v);
-    // Wąski ekran (telefon w pionie): kadr przesuwa się za postaciami. Zmiana kadru wypada w środku wygaszenia, więc jej nie widać.
-    // [czas w filmie (s), środek kadru jako część szerokości filmu]
-    var FOCUS = [[0, .5], [7.0, .48], [11.5, .6], [15.7, .6], [19.9, .36]]; // granice scen (pełna czerń) w n75-hero-film-1080.mp4
-    // Kadr liczony tylko przy zmianie sceny albo szerokości ekranu – nie przy chowaniu się paska adresu
-    // (zmiana samej wysokości przesuwała obraz w trakcie sceny).
-    var lastKey = '';
+    // Sceny filmu: [początek (s), środek kadru na wąskim ekranie, powiększenie od→do (powolny najazd = głębia), wysokość punktu najazdu]
+    // Scena 1: budynek powiększony i podniesiony, jesienne gałęzie schodzą na dół kadru jako rama.
+    var SC = [[0, .47, 1.1, 1.2, '30%'], [7.0, .48, 1, 1.07, '50%'], [11.5, .6, 1, 1.07, '50%'], [15.7, .6, 1, 1.06, '50%'], [19.9, .36, 1, 1.06, '50%']], END = 23.96;
+    var GROUP = [0, 1, 2, 2, 2];   // trzy punkty: architektura, atrium, wellness
+    var hero = v.closest('.hero'), dots = document.createElement('div');
+    dots.className = 'hero__dots';
+    dots.innerHTML = ['Architektura', 'Atrium', 'Wellness'].map(function (n, i) { return '<button type="button" aria-label="' + n + '" data-g="' + i + '"></button>'; }).join('');
+    hero.appendChild(dots);
+    dots.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; var g = +b.dataset.g; v.currentTime = SC[GROUP.indexOf(g)][0] + .05; play(); });
+    var lastScene = -1, lastW = 0;
     (function frame() {
       requestAnimationFrame(frame);
-      if (v.paused) return;
       var W = v.clientWidth, H = v.clientHeight; if (!W || !H) return;
-      var t = v.currentTime, f = FOCUS[0][1];
-      for (var i = 0; i < FOCUS.length; i++) if (t >= FOCUS[i][0]) f = FOCUS[i][1];
-      var key = f + '|' + W; if (key === lastKey) return; lastKey = key;
+      var t = v.currentTime, si = 0;
+      for (var i = 0; i < SC.length; i++) if (t >= SC[i][0]) si = i;
+      if (si === lastScene && W === lastW) return;
+      var c = SC[si], newScene = si !== lastScene; lastScene = si; lastW = W;
+      // kadr liczony tylko przy zmianie sceny albo szerokości – nie przy chowaniu się paska adresu
       var vis = Math.min(1, (W / H) / (16 / 9));
-      if (vis > .8) { v.style.objectPosition = ''; return; }
-      var x = Math.max(0, Math.min(100, (f - vis / 2) / (1 - vis) * 100));
-      v.style.objectPosition = x.toFixed(1) + '% 50%';
+      if (vis > .8) v.style.objectPosition = '';
+      else v.style.objectPosition = Math.max(0, Math.min(100, (c[1] - vis / 2) / (1 - vis) * 100)).toFixed(1) + '% 50%';
+      dots.querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-on', +b.dataset.g === GROUP[si]); });
+      if (!newScene || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var dur = ((si + 1 < SC.length ? SC[si + 1][0] : END) - t);
+      v.style.transition = 'none'; v.style.transformOrigin = '50% ' + c[4]; v.style.transform = 'scale(' + c[2] + ')';
+      void v.offsetWidth;
+      v.style.transition = 'transform ' + Math.max(.5, dur).toFixed(2) + 's linear'; v.style.transform = 'scale(' + c[3] + ')';
     })();
   })();
 
