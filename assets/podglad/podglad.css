@@ -434,3 +434,12 @@ html[data-k3b][data-kierunek] .k-geo.k-h3 { height: 1px !important; background: 
   html[data-k3b][data-kierunek] .k-geo.k-h2 { right: -32px; bottom: -32px; }
   html[data-k3b][data-kierunek] .k-geo.k-h3 { right: 54px; }
 }
+
+/* hero wg wzoru 28.11: lokalizacja → mniejsze logo → hasło → krótka brązowa kreska; bez koła i długiej linii */
+html[data-k3b][data-kierunek] .hero .k-geo.k-h2, html[data-k3b][data-kierunek] .hero .k-geo.k-h3 { display: none !important; }
+html[data-k3b] .hero__kicker { margin-bottom: 18px !important; }
+html[data-k3b] .hero__logo .logo-svg { height: clamp(52px, 7.4vw, 112px) !important; }
+html[data-k3b] .hero__claim { margin-top: 18px !important; margin-bottom: 0 !important; font-size: clamp(22px, 2.2vw, 32px) !important; }
+html[data-k3b] .hero__rule { display: block; width: clamp(64px, 8vw, 120px) !important; height: 2px !important; margin: 22px 0 0 !important; background: var(--bronze-soft) !important; left: 0 !important; }
+html[data-k3b] .hero__lead { margin-top: 24px; }
+@media (max-width: 700px) { html[data-k3b] .hero__logo .logo-svg { height: 50px !important; } html[data-k3b] .hero__claim { font-size: 22px !important; } }
