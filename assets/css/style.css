@@ -2308,3 +2308,6 @@ html, body { touch-action: pan-x pan-y; }
 .claimband__arr { width: 14px; height: 14px; background: none; animation: cb-arr2 2s ease-in-out infinite; }
 .claimband__arr::after { left: 3px; top: 0; bottom: auto; width: 7px; height: 7px; border-color: #c9b29a; }
 @keyframes cb-arr2 { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
+/* udogodnienia: pod zdjęciami tylko numeracja (bez tytułów – tytuł jest w tekście obok) */
+#udogodnienia .arch-slider__cap [data-cap] { display: none; }
+#udogodnienia .arch-slider__cap { display: flex; align-items: center; }
