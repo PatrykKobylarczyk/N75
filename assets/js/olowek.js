@@ -15,17 +15,40 @@
     view.width = W / Q; view.height = H / Q;
     var mask = document.createElement('canvas'); mask.width = W / Q; mask.height = H / Q;
     var mx = mask.getContext('2d'), vx = view.getContext('2d');
-    mx.lineCap = 'round'; mx.lineJoin = 'round'; mx.strokeStyle = '#000'; mx.lineWidth = 15 / Q; mx.shadowColor = '#000'; mx.shadowBlur = 6 / Q;
+    mx.lineCap = 'round'; mx.lineJoin = 'round';
+    var gr = document.createElement('canvas'); gr.width = gr.height = 64; var gx = gr.getContext('2d'), gd = gx.createImageData(64, 64);
+    for (var gi = 0; gi < gd.data.length; gi += 4) { gd.data[gi + 3] = 255 * Math.min(1, .45 + Math.random() * .75); }
+    gx.putImageData(gd, 0, 0); mx.strokeStyle = mx.createPattern(gr, 'repeat'); mx.lineWidth = 15 / Q;
     // Kreski jako ruchy ręki: każda kreska z własnym przyspieszeniem i wyhamowaniem, między kreskami węgiel unosi się i przenosi łukiem
     var K = D.p.map(function (d) {
       var n = d.slice(1).trim().split(/\s+/).map(Number), P = [], C = [0];
       for (var i = 0; i < n.length; i += 2) { P.push([n[i], n[i + 1]]); if (i) C.push(C[C.length - 1] + Math.hypot(n[i] - n[i - 2], n[i + 1] - n[i - 1])); }
       return { P: P, C: C, L: C[C.length - 1] };
     });
-    var TL = [], T = 0;   // oś czasu w umownych jednostkach: rysowanie ~ długość, przeniesienie ~ odległość (szybciej, w powietrzu)
+    // Kolejność jak u rysownika: najpierw długie kreski konstrukcyjne, potem średnie, na końcu drobne detale i kreskowanie.
+    // W każdej fazie ręka idzie do najbliższej kreski (z odwróceniem, jeśli bliżej jej koniec).
+    var rnd = (function (x) { return function () { x = (x * 16807) % 2147483647; return x / 2147483647; }; })(75);
+    var phases = [K.filter(function (k) { return k.L >= 160; }), K.filter(function (k) { return k.L >= 55 && k.L < 160; }), K.filter(function (k) { return k.L < 55; })];
+    var ord = [], cur = [W * .2, H * .9];
+    phases.forEach(function (left) {
+      left = left.slice();
+      while (left.length) {
+        var bi = 0, bd = 1e18, rev = false;
+        left.forEach(function (k, i) { var a = k.P[0], z = k.P[k.P.length - 1], d0 = Math.hypot(a[0] - cur[0], a[1] - cur[1]), d1 = Math.hypot(z[0] - cur[0], z[1] - cur[1]); if (d0 < bd) { bd = d0; bi = i; rev = false; } if (d1 < bd) { bd = d1; bi = i; rev = true; } });
+        var k = left.splice(bi, 1)[0];
+        if (rev) { var P = k.P.slice().reverse(), C = [0]; for (var j = 1; j < P.length; j++) C.push(C[j - 1] + Math.hypot(P[j][0] - P[j - 1][0], P[j][1] - P[j - 1][1])); k = { P: P, C: C, L: k.L }; }
+        ord.push(k); cur = k.P[k.P.length - 1];
+      }
+    });
+    K = ord;
+    // Czas: długą kreskę ręka prowadzi szybkim, pewnym pociągnięciem (czas ~ pierwiastek długości), krótkie – wolniej;
+    // między kreskami szybkie przeniesienie w powietrzu i czasem krótkie zawahanie.
+    var TL = [], T = 0;
     K.forEach(function (k, i) {
-      TL.push({ k: i, t0: T, d: k.L + 6 }); T += k.L + 6;
-      if (i + 1 < K.length) { var a = k.P[k.P.length - 1], b = K[i + 1].P[0], g = Math.hypot(b[0] - a[0], b[1] - a[1]); TL.push({ m: [a, b], t0: T, d: 4 + g * .3, g: g }); T += 4 + g * .3; }
+      var d = 70 + 15 * Math.sqrt(k.L) * (.85 + rnd() * .3);
+      TL.push({ k: i, t0: T, d: d }); T += d;
+      if (i + 1 < K.length) { var a = k.P[k.P.length - 1], b = K[i + 1].P[0], g = Math.hypot(b[0] - a[0], b[1] - a[1]); var m = 35 + 6 * Math.sqrt(g) + (rnd() < .12 ? 120 + rnd() * 160 : rnd() * 30); TL.push({ m: [a, b], t0: T, d: m, g: g }); T += m; }
+      if (i + 1 < K.length && K[i + 1].L < 160 && k.L >= 160 && !TL.ph) { TL.ph = 1; TL[TL.length - 1].d += 260; T += 260; }   // chwila namysłu przed detalami
     });
     var at = function (k, l) {   // punkt na kresce w odległości l
       var C = k.C, P = k.P, j = 1; while (j < C.length - 1 && C[j] < l) j++;
@@ -43,19 +66,23 @@
     var baseOp = (function () { img.style.opacity = ''; var o = getComputedStyle(img).opacity; img.style.opacity = '0'; return o; })();
     var strokeTo = function (k, l) {   // dorysuj kreskę k do długości l
       var from = drawn[k] || 0; if (l <= from) return;
-      var o = K[k], st = Math.max(2, (l - from) / 12);
-      mx.beginPath(); var p0 = at(o, from); mx.moveTo(p0[0] / Q, p0[1] / Q);
-      for (var x = from + st; x < l; x += st) { var q = at(o, x); mx.lineTo(q[0] / Q, q[1] / Q); }
-      var pe = at(o, l); mx.lineTo(pe[0] / Q, pe[1] / Q); mx.stroke(); drawn[k] = l;
+      var o = K[k], st = Math.max(2, Math.min(6, (l - from) / 4)), prev = at(o, from);
+      for (var x = from + st; ; x += st) {   // nacisk: kreska rusza lżej, w środku najmocniej, na końcu odpuszcza; ziarno węgla na krawędzi
+        var xx = Math.min(x, l), q = at(o, xx), f = o.L ? xx / o.L : 1;
+        mx.lineWidth = (7 + 7 * Math.pow(Math.sin(Math.PI * Math.min(1, f * 1.1 + .04)), .6)) / Q;
+        mx.beginPath(); mx.moveTo(prev[0] / Q, prev[1] / Q); mx.lineTo(q[0] / Q, q[1] / Q); mx.stroke(); prev = q;
+        if (xx >= l) break;
+      }
+      drawn[k] = l;
     };
     var frame = function (now) {
       if (ended) return;
       if (!t0) t0 = now;
-      var u = Math.min(1, (now - t0) / DUR), tt = T * (.5 * u + .5 * sm(u));   // spokojny start i koniec, środek równym tempem
+      var u = Math.min(1, (now - t0) / DUR), tt = T * (.8 * u + .2 * sm(u));   // spokojny start i koniec, środek równym tempem
       var tipX, tipY, wantLift = 0;
       while (ti < TL.length - 1 && TL[ti].t0 + TL[ti].d <= tt) { if (TL[ti].k !== undefined) strokeTo(TL[ti].k, K[TL[ti].k].L); ti++; }
       var e = TL[ti], f = Math.max(0, Math.min(1, (tt - e.t0) / e.d));
-      if (e.k !== undefined) { var l = K[e.k].L * sm(f); strokeTo(e.k, l); var p = at(K[e.k], l); tipX = p[0]; tipY = p[1]; }
+      if (e.k !== undefined) { var fe = 1 - Math.pow(1 - f, 1.8); var l = K[e.k].L * (.25 * sm(f) + .75 * fe); strokeTo(e.k, l); var p = at(K[e.k], l); tipX = p[0]; tipY = p[1]; }
       else { var a = e.m[0], b = e.m[1], g = sm(f); tipX = a[0] + (b[0] - a[0]) * g; tipY = a[1] + (b[1] - a[1]) * g; wantLift = Math.min(1, e.g / 60) * Math.sin(Math.PI * f); }
       vx.globalCompositeOperation = 'copy'; vx.drawImage(mask, 0, 0);
       vx.globalCompositeOperation = 'source-in'; vx.drawImage(src, 0, 0, W / Q, H / Q);
