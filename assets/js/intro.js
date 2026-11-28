@@ -18,11 +18,24 @@
     timers.forEach(clearTimeout);
     intro.classList.add(fast ? 'is-skip' : 'is-open');
     root.classList.remove('intro-on');
-    setTimeout(function () { intro.remove(); root.classList.add('intro-done'); }, fast ? 400 : 900);
+    setTimeout(function () { intro.remove(); root.classList.add('intro-done'); }, fast ? 400 : 1050);
   }
-  requestAnimationFrame(function () { intro.classList.add('is-draw'); });
-  timers.push(setTimeout(function () { intro.classList.add('is-fill'); }, 900));
-  timers.push(setTimeout(function () { finish(false); }, 1250));
+  if (/^\/(nowa|en|podglad)(\/|$)/.test(location.pathname)) {
+    // nowa strona: logo N75 składa się z brył (każda wjeżdża po kolei), pod nim rysuje się brązowa kreska, kurtyna odsłania hero
+    intro.classList.add('intro--k');
+    var go = function () {
+      var sym = document.getElementById('n75-logo'); if (!sym || done) { finish(true); return; }
+      var parts = Array.prototype.map.call(sym.children, function (c, i) { return '<g class="pc" style="--i:' + i + '">' + c.outerHTML + '</g>'; }).join('');
+      intro.querySelector('.intro__logo').outerHTML = '<div class="ik"><svg class="ik__logo" viewBox="' + sym.getAttribute('viewBox') + '" aria-hidden="true">' + parts + '</svg><i class="ik__rule"></i></div>';
+      requestAnimationFrame(function () { requestAnimationFrame(function () { intro.classList.add('is-draw'); }); });
+      timers.push(setTimeout(function () { finish(false); }, 2500));
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(go, 0); }); else setTimeout(go, 0);
+  } else {
+    requestAnimationFrame(function () { intro.classList.add('is-draw'); });
+    timers.push(setTimeout(function () { intro.classList.add('is-fill'); }, 900));
+    timers.push(setTimeout(function () { finish(false); }, 1250));
+  }
   ['click', 'keydown', 'wheel', 'touchstart'].forEach(function (ev) { intro.addEventListener(ev, function () { finish(true); }, { passive: true }); });
   window.addEventListener('keydown', function () { finish(true); }, { once: true });
 })();

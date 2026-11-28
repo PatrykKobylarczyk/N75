@@ -2202,13 +2202,14 @@ html.ph-lock { overflow: hidden; }
   html[lang="en"] .pierzeja__cap::before { content: "Narutowicza street frontage · drawing · swipe →"; }
 }
 
-/* ołówek rysujący szkic przy cytacie z manifestu */
+/* ołówek rysujący szkic przy cytacie z manifestu – cienki kontur, ledwo widoczny */
 .arka { position: relative; }
-.olowek { position: absolute; left: 0; top: 0; width: 150px; height: 22px; pointer-events: none; z-index: 3; transform-origin: 0 50%; opacity: 0; transition: opacity .4s; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, .18)); }
-.olowek svg { display: block; width: 100%; height: 100%; }
-.olowek.is-on { opacity: 1; }
-.olowek.is-off { opacity: 0; transition: opacity .8s; }
-@media (max-width: 700px) { .olowek { width: 110px; height: 16px; } }
+.olowek-cv { position: absolute; pointer-events: none; z-index: 1; }
+.olowek { position: absolute; left: 0; top: 0; width: 96px; height: 11px; pointer-events: none; z-index: 3; transform-origin: 0 50%; color: #4a443d; opacity: 0; transition: opacity 1.2s; }
+.olowek svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.olowek.is-on { opacity: .42; }
+.olowek.is-off { opacity: 0; transition: opacity 1.4s; }
+@media (max-width: 700px) { .olowek { width: 72px; height: 8.5px; } }
 
 /* wszystkie slidery i galerie: ten sam układ (kadr 3:2, na telefonie 4:3), strzałki na zdjęciu, podpis, licznik, kreski i strzałki pod spodem */
 .arch-slider .arch-slider__track, .wellness .arch-slider__track, .okolica .arch-slider__track, .arch-slider--pano .arch-slider__track { aspect-ratio: 3 / 2 !important; }
@@ -2219,3 +2220,12 @@ html.ph-lock { overflow: hidden; }
 .drawer__nav li { margin: 0 !important; }
 .drawer__nav a { padding-top: clamp(6px, 1.2vh, 12px) !important; padding-bottom: clamp(6px, 1.2vh, 12px) !important; line-height: 1.1; }
 .drawer__nav .num { line-height: 1.1; }
+
+/* bez cienkiej kreski pod sliderami */
+.arch-slider__bar, .section--dark .arch-slider__bar { border-bottom: 0 !important; }
+/* wszystkie zdjęcia i slidery na pełną szerokość strony (telefon i laptop) */
+.arch-slider__track, .panorama { width: 100vw !important; max-width: none !important; margin-left: calc(50% - 50vw) !important; margin-right: calc(50% - 50vw) !important; border-radius: 0 !important; }
+@media (min-width: 701px) { .arch-slider .arch-slider__track, .wellness .arch-slider__track, .okolica .arch-slider__track, .arch-slider--pano .arch-slider__track { aspect-ratio: auto !important; height: min(66.6vw, 86vh); } }
+.wellness__item, .wellness__item--rev { grid-template-columns: 1fr !important; gap: clamp(20px, 3vw, 40px) !important; }
+.wellness__item--rev .arch-slider { order: 0 !important; }
+@media (min-width: 901px) { .wellness__txt { display: grid; grid-template-columns: 5fr 7fr; column-gap: clamp(32px, 6vw, 100px); } .wellness__txt > h3, .wellness__txt > .wellness__sub { grid-column: 1; } .wellness__txt > p:not(.wellness__sub) { grid-column: 2; grid-row: 1 / span 3; } .wellness__txt > p.wellness__more { grid-row: auto; } }
