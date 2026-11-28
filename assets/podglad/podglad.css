@@ -408,3 +408,14 @@ html[data-k5] main > .section + .section::before { content: ""; position: absolu
 /* linie i obramowania z akcentem */
 html[data-k5] .rule { background: var(--k5-metal); height: 2px; opacity: .9; }
 html[data-k5] .ph-btn .ph-ico { color: var(--bronze); }
+
+/* ---------- 03b – dopracowanie hero (uwagi 28.11): spokojniejsza kompozycja dołu ---------- */
+/* ćwiartka koła ~40% mniejsza i bardziej wysunięta poza ekran, jedna cienka linia zamiast trzech */
+html[data-k3b][data-kierunek] .k-geo.k-h2 { width: clamp(90px, 13vw, 180px); height: clamp(90px, 13vw, 180px); right: clamp(-46px, -2.4vw, -18px); bottom: clamp(-46px, -2.4vw, -18px); opacity: .92; }
+html[data-k3b][data-kierunek] .k-geo.k-h3 { height: 1px; bottom: clamp(36px, 4.4vw, 62px); right: calc(clamp(90px, 13vw, 180px) - clamp(46px, 2.4vw, 18px) + 14px); background: var(--bronze-soft) !important; opacity: .7; }
+html[data-k5][data-k3b][data-kierunek] .k-geo.k-h3 { background: linear-gradient(90deg, transparent, #c9925a 30%, #f6d3a2 60%, #9a6533) !important; height: 2px; }
+@media (max-width: 900px) {
+  html[data-k3b][data-kierunek] .k-geo.k-h2 { width: 72px; height: 72px; right: -18px; bottom: -18px; }
+  html[data-k3b][data-kierunek] .k-geo.k-h3 { right: 68px; bottom: 26px; }
+  html[data-k3b] .hero__content { padding-bottom: 72px; }
+}

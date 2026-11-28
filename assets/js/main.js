@@ -529,7 +529,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795873239" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795873438" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -985,6 +985,23 @@
       g.addEventListener('click', function () { go(g); });
       g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(g); } });
     });
+  })();
+
+  /* ---------- Parallax hero: film wolniej niż strona, napisy odpływają i gasną; nagłówki sekcji z lekkim opóźnieniem ---------- */
+  (function () {
+    if (reduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var hero = $('.hero'), media = hero && $('.hero__media', hero), content = hero && $('.hero__content', hero), raf = 0;
+    var heads = $$('main h2.display').filter(function (h) { return !h.closest('.hero, .values, .modern, .draw'); });
+    var run = function () {
+      raf = 0; var y = window.scrollY, vh = window.innerHeight;
+      if (hero && y < hero.offsetHeight + 50) {
+        if (media) media.style.translate = '0 ' + (y * 0.35).toFixed(1) + 'px';
+        if (content) { content.style.translate = '0 ' + (y * -0.12).toFixed(1) + 'px'; content.style.opacity = Math.max(0, 1 - y / (vh * 0.75)).toFixed(3); }
+      }
+      heads.forEach(function (h) { var r = h.getBoundingClientRect(); if (r.bottom < -100 || r.top > vh + 100) return; var k = (r.top + r.height / 2 - vh / 2) / vh; h.style.translate = '0 ' + (k * 34).toFixed(1) + 'px'; });
+    };
+    var ask = function () { if (!raf) raf = requestAnimationFrame(run); };
+    window.addEventListener('scroll', ask, { passive: true }); window.addEventListener('resize', ask); run();
   })();
 
   /* ---------- Parallax: zdjęcia przesuwają się wolniej niż strona (tylko przy pełnym ruchu) ---------- */
