@@ -1,7 +1,12 @@
 {
   "redirects": [
     {
-      "source": "/:v(stara|nowa|podglad)/miasto.html",
+      "source": "/en",
+      "destination": "/en/",
+      "permanent": false
+    },
+    {
+      "source": "/:v(stara|nowa|podglad|en)/miasto.html",
       "destination": "/:v/makieta.html",
       "permanent": false
     },
@@ -75,6 +80,14 @@
       "destination": "/start.html"
     },
     {
+      "source": "/en/",
+      "destination": "/start.html"
+    },
+    {
+      "source": "/en/index.html",
+      "destination": "/start.html"
+    },
+    {
       "source": "/nowa/",
       "destination": "/start.html"
     },
@@ -92,6 +105,10 @@
     },
     {
       "source": "/stara/:path*",
+      "destination": "/:path*"
+    },
+    {
+      "source": "/en/:path*",
       "destination": "/:path*"
     },
     {

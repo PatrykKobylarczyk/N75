@@ -9,8 +9,19 @@
   function store(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
   var q = null; try { q = new URLSearchParams(location.search).get('lang'); } catch (e) {}
   if (q === 'en' || q === 'pl') store(q);
-  var lang = (q === 'en' || q === 'pl') ? q : (stored() === 'en' ? 'en' : 'pl');
+  // /en/… – osobny adres wersji angielskiej (dla Google); /nowa/… – polska
+  var EN_PATH = /^\/en(\/|$)/.test(location.pathname), NOWA_PATH = /^\/nowa(\/|$)/.test(location.pathname);
+  var lang = EN_PATH ? 'en' : (q === 'en' || q === 'pl') ? q : NOWA_PATH ? 'pl' : (stored() === 'en' ? 'en' : 'pl');
+  var swapPath = function (l) { return (l === 'en' ? location.pathname.replace(/^\/nowa(\/|$)/, '/en$1') : location.pathname.replace(/^\/en(\/|$)/, '/nowa$1')) + location.search.replace(/([?&])lang=\w+&?/, '$1').replace(/[?&]$/, '') + location.hash; };
   H.lang = lang;
+  // adresy językowe dla Google: canonical na /en/ wskazuje siebie, para hreflang pl ↔ en na każdej stronie
+  (function () {
+    var m = location.pathname.match(/^\/(stara|nowa|en)(\/.*)?$/); if (!m) return;
+    var rest = (m[2] || '/') + location.search.replace(/([?&])lang=\w+&?/, '$1').replace(/[?&]$/, ''), o = location.origin, hd = document.head;
+    var add = function (rel, href, hl) { var l = document.createElement('link'); l.rel = rel; l.href = href; if (hl) l.hreflang = hl; hd.appendChild(l); };
+    add('alternate', o + '/stara' + rest, 'pl'); add('alternate', o + '/en' + rest, 'en'); add('alternate', o + '/stara' + rest, 'x-default');
+    if (m[1] === 'en') { var c = document.querySelector('link[rel=canonical]'); if (c) c.href = o + '/en' + rest; else add('canonical', o + '/en' + rest); }
+  })();
 
   var D = window.N75_EN || {};
   var norm = function (s) { return s.replace(/ /g, ' ').replace(/\s+/g, ' ').trim(); };
@@ -169,7 +180,7 @@
     var host = document.querySelector('.header__right') || document.querySelector('.header__in');
     if (!host || host.querySelector('.lang-switch')) return;
     btn = document.createElement('button'); btn.type = 'button'; btn.className = 'lang-switch';
-    btn.addEventListener('click', function () { set(lang === 'en' ? 'pl' : 'en'); });
+    btn.addEventListener('click', function () { var l = lang === 'en' ? 'pl' : 'en'; if (EN_PATH || NOWA_PATH) { store(l); location.href = swapPath(l); return; } set(l); });
     host.insertBefore(btn, host.firstChild); paintBtn();
   }
   function set(l, fromStorage) {
@@ -178,7 +189,7 @@
     if (l === 'en') toEN(); else toPL();
     paintBtn();
   }
-  window.addEventListener('storage', function (e) { if (e.key === KEY && (e.newValue === 'en' || e.newValue === 'pl')) set(e.newValue, true); });
+  window.addEventListener('storage', function (e) { if (EN_PATH || NOWA_PATH) return; if (e.key === KEY && (e.newValue === 'en' || e.newValue === 'pl')) set(e.newValue, true); });
   window.N75Lang = { get: function () { return lang; }, set: set, t: function (s) { return lang === 'en' ? (full(s) || s) : s; } };
 
   function init() {

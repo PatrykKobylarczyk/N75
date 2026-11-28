@@ -1,5 +1,5 @@
-/* Wejście na stronę: logo N75 rysowane kreską (ok. 1,6 s), wypełnienie, potem okrąg otwiera widok (ok. 1,2 s).
-   Przy każdym wejściu i odświeżeniu (bez powrotu „wstecz” i przejść z podstron); kliknięcie, klawisz lub przewinięcie pomija. */
+/* Wejście na stronę: krótki ekran powitalny – logo N75 rysowane kreską (ok. 0,9 s), wypełnienie, okrąg otwiera widok.
+   Tylko przy pierwszym wejściu w danej wizycie (bez powrotu „wstecz” i przejść z podstron); kliknięcie, klawisz lub przewinięcie pomija. */
 (function () {
   'use strict';
   var root = document.documentElement, intro = document.getElementById('intro');
@@ -18,11 +18,11 @@
     timers.forEach(clearTimeout);
     intro.classList.add(fast ? 'is-skip' : 'is-open');
     root.classList.remove('intro-on');
-    setTimeout(function () { intro.remove(); root.classList.add('intro-done'); }, fast ? 450 : 1300);
+    setTimeout(function () { intro.remove(); root.classList.add('intro-done'); }, fast ? 400 : 900);
   }
   requestAnimationFrame(function () { intro.classList.add('is-draw'); });
-  timers.push(setTimeout(function () { intro.classList.add('is-fill'); }, 1650));
-  timers.push(setTimeout(function () { finish(false); }, 2300));
+  timers.push(setTimeout(function () { intro.classList.add('is-fill'); }, 900));
+  timers.push(setTimeout(function () { finish(false); }, 1250));
   ['click', 'keydown', 'wheel', 'touchstart'].forEach(function (ev) { intro.addEventListener(ev, function () { finish(true); }, { passive: true }); });
   window.addEventListener('keydown', function () { finish(true); }, { once: true });
 })();

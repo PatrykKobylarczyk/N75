@@ -469,7 +469,7 @@
   var all = units.concat(uslugi);  // wyszukiwarka: mieszkania i lokale usługowe z parteru
   function isShop(u) { return u.floor === 0; }
   var out = $('#units-out');
-  var state = { rooms: [], area: '', floor: '', avail: false, view: 'table', sort: 'id', dir: 1, all: false };
+  var state = { rooms: [], area: '', floor: '', budget: '', avail: false, view: 'table', sort: 'id', dir: 1, all: false };
   var PAGE = 14;
   var moreBtn = $('#f-more');
   moreBtn.addEventListener('click', function () { state.all = true; render(); });
@@ -513,6 +513,7 @@
       }
       if (state.area) { var p = state.area.split('-'); if (u.area < +p[0] || u.area >= +p[1]) return false; }
       if (state.floor !== '' && u.floor !== +state.floor) return false;
+      if (state.budget) { var bp = state.budget.split('-'); if (!u.price || u.status === 'sprzedane' || u.price < +bp[0] || u.price >= +bp[1]) return false; }
       if (state.avail && u.status !== 'wolne') return false;
       return true;
     });
@@ -529,7 +530,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795873438" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795874158" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
@@ -585,10 +586,37 @@
   $('#f-area').addEventListener('change', function (e) { state.area = e.target.value; render(); });
   fFloor.addEventListener('change', function (e) { state.floor = e.target.value; render(); });
   $('#f-avail').addEventListener('change', function (e) { state.avail = e.target.checked; render(); });
+  var fBudget = $('#f-budget'); if (fBudget) fBudget.addEventListener('change', function (e) { state.budget = e.target.value; render(); });
+
+  /* szybka wyszukiwarka na początku sekcji: pokoje, piętro, budżet + licznik; przycisk ustawia pełne filtry i przewija do listy */
+  (function () {
+    var qf = $('#qf'); if (!qf) return;
+    var qr = $('#qf-rooms'), ql = $('#qf-floor'), qb = $('#qf-budget');
+    floors.forEach(function (f) { if (f < 1) return; var o = document.createElement('option'); o.value = f; o.textContent = f + '. piętro'; ql.appendChild(o); });
+    var count = function () {
+      var r = qr.value, fl = ql.value, b = qb.value ? qb.value.split('-') : null;
+      return units.filter(function (u) {
+        if (u.status === 'sprzedane') return false;
+        if (r && (u.rooms >= 4 ? 4 : u.rooms) !== +r) return false;
+        if (fl && u.floor !== +fl) return false;
+        if (b && (!u.price || u.price < +b[0] || u.price >= +b[1])) return false;
+        return true;
+      }).length;
+    };
+    var upd = function () { var n = count(); $('#qf-n').textContent = n; $('#qf-w').textContent = n === 1 ? 'apartament' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? 'apartamenty' : 'apartamentów'; $('#qf-go').disabled = !n; };
+    [qr, ql, qb].forEach(function (e) { e.addEventListener('change', upd); }); upd();
+    $('#qf-go').addEventListener('click', function () {
+      state.rooms = qr.value ? [+qr.value] : []; state.floor = ql.value; state.budget = qb.value; state.avail = true;
+      $$('#f-rooms .chip').forEach(function (c) { c.setAttribute('aria-pressed', String(state.rooms.indexOf(+c.dataset.v) >= 0)); });
+      fFloor.value = state.floor; if (fBudget) fBudget.value = state.budget; $('#f-avail').checked = true;
+      render(); var fd = $('#finder'); if (fd) fd.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (window.N75Track) window.N75Track('quick_search', { rooms: qr.value, floor: ql.value, budget: qb.value });
+    });
+  })();
   function resetFilters() {
-    state.rooms = []; state.area = ''; state.floor = ''; state.avail = false;
+    state.rooms = []; state.area = ''; state.floor = ''; state.budget = ''; state.avail = false;
     $$('#f-rooms .chip').forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
-    $('#f-area').value = ''; fFloor.value = ''; $('#f-avail').checked = false;
+    $('#f-area').value = ''; fFloor.value = ''; $('#f-avail').checked = false; if (fBudget) fBudget.value = '';
     render();
   }
   $('#f-reset').addEventListener('click', resetFilters);

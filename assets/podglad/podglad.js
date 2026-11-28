@@ -14,7 +14,7 @@
   var STY = [['', 'Obecna'], ['kamien', 'Lata 30 · kamień'], ['mosiadz', 'Lata 30 · mosiężne litery'], ['szyld', 'Lata 30 · szyld']];
   var ACC = [['', 'Mosiądz', '#9c7149'], ['zielen', 'Zieleń', '#4f7262'], ['rosso', 'Rosso', '#9a3b32'], ['blekit', 'Błękit', '#4f7a8a']];
   /* n75.vercel.app/nowa/ – publiczna wersja strony w koncepcji 03b, bez panelu podglądu */
-  var FIX = /^\/nowa(\/|$)/.test(location.pathname);
+  var FIX = /^\/(nowa|en)(\/|$)/.test(location.pathname);
   var st = {}; if (FIX) st = { kierunek: 'k3b' }; else { try { st = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
   var q = new URLSearchParams(location.search); ['akcent', 'kierunek', 'styl'].forEach(function (k) { if (q.has(k)) st[k] = q.get(k); }); }
 
