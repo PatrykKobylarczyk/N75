@@ -56,7 +56,7 @@
       return [P[j - 1][0] + (P[j][0] - P[j - 1][0]) * f, P[j - 1][1] + (P[j][1] - P[j - 1][1]) * f];
     };
     var sm = function (x) { return x * x * (3 - 2 * x); };
-    var DUR = 9000, t0 = 0, ended = false, ti = 0, drawn = [], lift = 0, ang = -38, px = 0, py = 0, first = true;
+    var DUR = 6000, t0 = 0, ended = false, ti = 0, drawn = [], lift = 0, ang = -38, px = 0, py = 0, first = true;
     var cs = getComputedStyle(img);
     var sync = function () {   // płótno dokładnie w miejscu obrazka (to samo położenie i parallax)
       var r = img.getBoundingClientRect(), h = host.getBoundingClientRect();
