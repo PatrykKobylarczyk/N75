@@ -461,3 +461,19 @@ html[data-k3b] .hero__claim { margin-top: 18px !important; margin-bottom: 0 !imp
 html[data-k3b] .hero__rule { display: block; width: clamp(64px, 8vw, 120px) !important; height: 2px !important; margin: 22px 0 0 !important; background: var(--bronze-soft) !important; left: 0 !important; }
 html[data-k3b] .hero__lead { margin-top: 24px; }
 @media (max-width: 700px) { html[data-k3b] .hero__logo .logo-svg { height: 50px !important; } html[data-k3b] .hero__claim { font-size: 22px !important; } }
+/* hero: głębia, przyciemniony dół kadru, zwarty blok logo + hasło + lokalizacja, trzy punkty ujęć */
+html[data-k3b] .hero__media { overflow: hidden; }
+html[data-k3b] .hero__video { will-change: transform; }
+html[data-k3b] .hero::after { background: linear-gradient(180deg, rgba(20, 18, 16, .38) 0, rgba(20, 18, 16, 0) 22%, rgba(20, 18, 16, 0) 42%, rgba(20, 18, 16, .55) 66%, rgba(20, 18, 16, .88) 100%), radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(20, 18, 16, .35) 100%) !important; }
+.hero__dots { position: absolute; z-index: 3; left: 0; right: 0; bottom: 26px; display: flex; justify-content: center; gap: 10px; pointer-events: auto; }
+.hero__dots button { width: 6px; height: 6px; padding: 0; border: 0; border-radius: 3px; background: rgba(247, 243, 236, .42); cursor: pointer; transition: width .5s cubic-bezier(.22, 1, .36, 1), background .5s; }
+.hero__dots button::before { content: ""; position: absolute; inset: -10px -6px; }
+.hero__dots button { position: relative; }
+.hero__dots button.is-on { width: 22px; background: rgba(247, 243, 236, .9); }
+@media (max-width: 700px) {
+  html[data-k3b] .hero__content { padding-bottom: 66px !important; }
+  html[data-k3b] .hero__main > .caps { margin-bottom: 12px !important; }
+  html[data-k3b] .hero__claim { margin-top: 12px !important; }
+  html[data-k3b] .hero__rule { margin-top: 16px !important; }
+  .hero__dots { bottom: 24px; }
+}
