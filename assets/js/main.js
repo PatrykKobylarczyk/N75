@@ -182,7 +182,10 @@
     var cap = $('[data-cap]', root), num = $('[data-num]', root), i = 0, timer = null, DUR = 4000, inView = false, hover = false;
     var auto = true;                              // wszystkie slidery działają tak samo: same się zmieniają, gdy są na ekranie
     var track0 = $('.arch-slider__track', root);
-    if (track0 && !$('.arch-slider__arrow', root)) track0.insertAdjacentHTML('afterbegin', '<button type="button" class="arch-slider__arrow arch-slider__arrow--prev" data-dir="prev" aria-label="Poprzednie zdjęcie"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="arch-slider__arrow arch-slider__arrow--next" data-dir="next" aria-label="Następne zdjęcie"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>');
+    // strzałki tylko pod zdjęciem (na zdjęciu żadnych) – zdjęcie przesuwa się też palcem
+    $$('.arch-slider__arrow', root).forEach(function (x) { x.remove(); });
+    var bar0 = $('.arch-slider__bar', root);
+    if (bar0 && !$('.rail-nav', bar0)) bar0.insertAdjacentHTML('beforeend', '<div class="rail-nav"><button type="button" data-dir="prev" aria-label="Poprzednie zdjęcie"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" data-dir="next" aria-label="Następne zdjęcie"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>');
     var offset = idx * 450;                       // kilka sliderów obok siebie: zmiany nie w tej samej chwili
     root.style.setProperty('--arch-dur', DUR + 'ms');
     var pad = function (n) { return (n < 10 ? '0' : '') + n; };
@@ -209,11 +212,18 @@
     var track = $('.arch-slider__track', root), x0 = null, y0 = 0;
     track.addEventListener('pointerdown', function (e) { x0 = e.clientX; y0 = e.clientY; });
     track.addEventListener('pointerup', function (e) {
-      if (x0 === null) return;
+      if (x0 === null || e.pointerType === 'touch') { x0 = null; return; }
       var dx = e.clientX - x0, dy = e.clientY - y0; x0 = null;
       if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { go(i + (dx < 0 ? 1 : -1)); root.dataset.swiped = '1'; setTimeout(function () { delete root.dataset.swiped; }, 50); }
     });
     track.addEventListener('pointercancel', function () { x0 = null; });
+    // telefon: przesunięcie palcem w lewo / prawo (pionowe przewijanie strony bez zmian)
+    var tx0 = null, ty0 = 0;
+    track.addEventListener('touchstart', function (e) { tx0 = e.touches[0].clientX; ty0 = e.touches[0].clientY; }, { passive: true });
+    track.addEventListener('touchend', function (e) {
+      if (tx0 === null) return; var t = e.changedTouches[0], dx = t.clientX - tx0, dy = t.clientY - ty0; tx0 = null; x0 = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) { go(i + (dx < 0 ? 1 : -1)); root.dataset.swiped = '1'; setTimeout(function () { delete root.dataset.swiped; }, 350); }
+    }, { passive: true });
     track.addEventListener('click', function (e) { if (root.dataset.swiped) { e.stopPropagation(); e.preventDefault(); } }, true);
     if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { var was = inView; inView = en[0].isIntersecting; play(!was && inView ? offset : 0); }, { threshold: .3 }).observe(root);
     else { inView = true; play(offset); }
@@ -538,7 +548,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795883473" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795886022" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
