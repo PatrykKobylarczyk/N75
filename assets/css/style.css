@@ -2063,3 +2063,21 @@ html.ph-lock { overflow: hidden; }
 /* panorama z wnętrza apartamentu (zamiast zdjęcia lotniczego) */
 .panorama--wnetrze img { height: auto; aspect-ratio: 1890 / 832; max-height: none; object-position: 50% 55%; }
 @media (max-width: 700px) { .panorama--wnetrze img { aspect-ratio: auto; height: 62vh; min-height: 380px; object-position: 46% 50%; } }
+
+/* osoby przy sekcjach: architekci przy „Przepisie na dobrą architekturę”, kuratorka przy „Modernizm to…” */
+.person { display: grid; grid-template-columns: 112px 1fr; gap: 22px; align-items: start; margin-top: 36px; padding-top: 26px; border-top: 1px solid var(--line); }
+.person__photo { margin: 0; aspect-ratio: 4 / 5; overflow: hidden; background: var(--paper-2); }
+.person__photo img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(.15); }
+.person__name { font-family: var(--head); font-weight: 400; font-size: 22px; line-height: 1.15; margin: 6px 0 8px; color: var(--ink); }
+.person__txt p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--muted); }
+.person__txt .caps { font-size: 10px; }
+.person--draw { margin-top: 26px; padding-top: 20px; grid-template-columns: 84px 1fr; gap: 18px; }
+.person--draw .person__name { font-size: 19px; }
+.person--draw .person__txt p { font-size: 13px; }
+@media (max-width: 700px) { .person { grid-template-columns: 84px 1fr; gap: 16px; } .person__name { font-size: 19px; } }
+/* na szerokim ekranie kuratorka w prawym górnym rogu przypiętej sekcji (nad szkicem), żeby nie wypadała poza ekran */
+@media (min-width: 1001px) {
+  .draw__in { position: relative; }
+  .person--draw { position: absolute; top: clamp(16px, 4vh, 60px); right: var(--gutter); width: min(430px, 34vw); margin: 0; padding: 0 0 0 20px; border-top: 0; border-left: 1px solid var(--line); z-index: 2; background: var(--paper); }
+  .draw__stage:has(~ *), .draw__in:has(.person--draw) .draw__stage { max-height: calc(100vh - 340px); align-self: end; }
+}
