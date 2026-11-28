@@ -20,6 +20,7 @@
 (function () {
   'use strict';
   var GTM_ID = '';                       // ← np. 'GTM-ABC1234'
+  var CLARITY_ID = '';                   // ← Microsoft Clarity (mapy kliknięć, nagrania sesji), np. 'abcd1234ef'; ładuje się po zgodzie na analitykę
   var KEY = 'n75-zgody', VERSION = 1, MAX_AGE = 365 * 864e5;
   var w = window, d = document;
 
@@ -54,6 +55,13 @@
     var s = d.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtm.js?id=' + GTM_ID;
     d.head.appendChild(s);
   }
+  var clarityLoaded = false;
+  function loadClarity() {
+    if (clarityLoaded || !/^[a-z0-9]{6,20}$/i.test(CLARITY_ID)) return;
+    clarityLoaded = true;
+    w.clarity = w.clarity || function () { (w.clarity.q = w.clarity.q || []).push(arguments); };
+    var s = d.createElement('script'); s.async = true; s.src = 'https://www.clarity.ms/tag/' + CLARITY_ID; d.head.appendChild(s);
+  }
   function apply(c, fromUser) {
     gtag('consent', 'update', {
       analytics_storage: c.a ? 'granted' : 'denied',
@@ -61,6 +69,7 @@
     });
     if (fromUser) w.dataLayer.push({ event: 'n75_consent', analytics: c.a, marketing: c.m });
     if (c.a || c.m) loadGtm();
+    if (c.a) loadClarity();
   }
   var saved = read();
   if (saved) apply(saved, false);

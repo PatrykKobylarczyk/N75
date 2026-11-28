@@ -91,6 +91,14 @@
         '<a class="btn btn--line caps" href="#u-form">Umów prezentację na miejscu</a></div>' +
       '</div>' +
     '</div></div></section>';
+  // najbliższe dni robocze (pon.–sob.) do wyboru terminu prezentacji
+  var slotDays = function () {
+    var DN = ['nd', 'pn', 'wt', 'śr', 'cz', 'pt', 'sb'], out = [], t = new Date(); t.setHours(12, 0, 0, 0);
+    for (var i = 1; out.length < 6 && i < 14; i++) { var x = new Date(t.getTime() + i * 864e5); if (x.getDay() === 0) continue;
+      var iso = x.getFullYear() + '-' + ('0' + (x.getMonth() + 1)).slice(-2) + '-' + ('0' + x.getDate()).slice(-2);
+      out.push('<label class="u-slot__d"><input type="radio" name="visit_day" value="' + iso + '"><span><small>' + DN[x.getDay()] + '</small>' + x.getDate() + '.' + ('0' + (x.getMonth() + 1)).slice(-2) + '</span></label>'); }
+    return out.join('');
+  };
   var spec = function (dt, dd, cls) { return '<div' + (cls ? ' class="' + cls + '"' : '') + '><dt>' + dt + '</dt><dd>' + dd + '</dd></div>'; };
 
   root.innerHTML =
@@ -143,6 +151,9 @@
             '<input type="hidden" name="unit" value="' + u.id + '"><input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">' +
             '<label><span class="caps">Imię</span><input name="name" id="u-name" autocomplete="given-name" required></label>' +
             '<label><span class="caps">Telefon lub e-mail</span><input name="contact" id="u-contactf" autocomplete="email" required></label>' +
+            (sold ? '' : '<fieldset class="u-slot"><legend class="caps">Termin prezentacji <span class="opt">(opcjonalnie)</span></legend>' +
+              '<div class="u-slot__days" role="radiogroup" aria-label="Dzień">' + slotDays() + '</div>' +
+              '<div class="u-slot__times" role="radiogroup" aria-label="Pora dnia">' + ['9:00–12:00', '12:00–15:00', '15:00–18:00'].map(function (t, i) { return '<label class="u-slot__t"><input type="radio" name="visit_time" value="' + t + '"><span>' + ['rano', 'w południe', 'po południu'][i] + '<small>' + t + '</small></span></label>'; }).join('') + '</div></fieldset>') +
             '<fieldset class="u-form__opts"><legend class="caps">Interesuje mnie też <span class="opt">(opcjonalnie)</span></legend>' +
               '<label class="u-chk"><input type="checkbox" name="parking"> miejsce postojowe</label><label class="u-chk"><input type="checkbox" name="storage"> komórka lokatorska</label></fieldset>' +
             '<label><span class="caps">Wiadomość <span class="opt">(opcjonalnie)</span></span><textarea name="message" rows="2"></textarea></label>' +
@@ -206,8 +217,10 @@
     if (uf.elements._honey && uf.elements._honey.value) return;
     var extra = [uf.elements.parking.checked ? 'miejsce postojowe' : '', uf.elements.storage.checked ? 'komórka lokatorska' : ''].filter(Boolean).join(', ');
     var btn = uf.querySelector('button[type=submit]'); btn.disabled = true; um.textContent = 'Wysyłanie…';
-    window.N75Send({ 'Imię': n, 'Kontakt': c, 'Lokal': u.id + ' (' + fmtA.format(u.area) + ' m², piętro ' + u.floor + ', ' + fmt.format(u.price) + ' zł)', 'Dodatkowo': extra, 'Wiadomość': uf.elements.message.value.trim(), 'Formularz': 'Karta mieszkania' }).then(function () {
-      um.textContent = 'Dziękujemy! Doradca skontaktuje się w sprawie ' + u.id + ' w ciągu jednego dnia roboczego.';
+    var vd = uf.querySelector('input[name=visit_day]:checked'), vt = uf.querySelector('input[name=visit_time]:checked');
+    var termin = vd ? vd.value.split('-').reverse().join('.') + (vt ? ', ' + vt.value : '') : vt ? 'dowolny dzień, ' + vt.value : '';
+    window.N75Send({ 'Imię': n, 'Kontakt': c, 'Lokal': u.id + ' (' + fmtA.format(u.area) + ' m², piętro ' + u.floor + ', ' + fmt.format(u.price) + ' zł)', 'Proponowany termin prezentacji': termin, 'Dodatkowo': extra, 'Wiadomość': uf.elements.message.value.trim(), 'Formularz': 'Karta mieszkania' }).then(function () {
+      um.textContent = 'Dziękujemy! Doradca skontaktuje się w sprawie ' + u.id + (termin ? ', żeby potwierdzić termin prezentacji (' + termin + ')' : '') + ' w ciągu jednego dnia roboczego.';
       uf.reset();
     }).catch(function () {
       um.innerHTML = 'Nie udało się wysłać formularza. Zadzwoń: <a href="tel:' + TEL + '">' + TEL_TXT + '</a> lub napisz: <a href="mailto:' + MAIL + '">' + MAIL + '</a>.';
