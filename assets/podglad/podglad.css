@@ -426,3 +426,11 @@ html[data-k3b][data-kierunek] .k-geo.k-h2 { background: #d9c4a8 !important; opac
 html[data-k5][data-k3b][data-kierunek] .k-geo.k-h2 { background: var(--k5-metal) !important; opacity: .85; }
 
 @media (min-width: 901px) { html[data-k3b] .hero__content { top: -36px; } }
+
+/* uwagi 28.11 (3): ćwiartka koła dalej w prawo i w dół (głównie poza ekranem), jedna cienka linia w ciepłym beżu */
+html[data-k3b][data-kierunek] .k-geo.k-h2 { right: clamp(-90px, -4.4vw, -34px); bottom: clamp(-90px, -4.4vw, -34px); }
+html[data-k3b][data-kierunek] .k-geo.k-h3 { height: 1px !important; background: #d9c4a8 !important; opacity: .65; right: calc(clamp(90px, 13vw, 180px) - clamp(90px, 4.4vw, 34px) + 16px); }
+@media (max-width: 900px) {
+  html[data-k3b][data-kierunek] .k-geo.k-h2 { right: -32px; bottom: -32px; }
+  html[data-k3b][data-kierunek] .k-geo.k-h3 { right: 54px; }
+}
