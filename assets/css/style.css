@@ -2075,12 +2075,6 @@ html.ph-lock { overflow: hidden; }
 .person--draw .person__name { font-size: 19px; }
 .person--draw .person__txt p { font-size: 13px; }
 @media (max-width: 700px) { .person { grid-template-columns: 84px 1fr; gap: 16px; } .person__name { font-size: 19px; } }
-/* na szerokim ekranie kuratorka w prawym górnym rogu przypiętej sekcji (nad szkicem), żeby nie wypadała poza ekran */
-@media (min-width: 1001px) {
-  .draw__in { position: relative; }
-  .person--draw { position: absolute; top: clamp(16px, 4vh, 60px); right: var(--gutter); width: min(430px, 34vw); margin: 0; padding: 0 0 0 20px; border-top: 0; border-left: 1px solid var(--line); z-index: 2; background: var(--paper); }
-  .draw__stage:has(~ *), .draw__in:has(.person--draw) .draw__stage { max-height: calc(100vh - 340px); align-self: end; }
-}
 
 /* ---------- hero i nagłówek – dopracowanie (uwagi 28.11) ---------- */
 /* film: naturalniejsza, głębsza zieleń, mniej żółto-brązowego filtra, nieco jaśniej */
@@ -2188,3 +2182,5 @@ html.ph-lock { overflow: hidden; }
 .values__nav span { display: block; white-space: nowrap; }
 @media (max-width: 700px) { .values__nav { gap: 6px !important; font-size: 7px !important; letter-spacing: .03em !important; } }
 .vw__sub.caps-long { text-transform: uppercase !important; letter-spacing: .18em !important; font-size: inherit; }
+/* kuratorka pod szkicem przy cytacie z manifestu */
+.person--arka { max-width: 620px; margin: clamp(28px, 4vw, 48px) 0 0; }
