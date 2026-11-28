@@ -81,7 +81,7 @@
     if ('IntersectionObserver' in window) { var artIO = new IntersectionObserver(function (en) { if (en.some(function (e) { return e.isIntersecting; })) { artIO.disconnect(); artOn(); } }, { rootMargin: '800px 0px' }); artIO.observe(mapEl); }
     var artLater = function () { setTimeout(artOn, 2500); };
     if (document.readyState === 'complete') artLater(); else window.addEventListener('load', artLater);
-    fetch('assets/img/mapa-okolica-opisy.svg?v=4').then(function (r) { return r.text(); }).then(function (t) {
+    fetch('assets/img/mapa-okolica-opisy.svg?v=5').then(function (r) { return r.text(); }).then(function (t) {
       var box = document.createElement('div'); box.innerHTML = t; var sv = box.querySelector('svg');
       L.svgOverlay(sv, ART, { className: 'map__labels', interactive: false }).addTo(map);
       // opisy ulic w stałej, czytelnej wielkości na ekranie (niezależnie od powiększenia mapy)
@@ -179,9 +179,10 @@
   $$('[data-slider]').forEach(function (root, idx) {
     var slides = $$('.arch-slide', root), dots = $$('.arch-slider__dots button', root);
     if (slides.length < 2) return;
-    var cap = $('[data-cap]', root), num = $('[data-num]', root), i = 0, timer = null, DUR = 3000, inView = false, hover = false;
-    var auto = root.id === 'arch-slider';          // samoczynnie zmienia się tylko slider Architektury
-    if (!auto) root.classList.add('is-manual');
+    var cap = $('[data-cap]', root), num = $('[data-num]', root), i = 0, timer = null, DUR = 4000, inView = false, hover = false;
+    var auto = true;                              // wszystkie slidery działają tak samo: same się zmieniają, gdy są na ekranie
+    var track0 = $('.arch-slider__track', root);
+    if (track0 && !$('.arch-slider__arrow', root)) track0.insertAdjacentHTML('afterbegin', '<button type="button" class="arch-slider__arrow arch-slider__arrow--prev" data-dir="prev" aria-label="Poprzednie zdjęcie"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="arch-slider__arrow arch-slider__arrow--next" data-dir="next" aria-label="Następne zdjęcie"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>');
     var offset = idx * 450;                       // kilka sliderów obok siebie: zmiany nie w tej samej chwili
     root.style.setProperty('--arch-dur', DUR + 'ms');
     var pad = function (n) { return (n < 10 ? '0' : '') + n; };
@@ -537,7 +538,7 @@
   // miniatura prawdziwego rzutu lokalu (z meblami); dwupoziomowe: obie kondygnacje obok siebie
   function planThumb(u) {
     return u.levels.map(function (l) {
-      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795878461" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
+      return '<img src="assets/img/plany/lokale/' + u.id + '-' + l + '-sm.webp?v=1795878609" alt="Rzut lokalu ' + u.id + (u.levels.length > 1 ? ', piętro ' + l : '') + '" loading="lazy">';
     }).join('');
   }
 
