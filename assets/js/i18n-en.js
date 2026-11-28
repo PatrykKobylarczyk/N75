@@ -70,7 +70,7 @@ window.N75_EN = Object.assign(window.N75_EN || {}, {
   "Miejsce, które może stać się częścią rodzinnej historii i zachować znaczenie dla kolejnych pokoleń.": "A place that can become part of a family's story and keep its meaning for generations to come.",
 
   /* ---------- 5 powodów ---------- */
-  "Dlaczego N75? 5 powodów": "Why N75? 5 reasons",
+  "Dlaczego N75? 5 powodów": "Why N75? 5 reasons", "Dlaczego N75? 6 powodów": "Why N75? 6 reasons", "N75 – dlaczego": "N75 – why",
   "Modernizm i klasyka": "Modernism and classicism",
   "Nie moda, lecz proporcja, rytm i światło – esencja modernizmu w łódzkim wydaniu.": "Not fashion, but proportion, rhythm and light – the essence of modernism, Łódź style.",
   "Kunszt i materiały": "Craft and materials",
@@ -144,6 +144,9 @@ window.N75_EN = Object.assign(window.N75_EN || {}, {
   "Jacuzzi i sauna": "Jacuzzi and sauna", "Ciepło, które regeneruje": "Warmth that restores", "Hydromasaż i kameralna sauna. Chwila, by zwolnić i oderwać się od tempa miasta.": "Hydromassage and an intimate sauna. A moment to slow down and step away from the pace of the city.",
   "Ruch na własnych zasadach": "Movement on your own terms", "Naturalne materiały, dobre światło i widok na zieleń. Trening wtedy, kiedy pasuje Tobie.": "Natural materials, good light and a view of greenery. Train whenever it suits you.",
   "Rośliny, kamień i cisza w samym centrum Łodzi. Miejsce, by odetchnąć.": "Plants, stone and quiet in the very centre of Łódź. A place to breathe.",
+  "Inwestycja zjawiskowa. Dopracowana jak żadna inna.": "An extraordinary development. Refined like no other.", "Być może najlepsze miejsce do życia w Łodzi.": "Perhaps the best place to live in Łódź.", "Dlaczego?": "Why?",
+  "Cisza": "Silence", "Bez korków · cicho · kameralnie": "No traffic · quiet · intimate", "Cisza – bez korków, cicho, kameralnie": "Silence – no traffic, quiet, intimate",
+  "Śródmieście Wschód to jedna z najspokojniejszych i najbardziej zielonych części centrum – mało tranzytu, mało korków, dużo ciszy. Centrum miasta, w którym słychać ptaki.": "Śródmieście East is one of the calmest and greenest parts of the centre – little through traffic, few jams, plenty of quiet. A city centre where you can hear the birds.",
   "styl": "style", "Ostatni modernizm": "Modernism, the latest chapter", "Lokalizacja – Centrum miasta, park naprzeciwko": "Location – City centre, park opposite", "Modernizm – Ostatni modernizm": "Modernism – the latest chapter", "Nasza misja": "Our mission", "…w którym lepiej się mieszka.": "…the style that is better to live in.", "Modernizm to styl, w którym lepiej się mieszka": "Modernism is the style that is better to live in",
   "Czy istnieje przepis na dobrą architekturę? Modernizm – funkcjonalność, nowoczesność i szlachetne materiały – to od stu lat kanon dobrej architektury mieszkaniowej.": "Is there a recipe for good architecture? Modernism – function, modernity and fine materials – has been the canon of good residential architecture for a hundred years.", "N75 sięga po ten sam kanon: proporcję bryły, rytm elewacji i geometrię detalu.": "N75 draws on the same canon: the proportion of the mass, the rhythm of the façade and the geometry of detail.",
   "kanon": "canon", "etos": "ethos", "klasa": "class", "proporcja": "proportion", "rytm": "rhythm", "szyk": "chic", "kunszt": "craft", "esencja": "essence",
